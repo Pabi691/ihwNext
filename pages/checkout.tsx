@@ -25,7 +25,7 @@ const Checkout = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [shippingValidate, setShippingValidate] = useState(false);
   // const [cartItems, setCartItems] = useState([]);
-  const { cart, token, CGST, SGST, grandTotal, totalGST } = useGlobal();
+  const { cart, token, CGST, SGST, grandTotal, totalGST, subtotal, totalMRP } = useGlobal();
   const [shippingAddresses, setShippingAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethods, setPaymentMethods] = useState([]);
@@ -139,20 +139,12 @@ const Checkout = () => {
   // };
 
   const calculateSummary = () => {
-    const totalMRP = cart.reduce(
-      (acc, item) => acc + item.regular_price * item.quantity,
-      0
-    );
-    const subtotal = cart.reduce(
-      (acc, item) => acc + item.sale_price * item.quantity,
-      0
-    );
     const finalAmountNumber = finalAmount ? Number(finalAmount) : null;
     const newSubtotal = finalAmountNumber ? finalAmountNumber : grandTotal;
-    return { totalMRP, subtotal, newSubtotal, savings: (newSubtotal < totalMRP ?  (totalMRP - grandTotal) : 'N/A') };
+    return { totalMRP, newSubtotal, savings: (newSubtotal < totalMRP ?  (totalMRP - grandTotal) : 'N/A') };
   };
 
-  const { totalMRP, savings, subtotal, newSubtotal } = calculateSummary();
+  const { savings, newSubtotal } = calculateSummary();
   useEffect(() => {
     if(!token) return;
     const payment = async () => {
@@ -255,7 +247,7 @@ const Checkout = () => {
   //   }
   // };
 
-
+  // console.log('cart', cart);  
   const handleSubmit = async () => {
     setIsLoading(true);
     setLoading(true);
@@ -266,16 +258,32 @@ const Checkout = () => {
     const NoGstPrice = newSubtotal - totalGST
 
     const safePaymentMethods = Array.isArray(paymentMethods) ? paymentMethods : [];
+
     const orderPayload = {
-      order_items: cart.map((item) => ({
+      order_items: cart.map((item) => {
+          const variation = item.product_variation;
+          const salePrice =
+            variation?.id === item.prod_variation_id
+              ? (variation.sale_price ?? item.sale_price)
+              : item.sale_price;
+          
+          const productName = variation?.id === item.prod_variation_id
+            ? variation.variations_name
+            : item.prod_name;
+
+          const regularPrice = variation?.id === item.prod_variation_id
+            ? variation.regular_price
+            : item.regular_price;
+
+        return ({
         product_id: item.product_id,
         prod_variation_id: item.prod_variation_id,
-        product_name: item.prod_name,
+        product_name: productName,
         quantity: item.quantity,
-        price: item.sale_price,
-        regular_price: item.regular_price,
-        total_price: item.sale_price * item.quantity,
-      })),
+        price: salePrice,
+        regular_price: regularPrice,
+        total_price: salePrice * item.quantity,
+      })}),
       // pay_method_id:,
       pay_method_id: (() => {
         if (safePaymentMethods.length === 0) return null;
@@ -300,6 +308,8 @@ const Checkout = () => {
       pay_amt: roundOff < 0.5 ? (isCOD ? (NoGstPrice - roundOff + 20) : (NoGstPrice - roundOff)) :
         (isCOD ? (NoGstPrice - roundOff + 1 + 20) : (NoGstPrice - roundOff + 1)),
     };
+
+    console.log('orderPayload', orderPayload);
 
     try {
       if (safePaymentMethods.length === 0) {

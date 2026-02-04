@@ -25,6 +25,17 @@ export const AuthProvider = ({ children }) => {
     }
   }, [userToken, isBrowser]);
 
+  useEffect(() => {
+    if (!isBrowser) return;
+    const handleStorage = (event) => {
+      if (event.key === "userToken") {
+        setUserToken(event.newValue);
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, [isBrowser]);
+
   // const decryptedToken = token
   // ? CryptoJS.AES.decrypt(token, secretKey).toString(CryptoJS.enc.Utf8) // Decrypt the token
   // : null;

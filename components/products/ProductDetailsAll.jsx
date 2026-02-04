@@ -53,7 +53,7 @@ function ProductDetailsAll() {
     // Check if the product is already in the list
     const existingProduct = viewedProducts.find((item) => item.slug === slug);
 
-    console.log('existingProduct', existingProduct);
+    // console.log('existingProduct', existingProduct);
 
     if (existingProduct) {
       setProduct(existingProduct);
@@ -134,7 +134,7 @@ function ProductDetailsAll() {
       const hasSize = productVariations.some(v => v.size_id !== null);
       if (hasSize && !selectedSize) {
         console.log('productVariations', productVariations);
-        console.log(openSizeChart);
+        // console.log(openSizeChart);
         setOpenSizeChart(true);
         resolve(false);
         return;

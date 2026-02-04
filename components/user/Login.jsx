@@ -21,7 +21,7 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false); // Loading state
   // const [otpLoading, setOtpLoading] = useState(false);
-  const { setToken } = useAuth();
+  const { setToken, userToken } = useAuth();
   const [varify, setVarify] = useState(false);
   const { mergeLocalCartWithServer } = useGlobal();
   const [showPassword, setShowPassword] = useState(false);
@@ -33,10 +33,10 @@ const Login = () => {
   useEffect(() => {
     const uservarified = localStorage.getItem('uservarified');
     if (uservarified && uservarified === 'null') return;
-    if (localStorage.getItem('userToken') && localStorage.getItem('uservarified')) {
+    if (userToken && localStorage.getItem('uservarified')) {
       navigate(redirectTo, { state: location.state });
     }
-  }, [redirectTo, location.state, navigate]);
+  }, [redirectTo, location.state, navigate, userToken]);
 
   const loginUser = async (e) => {
     e.preventDefault();
@@ -145,7 +145,15 @@ const Login = () => {
     <MainLayOut>
       <Box
         display="flex"
-        bgcolor="#e6e7e8"
+        sx={{
+          backgroundImage:
+            "linear-gradient(135deg, rgba(8, 9, 12, 0.55), rgba(12, 16, 24, 0.35)), url('/images/toppers_streakers.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+        minHeight="80vh"
+        justifyContent="center"
+        alignItems="center"
         padding={{
           xs: 2,
         }}
@@ -181,10 +189,26 @@ const Login = () => {
             alignItems="center"
             p={4}
           >
-            <Container sx={{ background: '#fff', padding: '25px 10px' }} maxWidth="xs">
-              <Box mb={3}>
-                <p className='font-bold text-sm text-gray-600 text-center'>
-                  Login with Indian Hair World
+            <Container
+              sx={{
+                background: "linear-gradient(160deg, rgba(255,255,255,0.75), rgba(255,255,255,0.55))",
+                padding: "28px 18px",
+                borderRadius: "16px",
+                backdropFilter: "blur(14px)",
+                border: "1px solid rgba(255,255,255,0.35)",
+                boxShadow: "0 20px 45px rgba(0,0,0,0.25)",
+              }}
+              maxWidth="xs"
+            >
+              <Box mb={3} className="text-center">
+                <p className="text-[11px] uppercase tracking-[0.35em] text-gray-600">
+                  Indian Hair World
+                </p>
+                <h2 className="mt-2 text-2xl font-bold text-gray-900">
+                  Welcome back
+                </h2>
+                <p className="mt-1 text-xs text-gray-600">
+                  Sign in to continue your journey
                 </p>
 
                 {/* <div className='flex items-center justify-center gap-4 my-4'>
@@ -192,11 +216,17 @@ const Login = () => {
               </div> */}
 
                 <hr />
-                <div className='flex justify-between items-center'>
-                  <Link to={'../login'} className='px-2 py-1 bg-green-600 block w-fit m-auto text-white font-medium border uppercase mt-3'>
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <Link
+                    to={"../login"}
+                    className="px-3 py-2 rounded-full bg-black text-white text-xs font-semibold uppercase tracking-wide text-center shadow-md hover:shadow-lg transition"
+                  >
                     Login
                   </Link>
-                  <Link to={`../register`} className='px-2 py-1 bg-gray-200 block w-fit m-auto text-black font-medium border uppercase mt-3'>
+                  <Link
+                    to={`../register`}
+                    className="px-3 py-2 rounded-full bg-white/70 text-gray-900 text-xs font-semibold uppercase tracking-wide text-center border border-gray-200 hover:bg-white transition"
+                  >
                     SignUp
                   </Link>
                 </div>
@@ -230,31 +260,35 @@ const Login = () => {
                 </>
               ) : (
                 <>
-                  <form onSubmit={loginUser} className='border bg-[#e6e7e8] sign_in_form p-4'>
+                  <form onSubmit={loginUser} className="sign_in_form p-4">
                     <div className="mb-4">
-                      <label htmlFor="email" className="block text-sm font-semibold">Email / Phone number</label>
+                      <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wide text-gray-700">
+                        Email or phone
+                      </label>
                       <input
                         id="email"
                         type="text"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded-md mt-2 focus:outline-none"
+                        className="w-full p-3 mt-2 rounded-xl border border-white/60 bg-white/80 text-sm text-gray-900 shadow-sm outline-none transition focus:border-black/60 focus:ring-2 focus:ring-black/10"
                         placeholder="Enter your email / Phone Number"
                       />
                     </div>
                     <div className="mb-4 relative">
-                      <label htmlFor="password" className="block text-sm font-semibold">Password</label>
+                      <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wide text-gray-700">
+                        Password
+                      </label>
                       <input
                         id="password"
                         type={showPassword ? "text" : "password"}  // Toggle between text and password
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full p-2 border border-gray-300 rounded-md mt-2 pr-10 focus:outline-none"  // Added pr-10 for space for the icon
+                        className="w-full p-3 mt-2 rounded-xl border border-white/60 bg-white/80 text-sm text-gray-900 shadow-sm outline-none transition focus:border-black/60 focus:ring-2 focus:ring-black/10 pr-10"
                         placeholder="Enter your password"
                       />
                       <button
                         type="button"
-                        className="absolute bottom-0 right-3 transform -translate-y-1/2 text-gray-600"
+                        className="absolute bottom-0 right-3 transform -translate-y-1/2 text-gray-600 hover:text-gray-900 transition"
                         onClick={() => setShowPassword(!showPassword)}  // Toggle showPassword state
                       >
                         {showPassword ? (
@@ -265,15 +299,15 @@ const Login = () => {
                       </button>
                     </div>
                     <button
-                      className={`py-2 px-3 rounded-md ${themeBgColor} text-white font-medium m-auto block`}
+                      className={`w-full py-3 rounded-full ${themeBgColor} text-white font-semibold tracking-wide shadow-md hover:shadow-lg transition`}
                       type="submit"
                       disabled={loading}
                     >
                       {loading ? <CircularProgress size={24} /> : "Proceed"}
                     </button>
                   </form>
-                  <div className="flex justify-between">
-                    <button onClick={() => setIsPasswordChange(true)} className={`${themeTextColor} text-sm`}>
+                  <div className="flex justify-center mt-2">
+                    <button onClick={() => setIsPasswordChange(true)} className={`text-black text-sm underline decoration-1 underline-offset-4`}>
                       Forgot your password?
                     </button>
                   </div>
