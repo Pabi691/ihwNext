@@ -1,0 +1,79 @@
+/* Floating Button */
+.floating-contact {
+  position: fixed;
+  right: 20px;
+  bottom: 60px;
+  z-index: 9999;
+}
+
+.floating-btn.main {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #0a58ca;
+  color: #fff;
+  font-size: 22px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.floating-btn.main svg{
+    margin: auto;
+}
+
+/* Modal Overlay */
+.branch-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 10000;
+}
+
+/* Modal */
+.branch-modal {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+  padding: 16px;
+}
+
+/* Header */
+.branch-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* Branch Item */
+.branch-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.branch-actions a {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  margin-left: 10px;
+}
+
+.branch-actions a.call {
+  background: #0a58ca;
+}
+
+.branch-actions a.whatsapp {
+  background: #25d366;
+}

@@ -1,0 +1,9 @@
+export { default as ProductDetailsPage } from './ProductDetailsPage';
+export { default as ProductGallery } from './ProductGallery';
+export { default as ProductInfo } from './ProductInfo';
+export { default as ProductVariants } from './ProductVariants';
+export { default as AddToCartActions } from './AddToCartActions';
+export { default as SizeChartModal } from './SizeChartModal';
+export { default as NotifySizeModal } from './NotifySizeModal';
+export { default as ProductHighlights } from './ProductHighlights';
+export { default as ProductMeta } from './ProductMeta';
