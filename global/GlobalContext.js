@@ -25,6 +25,8 @@ export const GlobalProvider = ({ children }) => {
     const verified = localStorage.getItem("uservarified");
     return storedToken && verified !== null ? storedToken : webToken;
   });
+  const safeToken = token || webToken;
+  const publicToken = webToken;
 
   const cartLength = useMemo(() => cart?.length || 0, [cart]);
 
@@ -69,22 +71,22 @@ export const GlobalProvider = ({ children }) => {
       await mergeLocalCartWithServer(token);
       // console.log("userToken", userToken);
       const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_customer_cart`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${safeToken}` },
       });
       // console.log('test', data);
       setCart(data.cart_items || []);
     } catch (err) {
       console.error("Fetch cart error:", err);
     }
-  }, [mergeLocalCartWithServer, token, isBrowser]);
+  }, [mergeLocalCartWithServer, safeToken, isBrowser]);
 
   // 💖 Fetch Wishlist
   const fetchWishlist = useCallback(async () => {
-    if (!token || token === webToken) return;
+    if (!safeToken || safeToken === webToken) return;
     try {
       const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_customer_wishlist`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${safeToken}`,
           "Content-Type": "application/json",
         },
       });
@@ -94,14 +96,14 @@ export const GlobalProvider = ({ children }) => {
     } catch (err) {
       console.error("Fetch wishlist error:", err);
     }
-  }, [token, webToken]);
+  }, [safeToken, webToken]);
 
   // 🛍️ Fetch Products
   const fetchProducts = useCallback(async () => {
     if (hasFetchedProducts.current) return;
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_active_products`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${safeToken}` },
       });
       const data = await res.json();
       // console.log('data', data);
@@ -112,7 +114,7 @@ export const GlobalProvider = ({ children }) => {
     } catch (err) {
       console.error("Fetch products error:", err);
     }
-  }, [token]);
+  }, [safeToken]);
 
   // 🧠 Add to Cart
   const addToCart = useCallback(async (product, selectedSize) => {
@@ -178,7 +180,7 @@ export const GlobalProvider = ({ children }) => {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/add_to_wishlist`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${safeToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -199,7 +201,7 @@ export const GlobalProvider = ({ children }) => {
     } catch (err) {
       console.error("Wishlist error:", err);
     }
-  }, [wishlist, token]);
+  }, [wishlist, safeToken]);
 
   // 🔄 Increase/Decrease Quantity
   const increaseQuantity = (productId) => {
@@ -241,7 +243,7 @@ export const GlobalProvider = ({ children }) => {
   // for footer categories
 
   const fetchAllCategories = useCallback(async () => {
-    if (!token || !isBrowser) return;
+    if (!safeToken || !isBrowser) return;
 
     setLoadingCategories(true);
 
@@ -252,7 +254,7 @@ export const GlobalProvider = ({ children }) => {
         setPlanters(JSON.parse(cachedPlanters));
       } else {
         const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_slug_data/planters`, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${safeToken}` },
         });
         const data = res?.data?.category_data?.child_categories ?? [];
         setPlanters(data);
@@ -265,7 +267,7 @@ export const GlobalProvider = ({ children }) => {
         setContainer(JSON.parse(cachedContainer));
       } else {
         const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_slug_data/container`, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${safeToken}` },
         });
         const data = res?.data?.category_data?.child_categories ?? [];
         setContainer(data);
@@ -278,7 +280,7 @@ export const GlobalProvider = ({ children }) => {
         setAccessoriesCat(JSON.parse(cachedAcc));
       } else {
         const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_slug_data/accessories`, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${safeToken}` },
         });
         const data = res?.data?.category_data?.child_categories ?? [];
         setAccessoriesCat(data);
@@ -289,12 +291,12 @@ export const GlobalProvider = ({ children }) => {
     } finally {
       setLoadingCategories(false);
     }
-  }, [token, isBrowser]);
+  }, [safeToken, isBrowser]);
 
   // Load categories when token is available
   useEffect(() => {
-    if (token) fetchAllCategories();
-  }, [token, fetchAllCategories]);
+    if (safeToken) fetchAllCategories();
+  }, [safeToken, fetchAllCategories]);
   
   // 🔐 Logout
   const logout = () => {
@@ -314,7 +316,8 @@ export const GlobalProvider = ({ children }) => {
   return (
     <GlobalContext.Provider
       value={{
-        token,
+        token: safeToken,
+        publicToken,
         setToken,
         products,
         wishlist,

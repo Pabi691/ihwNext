@@ -11,7 +11,10 @@ const instance = axios.create({
 /* 🔐 REQUEST INTERCEPTOR */
 instance.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem("userToken") || ENV.WEB_TOKEN;
+        const isBrowser = typeof window !== "undefined";
+        const storedToken = isBrowser ? localStorage.getItem("userToken") : null;
+        const verified = isBrowser ? localStorage.getItem("uservarified") : null;
+        const token = storedToken && verified !== null ? storedToken : ENV.WEB_TOKEN;
         //    console.log("Axios Token:", token);     
         return {
             ...config,

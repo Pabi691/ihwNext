@@ -4,17 +4,18 @@ import { normalizeSeo } from "../utils/normalizeSeo";
 import { useGlobal } from "../global/GlobalContext";
 
 const useSeo = (slug) => {
-  const { token } = useGlobal();
+  const { token, publicToken } = useGlobal();
   const [seo, setSeo] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!slug || !token) return;
+    const fetchToken = publicToken || token;
+    if (!slug || !fetchToken) return;
 
     const loadSeo = async () => {
       setLoading(true);
 
-      const apiResponse = await fetchSeoBySlug(slug, token);
+      const apiResponse = await fetchSeoBySlug(slug, fetchToken);
       const normalizedSeo = normalizeSeo(apiResponse);
       // console.log("API slug:", slug);
       // console.log("Normalized SEO:", normalizedSeo);
@@ -24,7 +25,7 @@ const useSeo = (slug) => {
     };
 
     loadSeo();
-  }, [slug, token]);
+  }, [slug, token, publicToken]);
 
   return { seo, loading };
 };

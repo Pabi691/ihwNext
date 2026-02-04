@@ -14,7 +14,7 @@ import { cacheManager } from '../utils/cacheManager'; // ✅ Import cacheManager
 import { themeBgColor } from '../styles/typography';
 
 const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_slug_name }) => {
-  const { token, wishlist, setWishlist } = useGlobal();
+  const { token, publicToken, wishlist, setWishlist } = useGlobal();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -31,8 +31,9 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
 
       // ✅ Fetch from API if not cached
       // console.log('Slider token:', token);
+      const authToken = publicToken || token;
       const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/${slug_name}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${authToken}` },
       });
 
       let filteredProduct = res.data.products || [];
@@ -67,7 +68,7 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
     } finally {
       setLoading(false);
     }
-  }, [slug_name, price_filter, discountPercentage, token, title]);
+  }, [slug_name, price_filter, discountPercentage, token, publicToken, title]);
 
   useEffect(() => {
     fetchProducts();

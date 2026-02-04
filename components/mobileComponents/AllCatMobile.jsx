@@ -5,22 +5,23 @@ import compressImage from '../../utils/compressImage';
 
 const AllCatMobile = ({slug}) => {
     const [trend, setTrend] = useState([]);
-    const { token } = useGlobal();
+    const { token, publicToken } = useGlobal();
 
     const fetchCat = useCallback(async () => {
         try {
+            const authToken = publicToken || token;
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_slug_data/${slug}`, {
                 method: 'GET',
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${authToken}`,
                 },
             });
             const data = await response.json();
-            setTrend(data.category_data.child_categories);
+            setTrend(data?.category_data?.child_categories ?? []);
         } catch (error) {
             console.error('Error fetching categories:', error);
         }
-    }, [token, slug]);
+    }, [token, publicToken, slug]);
 
     useEffect(() => {
         fetchCat();
