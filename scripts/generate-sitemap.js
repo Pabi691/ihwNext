@@ -2,7 +2,9 @@ const fs = require('fs');
 const axios = require('axios');
 const webToken = process.env.NEXT_PUBLIC_WEB_TOKEN || process.env.REACT_APP_WEB_TOKEN;
 
-const API_URL = "https://server.indianhairworld.com/api/v1/get_data_for_dashboard";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com";
+const DASHBOARD_URL = `${API_BASE_URL}/api/v1/get_data_for_dashboard`;
+const CATEGORIES_URL = `${API_BASE_URL}/api/v1/categories`;
 const BASE_URL = "https://www.indianhairworld.com";
 
 const staticRoutes = [
@@ -24,7 +26,7 @@ const staticRoutes = [
 
 const fetchDashboardData = async () => {
   try {
-    const response = await axios.get(API_URL, {
+    const response = await axios.get(DASHBOARD_URL, {
       headers: {
         "Authorization": webToken ? `Bearer ${webToken}` : undefined
       }
@@ -36,21 +38,53 @@ const fetchDashboardData = async () => {
   }
 };
 
+const fetchCategories = async () => {
+  try {
+    const response = await axios.get(CATEGORIES_URL, {
+      headers: {
+        "Authorization": webToken ? `Bearer ${webToken}` : undefined
+      }
+    });
+    const listRaw = response.data?.category_list ?? [];
+    const list = Array.isArray(listRaw) ? listRaw : [listRaw];
+    return list.filter(Boolean);
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    return [];
+  }
+};
+
 const generateSitemap = async () => {
   const data = await fetchDashboardData();
+  const categories = await fetchCategories();
 
   let categoryRoutes = [];
   let productRoutes = [];
 
+  if (categories.length > 0) {
+    for (const cat of categories) {
+      if (cat?.slug) categoryRoutes.push(`/${cat.slug}`);
+      if (Array.isArray(cat?.child_categories)) {
+        cat.child_categories.forEach(child => {
+          if (child?.slug) categoryRoutes.push(`/${child.slug}`);
+        });
+      }
+    }
+  } else {
+    for (const key in data) {
+      const item = data[key];
+      if (item?.category_data) {
+        const categorySlug = item.category_data.slug;
+        if (categorySlug) {
+          categoryRoutes.push(`/${categorySlug}`);
+        }
+      }
+    }
+  }
+
   for (const key in data) {
     const item = data[key];
     if (item?.category_data) {
-      // Category slug
-      const categorySlug = item.category_data.slug;
-      if (categorySlug) {
-        categoryRoutes.push(`/${categorySlug}`);
-      }
-
       // Products inside category
       const products = item.products || [];
       products.forEach(product => {
