@@ -66,7 +66,7 @@ const DownloadInvoiceButton = ({ order }) => {
 
     // ===== Table 2: Totals =====
     const totalsColumns = ["Description", "Amount"];
-    const payableAmountInWords = `${toWords(order.payable_amount)} Rupees Only`;
+    const payableAmountInWords = `${toWords(order.pay_amt)} Rupees Only`;
     const totalsRows = [
       ["Subtotal", `₹${order.net_amt.toFixed(2)}`],
       ["CGST (9%)", `₹${order.gst_summary.cgst.toFixed(2)}`],
@@ -77,7 +77,7 @@ const DownloadInvoiceButton = ({ order }) => {
       totalsRows.push(["COD Fee", `₹${order.shipping_total.toFixed(2)}`]);
     }
 
-    totalsRows.push(["Total Payable", `₹${order.payable_amount.toFixed(2)}`]);
+    totalsRows.push(["Total Payable", `₹${order.pay_amt.toFixed(2)}`]);
     totalsRows.push(["Amount in Words", payableAmountInWords]);
 
     autoTable(doc, {

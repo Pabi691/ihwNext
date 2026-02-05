@@ -318,7 +318,7 @@ const OrderDetails = () => {
                           <hr className="my-3" />
                           <div className="flex justify-between font-semibold text-base">
                             <span>Total to be paid</span>
-                            <span>₹{order.payable_amount.toFixed(2)}</span>
+                            <span>₹{order.pay_amt.toFixed(2)}</span>
                           </div>
                         </div>
                       )}
