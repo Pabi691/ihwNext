@@ -55,6 +55,25 @@ h1,h2,h3,h4,h5,h6{
   font-family:'newfont' ;
 }
 
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+/* Outline text */
+.stroke-text {
+  -webkit-text-stroke: 1px black;
+  color: transparent;
+}
+
 /* Target the scrollbar in WebKit browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
   width: 5px; /* Width of the scrollbar */
