@@ -16,6 +16,15 @@ const config: Config = {
         primary: "#04A9FF",
         secondary: "#FF6B6B",
       },
+      keyframes: {
+        "bounce-slow": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+      },
+      animation: {
+        "bounce-slow": "bounce-slow 3s infinite",
+      },
     },
   },
   plugins: [require("tailwind-scrollbar")],

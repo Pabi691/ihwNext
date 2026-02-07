@@ -3,16 +3,15 @@ import MainLayOut from "../layout/MainLayOut";
 import { DesktopNav } from "../components/Navigation";
 import HeroSection from "@/components/women/HeroSection";
 import PopularReels from "@/components/women/PopularReels";
-import MensHairPatchSection from "@/components/women/MensHairPatchSection";
 import ReviewPopup from "@/components/women/ReviewPopup";
 import ScrollingBanner from "@/components/women/ScrollingBanner";
-import MensHairProductsSection from "@/components/women/MensHairProductsSection";
 import OurStoresSection from "@/components/women/OurStoresSection";
 import AchievementSlider from "@/components/women/AchievementSlider";
 import CelebritySection from "@/components/women/CelebritySection";
 import HairTransformation from "@/components/women/HairTransformation";
 import Testimonials from "@/components/women/Testimonials";
 import HairWigSection from "@/components/women/HairWigSection";
+import SingleSlider from '@/components/men/SingleSlider';
 
 const Women = () => {
     return (
@@ -24,14 +23,14 @@ const Women = () => {
             </section>
 
             <PopularReels />
-            {/* <MensHairPatchSection /> */}
+
+            <SingleSlider slug_name="get_slug_data/women-products" title="WOMEN’S HAIR PRODUCTS" />
             <ReviewPopup />
             <ScrollingBanner />
-            {/* <MensHairProductsSection /> */}
             <OurStoresSection />
             <AchievementSlider />
             <CelebritySection />
-            {/* <HairTransformation /> */}
+            <HairTransformation />
             <Testimonials />
 
             <HairWigSection

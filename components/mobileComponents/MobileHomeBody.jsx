@@ -27,8 +27,8 @@ const MobileHomeBody = () => {
         }
       />
 
-      <SingleSlider slug_name="get_slug_data/men" title="MEN’S HAIR PRODUCTS" />
-      <SingleSlider slug_name="get_slug_data/women" title="WOMEN’S HAIR PRODUCTS" />
+      <SingleSlider slug_name="get_slug_data/men-products" title="MEN’S HAIR PRODUCTS" />
+      <SingleSlider slug_name="get_slug_data/women-products" title="WOMEN’S HAIR PRODUCTS" />
 
       <AchievementsSlider />
       <NonSurgicalHairReplacement />

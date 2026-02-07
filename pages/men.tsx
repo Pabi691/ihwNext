@@ -13,6 +13,7 @@ import CelebritySection from "@/components/men/CelebritySection";
 import HairTransformation from "@/components/men/HairTransformation";
 import Testimonials from "@/components/men/Testimonials";
 import HairWigSection from "@/components/men/HairWigSection";
+import SingleSlider from '@/components/men/SingleSlider';
 
 const Men = () => {
     return (
@@ -24,10 +25,12 @@ const Men = () => {
             </section>
 
             <PopularReels />
-            <MensHairPatchSection />
+            {/* <MensHairPatchSection /> */}
+            <SingleSlider slug_name="get_slug_data/men-products" title="MEN’S HAIR PRODUCTS" />
+                  
             <ReviewPopup />
             <ScrollingBanner />
-            <MensHairProductsSection />
+            {/* <MensHairProductsSection /> */}
             <OurStoresSection />
             <AchievementSlider />
             <CelebritySection />
