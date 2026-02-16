@@ -1,0 +1,75 @@
+
+> indianhairworld@0.1.0 build
+> node scripts/generate-sitemap.js && next build
+
+[dotenv@17.3.1] injecting env (7) from .env.local -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Sitemap generated successfully!
+ ⚠ Mismatching @next/swc version, detected: 15.5.7 while Next.js is on 15.5.11. Please ensure these match
+   ▲ Next.js 15.5.11
+   - Environments: .env.local
+
+   Skipping linting
+   Checking validity of types ...
+   Creating an optimized production build ...
+ ⚠ Mismatching @next/swc version, detected: 15.5.7 while Next.js is on 15.5.11. Please ensure these match
+ ⚠ Mismatching @next/swc version, detected: 15.5.7 while Next.js is on 15.5.11. Please ensure these match
+ ⚠ Mismatching @next/swc version, detected: 15.5.7 while Next.js is on 15.5.11. Please ensure these match
+ ✓ Compiled successfully in 3.5s
+   Collecting page data ...
+Warning: You have opted-out of Automatic Static Optimization due to `getInitialProps` in `pages/_app`. This does not opt-out pages with `getStaticProps`
+Read more: https://nextjs.org/docs/messages/opt-out-auto-static-optimization
+
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (pages)                                 Size  First Load JS
+┌ ƒ /                                       5.7 kB         180 kB
+├   /_app                                      0 B         117 kB
+├ ƒ /[categorySlug]                          312 B         178 kB
+├ ƒ /404                                   1.52 kB         173 kB
+├ ƒ /about                                 2.52 kB         181 kB
+├ ƒ /api/[...path]                             0 B         117 kB
+├ ƒ /api/ai/hair-try-on                        0 B         117 kB
+├ ƒ /branch/[branch]                         595 B         175 kB
+├ ƒ /cart                                  6.73 kB         128 kB
+├ ƒ /checkout                              33.6 kB         193 kB
+├ ƒ /contact-us                            5.27 kB         177 kB
+├ ƒ /contact-us/page                       2.35 kB         174 kB
+├ ƒ /email-verification                    7.22 kB         124 kB
+├ ƒ /login                                 8.72 kB         215 kB
+├ ƒ /logout                                  321 B         497 kB
+├ ƒ /men                                   5.97 kB         182 kB
+├ ƒ /mobile/categories                      2.7 kB         125 kB
+├ ƒ /mobile/OffersDesktop                  3.02 kB         148 kB
+├ ƒ /myaccount                               522 B         497 kB
+├ ƒ /myaccount/addresses                     527 B         497 kB
+├ ƒ /myaccount/order/[orderId]             1.43 kB         381 kB
+├ ƒ /myaccount/orders                        524 B         497 kB
+├ ƒ /myaccount/payments                      527 B         497 kB
+├ ƒ /myaccount/profile                       528 B         497 kB
+├ ƒ /myaccount/return/[orderId]            3.44 kB         183 kB
+├ ƒ /our-gallery                           2.85 kB         174 kB
+├ ƒ /payment                               1.55 kB         173 kB
+├ ƒ /privacy-policy                        3.51 kB         175 kB
+├ ƒ /product/[slug]                        32.7 kB         212 kB
+├ ƒ /register                              3.08 kB         174 kB
+├ ƒ /reset-password                        1.83 kB         173 kB
+├ ƒ /return-exchange-policy                3.82 kB         175 kB
+├ ƒ /search                                 4.4 kB         213 kB
+├ ƒ /services                               5.5 kB         177 kB
+├ ƒ /shipping-and-delivery                 2.64 kB         174 kB
+├ ƒ /shop                                    298 B         178 kB
+├ ƒ /terms-conditions                      8.58 kB         180 kB
+├ ƒ /thank-you                             1.64 kB         173 kB
+├ ƒ /u/profile                               509 B         497 kB
+├ ƒ /wishlist                              3.33 kB         125 kB
+└ ƒ /women                                 5.99 kB         182 kB
++ First Load JS shared by all               137 kB
+  ├ chunks/framework-b9fd9bcc3ecde907.js   44.8 kB
+  ├ chunks/main-22fc2672137b3cc6.js        34.4 kB
+  ├ chunks/pages/_app-e984cd212268835f.js  35.3 kB
+  ├ css/ce732faf56d8badb.css                 20 kB
+  └ other shared chunks (total)               2 kB
+
+ƒ  (Dynamic)  server-rendered on demand
+

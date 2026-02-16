@@ -113,27 +113,29 @@ const MyApp = ({ Component, pageProps, globalContentData, pageSeoData }: AppProp
 MyApp.getInitialProps = async (appContext: AppContext) => {
   const appProps = await App.getInitialProps(appContext);
 
-  // Fetch global content (only on server or initial client load if not present)
-  // Note: getInitialProps runs on server for initial page load, and on client for client-side navigation.
-
-  let token = null;
-  if (typeof window !== "undefined") {
-    token = localStorage.getItem("userToken");
-  }
-
-  // We can pass this token to globalContent too if needed, but the service handles it via arg or env.
-  // The service implementation: const res = await axios.get(endpoint, { headers: { Authorization: `Bearer ${authToken}` } });
-  // So we should pass it if we have it.
-  const content = await globalContent(token);
-
-  // Calculate slug and fetch SEO for the page
-  const slug = getSlugFromPath(appContext.ctx.asPath || appContext.router.asPath);
+  let globalContentData = null;
   let pageSeoData = null;
-  if (slug) {
-    pageSeoData = await fetchPageSeo(appContext.ctx.asPath || "/", slug, token || undefined);
+
+  try {
+    let token = null;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("userToken");
+    }
+
+    // Fetch global content
+    globalContentData = await globalContent(token);
+
+    // Calculate slug and fetch SEO for the page
+    const slug = getSlugFromPath(appContext.ctx.asPath || appContext.router.asPath);
+    if (slug) {
+      pageSeoData = await fetchPageSeo(appContext.ctx.asPath || "/", slug, token || undefined);
+    }
+  } catch (error) {
+    console.error("Error fetching global/SEO data in _app:", error);
+    // Suppress error to allow app to render with default/fallback data
   }
 
-  return { ...appProps, globalContentData: content, pageSeoData };
+  return { ...appProps, globalContentData, pageSeoData };
 };
 
 export default MyApp;
