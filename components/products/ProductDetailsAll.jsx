@@ -22,6 +22,7 @@ import HairPatchTryOnSection from '../ai/HairPatchTryOnSection';
 
 function ProductDetailsAll() {
   const { slug } = useParams();
+  const apiBase = typeof window !== "undefined" ? "/api" : `${process.env.NEXT_PUBLIC_API_URL}/api`;
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sizeChart, setSizeChart] = useState(false);
@@ -69,7 +70,7 @@ function ProductDetailsAll() {
     // If not in sessionStorage, fetch from API
     setLoading(true);
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_slug_data/${slug}`, {
+      const response = await axios.get(`${apiBase}/v1/get_slug_data/${slug}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -98,7 +99,7 @@ function ProductDetailsAll() {
     } finally {
       setLoading(false);
     }
-  }, [slug, token]);
+  }, [slug, token, apiBase]);
 
   useEffect(() => {
     fetchProductDetails();

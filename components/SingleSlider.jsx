@@ -17,6 +17,7 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
   const { token, publicToken, wishlist, setWishlist } = useGlobal();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const apiBase = typeof window !== "undefined" ? "/api" : `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
@@ -32,7 +33,7 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
       // ✅ Fetch from API if not cached
       // console.log('Slider token:', token);
       const authToken = publicToken || token;
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/${slug_name}`, {
+      const res = await axios.get(`${apiBase}/v1/${slug_name}`, {
         headers: { Authorization: `Bearer ${authToken}` },
       });
 
@@ -68,7 +69,7 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
     } finally {
       setLoading(false);
     }
-  }, [slug_name, price_filter, discountPercentage, token, publicToken, title]);
+  }, [slug_name, price_filter, discountPercentage, token, publicToken, title, apiBase]);
 
   useEffect(() => {
     fetchProducts();

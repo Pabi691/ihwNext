@@ -7,10 +7,11 @@ const SeoBodyContent = ({ bodyContent }) => {
     const container = document.createElement("div");
     container.innerHTML = bodyContent;
 
+    const sourceRoot = container.querySelector("body") || container;
     const body = document.body;
     const addedNodes = [];
 
-    Array.from(container.children).forEach((node) => {
+    Array.from(sourceRoot.children).forEach((node) => {
       if (node.tagName?.toLowerCase() === "script") {
         const script = document.createElement("script");
         Array.from(node.attributes || []).forEach((attr) => {

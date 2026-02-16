@@ -25,6 +25,7 @@ import {
 
 function ProductDetailsPage() {
   const { slug } = useParams();
+  const apiBase = typeof window !== "undefined" ? "/api" : `${process.env.NEXT_PUBLIC_API_URL}/api`;
   const navigate = useNavigate();
   const { wishlist, setWishlist, addToCart, token } = useGlobal();
 
@@ -69,7 +70,7 @@ function ProductDetailsPage() {
 
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_slug_data/${slug}`,
+        `${apiBase}/v1/get_slug_data/${slug}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -91,7 +92,7 @@ function ProductDetailsPage() {
     } finally {
       setLoading(false);
     }
-  }, [slug, token]);
+  }, [slug, token, apiBase]);
 
   useEffect(() => {
     fetchProductDetails();

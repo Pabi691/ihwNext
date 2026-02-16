@@ -1,5 +1,3 @@
-import MetaContentConfig from "@/content/MetaContentConfig";
-
 const SITE_URL = "https://www.indianhairworld.com";
 
 const isAbsolute = (value: string) => /^https?:\/\//i.test(value);
@@ -10,6 +8,11 @@ export const toAbsoluteUrl = (value?: string | null, fallbackPath = "/") => {
   if (value.startsWith("//")) return `https:${value}`;
   if (value.startsWith("/")) return `${SITE_URL}${value}`;
   return `${SITE_URL}/${value}`;
+};
+
+export const toAbsoluteUrlIfPresent = (value?: string | null) => {
+  if (!value) return "";
+  return toAbsoluteUrl(value);
 };
 
 const routeToPageMap: Record<string, string> = {
@@ -93,32 +96,16 @@ type SeoFields = {
   ogType: string;
 };
 
-const getDefaultConfig = (slug?: string | null) => {
-  if (!slug) return MetaContentConfig.default;
-  return (
-    (MetaContentConfig as Record<string, any>)[slug] ||
-    MetaContentConfig.default
-  );
-};
-
-export const buildDefaultSeo = (pathname: string, slug?: string | null): SeoFields => {
-  const config = getDefaultConfig(slug);
-  const canonicalPath = pathname && pathname.startsWith("/") ? pathname : "/";
-  const canonicalUrl = toAbsoluteUrl(config.url || canonicalPath, canonicalPath);
-  const ogImage = toAbsoluteUrl(
-    config.image || MetaContentConfig.default.image,
-    "/logo.png"
-  );
-
+export const buildDefaultSeo = (_pathname: string, _slug?: string | null): SeoFields => {
   return {
-    title: config.title || MetaContentConfig.default.title,
-    description: config.description || MetaContentConfig.default.description,
-    keywords: config.keywords || MetaContentConfig.default.keywords,
-    canonicalUrl,
-    ogTitle: config.title || MetaContentConfig.default.title,
-    ogDescription: config.description || MetaContentConfig.default.description,
-    ogImage,
-    ogUrl: canonicalUrl,
+    title: "",
+    description: "",
+    keywords: "",
+    canonicalUrl: "",
+    ogTitle: "",
+    ogDescription: "",
+    ogImage: "",
+    ogUrl: "",
     ogType: "website",
   };
 };
@@ -135,13 +122,11 @@ export const normalizeSeoFromApi = (
   if (apiResponse.pageData) {
     const pageData = apiResponse.pageData;
     const seo = pageData.seo_metadata || {};
-    const canonicalUrl = toAbsoluteUrl(
-      seo.canonical_url || seo.og_url || fallback.canonicalUrl,
-      pathname
+    const canonicalUrl = toAbsoluteUrlIfPresent(
+      seo.canonical_url || seo.og_url || fallback.canonicalUrl
     );
-    const ogImage = toAbsoluteUrl(
-      seo.og_image || pageData.primary_img || fallback.ogImage,
-      "/logo.png"
+    const ogImage = toAbsoluteUrlIfPresent(
+      seo.og_image || pageData.primary_img || fallback.ogImage
     );
 
     return {
@@ -154,7 +139,7 @@ export const normalizeSeoFromApi = (
       ogDescription:
         seo.og_description || pageData.description || fallback.ogDescription,
       ogImage,
-      ogUrl: toAbsoluteUrl(seo.og_url || canonicalUrl, pathname),
+      ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
       ogType: seo.og_type || "website",
     };
   }
@@ -162,13 +147,11 @@ export const normalizeSeoFromApi = (
   if (apiResponse.product_details) {
     const product = apiResponse.product_details;
     const seo = product.seo_metadata || {};
-    const canonicalUrl = toAbsoluteUrl(
-      seo.canonical_url || seo.og_url || fallback.canonicalUrl,
-      pathname
+    const canonicalUrl = toAbsoluteUrlIfPresent(
+      seo.canonical_url || seo.og_url || fallback.canonicalUrl
     );
-    const ogImage = toAbsoluteUrl(
-      seo.og_image || product.primary_img || fallback.ogImage,
-      "/logo.png"
+    const ogImage = toAbsoluteUrlIfPresent(
+      seo.og_image || product.primary_img || fallback.ogImage
     );
 
     return {
@@ -181,7 +164,7 @@ export const normalizeSeoFromApi = (
       ogDescription:
         seo.og_description || product.prod_desc || fallback.ogDescription,
       ogImage,
-      ogUrl: toAbsoluteUrl(seo.og_url || canonicalUrl, pathname),
+      ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
       ogType: seo.og_type || "product",
     };
   }

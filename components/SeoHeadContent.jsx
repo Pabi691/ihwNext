@@ -3,23 +3,20 @@ import { useEffect } from "react";
 const SeoHeadContent = ({ headContent }) => {
   useEffect(() => {
     if (!headContent) return;
-    // console.log("Injecting head content:", headContent);
-    // Create a temporary container
+
     const container = document.createElement("div");
     container.innerHTML = headContent;
 
-    // Append each child to <head>
+    const sourceRoot = container.querySelector("head") || container;
     const head = document.head;
     const addedNodes = [];
 
-    Array.from(container.children).forEach((node) => {
+    Array.from(sourceRoot.children).forEach((node) => {
       if (node.tagName?.toLowerCase() === "script") {
         const script = document.createElement("script");
-        // Copy attributes
         Array.from(node.attributes || []).forEach((attr) => {
           script.setAttribute(attr.name, attr.value);
         });
-        // Inline script content
         if (node.textContent) {
           script.textContent = node.textContent;
         }
@@ -31,7 +28,6 @@ const SeoHeadContent = ({ headContent }) => {
       }
     });
 
-    // Cleanup on unmount
     return () => {
       addedNodes.forEach((node) => {
         if (node.parentNode === head) {
@@ -41,7 +37,7 @@ const SeoHeadContent = ({ headContent }) => {
     };
   }, [headContent]);
 
-  return null; // no UI
+  return null;
 };
 
 export default SeoHeadContent;

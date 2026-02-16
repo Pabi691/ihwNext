@@ -10,6 +10,7 @@ import { themeBgColor } from '../../styles/typography';
 
 const OverView = () => {
   const { token } = useGlobal();
+  const apiBase = typeof window !== "undefined" ? "/api" : `${process.env.NEXT_PUBLIC_API_URL}/api`;
   // const [orders, setOrders] = useState([]);
   const [limitOrders, setLimitOrders] = useState([]);
   const [customers, setCustomers] = useState([]);
@@ -30,7 +31,7 @@ const OverView = () => {
     const fetchProfile = async () => {
       profileInFlightRef.current = true;
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_customer_details`, {
+        const response = await fetch(`${apiBase}/v1/get_customer_details`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${userToken}`,
@@ -49,39 +50,46 @@ const OverView = () => {
       }
     };
     fetchProfile();
-  }, [token]);
-
+  }, [token, apiBase]);
 
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const userToken = localStorage.getItem("userToken");
-    if (!userToken) return;
-    if (ordersFetchedRef.current || ordersInFlightRef.current) return;
+  if (typeof window === "undefined") return;
 
-    const fetchOrders = async () => {
-      ordersInFlightRef.current = true;
-      try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_my_orders`, {
+  const userToken = localStorage.getItem("userToken");
+  if (!userToken) return;
+
+  if (ordersFetchedRef.current || ordersInFlightRef.current) return;
+
+  const fetchOrders = async () => {
+    ordersInFlightRef.current = true;
+
+    try {
+      const res = await axios.get(
+        `${apiBase}/v1/get_my_orders`,
+        {
           headers: {
             Authorization: `Bearer ${userToken}`,
           },
-        });
-        const data = res.data;
-        if (data.status) {
-          // setOrders(data);
-          setLimitOrders(data.orders.slice(0, 5));
         }
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      } finally {
-        ordersInFlightRef.current = false;
-        ordersFetchedRef.current = true;
-      }
-    };
+      );
 
-    fetchOrders();
-  }, [token]);
+      const data = res.data;
+
+      if (data.status) {
+        setLimitOrders(data.orders.slice(0, 5));
+      }
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    } finally {
+      ordersInFlightRef.current = false;
+      ordersFetchedRef.current = true;
+    }
+  };
+
+  fetchOrders();
+}, [apiBase]);
+
 
   return (
     <div className="min-h-screen">

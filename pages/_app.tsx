@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import App, { type AppContext, type AppProps } from "next/app";
+import type { AppProps } from "next/app";
 import Router from "next/router";
 
 import "@/index.css";
@@ -24,17 +24,12 @@ import { AuthProvider } from "@/components/user/AuthContext";
 import { GlobalProvider } from "@/global/GlobalContext";
 import { LoadingProvider } from "@/global/LoadingContext";
 import LoadingWrapper from "@/global/LoadingWrapper";
+import GlobalSeo from "@/global/GlobalSeo";
 import FloatingContact from "@/components/FloatingContact";
 import Loader from "@/components/Loader";
 import ScrollToTop from "@/components/ScrollToTop";
 import { useLoading } from "@/global/LoadingContext";
 import SeoHead from "@/components/SeoHead";
-import {
-  buildDefaultSeo,
-  getSlugFromRoute,
-  normalizeSeoFromApi,
-  resolvePathname,
-} from "@/utils/seo";
 
 // Prevent SSR crashes when code accesses localStorage/sessionStorage
 if (typeof window === "undefined") {
@@ -99,6 +94,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <GlobalProvider>
           <RouteLoadingEvents />
           <SeoHead seo={pageProps?.seo} />
+          <GlobalSeo disableMeta={Boolean(pageProps?.seo)} />
           <FloatingContact />
           <Loader />
           <LoadingWrapper>
@@ -109,52 +105,6 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       </AuthProvider>
     </LoadingProvider>
   );
-};
-
-const fetchSeoBySlug = async (slug: string) => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  const token = process.env.NEXT_PUBLIC_WEB_TOKEN;
-  if (!apiUrl || !token) return null;
-
-  try {
-    const res = await fetch(`${apiUrl}/api/v1/get_slug_data/${slug}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
-    return null;
-  }
-};
-
-MyApp.getInitialProps = async (appContext: AppContext) => {
-  const appProps = await App.getInitialProps(appContext);
-
-  if (appProps.pageProps?.seo) {
-    return appProps;
-  }
-
-  const query = appContext.ctx.query as Record<string, string | string[] | undefined>;
-  const pathname = appContext.ctx.pathname || "/";
-  const resolvedPath = resolvePathname(pathname, query);
-  const slug = getSlugFromRoute(pathname, query);
-
-  let seo = buildDefaultSeo(resolvedPath, slug);
-
-  if (slug) {
-    const apiData = await fetchSeoBySlug(slug);
-    seo = normalizeSeoFromApi(apiData, resolvedPath, slug);
-  }
-
-  return {
-    ...appProps,
-    pageProps: {
-      ...appProps.pageProps,
-      seo: appProps.pageProps?.seo || seo,
-    },
-  };
 };
 
 export default MyApp;

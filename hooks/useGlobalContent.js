@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useGlobal } from "../global/GlobalContext";
 import { globalContent } from "../services/globalcontent.service";
+import { ENV } from "../config/env";
 
 const useGlobalContent = () => {
   const { token, publicToken } = useGlobal();
@@ -8,7 +9,7 @@ const useGlobalContent = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchToken = publicToken || token;
+    const fetchToken = publicToken || token || ENV.WEB_TOKEN;
     if (!fetchToken) return;
 
     const loadGlobalContent = async () => {

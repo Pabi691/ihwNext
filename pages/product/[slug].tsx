@@ -4,7 +4,7 @@ import ProductDetailsAll from '@/components/products/ProductDetailsAll';
 // import { ProductDetailsPage } from '../components/products';
 import MobileMainLayout from '@/layout/MobileMainLayout';
 import type { GetServerSideProps } from "next";
-import { normalizeSeoFromApi, toAbsoluteUrl } from "@/utils/seo";
+import { normalizeSeoFromApi, toAbsoluteUrlIfPresent } from "@/utils/seo";
 
 function ProductDetails() {
  
@@ -58,9 +58,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       seo: {
         ...seo,
-        canonicalUrl: toAbsoluteUrl(seo.canonicalUrl, pathname),
-        ogUrl: toAbsoluteUrl(seo.ogUrl, pathname),
-        ogImage: toAbsoluteUrl(seo.ogImage, "/logo.png"),
+        canonicalUrl: toAbsoluteUrlIfPresent(seo.canonicalUrl),
+        ogUrl: toAbsoluteUrlIfPresent(seo.ogUrl),
+        ogImage: toAbsoluteUrlIfPresent(seo.ogImage),
       },
     },
   };

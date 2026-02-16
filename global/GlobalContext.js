@@ -6,6 +6,7 @@ export const useGlobal = () => useContext(GlobalContext);
 
 export const GlobalProvider = ({ children }) => {
   const isBrowser = typeof window !== "undefined";
+  const apiBase = isBrowser ? "/api" : `${process.env.NEXT_PUBLIC_API_URL}/api`;
   const [cart, setCart] = useState([]);
   const [products, setProducts] = useState([]);
   const [wishlist, setWishlist] = useState([]);
@@ -102,7 +103,7 @@ export const GlobalProvider = ({ children }) => {
   const fetchProducts = useCallback(async () => {
     if (hasFetchedProducts.current) return;
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_active_products`, {
+      const res = await fetch(`${apiBase}/v1/get_active_products`, {
         headers: { Authorization: `Bearer ${safeToken}` },
       });
       const data = await res.json();
@@ -114,7 +115,7 @@ export const GlobalProvider = ({ children }) => {
     } catch (err) {
       console.error("Fetch products error:", err);
     }
-  }, [safeToken]);
+  }, [safeToken, apiBase]);
 
   // 🧠 Add to Cart
   const addToCart = useCallback(async (product, selectedSize) => {

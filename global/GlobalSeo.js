@@ -40,7 +40,7 @@ const getSlugFromPath = (pathname) => {
   return parts[parts.length - 1];
 };
 
-const GlobalSeo = () => {
+const GlobalSeo = ({ disableMeta = false }) => {
   const location = useLocation();
   const slug = getSlugFromPath(location.pathname);
   const { seo } = useSeo(slug);
@@ -50,7 +50,7 @@ const GlobalSeo = () => {
     <>
       {slug ? (
         <>
-          <SeoHelmet seo={seo} />           {/* standard meta tags */}
+          {!disableMeta ? <SeoHelmet seo={seo} /> : null}
           <SeoHeadContent headContent={globalContentData?.head ?? ""} /> {/* dynamic scripts/meta */}
           <SeoBodyContent bodyContent={globalContentData?.body ?? ""} />
         </>

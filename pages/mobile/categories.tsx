@@ -7,6 +7,7 @@ import { useGlobal } from '../../global/GlobalContext';
 import compressImage from '../../utils/compressImage';
 
 const Categories = () => {
+  const apiBase = typeof window !== "undefined" ? "/api" : `${process.env.NEXT_PUBLIC_API_URL}/api`;
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const { token } = useGlobal();
@@ -61,7 +62,7 @@ const Categories = () => {
       }
     
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_slug_data/${category}`, {
+        const response = await axios.get(`${apiBase}/v1/get_slug_data/${category}`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
@@ -80,7 +81,7 @@ const Categories = () => {
       }
     };
     fetchCategoryData(activeCategory);
-  }, [token, activeCategory]);
+  }, [token, activeCategory, apiBase]);
 
   const handleCategoryChange = (category) => {
     setActiveCategory(category);

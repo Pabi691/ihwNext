@@ -10,7 +10,7 @@ const useSeo = (slug) => {
 
   useEffect(() => {
     const fetchToken = publicToken || token;
-    if (!slug || !fetchToken) return;
+    if (!slug) return;
 
     const loadSeo = async () => {
       setLoading(true);

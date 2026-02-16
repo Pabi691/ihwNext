@@ -15,6 +15,7 @@ type ProductPageProps = {
 
 function ProductPage({ showAll }: ProductPageProps) {
   const { categorySlug } = useParams();
+  const apiBase = typeof window !== "undefined" ? "/api" : `${process.env.NEXT_PUBLIC_API_URL}/api`;
   const [productLength, setProductLength] = useState<number>(0);
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,7 +44,7 @@ function ProductPage({ showAll }: ProductPageProps) {
 
     try {
       if (slug && slug !== 'categories') {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_slug_data/${slug}`, {
+        const response = await axios.get(`${apiBase}/v1/get_slug_data/${slug}`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
@@ -69,7 +70,7 @@ function ProductPage({ showAll }: ProductPageProps) {
       inFlightRef.current = false;
       lastFetchKeyRef.current = fetchKey;
     }
-  }, [categorySlug, token, showAll, globalProducts, setCatagoryProducts, setProducts, navigate]);
+  }, [categorySlug, token, showAll, globalProducts, setCatagoryProducts, setProducts, navigate, apiBase]);
 
   useEffect(() => {
     fetchProducts();
