@@ -18,6 +18,7 @@ import WishlistButton from '../WishlistButton';
 import confetti from 'canvas-confetti';
 import compressImage from '../../utils/compressImage';
 import { hoverScale, themeBgColor, themeBgDark, themeBgGray, themeTextColor } from '../../styles/typography';
+import HairPatchTryOnSection from '../ai/HairPatchTryOnSection';
 
 function ProductDetailsAll() {
   const { slug } = useParams();
@@ -270,8 +271,8 @@ function ProductDetailsAll() {
               <div className="w-full sm:w-1/2 flex flex-col h-auto md:h-[750px] md:overflow-y-scroll overflow-scroll scrollbar-none px-4 md:px-0">
                 <div className='flex items-center justify-between'>
                   <div>
-                    <h2 className=" text-black font-semibold text-sm md:text-lg uppercase">{product.brand_details?.brand_name}</h2>
-                    <p className=" text-gray-500 text-sm font-normal">{product.prod_name}</p>
+                    <h2 className=" text-black font-semibold text-sm md:text-lg uppercase">{product.prod_name}</h2>
+                    <p className=" text-gray-500 text-sm font-normal">©{product.brand_details?.brand_name}</p>
                   </div>
                   {productReviews && (
                     <p className={`${themeTextColor} font-semibold text-sm md:text-base`}><span>{overallRating}</span> | {productReviews.length} Reviews</p>
@@ -572,6 +573,9 @@ function ProductDetailsAll() {
                     </div>
                   </div>
                 ) : null}
+                {/* <HairPatchTryOnSection
+                  productImage={selectedImage || product.primary_img}
+                /> */}
                 <ProductDetailsAccordian productdetails={product.prod_desc} />
                 <img src='../images/icons.jpg' alt='icons' loading="lazy" />
                 <ReviewRatingComments
