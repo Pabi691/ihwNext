@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import type { AppProps } from "next/app";
+import App, { AppProps, AppContext } from "next/app";
 import Router from "next/router";
 
 import "@/index.css";
@@ -30,14 +30,17 @@ import Loader from "@/components/Loader";
 import ScrollToTop from "@/components/ScrollToTop";
 import { useLoading } from "@/global/LoadingContext";
 import SeoHead from "@/components/SeoHead";
+import { globalContent } from "@/services/globalcontent.service";
+import { getSlugFromPath } from "@/utils/slugUtils";
+import { fetchPageSeo } from "@/utils/serverSeo";
 
 // Prevent SSR crashes when code accesses localStorage/sessionStorage
 if (typeof window === "undefined") {
   const storageStub = {
     getItem: () => null,
-    setItem: () => {},
-    removeItem: () => {},
-    clear: () => {},
+    setItem: () => { },
+    removeItem: () => { },
+    clear: () => { },
   };
   const g = globalThis as typeof globalThis & {
     localStorage?: typeof storageStub;
@@ -68,7 +71,7 @@ const RouteLoadingEvents = () => {
   return null;
 };
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const MyApp = ({ Component, pageProps, globalContentData, pageSeoData }: AppProps & { globalContentData: any; pageSeoData: any }) => {
   useEffect(() => {
     if (typeof window === "undefined") return;
     // Ensure gtag exists even before GA/Tag Manager loads
@@ -91,10 +94,10 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <LoadingProvider>
       <AuthProvider>
-        <GlobalProvider>
+        <GlobalProvider initialGlobalContent={globalContentData}>
           <RouteLoadingEvents />
-          <SeoHead seo={pageProps?.seo} />
-          <GlobalSeo disableMeta={Boolean(pageProps?.seo)} />
+          <SeoHead seo={pageSeoData || pageProps?.seo} />
+          <GlobalSeo disableMeta={Boolean(pageSeoData || pageProps?.seo)} initialSeo={pageSeoData} />
           <FloatingContact />
           <Loader />
           <LoadingWrapper>
@@ -105,6 +108,29 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       </AuthProvider>
     </LoadingProvider>
   );
+};
+
+MyApp.getInitialProps = async (appContext: AppContext) => {
+  const appProps = await App.getInitialProps(appContext);
+
+  // Fetch global content (only on server or initial client load if not present)
+  // Note: getInitialProps runs on server for initial page load, and on client for client-side navigation.
+  // We can optimize this to avoid re-fetching on client if we want, but for now we follow the plan.
+
+  // Need to handle token. For public pages, we might use a default token or just let the service handle it (it tries process.env).
+  // In _app, we don't easily have access to client-side localStorage auth token during server render.
+  // The service uses process.env.NEXT_PUBLIC_WEB_TOKEN as fallback.
+
+  const content = await globalContent(null);
+
+  // Calculate slug and fetch SEO for the page
+  const slug = getSlugFromPath(appContext.ctx.asPath || appContext.router.asPath);
+  let pageSeoData = null;
+  if (slug) {
+    pageSeoData = await fetchPageSeo(appContext.ctx.asPath || "/", slug);
+  }
+
+  return { ...appProps, globalContentData: content, pageSeoData };
 };
 
 export default MyApp;

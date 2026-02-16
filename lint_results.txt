@@ -1,0 +1,133 @@
+
+> indianhairworld@0.1.0 lint
+> next lint
+
+`next lint` is deprecated and will be removed in Next.js 16.
+For new projects, use create-next-app to choose your preferred linter.
+For existing projects, migrate to the ESLint CLI:
+npx @next/codemod@canary next-lint-to-eslint-cli .
+
+ ⚠ Mismatching @next/swc version, detected: 15.5.7 while Next.js is on 15.5.11. Please ensure these match
+
+./pages/about.tsx
+3:10  Warning: 'Swiper' is defined but never used.  @typescript-eslint/no-unused-vars
+3:18  Warning: 'SwiperSlide' is defined but never used.  @typescript-eslint/no-unused-vars
+4:10  Warning: 'Pagination' is defined but never used.  @typescript-eslint/no-unused-vars
+4:22  Warning: 'Autoplay' is defined but never used.  @typescript-eslint/no-unused-vars
+7:10  Warning: 'themeBgColor' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./pages/api/ai/hair-try-on.ts
+44:39  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./pages/api/[...path].ts
+40:75  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+57:19  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./pages/branch/[branch].tsx
+5:8  Warning: 'SingleSlider' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./pages/cart.tsx
+1:1  Error: Do not use "@ts-nocheck" because it alters compilation errors.  @typescript-eslint/ban-ts-comment
+17:86  Warning: 'totalGST' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+24:48  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+25:54  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+49:41  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+49:59  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+49:74  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+49:86  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+94:41  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+146:39  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+179:14  Warning: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+239:27  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+257:31  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+459:27  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+472:27  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+521:21  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+602:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./pages/checkout.tsx
+1:1  Error: Do not use "@ts-nocheck" because it alters compilation errors.  @typescript-eslint/ban-ts-comment
+120:6  Warning: React Hook useCallback has an unnecessary dependency: 'token'. Either exclude it or remove the dependency array.  react-hooks/exhaustive-deps
+469:18  Warning: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+711:29  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+718:27  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+808:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./pages/index.tsx
+7:22  Warning: 'MobileNav' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./pages/men.tsx
+6:8  Warning: 'MensHairPatchSection' is defined but never used.  @typescript-eslint/no-unused-vars
+9:8  Warning: 'MensHairProductsSection' is defined but never used.  @typescript-eslint/no-unused-vars
+24:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./pages/mobile/categories.tsx
+1:1  Error: Do not use "@ts-nocheck" because it alters compilation errors.  @typescript-eslint/ban-ts-comment
+149:19  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./pages/myaccount/return/[orderId].tsx
+1:1  Error: Do not use "@ts-nocheck" because it alters compilation errors.  @typescript-eslint/ban-ts-comment
+
+./pages/payment.tsx
+10:46  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+39:9  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./pages/search.tsx
+1:1  Error: Do not use "@ts-nocheck" because it alters compilation errors.  @typescript-eslint/ban-ts-comment
+157:48  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+157:56  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+
+./pages/thank-you.tsx
+10:42  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+39:11  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./pages/wishlist.tsx
+1:1  Error: Do not use "@ts-nocheck" because it alters compilation errors.  @typescript-eslint/ban-ts-comment
+95:21  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+156:23  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+
+./pages/women.tsx
+22:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./pages/_app.tsx
+75:16  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+75:44  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+76:16  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+77:18  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+79:20  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+79:40  Error: Use the rest parameters instead of 'arguments'.  prefer-rest-params
+83:53  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+84:18  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+85:18  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./components/cart/CartItem.tsx
+4:9  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+5:27  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+6:27  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+6:45  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+7:22  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+10:18  Error: Component definition is missing display name  react/display-name
+13:7  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./components/common/NotFound.tsx
+13:11  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./components/men/HairWigSection.tsx
+55:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./components/men/PopularReels.tsx
+1:10  Warning: 'useEffect' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./components/pages/ProductPage.tsx
+20:44  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+22:60  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+38:51  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+83:26  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./components/women/HairWigSection.tsx
+55:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./components/women/PopularReels.tsx
+1:10  Warning: 'useEffect' is defined but never used.  @typescript-eslint/no-unused-vars
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules

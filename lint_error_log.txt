@@ -1,0 +1,12 @@
+
+> indianhairworld@0.1.0 lint
+> next lint
+
+`next lint` is deprecated and will be removed in Next.js 16.
+For new projects, use create-next-app to choose your preferred linter.
+For existing projects, migrate to the ESLint CLI:
+npx @next/codemod@canary next-lint-to-eslint-cli .
+
+ ⚠ Mismatching @next/swc version, detected: 15.5.7 while Next.js is on 15.5.11. Please ensure these match
+Cannot find module 'D:\Next\ihwNext\feb16\node_modules\eslint-config-next\core-web-vitals' imported from D:\Next\ihwNext\feb16\eslint.config.mjs
+Did you mean to import "eslint-config-next/core-web-vitals.js"?

@@ -4,7 +4,7 @@ import axios from "axios";
 const GlobalContext = createContext();
 export const useGlobal = () => useContext(GlobalContext);
 
-export const GlobalProvider = ({ children }) => {
+export const GlobalProvider = ({ children, initialGlobalContent }) => {
   const isBrowser = typeof window !== "undefined";
   const apiBase = isBrowser ? "/api" : `${process.env.NEXT_PUBLIC_API_URL}/api`;
   const [cart, setCart] = useState([]);
@@ -14,6 +14,7 @@ export const GlobalProvider = ({ children }) => {
   const [planters, setPlanters] = useState([]);
   const [accessoriesCat, setAccessoriesCat] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
+  const [globalContentData, setGlobalContentData] = useState(initialGlobalContent || null);
 
   const hasFetchedProducts = useRef(false);
 
@@ -67,7 +68,7 @@ export const GlobalProvider = ({ children }) => {
       setCart(Array.isArray(localCart) ? localCart : []);
       return;
     }
-    
+
     try {
       await mergeLocalCartWithServer(token);
       // console.log("userToken", userToken);
@@ -126,16 +127,16 @@ export const GlobalProvider = ({ children }) => {
       return;
     }
 
-      const selectedVariation = product.product_variations?.find(
-        (v) => v.id === selectedSize
-      );
+    const selectedVariation = product.product_variations?.find(
+      (v) => v.id === selectedSize
+    );
 
-      const payload = {
-        product_id: product.id,
-        prod_variation_id: selectedSize,
-        quantity: 1,
-        price: selectedVariation?.sale_price || product.sale_price,
-      };
+    const payload = {
+      product_id: product.id,
+      prod_variation_id: selectedSize,
+      quantity: 1,
+      price: selectedVariation?.sale_price || product.sale_price,
+    };
 
     if (userToken) {
 
@@ -162,16 +163,16 @@ export const GlobalProvider = ({ children }) => {
       const exists = localCart.find((item) => item.product_id === product.id);
       const updatedCart = exists
         ? localCart.map((item) =>
-            item.product_id === product.id
-              ? { ...item, quantity: item.quantity + 1 }
-              : item
-          )
+          item.product_id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
         : [...localCart, { ...product, quantity: 1, prod_variation_id: selectedSize, product_id: product.id }];
 
       localStorage.setItem("localCart", JSON.stringify(updatedCart));
       setCart(updatedCart);
     }
-  }, [ fetchCart, isBrowser ]);
+  }, [fetchCart, isBrowser]);
 
   // 💘 Add/Remove Wishlist
   const addToWishlist = useCallback(async (product) => {
@@ -223,7 +224,7 @@ export const GlobalProvider = ({ children }) => {
   const calculateSummary = useCallback(() => {
     // Ensure cart is an array
     const items = Array.isArray(cart) ? cart : []; // Fallback to empty array if not an array
-  
+
     // Calculate total amount, total MRP, and subtotal
     const totalAmount = items.reduce((sum, item) => sum + parseFloat(item.product_variation?.sale_price ?? item.sale_price) * item.quantity, 0);
     const totalMRP = items.reduce((sum, item) => sum + parseFloat(item.product_variation?.regular_price ?? item.regular_price) * item.quantity, 0);
@@ -234,11 +235,11 @@ export const GlobalProvider = ({ children }) => {
     const totalGST = CGST + SGST
     const grandTotal = subtotal + totalGST
 
-    const savings = totalAmount < totalMRP ?  (totalMRP - grandTotal) : 'N/A';
-  
+    const savings = totalAmount < totalMRP ? (totalMRP - grandTotal) : 'N/A';
+
     return { totalMRP, subtotal, savings, totalAmount, CGST, SGST, totalGST, grandTotal };
   }, [cart]);
-  
+
   const { totalMRP, subtotal, savings, totalAmount, CGST, SGST, totalGST, grandTotal } = calculateSummary();
 
   // for footer categories
@@ -298,7 +299,7 @@ export const GlobalProvider = ({ children }) => {
   useEffect(() => {
     if (safeToken) fetchAllCategories();
   }, [safeToken, fetchAllCategories]);
-  
+
   // 🔐 Logout
   const logout = () => {
     setToken(webToken);
@@ -344,6 +345,7 @@ export const GlobalProvider = ({ children }) => {
         accessoriesCat,
         loadingCategories,
         logout,
+        globalContentData,
       }}
     >
       {children}

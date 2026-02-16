@@ -1,0 +1,40 @@
+import { normalizeSeoFromApi, toAbsoluteUrlIfPresent } from "./seo";
+
+export async function fetchPageSeo(path: string, slug: string = "home") {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL; // Server side env var should work if in .env.local
+    const token = process.env.NEXT_PUBLIC_WEB_TOKEN;
+
+    let apiData = null;
+
+    if (apiUrl) {
+        try {
+            // Allow slug override, default to path slug or 'home'
+            const activeSlug = slug || "home";
+
+            const res = await fetch(`${apiUrl}/api/v1/get_slug_data/${activeSlug}`, {
+                headers: {
+                    Authorization: `Bearer ${token || ""}`,
+                },
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                if (data?.pageData || data?.product_details) {
+                    apiData = data;
+                }
+            }
+        } catch (e) {
+            console.error(`Failed to fetch SEO for ${slug}:`, e);
+            apiData = null;
+        }
+    }
+
+    const seo = normalizeSeoFromApi(apiData, path, slug);
+
+    return {
+        ...seo,
+        canonicalUrl: toAbsoluteUrlIfPresent(seo.canonicalUrl),
+        ogUrl: toAbsoluteUrlIfPresent(seo.ogUrl),
+        ogImage: toAbsoluteUrlIfPresent(seo.ogImage),
+    };
+}

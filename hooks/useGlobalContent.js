@@ -4,15 +4,16 @@ import { globalContent } from "../services/globalcontent.service";
 import { ENV } from "../config/env";
 
 const useGlobalContent = () => {
-  const { token, publicToken } = useGlobal();
-  const [globalContentData, setGlobalContentData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { token, publicToken, globalContentData: contextData } = useGlobal();
+  const [globalContentData, setGlobalContentData] = useState(contextData || null);
+  const [loading, setLoading] = useState(!contextData);
 
   useEffect(() => {
     const fetchToken = publicToken || token || ENV.WEB_TOKEN;
     if (!fetchToken) return;
 
     const loadGlobalContent = async () => {
+      // Only set loading if we don't need to show existing data, but typically we want to show loading indicator if fetching new data
       setLoading(true);
 
       // Fetch current page SEO

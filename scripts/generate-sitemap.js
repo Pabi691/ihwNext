@@ -1,5 +1,6 @@
 const fs = require('fs');
 const axios = require('axios');
+require('dotenv').config({ path: '.env.local' });
 const webToken = process.env.NEXT_PUBLIC_WEB_TOKEN || process.env.REACT_APP_WEB_TOKEN;
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com";

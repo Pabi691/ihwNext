@@ -40,10 +40,10 @@ const getSlugFromPath = (pathname) => {
   return parts[parts.length - 1];
 };
 
-const GlobalSeo = ({ disableMeta = false }) => {
+const GlobalSeo = ({ disableMeta = false, initialSeo = null }) => {
   const location = useLocation();
   const slug = getSlugFromPath(location.pathname);
-  const { seo } = useSeo(slug);
+  const { seo } = useSeo(slug, initialSeo);
   const { globalContentData } = useGlobalContent();
 
   return (
