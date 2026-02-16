@@ -13,11 +13,16 @@ export async function fetchPageSeo(path: string, slug: string = "home", userToke
             // Allow slug override, default to path slug or 'home'
             const activeSlug = slug || "home";
 
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
+
             const res = await fetch(`${apiUrl}/api/v1/get_slug_data/${activeSlug}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
+                signal: controller.signal,
             });
+            clearTimeout(timeoutId);
 
             if (res.ok) {
                 const data = await res.json();

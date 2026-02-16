@@ -50,6 +50,7 @@ export const globalContent = async (token) => {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
+      timeout: 3000, // 3 second timeout
     });
     return normalize(res.data);
   } catch (error) {
