@@ -115,19 +115,22 @@ MyApp.getInitialProps = async (appContext: AppContext) => {
 
   // Fetch global content (only on server or initial client load if not present)
   // Note: getInitialProps runs on server for initial page load, and on client for client-side navigation.
-  // We can optimize this to avoid re-fetching on client if we want, but for now we follow the plan.
 
-  // Need to handle token. For public pages, we might use a default token or just let the service handle it (it tries process.env).
-  // In _app, we don't easily have access to client-side localStorage auth token during server render.
-  // The service uses process.env.NEXT_PUBLIC_WEB_TOKEN as fallback.
+  let token = null;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("userToken");
+  }
 
-  const content = await globalContent(null);
+  // We can pass this token to globalContent too if needed, but the service handles it via arg or env.
+  // The service implementation: const res = await axios.get(endpoint, { headers: { Authorization: `Bearer ${authToken}` } });
+  // So we should pass it if we have it.
+  const content = await globalContent(token);
 
   // Calculate slug and fetch SEO for the page
   const slug = getSlugFromPath(appContext.ctx.asPath || appContext.router.asPath);
   let pageSeoData = null;
   if (slug) {
-    pageSeoData = await fetchPageSeo(appContext.ctx.asPath || "/", slug);
+    pageSeoData = await fetchPageSeo(appContext.ctx.asPath || "/", slug, token || undefined);
   }
 
   return { ...appProps, globalContentData: content, pageSeoData };

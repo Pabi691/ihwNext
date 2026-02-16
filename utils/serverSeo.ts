@@ -1,8 +1,10 @@
 import { normalizeSeoFromApi, toAbsoluteUrlIfPresent } from "./seo";
 
-export async function fetchPageSeo(path: string, slug: string = "home") {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL; // Server side env var should work if in .env.local
-    const token = process.env.NEXT_PUBLIC_WEB_TOKEN;
+export async function fetchPageSeo(path: string, slug: string = "home", userToken?: string) {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const token = userToken || process.env.NEXT_PUBLIC_WEB_TOKEN;
+
+    // console.log(`[SEO-Fetch] Path: ${path}, Slug: ${slug}, Token provided: ${!!userToken}`);
 
     let apiData = null;
 
@@ -13,7 +15,7 @@ export async function fetchPageSeo(path: string, slug: string = "home") {
 
             const res = await fetch(`${apiUrl}/api/v1/get_slug_data/${activeSlug}`, {
                 headers: {
-                    Authorization: `Bearer ${token || ""}`,
+                    Authorization: `Bearer ${token}`,
                 },
             });
 
@@ -23,8 +25,11 @@ export async function fetchPageSeo(path: string, slug: string = "home") {
                     apiData = data;
                 }
             }
-        } catch (e) {
-            console.error(`Failed to fetch SEO for ${slug}:`, e);
+        } catch (e: any) {
+            console.error(`[SEO-Fetch-Error] Failed for slug: ${slug}`, e.message || e);
+            if (e.response) {
+                console.error(`[SEO-Fetch-Error] Status: ${e.response.status}, Data:`, e.response.data);
+            }
             apiData = null;
         }
     }
