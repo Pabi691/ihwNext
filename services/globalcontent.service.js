@@ -45,10 +45,7 @@ export const globalContent = async (token) => {
       return null;
     }
 
-    const endpoint =
-      typeof window !== "undefined"
-        ? "/api/v1/global-content"
-        : `${ENV.API_URL}/api/v1/global-content`;
+    const endpoint = `${ENV.API_URL}/api/v1/global-content`;
     const res = await axios.get(endpoint, {
       headers: {
         Authorization: `Bearer ${authToken}`,

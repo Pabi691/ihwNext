@@ -3,16 +3,15 @@ import { ENV } from "../config/env";
 
 export const fetchSeoBySlug = async (slug, token) => {
   const tryFetch = async (candidateSlug) => {
-    const url =
-      typeof window !== "undefined"
-        ? `/api/v1/get_slug_data/${candidateSlug}`
-        : `${ENV.API_URL}/api/v1/get_slug_data/${candidateSlug}`;
+    console.log("Candidate Slug:", candidateSlug);
+    const url = `${ENV.API_URL}/api/v1/get_slug_data/${candidateSlug}`;
+    console.log("URL:", url);
     const config = token
       ? {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
       : {};
 
     const res = await axios.get(url, config);
