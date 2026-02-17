@@ -1,9 +1,30 @@
 import { normalizeSeoFromApi, toAbsoluteUrlIfPresent } from "./seo";
 import { ENV } from "@/config/env";
 
+type CachedSeo = {
+    expiresAt: number;
+    value: ReturnType<typeof normalizeSeoFromApi>;
+};
+
+const seoCache = new Map<string, CachedSeo>();
+const SEO_CACHE_TTL_MS = 5 * 60 * 1000;
+
 export async function fetchPageSeo(path: string, slug: string = "home", userToken?: string) {
     const apiUrl = ENV.API_URL;
     const token = userToken || ENV.WEB_TOKEN;
+    const activeSlug = slug || "home";
+    const cacheKey = `${activeSlug}::${path}`;
+
+    const cached = seoCache.get(cacheKey);
+    if (cached && cached.expiresAt > Date.now()) {
+        const seo = cached.value;
+        return {
+            ...seo,
+            canonicalUrl: toAbsoluteUrlIfPresent(seo.canonicalUrl),
+            ogUrl: toAbsoluteUrlIfPresent(seo.ogUrl),
+            ogImage: toAbsoluteUrlIfPresent(seo.ogImage),
+        };
+    }
 
     // console.log(`[SEO-Fetch] Path: ${path}, Slug: ${slug}, Token provided: ${!!userToken}`);
 
@@ -11,11 +32,6 @@ export async function fetchPageSeo(path: string, slug: string = "home", userToke
 
     if (apiUrl) {
         try {
-            // Allow slug override, default to path slug or 'home'
-            const activeSlug = slug || "home";
-
-            console.log(`[SEO-Fetch] Starting fetch for slug: ${activeSlug} at ${apiUrl}`);
-
             const baseHeaders: HeadersInit = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                 "Accept": "application/json"
@@ -42,26 +58,24 @@ export async function fetchPageSeo(path: string, slug: string = "home", userToke
                 res = await fetchSeo(false);
             }
 
-            console.log(`[SEO-Fetch] Response status: ${res.status}`);
-
             if (res.ok) {
                 const data = await res.json();
                 if (data?.pageData || data?.product_details) {
                     apiData = data;
                 }
             } else {
-                console.error(`[SEO-Fetch-Error] API returned status: ${res.status}`);
+                // Keep silent in normal runtime; fallback SEO will be used.
             }
         } catch (e: any) {
-            console.error(`[SEO-Fetch-Error] Failed for slug: ${slug}. Message: ${e.message}`);
-            if (e.name === 'AbortError') {
-                console.error('[SEO-Fetch-Error] Request timed out after 8000ms');
-            }
             apiData = null;
         }
     }
 
     const seo = normalizeSeoFromApi(apiData, path, slug);
+    seoCache.set(cacheKey, {
+        value: seo,
+        expiresAt: Date.now() + SEO_CACHE_TTL_MS,
+    });
 
     return {
         ...seo,

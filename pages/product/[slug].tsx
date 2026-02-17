@@ -4,8 +4,8 @@ import ProductDetailsAll from '@/components/products/ProductDetailsAll';
 // import { ProductDetailsPage } from '../components/products';
 import MobileMainLayout from '@/layout/MobileMainLayout';
 import type { GetServerSideProps } from "next";
-import { normalizeSeoFromApi, toAbsoluteUrlIfPresent } from "@/utils/seo";
-import { ENV } from "@/config/env";
+import { toAbsoluteUrlIfPresent } from "@/utils/seo";
+import { fetchPageSeo } from "@/utils/serverSeo";
 
 function ProductDetails() {
  
@@ -33,27 +33,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { props: {} };
   }
 
-  const apiUrl = ENV.API_URL;
-  const token = ENV.WEB_TOKEN;
-  let apiData = null;
-
-  if (apiUrl && token) {
-    try {
-      const res = await fetch(`${apiUrl}/api/v1/get_slug_data/${slug}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (res.ok) {
-        apiData = await res.json();
-      }
-    } catch {
-      apiData = null;
-    }
-  }
-
   const pathname = `/product/${slug}`;
-  const seo = normalizeSeoFromApi(apiData, pathname, slug);
+  const seo = await fetchPageSeo(pathname, slug);
 
   return {
     props: {
