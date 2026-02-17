@@ -8,7 +8,7 @@ import { themeBgColor } from "../styles/typography";
 const MainLayOut = ({ children }) => {
   const [showMenu, setShowMenu] = useState(false);
   // const [loading, setLoading] = useState(true);
-  const { loadingCategories } = useGlobal();
+  const { accessoriesCat, planters, container, loadingCategories } = useGlobal();
 
   return (
     <>
@@ -28,9 +28,22 @@ const MainLayOut = ({ children }) => {
         </div>
         {showMenu &&
           <Footer
+            accessoriesCat={accessoriesCat}
+            planters={planters}
+            container={container}
             loading={loadingCategories}
           />
         }
+      </div>
+
+      {/* Desktop Footer */}
+      <div className="hidden md:block">
+        <Footer
+          accessoriesCat={accessoriesCat}
+          planters={planters}
+          container={container}
+          loading={loadingCategories}
+        />
       </div>
     </>
   );

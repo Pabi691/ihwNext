@@ -54,41 +54,41 @@ const OverView = () => {
 
 
   useEffect(() => {
-  if (typeof window === "undefined") return;
+    if (typeof window === "undefined") return;
 
-  const userToken = localStorage.getItem("userToken");
-  if (!userToken) return;
+    const userToken = localStorage.getItem("userToken");
+    if (!userToken) return;
 
-  if (ordersFetchedRef.current || ordersInFlightRef.current) return;
+    if (ordersFetchedRef.current || ordersInFlightRef.current) return;
 
-  const fetchOrders = async () => {
-    ordersInFlightRef.current = true;
+    const fetchOrders = async () => {
+      ordersInFlightRef.current = true;
 
-    try {
-      const res = await axios.get(
-        `${apiBase}/v1/get_my_orders`,
-        {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
+      try {
+        const res = await axios.get(
+          `${apiBase}/v1/get_my_orders`,
+          {
+            headers: {
+              Authorization: `Bearer ${userToken}`,
+            },
+          }
+        );
+
+        const data = res.data;
+
+        if (data.status) {
+          setLimitOrders(data.orders.slice(0, 5));
         }
-      );
-
-      const data = res.data;
-
-      if (data.status) {
-        setLimitOrders(data.orders.slice(0, 5));
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      } finally {
+        ordersInFlightRef.current = false;
+        ordersFetchedRef.current = true;
       }
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-    } finally {
-      ordersInFlightRef.current = false;
-      ordersFetchedRef.current = true;
-    }
-  };
+    };
 
-  fetchOrders();
-}, [apiBase]);
+    fetchOrders();
+  }, [apiBase]);
 
 
   return (
@@ -196,43 +196,43 @@ const OverView = () => {
         </div>
 
 
-                            <div className="flex items-center gap-2 text-red-600 cursor-pointer md:hidden mx-6 py-1 px-2 rounded bg-red-200 border-red-400" 
-                            onClick={() => navigate('/logout') }>
-                                <Icon icon='mdi:logout' width={20} height={20} /> Logout
-                            </div>
+        <div className="flex items-center gap-2 text-red-600 cursor-pointer md:hidden mx-6 py-1 px-2 rounded bg-red-200 border-red-400"
+          onClick={() => navigate('/logout')}>
+          <Icon icon='mdi:logout' width={20} height={20} /> Logout
+        </div>
 
         {/* Recent Activity */}
         {limitOrders && (
-<div className="mt-8 hidden">
-          <h3 className="text-base font-semibold text-gray-800 mb-4 ml-4 md:ml-0">Recent Activity</h3>
-          <ul className="bg-white p-6 rounded-lg shadow-lg">
-            {limitOrders.map((activity) => (
-              <li
-                key={activity.id}
-                className="flex flex-col py-4 border-b border-gray-200 last:border-0"
-              >
-                {activity.order_items && activity.order_items.length > 0 ? (
-                  activity.order_items.map((item, index) => (
-                    <div key={index} className="mb-2">
-                      <span className="text-gray-600">{item.product_name || 'N/A'}</span>
-                      <br />
-                      <span className="text-gray-400 text-sm">
-                        {item.updated_at
-                          ? new Date(item.updated_at).toLocaleString()
-                          : 'No update info'}
-                      </span>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-gray-400">No items found</p>
-                )}
+          <div className="mt-8 hidden">
+            <h3 className="text-base font-semibold text-gray-800 mb-4 ml-4 md:ml-0">Recent Activity</h3>
+            <ul className="bg-white p-6 rounded-lg shadow-lg">
+              {limitOrders.map((activity) => (
+                <li
+                  key={activity.id}
+                  className="flex flex-col py-4 border-b border-gray-200 last:border-0"
+                >
+                  {activity.order_items && activity.order_items.length > 0 ? (
+                    activity.order_items.map((item, index) => (
+                      <div key={index} className="mb-2">
+                        <span className="text-gray-600">{item.product_name || 'N/A'}</span>
+                        <br />
+                        <span className="text-gray-400 text-sm">
+                          {item.updated_at
+                            ? new Date(item.updated_at).toLocaleString()
+                            : 'No update info'}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-400">No items found</p>
+                  )}
 
-              </li>
-            ))}
-          </ul>
-        </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
-        
+
       </div>
     </div>
   );

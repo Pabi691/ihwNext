@@ -6,7 +6,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const isBrowser = typeof window !== "undefined";
   const [userToken, setUserToken] = useState(
-    isBrowser ? localStorage.getItem("userToken") : null
+    isBrowser ? localStorage.getItem("userToken") || process.env.NEXT_PUBLIC_WEB_TOKEN : null
   );
   const [localCartItems, setLocalCartItems] = useState(
     isBrowser ? JSON.parse(localStorage.getItem("localCart") || "[]") : []
@@ -59,16 +59,16 @@ export const AuthProvider = ({ children }) => {
   }, [localCartItems, isBrowser]);
 
   const setToken = (token) => {
-    setUserToken(token); 
+    setUserToken(token);
 
     // if(uservarified === null) return;
-    
+
     // if(uservarified && uservarified !== null ){
     //   navigate('/myaccount');
     //   window.location.reload();
     // }
-    
-    
+
+
   };
 
   const logout = () => {
@@ -89,9 +89,9 @@ export const AuthProvider = ({ children }) => {
     if (isBrowser) {
       window.location.reload();
     }
-};
+  };
 
-  
+
 
   // const getToken = () => userToken || webToken;
 
