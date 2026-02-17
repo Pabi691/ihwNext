@@ -72,10 +72,12 @@ export async function fetchPageSeo(path: string, slug: string = "home", userToke
     }
 
     const seo = normalizeSeoFromApi(apiData, path, slug);
-    seoCache.set(cacheKey, {
-        value: seo,
-        expiresAt: Date.now() + SEO_CACHE_TTL_MS,
-    });
+    if (apiData) {
+        seoCache.set(cacheKey, {
+            value: seo,
+            expiresAt: Date.now() + SEO_CACHE_TTL_MS,
+        });
+    }
 
     return {
         ...seo,

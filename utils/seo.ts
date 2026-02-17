@@ -96,22 +96,17 @@ type SeoFields = {
   ogType: string;
 };
 
-export const buildDefaultSeo = (_pathname: string, _slug?: string | null): SeoFields => {
-  const canonical = toAbsoluteUrl(_pathname || "/");
-  const defaultTitle = "Indian Hair World: India's #1 Non-Surgical Hair Replacement Center";
-  const defaultDescription =
-    "Indian Hair World offers premium non-surgical hair replacement, hair patches, wigs, and expert consultation.";
-
+export const buildDefaultSeo = (): SeoFields => {
   return {
-    title: defaultTitle,
-    description: defaultDescription,
-    keywords: "hair patch, wig, non-surgical hair replacement, indian hair world",
-    canonicalUrl: canonical,
-    ogTitle: defaultTitle,
-    ogDescription: defaultDescription,
-    ogImage: toAbsoluteUrl("/images/our-work-img1.jpg"),
-    ogUrl: canonical,
-    ogType: "website",
+    title: "",
+    description: "",
+    keywords: "",
+    canonicalUrl: "",
+    ogTitle: "",
+    ogDescription: "",
+    ogImage: "",
+    ogUrl: "",
+    ogType: "",
   };
 };
 
@@ -120,32 +115,36 @@ export const normalizeSeoFromApi = (
   pathname: string,
   slug?: string | null
 ): SeoFields => {
-  const fallback = buildDefaultSeo(pathname, slug);
+  const empty = buildDefaultSeo();
 
-  if (!apiResponse) return fallback;
+  if (!apiResponse) return empty;
+  console.log(`[SEO-API] Normalizing SEO for path: ${pathname}, slug: ${slug || "N/A"}`);
+  console.log(`[SEO-API] API Response keys: ${Object.keys(apiResponse).join(", ")}`);
+  console.log(`[SEO-API] API Response pageData: ${apiResponse.pageData ? "present" : "absent"}, product_details: ${apiResponse.product_details ? "present" : "absent"}`);
+  console.log(`[SEO-API] API Response pageData.seo_metadata: ${apiResponse.pageData?.seo_metadata ? "present" : "absent"}, product_details.seo_metadata: ${apiResponse.product_details?.seo_metadata ? "present" : "absent"}`);
 
   if (apiResponse.pageData) {
     const pageData = apiResponse.pageData;
     const seo = pageData.seo_metadata || {};
     const canonicalUrl = toAbsoluteUrlIfPresent(
-      seo.canonical_url || seo.og_url || fallback.canonicalUrl
+      seo.canonical_url || seo.og_url
     );
     const ogImage = toAbsoluteUrlIfPresent(
-      seo.og_image || pageData.primary_img || fallback.ogImage
+      seo.og_image || pageData.primary_img
     );
 
     return {
-      title: seo.meta_title || pageData.title || fallback.title,
+      title: seo.meta_title || pageData.title || "",
       description:
-        seo.meta_description || pageData.description || fallback.description,
-      keywords: seo.meta_keywords || pageData.keywords || fallback.keywords,
+        seo.meta_description || pageData.description || "",
+      keywords: seo.meta_keywords || pageData.keywords || "",
       canonicalUrl,
-      ogTitle: seo.og_title || pageData.title || fallback.ogTitle,
+      ogTitle: seo.og_title || pageData.title || "",
       ogDescription:
-        seo.og_description || pageData.description || fallback.ogDescription,
+        seo.og_description || pageData.description || "",
       ogImage,
       ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
-      ogType: seo.og_type || "website",
+      ogType: seo.og_type || "",
     };
   }
 
@@ -153,26 +152,26 @@ export const normalizeSeoFromApi = (
     const product = apiResponse.product_details;
     const seo = product.seo_metadata || {};
     const canonicalUrl = toAbsoluteUrlIfPresent(
-      seo.canonical_url || seo.og_url || fallback.canonicalUrl
+      seo.canonical_url || seo.og_url
     );
     const ogImage = toAbsoluteUrlIfPresent(
-      seo.og_image || product.primary_img || fallback.ogImage
+      seo.og_image || product.primary_img
     );
 
     return {
-      title: seo.meta_title || product.prod_name || fallback.title,
+      title: seo.meta_title || product.prod_name || "",
       description:
-        seo.meta_description || product.prod_desc || fallback.description,
-      keywords: seo.meta_keywords || product.product_tag || fallback.keywords,
+        seo.meta_description || product.prod_desc || "",
+      keywords: seo.meta_keywords || product.product_tag || "",
       canonicalUrl,
-      ogTitle: seo.og_title || product.prod_name || fallback.ogTitle,
+      ogTitle: seo.og_title || product.prod_name || "",
       ogDescription:
-        seo.og_description || product.prod_desc || fallback.ogDescription,
+        seo.og_description || product.prod_desc || "",
       ogImage,
       ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
-      ogType: seo.og_type || "product",
+      ogType: seo.og_type || "",
     };
   }
 
-  return fallback;
+  return empty;
 };
