@@ -27,7 +27,7 @@ export async function fetchPageSeo(path: string, slug: string = "home", userToke
                     (headers as Record<string, string>).Authorization = `Bearer ${token}`;
                 }
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 15000);
+                const timeoutId = setTimeout(() => controller.abort(), 4000);
                 const response = await fetch(`${apiUrl}/api/v1/get_slug_data/${activeSlug}`, {
                     headers,
                     signal: controller.signal,

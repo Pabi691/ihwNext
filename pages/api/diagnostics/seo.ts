@@ -10,7 +10,10 @@ const check = async (url: string, includeAuth: boolean) => {
   }
 
   try {
-    const res = await fetch(url, { headers });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    const res = await fetch(url, { headers, signal: controller.signal });
+    clearTimeout(timeoutId);
     return { ok: res.ok, status: res.status };
   } catch (error: any) {
     return { ok: false, status: 0, error: error?.message || "fetch_failed" };
