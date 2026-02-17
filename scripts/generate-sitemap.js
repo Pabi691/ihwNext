@@ -4,9 +4,9 @@ require('dotenv').config({ path: '.env.local' });
 const webToken = process.env.NEXT_PUBLIC_WEB_TOKEN || process.env.REACT_APP_WEB_TOKEN;
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com";
-const DASHBOARD_URL = `${API_BASE_URL}/api/v1/get_data_for_dashboard`;
 const CATEGORIES_URL = `${API_BASE_URL}/api/v1/categories`;
-const BASE_URL = "https://www.indianhairworld.com";
+const PRODUCTS_URL = `${API_BASE_URL}/api/v1/get_active_products`;
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.indianhairworld.com";
 
 const staticRoutes = [
   "/",
@@ -25,86 +25,79 @@ const staticRoutes = [
   "/contact-us",
 ];
 
-const fetchDashboardData = async () => {
-  try {
-    const response = await axios.get(DASHBOARD_URL, {
-      headers: {
-        "Authorization": webToken ? `Bearer ${webToken}` : undefined
-      }
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching dashboard data:', error);
-    return {};
+const getRequestConfig = () => ({
+  headers: {
+    "Authorization": webToken ? `Bearer ${webToken}` : undefined
   }
+});
+
+const toArray = (value) => {
+  if (Array.isArray(value)) return value;
+  if (value && typeof value === "object") return Object.values(value).filter(Boolean);
+  return [];
 };
 
 const fetchCategories = async () => {
   try {
-    const response = await axios.get(CATEGORIES_URL, {
-      headers: {
-        "Authorization": webToken ? `Bearer ${webToken}` : undefined
-      }
-    });
+    const response = await axios.get(CATEGORIES_URL, getRequestConfig());
     const listRaw = response.data?.category_list ?? [];
-    const list = Array.isArray(listRaw) ? listRaw : [listRaw];
-    return list.filter(Boolean);
+    return toArray(listRaw);
   } catch (error) {
-    console.error('Error fetching categories:', error);
+    console.error('Error fetching categories:', error?.message || error);
     return [];
   }
 };
 
+const fetchProducts = async () => {
+  try {
+    const response = await axios.get(PRODUCTS_URL, getRequestConfig());
+    const listRaw = response.data?.products ?? response.data?.product_list ?? [];
+    return toArray(listRaw);
+  } catch (error) {
+    console.error('Error fetching products:', error?.message || error);
+    return [];
+  }
+};
+
+const xmlEscape = (value) =>
+  String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+
 const generateSitemap = async () => {
-  const data = await fetchDashboardData();
   const categories = await fetchCategories();
+  const products = await fetchProducts();
 
-  let categoryRoutes = [];
-  let productRoutes = [];
+  const categoryRoutes = [];
+  const productRoutes = [];
 
-  if (categories.length > 0) {
-    for (const cat of categories) {
-      if (cat?.slug) categoryRoutes.push(`/${cat.slug}`);
-      if (Array.isArray(cat?.child_categories)) {
-        cat.child_categories.forEach(child => {
-          if (child?.slug) categoryRoutes.push(`/${child.slug}`);
-        });
-      }
-    }
-  } else {
-    for (const key in data) {
-      const item = data[key];
-      if (item?.category_data) {
-        const categorySlug = item.category_data.slug;
-        if (categorySlug) {
-          categoryRoutes.push(`/${categorySlug}`);
-        }
-      }
-    }
-  }
+  categories.forEach((cat) => {
+    if (cat?.slug) categoryRoutes.push(`/${cat.slug}`);
+    const childCategories = toArray(cat?.child_categories);
+    childCategories.forEach((child) => {
+      if (child?.slug) categoryRoutes.push(`/${child.slug}`);
+    });
+  });
 
-  for (const key in data) {
-    const item = data[key];
-    if (item?.category_data) {
-      // Products inside category
-      const products = item.products || [];
-      products.forEach(product => {
-        if (product.slug) {
-          productRoutes.push(`/product/${product.slug}`);
-        }
-      });
+  products.forEach((product) => {
+    if (product?.slug) {
+      productRoutes.push(`/product/${product.slug}`);
     }
-  }
+  });
 
   // Build all routes
   const allRoutes = [...new Set([...staticRoutes, ...categoryRoutes, ...productRoutes])]; // Unique
+  const now = new Date().toISOString();
 
   const sitemapUrls = allRoutes.map(route => {
-    const cleanedRoute = route.replace(/:orderId/g, "1234"); // replace dynamic params with sample ID
+    const cleanedRoute = route.replace(/:orderId/g, "1234");
     return `
     <url>
-      <loc>${BASE_URL}${cleanedRoute}</loc>
-      <lastmod>${new Date().toISOString()}</lastmod>
+      <loc>${xmlEscape(`${BASE_URL}${cleanedRoute}`)}</loc>
+      <lastmod>${now}</lastmod>
       <priority>0.8</priority>
     </url>`;
   }).join("\n");

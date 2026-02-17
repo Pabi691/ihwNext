@@ -72,6 +72,8 @@ const RouteLoadingEvents = () => {
 };
 
 const MyApp = ({ Component, pageProps, globalContentData, pageSeoData }: AppProps & { globalContentData: any; pageSeoData: any }) => {
+  const resolvedSeo = pageProps?.seo ?? pageSeoData ?? null;
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     // Ensure gtag exists even before GA/Tag Manager loads
@@ -96,7 +98,7 @@ const MyApp = ({ Component, pageProps, globalContentData, pageSeoData }: AppProp
       <AuthProvider>
         <GlobalProvider initialGlobalContent={globalContentData}>
           <RouteLoadingEvents />
-          <SeoHead seo={pageSeoData} />
+          <SeoHead seo={resolvedSeo} />
           {/* <GlobalSeo disableMeta={Boolean(pageSeoData || pageProps?.seo)} initialSeo={pageSeoData} /> */}
           <FloatingContact />
           <Loader />
@@ -114,8 +116,7 @@ MyApp.getInitialProps = async (appContext: AppContext) => {
   const appProps = await App.getInitialProps(appContext);
 
   let globalContentData = null;
-  let pageSeoData = null;
-  console.log("Running on:", typeof window === "undefined" ? "SERVER" : "CLIENT");
+  let pageSeoData = appProps?.pageProps?.seo ?? null;
 
   try {
     let token = null;
@@ -127,12 +128,15 @@ MyApp.getInitialProps = async (appContext: AppContext) => {
     // globalContentData = await globalContent(token);
 
     // Calculate slug and fetch SEO for the page
-    const slug = getSlugFromPath(appContext.ctx.asPath || appContext.router.asPath);
-    console.log("slug", slug);
-    if (slug) {
-      pageSeoData = await fetchPageSeo(appContext.ctx.asPath || "/", slug, token || undefined);
+    const rawPath =
+      appContext.ctx.asPath ||
+      appContext.ctx.pathname ||
+      appContext.router.asPath ||
+      "/";
+    const slug = getSlugFromPath(rawPath);
+    if (!pageSeoData && slug) {
+      pageSeoData = await fetchPageSeo(rawPath, slug, token || undefined);
     }
-    console.log("pageSeoData", pageSeoData);
   } catch (error) {
     console.error("Error fetching global/SEO data in _app:", error);
     // Suppress error to allow app to render with default/fallback data
