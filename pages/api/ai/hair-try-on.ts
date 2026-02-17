@@ -121,7 +121,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
     if (!apiKey) {
-      return res.status(500).json({
+      return res.status(503).json({
         message:
           "Set Vertex env vars (GOOGLE_CLOUD_PROJECT + GOOGLE_CLOUD_LOCATION) or add GEMINI_API_KEY/GOOGLE_API_KEY.",
       });

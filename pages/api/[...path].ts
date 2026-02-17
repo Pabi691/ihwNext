@@ -34,13 +34,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const upstream = await fetch(targetUrl, {
+    const requestInit: RequestInit = {
       method: req.method,
       headers,
-      body: req.method && !["GET", "HEAD"].includes(req.method) ? (req as any) : undefined,
-      // Required for Node.js when sending a stream body
-      duplex: "half",
-    } as RequestInit);
+    };
+
+    if (req.method && !["GET", "HEAD"].includes(req.method)) {
+      requestInit.body = req as any;
+      // Only set duplex when we actually stream a request body.
+      (requestInit as any).duplex = "half";
+    }
+
+    const upstream = await fetch(targetUrl, requestInit);
 
     res.status(upstream.status);
     upstream.headers.forEach((value, key) => {
@@ -55,6 +60,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.setHeader("Content-Length", buffer.length);
     res.send(buffer);
   } catch (error: any) {
-    res.status(500).json({ error: "Proxy error", message: error?.message ?? "Unknown error" });
+    res.status(502).json({ error: "Proxy error", message: error?.message ?? "Unknown error" });
   }
 }
