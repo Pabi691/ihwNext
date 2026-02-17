@@ -27,7 +27,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const redirectTo = '/myaccount';
+  const redirectTo = location.state?.slug || '/myaccount';
   // console.log('location', location);
   // console.log('redirectTo', redirectTo);
   useEffect(() => {

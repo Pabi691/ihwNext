@@ -19,6 +19,9 @@
 
 # production
 /build
+/cpanel-build/
+/cpanel-build.zip
+/node_modules.zip
 
 # misc
 .DS_Store

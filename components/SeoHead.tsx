@@ -1,4 +1,6 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 type SeoData = {
   title: string;
@@ -13,6 +15,15 @@ type SeoData = {
 };
 
 const SeoHead = ({ seo }: { seo: SeoData }) => {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (router.asPath?.includes("/contact-us")) {
+      // Browser-side debug for contact page SEO payload
+      console.log("[SEO-DEBUG][contact-us] SeoHead payload:", seo);
+    }
+  }, [router.asPath, seo]);
+
   if (!seo) return null;
 
   return (

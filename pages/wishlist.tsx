@@ -60,8 +60,10 @@ const Wishlist = () => {
     // Product has NO sizes → direct add
     try {
       setIsLoading(true);
-      await addToCart(product, null);
-      navigate('/cart');
+      const added = await addToCart(product, null);
+      if (added) {
+        navigate('/cart');
+      }
     } catch (error) {
       console.error('Direct add to cart failed:', error);
     } finally {
@@ -201,11 +203,13 @@ const Wishlist = () => {
               onClick={async () => {
                 try {
                   setIsLoading(true);
-                  await addToCart(
+                  const added = await addToCart(
                     popupItem.product || popupItem,
                     selectedSize
                   );
-                  navigate('/cart');
+                  if (added) {
+                    navigate('/cart');
+                  }
                 } catch (error) {
                   console.error('Size add to cart failed:', error);
                 } finally {

@@ -19,7 +19,7 @@ const routeToPageMap: Record<string, string> = {
   "": "home",
   home: "home",
   about: "about",
-  "contact-us": "contact",
+  "contact-us": "contact-us",
 };
 
 const blocked = new Set([

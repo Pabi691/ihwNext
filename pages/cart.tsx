@@ -11,6 +11,7 @@ import { themeBgColor } from '../styles/typography';
 
 const Cart = () => {
   const navigate = useNavigate();
+  const [hasUserToken, setHasUserToken] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [openCoupon, setOpenCoupon] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -23,6 +24,11 @@ const Cart = () => {
   const [status, setStatus] = useState(null);
   const [couponData, setCouponData] = useState<any>(null);
   const [defaultCoupon, setDefaultCoupon] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setHasUserToken(Boolean(localStorage.getItem('userToken')));
+  }, []);
 
   useEffect(() => {
     if (cartLength > 0) {
@@ -51,6 +57,20 @@ const Cart = () => {
     // console.log(`Setting quantity: product_id: ${itemId}, quantity: ${quantity}`);
     // console.log(`Setting quantity: product_id: ${variationId}, quantity: ${price}`);
     try {
+      const userToken = localStorage.getItem('userToken');
+      if (!userToken) {
+        let localCart = JSON.parse(localStorage.getItem('localCart') || '[]');
+        localCart = localCart.map((item) =>
+          (item.product_id ?? item.id) === itemId && (item.prod_variation_id ?? null) === (variationId ?? null)
+            ? { ...item, quantity }
+            : item
+        );
+        localStorage.setItem('localCart', JSON.stringify(localCart));
+        setCart(localCart);
+        setSelectedQuantity(null);
+        return;
+      }
+
       // Send the selected quantity to the backend to update the cart
       await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/v1/update_to_cart`,
@@ -72,7 +92,7 @@ const Cart = () => {
         let localCart = JSON.parse(localStorage.getItem('localCart') || '[]');
         // Update the local cart with the new quantity
         localCart = localCart.map((item) =>
-          item.id === itemId && item.prod_variation_id === variationId
+          (item.product_id ?? item.id) === itemId && (item.prod_variation_id ?? null) === (variationId ?? null)
             ? { ...item, quantity }
             : item
         );
@@ -105,7 +125,18 @@ const Cart = () => {
         }
       } else {
         let localCart = JSON.parse(localStorage.getItem('localCart') || '[]');
-        localCart = localCart.filter(item => item.id !== cartId);
+        const current = cart.find((c) => c.id === cartId);
+        if (current) {
+          localCart = localCart.filter(
+            (item) =>
+              !(
+                (item.product_id ?? item.id) === (current.product_id ?? current.id) &&
+                (item.prod_variation_id ?? null) === (current.prod_variation_id ?? null)
+              )
+          );
+        } else {
+          localCart = localCart.filter(item => (item.product_id ?? item.id) !== cartId);
+        }
         localStorage.setItem('localCart', JSON.stringify(localCart));
 
         // 👇 Correctly update cart
@@ -253,10 +284,10 @@ const Cart = () => {
                             width={50} />
                         ) : (
                           <div className="w-1/4 h-24 md:h-48 mr-4">
-                            <Link to={`/product/${item.slug ? item.slug : item.product.slug}`}>
+                            <Link to={`/product/${item.slug ? item.slug : item.product?.slug}`}>
                               <img
-                                src={compressImage(item.primary_img, 400, 70, 'webp')}
-                                alt={item.prod_name}
+                                src={compressImage(item.primary_img || item.product?.primary_img, 400, 70, 'webp')}
+                                alt={item.prod_name || item.product?.prod_name}
                                 className="w-full h-full object-cover object-top rounded-lg"
                               />
                             </Link>
@@ -268,15 +299,11 @@ const Cart = () => {
                             width={50} />
                         ) : (
                           <div className="flex-1">
-                            {localStorage.getItem('userToken') ?
-                              (<h2 className="font-medium text-sm md:text-base">{item.product.brand_details.brand_name}</h2>)
-                              :
-                              (
-                                <h2 className="font-medium text-sm md:text-base">{item.brand_details.brand_name}</h2>
-                              )
-                            }
+                            <h2 className="font-medium text-sm md:text-base">
+                              {item?.product?.brand_details?.brand_name || item?.brand_details?.brand_name || ''}
+                            </h2>
 
-                            <h3 className="text-xs text-gray-600 font-medium my-1 md:my-3">{item.prod_name}</h3>
+                            <h3 className="text-xs text-gray-600 font-medium my-1 md:my-3">{item.prod_name || item.product?.prod_name}</h3>
                             <p className="text-gray-600 text-xs flex gap-2"> <FaTruck className='text-green-600' /> Ships in 2-3 days</p>
                             {/* {item.variation_name && (
                               <p className="text-gray-600 text-sm">Size: {item.variation_name}</p>
@@ -617,7 +644,7 @@ const Cart = () => {
         </>
 
       </div>
-      {localStorage.getItem('userToken') && (
+      {hasUserToken && (
         loading ? (
           <div className="space-y-4">
             <div className="h-24 bg-gray-200 animate-pulse rounded-lg"></div>

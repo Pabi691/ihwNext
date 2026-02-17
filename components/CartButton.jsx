@@ -34,14 +34,18 @@ const CartButton = ({ product, cart, setCart, token, API_BASE_URL, fetchCart, ad
   };
 
   // Add to cart handler
-  const handleAddToCart = (product) => {
+  const handleAddToCart = async (product) => {
     // if(!selectedSize) {
     //   setOpenSizesBox(true);
     //   return;
     // }
     setLoading(true);
     try {
-      addToCart(product);
+      const added = await addToCart(product, selectedSize ?? null);
+      if (!added) {
+        toast.error("Failed to add item to cart.");
+        return;
+      }
       setCart((prev) => [...prev, { ...product, product_id: product.id }]);
 
       toast.success(`${product.name} added to your Cart!`, {
@@ -81,7 +85,7 @@ const CartButton = ({ product, cart, setCart, token, API_BASE_URL, fetchCart, ad
   ) : (
     <button
       className="text-gray-400"
-      onClick={() => handleAddToCart(product)}
+      onClick={() => { handleAddToCart(product); }}
       disabled={loading} // Disable button while loading
     >
       {loading ? (

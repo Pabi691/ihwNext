@@ -23,6 +23,8 @@ const messages = [
 const Checkout = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [shippingValidate, setShippingValidate] = useState(false);
   // const [cartItems, setCartItems] = useState([]);
   const { cart, token, CGST, SGST, grandTotal, totalGST, subtotal, totalMRP } = useGlobal();
@@ -120,13 +122,18 @@ const Checkout = () => {
   }, [token]);
 
   useEffect(() => {
-    if (!token) {
-      navigate('/login');
-    } else {
-      // fetchCart();
-      fetchShippingAddresses();
+    if (typeof window === "undefined") return;
+    const userToken = localStorage.getItem("userToken");
+    if (!userToken) {
+      setIsAuthenticated(false);
+      setIsAuthChecked(true);
+      navigate('/login', { state: { slug: '/checkout' } });
+      return;
     }
-  }, [token, navigate, fetchShippingAddresses]);
+    setIsAuthenticated(true);
+    setIsAuthChecked(true);
+    fetchShippingAddresses();
+  }, [navigate, fetchShippingAddresses]);
 
   const handleAddressSelect = (address) => {
     setSelectedAddress(address);
@@ -146,11 +153,13 @@ const Checkout = () => {
 
   const { savings, newSubtotal } = calculateSummary();
   useEffect(() => {
-    if(!token) return;
+    if (!isAuthenticated) return;
     const payment = async () => {
+      const userToken = localStorage.getItem('userToken');
+      if (!userToken) return;
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_payment_mothods`, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${userToken}`
         }
       });
       // console.log('paymentMenthod', response);
@@ -161,7 +170,7 @@ const Checkout = () => {
       }
     }
     payment();
-  }, [token]);
+  }, [isAuthenticated]);
 
   const updatedSubtotal = (newSubtotal + (discount ? discount : 0)).toFixed(2); // Add ₹20 if COD
   const roundedSubtotal = Math.round(newSubtotal);
@@ -251,6 +260,13 @@ const Checkout = () => {
   const handleSubmit = async () => {
     setIsLoading(true);
     setLoading(true);
+    const userToken = localStorage.getItem('userToken');
+    if (!userToken) {
+      navigate('/login', { state: { slug: '/checkout' } });
+      setIsLoading(false);
+      setLoading(false);
+      return;
+    }
     const shippingId = shippingDetails.id;
     const isCOD = activeTab !== "razorpay";
 
@@ -312,6 +328,14 @@ const Checkout = () => {
     console.log('orderPayload', orderPayload);
 
     try {
+      if (!shippingId) {
+        setShippingValidate(true);
+        setIsAddressOpen(true);
+        setIsLoading(false);
+        setLoading(false);
+        return;
+      }
+
       if (safePaymentMethods.length === 0) {
         Swal.fire({
           title: "Payment Methods Unavailable",
@@ -337,18 +361,12 @@ const Checkout = () => {
       }
 
       const orderResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/create_order`, orderPayload, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${userToken}` },
       });
       console.log('orderPayload', orderPayload);
 
       console.log('orderResponse', orderResponse);
       // 376d684856fe7b99af6f0e2cb10c3710c690b3aa
-      if (!shippingId) {
-        setShippingValidate(true);
-        setIsAddressOpen(true);
-        return;
-      }
-
       if (!orderResponse.data || !orderResponse.data.order_id) {
         Swal.fire({
           title: "Order Creation Failed!",
@@ -360,7 +378,7 @@ const Checkout = () => {
       }
 
       if (!isCOD) {
-        initiateRazorpayPayment(orderResponse.data.order_id, newSubtotal);
+        initiateRazorpayPayment(orderResponse.data.order_id, newSubtotal, userToken);
       } else {
         console.log('test');
         const paymentResponse = await axios.post(
@@ -375,7 +393,7 @@ const Checkout = () => {
             payment_details: null,
           },
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${userToken}` },
           }
         );
 
@@ -411,7 +429,7 @@ const Checkout = () => {
     }
   };
 
-  const initiateRazorpayPayment = (orderId, amount) => {
+  const initiateRazorpayPayment = (orderId, amount, userToken) => {
     const options = {
       // key: "rzp_test_RxOgC9sPpereLC",
       key: "rzp_live_KeivW5UKhTBEPL",
@@ -443,7 +461,7 @@ const Checkout = () => {
               payment_details: JSON.stringify(response),
             },
             {
-              headers: { Authorization: `Bearer ${token}` },
+              headers: { Authorization: `Bearer ${userToken}` },
             }
           );
           // console.log('paymentResponse', paymentResponse);
@@ -552,6 +570,10 @@ const Checkout = () => {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (!isAuthChecked || !isAuthenticated) {
+    return null;
   }
 
   return (
@@ -706,24 +728,36 @@ const Checkout = () => {
                   <div className="mt-2 p-4">
                     {cart.map((item, index) => (
                       <div key={index} className="flex items-center mb-4">
-                        {(item.custom_products[0].front_img_url && item.custom_products[0].back_img_url) === null ? (
-                          <Link to={`/product/${item.slug ? item.slug : item.product.slug}`}>
+                        {(() => {
+                          const customProduct = Array.isArray(item?.custom_products) ? item.custom_products[0] : null;
+                          const customImage = customProduct?.front_img_url || customProduct?.back_img_url || null;
+                          const productSlug = item?.slug || item?.product?.slug || "";
+                          const productImage = item?.primary_img || item?.product?.primary_img || "";
+                          const productName = item?.prod_name || item?.product?.prod_name || "";
+
+                          if (!customImage) {
+                            return (
+                              <Link to={`/product/${productSlug}`}>
                             <img
-                              src={compressImage(item.primary_img, 400, 70, 'webp')}
-                              alt={item.prod_name}
+                                  src={compressImage(productImage, 400, 70, 'webp')}
+                                  alt={productName}
                               className="w-12 h-12 object-cover rounded"
                             />
                           </Link>
-                        ) : (
-                          <img
-                            src={item.custom_products[0].front_img_url ? item.custom_products[0].front_img_url : item.product.back_img_url}
-                            alt={item.prod_name}
-                            className="w-12 h-12 object-cover rounded"
-                          />
-                        )}
+                            );
+                          }
+
+                          return (
+                            <img
+                              src={customImage}
+                              alt={productName}
+                              className="w-12 h-12 object-cover rounded"
+                            />
+                          );
+                        })()}
                         {/* <img src={item.primary_img} alt={item.prod_name} loading="lazy" className="w-12 h-12 object-cover rounded" /> */}
                         <div className="ml-4">
-                          <p className="text-sm font-medium text-gray-500">{item.prod_name}</p>
+                          <p className="text-sm font-medium text-gray-500">{item?.prod_name || item?.product?.prod_name || ''}</p>
                           <p className="text-sm font-medium text-gray-500">Items: <span className="text-green-600">{item.quantity}</span></p>
                         </div>
                       </div>

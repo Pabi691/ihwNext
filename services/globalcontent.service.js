@@ -39,26 +39,41 @@ export const globalContent = async (token) => {
       console.warn("globalContent: NEXT_PUBLIC_API_URL is missing.");
       return null;
     }
-    const authToken = token || ENV.WEB_TOKEN;
-    if (!authToken) {
-      console.warn("globalContent: token is missing. Check NEXT_PUBLIC_WEB_TOKEN.");
-      return null;
-    }
 
     const apiBase = `${ENV.API_URL}/api`;
     const endpoint = `${apiBase}/v1/global-content`;
+    const tokenCandidates = [token, ENV.WEB_TOKEN].filter(
+      (t, i, arr) => t && arr.indexOf(t) === i
+    );
 
-    const res = await axios.get(endpoint, {
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
-      timeout: 3000, // 3 second timeout
-    });
-    return normalize(res.data);
-  } catch (error) {
-    if (process.env.NODE_ENV !== "production") {
-      console.error("Global content fetch error:", error);
+    // Try user token, then public token, then public/no-auth fetch.
+    const attempts = [
+      ...tokenCandidates.map((t) => ({
+        headers: { Authorization: `Bearer ${t}` },
+      })),
+      { headers: {} },
+    ];
+
+    for (const attempt of attempts) {
+      try {
+        const res = await axios.get(endpoint, {
+          headers: attempt.headers,
+          timeout: 3000, // 3 second timeout
+        });
+        return normalize(res.data);
+      } catch (error) {
+        const status = error?.response?.status;
+        // Retry only auth-related failures.
+        if (status !== 401 && status !== 403) {
+          throw error;
+        }
+      }
     }
-    return null;
+
+    // Graceful fallback: do not crash UI on forbidden global content.
+    return { head: "", body: "", footer: "" };
+  } catch (error) {
+    // Keep this silent to avoid noisy runtime errors in the UI.
+    return { head: "", body: "", footer: "" };
   }
 };

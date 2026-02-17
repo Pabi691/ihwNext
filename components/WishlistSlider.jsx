@@ -146,7 +146,8 @@ const WishlistSlider = () => {
 
                     setIsLoading(true);
                     try {
-                      await addToCart(popupItem.product, selectedSize);
+                      const added = await addToCart(popupItem.product, selectedSize);
+                      if (!added) return;
                       setSuccess(true);
 
                       // ✅ Correct cart update

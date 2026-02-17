@@ -126,35 +126,24 @@ function ProductDetailsAll() {
     ? (productReviews.reduce((sum, item) => sum + item.rating, 0) / productReviews.length).toFixed(1)
     : 0;
 
-  const handleAddToCart = (product) => {
-    return new Promise((resolve) => {
-      // if ((!selectedSize || selectedSize === 'null') && productVariations.length !== 0) {
-      //   setOpenSizeChart(true);
-      //   resolve(false);
-      //   return;
-      // }
-      const hasSize = productVariations.some(v => v.size_id !== null);
-      if (hasSize && !selectedSize) {
-        console.log('productVariations', productVariations);
-        // console.log(openSizeChart);
-        setOpenSizeChart(true);
-        resolve(false);
-        return;
-      }
+  const handleAddToCart = async (product) => {
+    const hasSize = productVariations.some(v => v.size_id !== null);
+    if (hasSize && !selectedSize) {
+      setOpenSizeChart(true);
+      return false;
+    }
 
-      // const isAlreadyInCart = cart.length > 0 && cart.some((item) => item?.product_id === product.id);
+    const added = await addToCart(product, selectedSize);
+    if (!added) return false;
 
-      addToCart(product, selectedSize);
-      setAddedProductName(`${product.prod_name} added to your cart!`);
-      setAddSuccess(true);
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
-      // setTimeout(() => setAddSuccess(false), 5000);
-      resolve(true);
+    setAddedProductName(`${product.prod_name} added to your cart!`);
+    setAddSuccess(true);
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
     });
+    return true;
   };
 
   const mobileSettings = {

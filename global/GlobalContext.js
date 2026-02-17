@@ -26,6 +26,11 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
   });
   const safeToken = token || webToken;
   const publicToken = webToken;
+  const isNoCustomerError = (data) =>
+    data?.status === false &&
+    /no customer data found/i.test(
+      String(data?.error_message || data?.message || "")
+    );
 
   const cartLength = useMemo(() => cart?.length || 0, [cart]);
 
@@ -37,11 +42,16 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
 
     try {
       for (const item of localCart) {
+        const productId = item.product_id ?? item.id;
+        const variationId = item.prod_variation_id ?? null;
+        const price = item.sale_price ?? item.regular_price ?? 0;
+        if (!productId || !price) continue;
+
         await axios.post(`${apiBase}/v1/add_to_cart`, {
-          product_id: item.id,
-          prod_variation_id: item.prod_variation_id,
+          product_id: productId,
+          prod_variation_id: variationId,
           quantity: item.quantity || 1,
-          price: item.sale_price,
+          price,
         }, {
           headers: {
             Authorization: `Bearer ${userToken}`,
@@ -54,7 +64,7 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
     } catch (err) {
       console.error("Merge cart error:", err);
     }
-  }, []);
+  }, [isBrowser, apiBase]);
 
   // 🧾 Fetch Cart
   const fetchCart = useCallback(async () => {
@@ -67,17 +77,24 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
     }
 
     try {
-      await mergeLocalCartWithServer(token);
-      // console.log("userToken", userToken);
-      const { data } = await axios.get(`${apiBase}/v1/get_customer_cart`, {
-        headers: { Authorization: `Bearer ${safeToken}` },
-      });
-      // console.log('test', data);
-      setCart(data.cart_items || []);
+      await mergeLocalCartWithServer(userToken);
+      const getCartByToken = async (authToken) => {
+        const { data } = await axios.get(`${apiBase}/v1/get_customer_cart`, {
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
+        return data;
+      };
+
+      let data = await getCartByToken(userToken);
+      if (isNoCustomerError(data) && webToken && webToken !== userToken) {
+        data = await getCartByToken(webToken);
+      }
+
+      setCart(Array.isArray(data?.cart_items) ? data.cart_items : []);
     } catch (err) {
       console.error("Fetch cart error:", err);
     }
-  }, [mergeLocalCartWithServer, safeToken, isBrowser]);
+  }, [mergeLocalCartWithServer, isBrowser, apiBase, webToken]);
 
   // 💖 Fetch Wishlist
   const fetchWishlist = useCallback(async () => {
@@ -101,7 +118,7 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
   const fetchProducts = useCallback(async () => {
     if (hasFetchedProducts.current) return;
 
-    console.log("[GlobalContext] Fetching products...", { apiBase, safeToken });
+    // console.log("[GlobalContext] Fetching products...", { apiBase, safeToken });
 
     const headers = {};
     if (safeToken) {
@@ -132,20 +149,30 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
   const addToCart = useCallback(async (product, selectedSize) => {
     const userToken = isBrowser ? localStorage.getItem("userToken") : null;
 
-    if (!product || !product.id || !product.sale_price) {
-      console.error("Invalid product:", product);
-      return;
-    }
-
     const selectedVariation = product.product_variations?.find(
       (v) => v.id === selectedSize
     );
+    const resolvedPrice =
+      selectedVariation?.sale_price ??
+      selectedVariation?.regular_price ??
+      product.sale_price ??
+      product.regular_price;
+
+    if (!product || !product.id || resolvedPrice === undefined || resolvedPrice === null) {
+      console.error("Invalid product payload for addToCart:", {
+        productId: product?.id,
+        selectedSize,
+        salePrice: product?.sale_price,
+        regularPrice: product?.regular_price,
+      });
+      return false;
+    }
 
     const payload = {
       product_id: product.id,
-      prod_variation_id: selectedSize,
+      prod_variation_id: selectedSize ?? null,
       quantity: 1,
-      price: selectedVariation?.sale_price || product.sale_price,
+      price: resolvedPrice,
     };
 
     if (userToken) {
@@ -157,32 +184,108 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
       // }
 
       try {
-        await axios.post(`${apiBase}/v1/add_to_cart`, payload, {
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
-        fetchCart();
+        const postAddToCart = async (authToken) =>
+          axios.post(`${apiBase}/v1/add_to_cart`, payload, {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          });
+
+        const triedTokens = [];
+        const tokenCandidates = [userToken, webToken].filter(
+          (t, i, arr) => t && arr.indexOf(t) === i
+        );
+
+        let lastErrorData = null;
+        for (const authToken of tokenCandidates) {
+          triedTokens.push(authToken === userToken ? "userToken" : "webToken");
+          const response = await postAddToCart(authToken);
+          const data = response?.data;
+
+          if (!data || data.status !== false) {
+            await fetchCart();
+            return true;
+          }
+
+          lastErrorData = data;
+          if (!isNoCustomerError(data)) {
+            console.error("Add to cart API rejected:", data);
+            return false;
+          }
+        }
+
+        console.warn(
+          "Add to cart API rejected with no customer on tokens:",
+          triedTokens,
+          lastErrorData
+        );
       } catch (err) {
         console.error("Add to cart failed:", err);
       }
     } else if (isBrowser) {
       const localCart = JSON.parse(localStorage.getItem("localCart") || "[]");
-      const exists = localCart.find((item) => item.product_id === product.id);
+      const exists = localCart.find(
+        (item) =>
+          item.product_id === product.id &&
+          (item.prod_variation_id ?? null) === (selectedSize ?? null)
+      );
       const updatedCart = exists
         ? localCart.map((item) =>
-          item.product_id === product.id
+          item.product_id === product.id &&
+            (item.prod_variation_id ?? null) === (selectedSize ?? null)
             ? { ...item, quantity: item.quantity + 1 }
             : item
         )
-        : [...localCart, { ...product, quantity: 1, prod_variation_id: selectedSize, product_id: product.id }];
+        : [
+            ...localCart,
+            {
+              ...product,
+              quantity: 1,
+              sale_price: resolvedPrice,
+              prod_variation_id: selectedSize ?? null,
+              product_id: product.id,
+            },
+          ];
 
       localStorage.setItem("localCart", JSON.stringify(updatedCart));
       setCart(updatedCart);
+      return true;
     }
-  }, [fetchCart, isBrowser]);
+
+    // Final fallback for invalid/missing customer context: store as guest local cart.
+    if (isBrowser) {
+      const localCart = JSON.parse(localStorage.getItem("localCart") || "[]");
+      const exists = localCart.find(
+        (item) =>
+          item.product_id === product.id &&
+          (item.prod_variation_id ?? null) === (selectedSize ?? null)
+      );
+      const updatedCart = exists
+        ? localCart.map((item) =>
+            item.product_id === product.id &&
+            (item.prod_variation_id ?? null) === (selectedSize ?? null)
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          )
+        : [
+            ...localCart,
+            {
+              ...product,
+              quantity: 1,
+              sale_price: resolvedPrice,
+              prod_variation_id: selectedSize ?? null,
+              product_id: product.id,
+            },
+          ];
+      localStorage.setItem("localCart", JSON.stringify(updatedCart));
+      setCart(updatedCart);
+      return true;
+    }
+
+    return false;
+  }, [fetchCart, isBrowser, apiBase, webToken]);
 
   // 💘 Add/Remove Wishlist
   const addToWishlist = useCallback(async (product) => {

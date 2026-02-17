@@ -30,7 +30,6 @@ import Loader from "@/components/Loader";
 import ScrollToTop from "@/components/ScrollToTop";
 import { useLoading } from "@/global/LoadingContext";
 import SeoHead from "@/components/SeoHead";
-import { globalContent } from "@/services/globalcontent.service";
 import { getSlugFromPath } from "@/utils/slugUtils";
 import { fetchPageSeo } from "@/utils/serverSeo";
 
@@ -71,7 +70,7 @@ const RouteLoadingEvents = () => {
   return null;
 };
 
-const MyApp = ({ Component, pageProps, globalContentData, pageSeoData }: AppProps & { globalContentData: any; pageSeoData: any }) => {
+const MyApp = ({ Component, pageProps, pageSeoData }: AppProps & { pageSeoData: any }) => {
   const resolvedSeo = pageProps?.seo ?? pageSeoData ?? null;
 
   useEffect(() => {
@@ -96,7 +95,7 @@ const MyApp = ({ Component, pageProps, globalContentData, pageSeoData }: AppProp
   return (
     <LoadingProvider>
       <AuthProvider>
-        <GlobalProvider initialGlobalContent={globalContentData}>
+        <GlobalProvider initialGlobalContent={null}>
           <RouteLoadingEvents />
           <SeoHead seo={resolvedSeo} />
           {/* <GlobalSeo disableMeta={Boolean(pageSeoData || pageProps?.seo)} initialSeo={pageSeoData} /> */}
@@ -115,7 +114,6 @@ const MyApp = ({ Component, pageProps, globalContentData, pageSeoData }: AppProp
 MyApp.getInitialProps = async (appContext: AppContext) => {
   const appProps = await App.getInitialProps(appContext);
 
-  let globalContentData = null;
   let pageSeoData = appProps?.pageProps?.seo ?? null;
 
   try {
@@ -123,9 +121,6 @@ MyApp.getInitialProps = async (appContext: AppContext) => {
     if (typeof window !== "undefined") {
       token = localStorage.getItem("userToken") || process.env.NEXT_PUBLIC_WEB_TOKEN;
     }
-
-    // Fetch global content
-    // globalContentData = await globalContent(token);
 
     // Calculate slug and fetch SEO for the page
     const rawPath =
@@ -142,7 +137,7 @@ MyApp.getInitialProps = async (appContext: AppContext) => {
     // Suppress error to allow app to render with default/fallback data
   }
 
-  return { ...appProps, globalContentData, pageSeoData };
+  return { ...appProps, pageSeoData };
 };
 
 export default MyApp;

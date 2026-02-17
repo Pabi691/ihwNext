@@ -14,10 +14,14 @@ export async function fetchPageSeo(path: string, slug: string = "home", userToke
     const token = userToken || ENV.WEB_TOKEN;
     const activeSlug = slug || "home";
     const cacheKey = `${activeSlug}::${path}`;
+    const isContactSeoDebug = path.includes("contact-us") || activeSlug === "contact" || activeSlug === "contact-us";
 
     const cached = seoCache.get(cacheKey);
     if (cached && cached.expiresAt > Date.now()) {
         const seo = cached.value;
+        if (isContactSeoDebug) {
+            console.log(`[SEO-DEBUG][contact-us] cache hit | path=${path} | slug=${activeSlug}`);
+        }
         return {
             ...seo,
             canonicalUrl: toAbsoluteUrlIfPresent(seo.canonicalUrl),
@@ -32,6 +36,9 @@ export async function fetchPageSeo(path: string, slug: string = "home", userToke
 
     if (apiUrl) {
         try {
+            if (isContactSeoDebug) {
+                console.log(`[SEO-DEBUG][contact-us] fetch start | path=${path} | slug=${activeSlug} | api=${apiUrl}`);
+            }
             const baseHeaders: HeadersInit = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                 "Accept": "application/json"
@@ -57,9 +64,17 @@ export async function fetchPageSeo(path: string, slug: string = "home", userToke
                 // Some hosts/envs reject auth header formats differently; retry public fetch.
                 res = await fetchSeo(false);
             }
+            if (isContactSeoDebug) {
+                console.log(`[SEO-DEBUG][contact-us] api status=${res.status} ok=${res.ok} url=${apiUrl}/api/v1/get_slug_data/${activeSlug}`);
+            }
 
             if (res.ok) {
                 const data = await res.json();
+                if (isContactSeoDebug) {
+                    console.log(
+                        `[SEO-DEBUG][contact-us] api data keys=${Object.keys(data || {}).join(",")} pageData=${Boolean(data?.pageData)} product_details=${Boolean(data?.product_details)}`
+                    );
+                }
                 if (data?.pageData || data?.product_details) {
                     apiData = data;
                 }
@@ -67,11 +82,19 @@ export async function fetchPageSeo(path: string, slug: string = "home", userToke
                 // Keep silent in normal runtime; fallback SEO will be used.
             }
         } catch (e: any) {
+            if (isContactSeoDebug) {
+                console.log(`[SEO-DEBUG][contact-us] fetch error=${e?.message || "unknown"}`);
+            }
             apiData = null;
         }
     }
 
     const seo = normalizeSeoFromApi(apiData, path, slug);
+    if (isContactSeoDebug) {
+        console.log(
+            `[SEO-DEBUG][contact-us] normalized seo | title=${Boolean(seo.title)} desc=${Boolean(seo.description)} canonical=${Boolean(seo.canonicalUrl)} ogImage=${Boolean(seo.ogImage)}`
+        );
+    }
     if (apiData) {
         seoCache.set(cacheKey, {
             value: seo,

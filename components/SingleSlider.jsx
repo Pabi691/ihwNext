@@ -32,10 +32,33 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
 
       // ✅ Fetch from API if not cached
       // console.log('Slider token:', token);
-      const authToken = publicToken || token;
-      const res = await axios.get(`${apiBase}/v1/${slug_name}`, {
-        headers: { Authorization: `Bearer ${authToken}` },
-      });
+      const endpoint = `${apiBase}/v1/${slug_name}`;
+      const tokenCandidates = [token, publicToken].filter(
+        (t, i, arr) => t && arr.indexOf(t) === i
+      );
+
+      let res = null;
+
+      for (const candidate of tokenCandidates) {
+        try {
+          res = await axios.get(endpoint, {
+            headers: { Authorization: `Bearer ${candidate}` },
+          });
+          break;
+        } catch (err) {
+          if (err?.response?.status !== 401 && err?.response?.status !== 403) {
+            throw err;
+          }
+        }
+      }
+
+      if (!res) {
+        try {
+          res = await axios.get(endpoint);
+        } catch (err) {
+          throw err;
+        }
+      }
 
       let filteredProduct = res.data.products || [];
 
@@ -65,7 +88,7 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
         setProducts(filteredProduct);
       }
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error(`Error fetching products for ${slug_name}:`, error?.response?.data || error?.message || error);
     } finally {
       setLoading(false);
     }

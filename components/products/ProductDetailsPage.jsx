@@ -119,20 +119,20 @@ function ProductDetailsPage() {
     ? (productReviews.reduce((sum, item) => sum + item.rating, 0) / productReviews.length).toFixed(1)
     : 0;
 
-  const handleAddToCart = (product) =>
-    new Promise((resolve) => {
-      if ((!selectedSize || selectedSize === 'null') && productVariations.length) {
-        setOpenSizeChart(true);
-        resolve(false);
-        return;
-      }
+  const handleAddToCart = async (product) => {
+    if ((!selectedSize || selectedSize === 'null') && productVariations.length) {
+      setOpenSizeChart(true);
+      return false;
+    }
 
-      addToCart(product, selectedSize);
-      setAddedProductName(`${product.prod_name} added to your cart!`);
-      setAddSuccess(true);
-      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-      resolve(true);
-    });
+    const added = await addToCart(product, selectedSize);
+    if (!added) return false;
+
+    setAddedProductName(`${product.prod_name} added to your cart!`);
+    setAddSuccess(true);
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    return true;
+  };
 
   if (loading) return <Skeleton height={700} />;
 
