@@ -19,18 +19,27 @@ export async function fetchPageSeo(path: string, slug: string = "home", userToke
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 8000); // Increased to 8 seconds
 
-            const headers: HeadersInit = {
+            const baseHeaders: HeadersInit = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                 "Accept": "application/json"
             };
-            if (token) {
-                headers.Authorization = `Bearer ${token}`;
-            }
 
-            const res = await fetch(`${apiUrl}/api/v1/get_slug_data/${activeSlug}`, {
-                headers,
-                signal: controller.signal,
-            });
+            const fetchSeo = async (withAuth: boolean) => {
+                const headers: HeadersInit = { ...baseHeaders };
+                if (withAuth && token) {
+                    (headers as Record<string, string>).Authorization = `Bearer ${token}`;
+                }
+                return fetch(`${apiUrl}/api/v1/get_slug_data/${activeSlug}`, {
+                    headers,
+                    signal: controller.signal,
+                });
+            };
+
+            let res = await fetchSeo(true);
+            if ((res.status === 401 || res.status === 403) && token) {
+                // Some hosts/envs reject auth header formats differently; retry public fetch.
+                res = await fetchSeo(false);
+            }
             clearTimeout(timeoutId);
 
             console.log(`[SEO-Fetch] Response status: ${res.status}`);

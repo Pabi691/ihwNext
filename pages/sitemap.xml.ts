@@ -41,17 +41,24 @@ const authHeaders: Record<string, string> = WEB_TOKEN
   ? { Authorization: `Bearer ${WEB_TOKEN}` }
   : {};
 
+const fetchJsonWithAuthFallback = async (url: string) => {
+  let res = await fetch(url, { headers: authHeaders });
+  if ((res.status === 401 || res.status === 403) && WEB_TOKEN) {
+    res = await fetch(url);
+  }
+  if (!res.ok) return null;
+  return res.json();
+};
+
 const fetchCategories = async () => {
-  const res = await fetch(`${API_BASE_URL}/api/v1/categories`, { headers: authHeaders });
-  if (!res.ok) return [];
-  const json = await res.json();
+  const json = await fetchJsonWithAuthFallback(`${API_BASE_URL}/api/v1/categories`);
+  if (!json) return [];
   return toArray<{ slug?: string; child_categories?: unknown }>(json?.category_list);
 };
 
 const fetchProducts = async () => {
-  const res = await fetch(`${API_BASE_URL}/api/v1/get_active_products`, { headers: authHeaders });
-  if (!res.ok) return [];
-  const json = await res.json();
+  const json = await fetchJsonWithAuthFallback(`${API_BASE_URL}/api/v1/get_active_products`);
+  if (!json) return [];
   return toArray<{ slug?: string }>(json?.products ?? json?.product_list);
 };
 
@@ -89,7 +96,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     })
     .join("");
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`;
+  const xml = `<?xml version="1.0" encoding="UTF-8"?><!-- generated-by-next-ssr --><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`;
 
   res.setHeader("Content-Type", "application/xml; charset=utf-8");
   res.setHeader("Cache-Control", "public, s-maxage=1800, stale-while-revalidate=86400");

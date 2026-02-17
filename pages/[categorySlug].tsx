@@ -11,25 +11,30 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   try {
+    const token = process.env.NEXT_PUBLIC_WEB_TOKEN;
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/v1/categories`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_WEB_TOKEN ?? ""}`,
-        },
-      }
+      { headers }
     );
 
     if (!res.ok) {
-      return { notFound: true };
+      // Don't convert transient API/env failures into a hard 404.
+      // Let client-side fetching render category data when available.
+      return { props: {} };
     }
 
     const data = await res.json();
     const listRaw = data?.category_list ?? [];
     const list = Array.isArray(listRaw) ? listRaw : [listRaw];
     if (list.length === 0) {
-      return { notFound: true };
+      return { props: {} };
     }
 
     const allSlugs = new Set<string>();
@@ -48,7 +53,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
     return { props: {} };
   } catch {
-    return { notFound: true };
+    return { props: {} };
   }
 };
 
