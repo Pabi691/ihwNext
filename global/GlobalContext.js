@@ -11,9 +11,6 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
   const [cart, setCart] = useState([]);
   const [products, setProducts] = useState([]);
   const [wishlist, setWishlist] = useState([]);
-  const [container, setContainer] = useState([]);
-  const [accessoriesCat, setAccessoriesCat] = useState([]);
-  const [loadingCategories, setLoadingCategories] = useState(true);
   const [globalContentData, setGlobalContentData] = useState(initialGlobalContent || null);
 
   const hasFetchedProducts = useRef(false);

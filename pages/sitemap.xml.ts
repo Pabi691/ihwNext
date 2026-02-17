@@ -2,13 +2,14 @@ import type { GetServerSideProps } from "next";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.indianhairworld.com";
-const WEB_TOKEN = process.env.NEXT_PUBLIC_WEB_TOKEN || "";
+const WEB_TOKEN = process.env.NEXT_PUBLIC_WEB_TOKEN;
 
 const STATIC_ROUTES = [
   "/",
   "/shop",
   "/about",
   "/services",
+  "/celebrity",
   "/our-gallery",
   "/branch/kolkata",
   "/branch/salt-lake",
