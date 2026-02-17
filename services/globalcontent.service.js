@@ -35,7 +35,7 @@ export const globalContent = async (token) => {
   };
 
   try {
-    if (!ENV.API_URL && typeof window === "undefined") {
+    if (!ENV.API_URL) {
       console.warn("globalContent: NEXT_PUBLIC_API_URL is missing.");
       return null;
     }
@@ -45,7 +45,11 @@ export const globalContent = async (token) => {
       return null;
     }
 
-    const endpoint = `${ENV.API_URL}/api/v1/global-content`;
+    const isBrowser = typeof window !== "undefined";
+    // Use local proxy on client to avoid CORS/403, direct URL on server
+    const apiBase = isBrowser ? "/api" : `${ENV.API_URL}/api`;
+    const endpoint = `${apiBase}/v1/global-content`;
+
     const res = await axios.get(endpoint, {
       headers: {
         Authorization: `Bearer ${authToken}`,

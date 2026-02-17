@@ -16,21 +16,12 @@ export const desktopNavItems = [
       { label: "Siliguri", path: "/branch/siliguri" },
     ],
   },
+  { label: "Celebs", path: "/celebrity" },
 
   { label: "Contact Us", path: "/contact-us" },
 ];
 
 export const mobileNavItems = [
-  // {
-  //   label: "Planters",
-  //   path: "/planters",
-  //   image: "images/mobile/planters.png",
-  // },
-  // {
-  //   label: "Bucket",
-  //   path: "/bucket",
-  //   image: "images/mobile/bucket.png",
-  // },
   { label: "Home", path: "/" },
   { label: "Shop", path: "/shop" },
   { label: "About Us", path: "/about" },

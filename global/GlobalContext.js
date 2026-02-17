@@ -40,7 +40,7 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
 
     try {
       for (const item of localCart) {
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/add_to_cart`, {
+        await axios.post(`${apiBase}/v1/add_to_cart`, {
           product_id: item.id,
           prod_variation_id: item.prod_variation_id,
           quantity: item.quantity || 1,
@@ -72,7 +72,7 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
     try {
       await mergeLocalCartWithServer(token);
       // console.log("userToken", userToken);
-      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_customer_cart`, {
+      const { data } = await axios.get(`${apiBase}/v1/get_customer_cart`, {
         headers: { Authorization: `Bearer ${safeToken}` },
       });
       // console.log('test', data);
@@ -86,7 +86,7 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
   const fetchWishlist = useCallback(async () => {
     if (!safeToken || safeToken === webToken) return;
     try {
-      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_customer_wishlist`, {
+      const { data } = await axios.get(`${apiBase}/v1/get_customer_wishlist`, {
         headers: {
           Authorization: `Bearer ${safeToken}`,
           "Content-Type": "application/json",
@@ -147,7 +147,7 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
       // }
 
       try {
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/add_to_cart`, payload, {
+        await axios.post(`${apiBase}/v1/add_to_cart`, payload, {
           headers: {
             Authorization: `Bearer ${userToken}`,
             "Content-Type": "application/json",
@@ -179,7 +179,7 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
     const isInWishlist = wishlist.some((item) => item.product_id === product.id);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/add_to_wishlist`, {
+      const res = await fetch(`${apiBase}/v1/add_to_wishlist`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${safeToken}`,
@@ -255,7 +255,7 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
       if (cachedPlanters) {
         setPlanters(JSON.parse(cachedPlanters));
       } else {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_slug_data/planters`, {
+        const res = await axios.get(`${apiBase}/v1/get_slug_data/planters`, {
           headers: { Authorization: `Bearer ${safeToken}` },
         });
         const data = res?.data?.category_data?.child_categories ?? [];
@@ -268,7 +268,7 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
       if (cachedContainer) {
         setContainer(JSON.parse(cachedContainer));
       } else {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_slug_data/container`, {
+        const res = await axios.get(`${apiBase}/v1/get_slug_data/container`, {
           headers: { Authorization: `Bearer ${safeToken}` },
         });
         const data = res?.data?.category_data?.child_categories ?? [];
@@ -281,7 +281,7 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
       if (cachedAcc) {
         setAccessoriesCat(JSON.parse(cachedAcc));
       } else {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_slug_data/accessories`, {
+        const res = await axios.get(`${apiBase}/v1/get_slug_data/accessories`, {
           headers: { Authorization: `Bearer ${safeToken}` },
         });
         const data = res?.data?.category_data?.child_categories ?? [];

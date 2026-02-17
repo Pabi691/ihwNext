@@ -15,16 +15,21 @@ function NavMenus() {
           <Link to="/women" className="text-gray-900 hover:text-gray-700 pb-[25px] uppercase">
             Women
           </Link>
-        </div>       
+        </div>
+        <div className='group'>
+          <Link to="/celebrity" className="text-gray-900 hover:text-gray-700 pb-[25px] uppercase">
+            Celebrity
+          </Link>
+        </div>
       </nav>
       <nav className='md:hidden block'>
-      <div className='flex flex-col md:hidden'>
-            <Link to="/men" className="text-gray-900 hover:text-black mb-1 text-xs capitalize">
-              - Men
-            </Link>
-            <Link to="/women" className="text-gray-900 hover:text-black text-xs capitalize">
-              - Women
-            </Link>
+        <div className='flex flex-col md:hidden'>
+          <Link to="/men" className="text-gray-900 hover:text-black mb-1 text-xs capitalize">
+            - Men
+          </Link>
+          <Link to="/women" className="text-gray-900 hover:text-black text-xs capitalize">
+            - Women
+          </Link>
         </div>
       </nav>
     </>
