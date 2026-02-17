@@ -14,10 +14,15 @@ export async function fetchPageSeo(path: string, slug: string = "home", userToke
             // Allow slug override, default to path slug or 'home'
             const activeSlug = slug || "home";
 
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
+            console.log(`[SEO-Fetch] Starting fetch for slug: ${activeSlug} at ${apiUrl}`);
 
-            const headers: HeadersInit = {};
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 8000); // Increased to 8 seconds
+
+            const headers: HeadersInit = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Accept": "application/json"
+            };
             if (token) {
                 headers.Authorization = `Bearer ${token}`;
             }
@@ -28,16 +33,20 @@ export async function fetchPageSeo(path: string, slug: string = "home", userToke
             });
             clearTimeout(timeoutId);
 
+            console.log(`[SEO-Fetch] Response status: ${res.status}`);
+
             if (res.ok) {
                 const data = await res.json();
                 if (data?.pageData || data?.product_details) {
                     apiData = data;
                 }
+            } else {
+                console.error(`[SEO-Fetch-Error] API returned status: ${res.status}`);
             }
         } catch (e: any) {
-            console.error(`[SEO-Fetch-Error] Failed for slug: ${slug}`, e.message || e);
-            if (e.response) {
-                console.error(`[SEO-Fetch-Error] Status: ${e.response.status}, Data:`, e.response.data);
+            console.error(`[SEO-Fetch-Error] Failed for slug: ${slug}. Message: ${e.message}`);
+            if (e.name === 'AbortError') {
+                console.error('[SEO-Fetch-Error] Request timed out after 8000ms');
             }
             apiData = null;
         }
