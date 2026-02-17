@@ -1,11 +1,13 @@
 import React, { createContext, useState, useContext, useEffect, useCallback, useMemo, useRef } from "react";
 import axios from "axios";
+import { ENV } from "../config/env";
 
 const GlobalContext = createContext();
 export const useGlobal = () => useContext(GlobalContext);
 
 export const GlobalProvider = ({ children, initialGlobalContent }) => {
-  const apiBase = `${process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com"}/api`;
+  const isBrowser = typeof window !== "undefined";
+  const apiBase = `${ENV.API_URL}/api`;
   const [cart, setCart] = useState([]);
   const [products, setProducts] = useState([]);
   const [wishlist, setWishlist] = useState([]);
@@ -16,11 +18,11 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
 
   const hasFetchedProducts = useRef(false);
 
-  const webToken = process.env.NEXT_PUBLIC_WEB_TOKEN;
+  const webToken = ENV.WEB_TOKEN;
   // const [token, setToken] = useState(() => localStorage.getItem("userToken") || webToken); 
 
   const [token, setToken] = useState(() => {
-    if (!isBrowser) return webToken;
+    if (typeof window === "undefined") return webToken;
     const storedToken = localStorage.getItem("userToken");
     const verified = localStorage.getItem("uservarified");
     return storedToken && verified !== null ? storedToken : webToken;
@@ -101,18 +103,31 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
   // 🛍️ Fetch Products
   const fetchProducts = useCallback(async () => {
     if (hasFetchedProducts.current) return;
+
+    console.log("[GlobalContext] Fetching products...", { apiBase, safeToken });
+
+    const headers = {};
+    if (safeToken) {
+      headers.Authorization = `Bearer ${safeToken}`;
+    }
+
     try {
       const res = await fetch(`${apiBase}/v1/get_active_products`, {
-        headers: { Authorization: `Bearer ${safeToken}` },
+        headers,
       });
+
+      if (!res.ok) {
+        console.error(`[GlobalContext] Product fetch failed: ${res.status} ${res.statusText}`);
+        throw new Error(`Server responded with ${res.status}`);
+      }
+
       const data = await res.json();
-      // console.log('data', data);
       if (data.status) {
         setProducts(data.products);
         hasFetchedProducts.current = true;
       }
     } catch (err) {
-      console.error("Fetch products error:", err);
+      console.error("[GlobalContext] Fetch products error:", err);
     }
   }, [safeToken, apiBase]);
 

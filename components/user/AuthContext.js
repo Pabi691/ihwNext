@@ -1,20 +1,21 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from '@/components/compat/router';
+import { ENV } from '@/config/env';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const isBrowser = typeof window !== "undefined";
   const [userToken, setUserToken] = useState(
-    isBrowser ? localStorage.getItem("userToken") || process.env.NEXT_PUBLIC_WEB_TOKEN : null
+    isBrowser ? localStorage.getItem("userToken") || ENV.WEB_TOKEN : null
   );
   const [localCartItems, setLocalCartItems] = useState(
     isBrowser ? JSON.parse(localStorage.getItem("localCart") || "[]") : []
   );
   // const uservarified = localStorage.getItem('uservarified');
-  // const webToken = process.env.NEXT_PUBLIC_WEB_TOKEN; // Default token for unauthenticated users
+  // const webToken = ENV.WEB_TOKEN; // Default token for unauthenticated users
   const navigate = useNavigate();
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = ENV.API_URL;
 
   useEffect(() => {
     if (!isBrowser) return;

@@ -1,10 +1,9 @@
-// import API_BASE_URL from "./apiConfig";
+import { ENV } from "../config/env";
 
+export const fetchData = async (endpoint, options, token = {}) => {
 
-export const fetchData = async (endpoint, options, token = {}) => { 
+  const url = `${ENV.API_URL}/api/v1/${endpoint}`;
 
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/${endpoint}`;
-  
   const headers = {
     Authorization: `Bearer ${token}`,
     "Content-Type": "application/json",

@@ -124,14 +124,14 @@ MyApp.getInitialProps = async (appContext: AppContext) => {
     }
 
     // Fetch global content
-    globalContentData = await globalContent(token);
+    // globalContentData = await globalContent(token);
 
     // Calculate slug and fetch SEO for the page
     const slug = getSlugFromPath(appContext.ctx.asPath || appContext.router.asPath);
     console.log("slug", slug);
-    if (slug) {
-      pageSeoData = await fetchPageSeo(appContext.ctx.asPath || "/", slug, token || undefined);
-    }
+    // if (slug) {
+    //   pageSeoData = await fetchPageSeo(appContext.ctx.asPath || "/", slug, token || undefined);
+    // }
     console.log("pageSeoData", pageSeoData);
   } catch (error) {
     console.error("Error fetching global/SEO data in _app:", error);
