@@ -97,15 +97,20 @@ type SeoFields = {
 };
 
 export const buildDefaultSeo = (_pathname: string, _slug?: string | null): SeoFields => {
+  const canonical = toAbsoluteUrl(_pathname || "/");
+  const defaultTitle = "Indian Hair World: India's #1 Non-Surgical Hair Replacement Center";
+  const defaultDescription =
+    "Indian Hair World offers premium non-surgical hair replacement, hair patches, wigs, and expert consultation.";
+
   return {
-    title: "",
-    description: "",
-    keywords: "",
-    canonicalUrl: "",
-    ogTitle: "",
-    ogDescription: "",
-    ogImage: "",
-    ogUrl: "",
+    title: defaultTitle,
+    description: defaultDescription,
+    keywords: "hair patch, wig, non-surgical hair replacement, indian hair world",
+    canonicalUrl: canonical,
+    ogTitle: defaultTitle,
+    ogDescription: defaultDescription,
+    ogImage: toAbsoluteUrl("/images/our-work-img1.jpg"),
+    ogUrl: canonical,
     ogType: "website",
   };
 };

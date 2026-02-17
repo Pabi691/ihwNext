@@ -16,9 +16,6 @@ export async function fetchPageSeo(path: string, slug: string = "home", userToke
 
             console.log(`[SEO-Fetch] Starting fetch for slug: ${activeSlug} at ${apiUrl}`);
 
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 8000); // Increased to 8 seconds
-
             const baseHeaders: HeadersInit = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                 "Accept": "application/json"
@@ -29,10 +26,14 @@ export async function fetchPageSeo(path: string, slug: string = "home", userToke
                 if (withAuth && token) {
                     (headers as Record<string, string>).Authorization = `Bearer ${token}`;
                 }
-                return fetch(`${apiUrl}/api/v1/get_slug_data/${activeSlug}`, {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 15000);
+                const response = await fetch(`${apiUrl}/api/v1/get_slug_data/${activeSlug}`, {
                     headers,
                     signal: controller.signal,
                 });
+                clearTimeout(timeoutId);
+                return response;
             };
 
             let res = await fetchSeo(true);
@@ -40,7 +41,6 @@ export async function fetchPageSeo(path: string, slug: string = "home", userToke
                 // Some hosts/envs reject auth header formats differently; retry public fetch.
                 res = await fetchSeo(false);
             }
-            clearTimeout(timeoutId);
 
             console.log(`[SEO-Fetch] Response status: ${res.status}`);
 
