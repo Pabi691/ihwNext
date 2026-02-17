@@ -32,7 +32,6 @@ const HomeBody = () => {
       {/* <SingleSlider slug_name="get_active_products" discountPercentage="5" title="Steal Now: 5% and Above" /> */}
       {/* <SingleSlider slug_name="get_slug_data/bucket" price_filter="999" title="bucket under rs 999" /> */}
       {/* <TargetAudience /> */}
-      {/* <SingleSlider slug_name="get_slug_data/hanging-planter" price_filter="699" title="HANGING PLANTER Under Rs 699" /> */}
 
       {/* <SingleSlider slug_name="get_active_products" discountPercentage="10" title="under 10% off" /> */}
       <ServiceSlider />

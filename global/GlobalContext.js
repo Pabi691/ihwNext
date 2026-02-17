@@ -11,7 +11,6 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
   const [products, setProducts] = useState([]);
   const [wishlist, setWishlist] = useState([]);
   const [container, setContainer] = useState([]);
-  const [planters, setPlanters] = useState([]);
   const [accessoriesCat, setAccessoriesCat] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [globalContentData, setGlobalContentData] = useState(initialGlobalContent || null);
@@ -242,64 +241,6 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
 
   const { totalMRP, subtotal, savings, totalAmount, CGST, SGST, totalGST, grandTotal } = calculateSummary();
 
-  // for footer categories
-
-  const fetchAllCategories = useCallback(async () => {
-    if (!safeToken || !isBrowser) return;
-
-    setLoadingCategories(true);
-
-    try {
-      // MEN
-      const cachedPlanters = sessionStorage.getItem("planters");
-      if (cachedPlanters) {
-        setPlanters(JSON.parse(cachedPlanters));
-      } else {
-        const res = await axios.get(`${apiBase}/v1/get_slug_data/planters`, {
-          headers: { Authorization: `Bearer ${safeToken}` },
-        });
-        const data = res?.data?.category_data?.child_categories ?? [];
-        setPlanters(data);
-        sessionStorage.setItem("planters", JSON.stringify(data));
-      }
-
-      // CONTAINER
-      const cachedContainer = sessionStorage.getItem("container");
-      if (cachedContainer) {
-        setContainer(JSON.parse(cachedContainer));
-      } else {
-        const res = await axios.get(`${apiBase}/v1/get_slug_data/container`, {
-          headers: { Authorization: `Bearer ${safeToken}` },
-        });
-        const data = res?.data?.category_data?.child_categories ?? [];
-        setContainer(data);
-        sessionStorage.setItem("container", JSON.stringify(data));
-      }
-
-      // ACCESSORIES
-      const cachedAcc = sessionStorage.getItem("accessories");
-      if (cachedAcc) {
-        setAccessoriesCat(JSON.parse(cachedAcc));
-      } else {
-        const res = await axios.get(`${apiBase}/v1/get_slug_data/accessories`, {
-          headers: { Authorization: `Bearer ${safeToken}` },
-        });
-        const data = res?.data?.category_data?.child_categories ?? [];
-        setAccessoriesCat(data);
-        sessionStorage.setItem("accessories", JSON.stringify(data));
-      }
-    } catch (err) {
-      console.error("Category fetch error:", err);
-    } finally {
-      setLoadingCategories(false);
-    }
-  }, [safeToken, isBrowser]);
-
-  // Load categories when token is available
-  useEffect(() => {
-    if (safeToken) fetchAllCategories();
-  }, [safeToken, fetchAllCategories]);
-
   // 🔐 Logout
   const logout = () => {
     setToken(webToken);
@@ -340,10 +281,6 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
         savings,
         totalAmount,
         mergeLocalCartWithServer,
-        planters,
-        container,
-        accessoriesCat,
-        loadingCategories,
         logout,
         globalContentData,
       }}

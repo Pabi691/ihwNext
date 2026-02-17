@@ -115,6 +115,7 @@ MyApp.getInitialProps = async (appContext: AppContext) => {
 
   let globalContentData = null;
   let pageSeoData = null;
+  console.log("Running on:", typeof window === "undefined" ? "SERVER" : "CLIENT");
 
   try {
     let token = null;
