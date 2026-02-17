@@ -1,8 +1,9 @@
 import { normalizeSeoFromApi, toAbsoluteUrlIfPresent } from "./seo";
+import { ENV } from "@/config/env";
 
 export async function fetchPageSeo(path: string, slug: string = "home", userToken?: string) {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com";
-    const token = userToken || process.env.NEXT_PUBLIC_WEB_TOKEN;
+    const apiUrl = ENV.API_URL;
+    const token = userToken || ENV.WEB_TOKEN;
 
     // console.log(`[SEO-Fetch] Path: ${path}, Slug: ${slug}, Token provided: ${!!userToken}`);
 
@@ -16,10 +17,13 @@ export async function fetchPageSeo(path: string, slug: string = "home", userToke
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
 
+            const headers: HeadersInit = {};
+            if (token) {
+                headers.Authorization = `Bearer ${token}`;
+            }
+
             const res = await fetch(`${apiUrl}/api/v1/get_slug_data/${activeSlug}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                headers,
                 signal: controller.signal,
             });
             clearTimeout(timeoutId);
