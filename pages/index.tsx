@@ -6,7 +6,8 @@ import HomeBody from '../components/home/HomeBody';
 import MobileHomeBody from "@/components/mobileComponents/MobileHomeBody";
 import { DesktopNav, MobileNav } from "../components/Navigation";
 import TopBar from "../components/home/TopBar";
-import { normalizeSeoFromApi, toAbsoluteUrlIfPresent } from "@/utils/seo";
+import { toAbsoluteUrlIfPresent } from "@/utils/seo";
+import { fetchPageSeo } from "@/utils/serverSeo";
 
 const Home = () => {
 
@@ -28,45 +29,9 @@ const Home = () => {
   )
 }
 
-import { ENV } from "@/config/env";
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const apiUrl = ENV.API_URL;
-  const token = ENV.WEB_TOKEN;
-  let apiData = null;
-
-  console.log("[Index SSR] Fetching home data...", { apiUrl });
-
-  if (apiUrl && token) {
-    try {
-      // Add timeout to prevent hanging requests causing 503s
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000);
-
-      const res = await fetch(`${apiUrl}/api/v1/get_slug_data/home`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        signal: controller.signal,
-      });
-      clearTimeout(timeoutId);
-
-      if (res.ok) {
-        const data = await res.json();
-        if (data?.pageData || data?.product_details) {
-          apiData = data;
-        }
-      } else {
-        console.error(`[Index SSR] Failed to fetch: ${res.status}`);
-      }
-    } catch (e: any) {
-      console.error("[Index SSR] Error fetching home data:", e.message);
-      apiData = null;
-    }
-  }
-
   const pathname = "/";
-  const seo = normalizeSeoFromApi(apiData, pathname, "home");
+  const seo = await fetchPageSeo(pathname, "home");
 
   return {
     props: {
