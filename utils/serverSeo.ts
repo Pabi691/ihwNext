@@ -1,7 +1,7 @@
 import { normalizeSeoFromApi, toAbsoluteUrlIfPresent } from "./seo";
 
 export async function fetchPageSeo(path: string, slug: string = "home", userToken?: string) {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com";
     const token = userToken || process.env.NEXT_PUBLIC_WEB_TOKEN;
 
     // console.log(`[SEO-Fetch] Path: ${path}, Slug: ${slug}, Token provided: ${!!userToken}`);

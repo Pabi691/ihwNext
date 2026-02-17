@@ -10,7 +10,7 @@ import { themeBgColor } from '../../styles/typography';
 
 const OverView = () => {
   const { token } = useGlobal();
-  const apiBase = `${process.env.NEXT_PUBLIC_API_URL}/api`;
+  const apiBase = `${process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com"}/api`;
   // const [orders, setOrders] = useState([]);
   const [limitOrders, setLimitOrders] = useState([]);
   const [customers, setCustomers] = useState([]);

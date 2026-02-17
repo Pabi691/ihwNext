@@ -22,7 +22,7 @@ import HairPatchTryOnSection from '../ai/HairPatchTryOnSection';
 
 function ProductDetailsAll() {
   const { slug } = useParams();
-  const apiBase = `${process.env.NEXT_PUBLIC_API_URL}/api`;
+  const apiBase = `${process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com"}/api`;
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sizeChart, setSizeChart] = useState(false);

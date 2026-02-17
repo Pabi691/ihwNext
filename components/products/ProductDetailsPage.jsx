@@ -25,7 +25,7 @@ import {
 
 function ProductDetailsPage() {
   const { slug } = useParams();
-  const apiBase = `${process.env.NEXT_PUBLIC_API_URL}/api`;
+  const apiBase = `${process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com"}/api`;
   const navigate = useNavigate();
   const { wishlist, setWishlist, addToCart, token } = useGlobal();
 
