@@ -24,7 +24,7 @@ import { AuthProvider } from "@/components/user/AuthContext";
 import { GlobalProvider } from "@/global/GlobalContext";
 import { LoadingProvider } from "@/global/LoadingContext";
 import LoadingWrapper from "@/global/LoadingWrapper";
-import GlobalSeo from "@/global/GlobalSeo";
+// import GlobalSeo from "@/global/GlobalSeo";
 import FloatingContact from "@/components/FloatingContact";
 import Loader from "@/components/Loader";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -96,8 +96,8 @@ const MyApp = ({ Component, pageProps, globalContentData, pageSeoData }: AppProp
       <AuthProvider>
         <GlobalProvider initialGlobalContent={globalContentData}>
           <RouteLoadingEvents />
-          <SeoHead seo={pageSeoData || pageProps?.seo} />
-          <GlobalSeo disableMeta={Boolean(pageSeoData || pageProps?.seo)} initialSeo={pageSeoData} />
+          <SeoHead seo={pageSeoData} />
+          {/* <GlobalSeo disableMeta={Boolean(pageSeoData || pageProps?.seo)} initialSeo={pageSeoData} /> */}
           <FloatingContact />
           <Loader />
           <LoadingWrapper>
@@ -127,9 +127,11 @@ MyApp.getInitialProps = async (appContext: AppContext) => {
 
     // Calculate slug and fetch SEO for the page
     const slug = getSlugFromPath(appContext.ctx.asPath || appContext.router.asPath);
+    console.log("slug", slug);
     if (slug) {
       pageSeoData = await fetchPageSeo(appContext.ctx.asPath || "/", slug, token || undefined);
     }
+    console.log("pageSeoData", pageSeoData);
   } catch (error) {
     console.error("Error fetching global/SEO data in _app:", error);
     // Suppress error to allow app to render with default/fallback data
