@@ -118,10 +118,7 @@ MyApp.getInitialProps = async (appContext: AppContext) => {
   console.log("Running on:", typeof window === "undefined" ? "SERVER" : "CLIENT");
 
   try {
-    let token = null;
-    if (typeof window !== "undefined") {
-      token = localStorage.getItem("userToken");
-    }
+    const token = localStorage.getItem("userToken") || process.env.NEXT_PUBLIC_WEB_TOKEN;
 
     // Fetch global content
     globalContentData = await globalContent(token);
