@@ -5,6 +5,7 @@ import ProductDetailsAll from '@/components/products/ProductDetailsAll';
 import MobileMainLayout from '@/layout/MobileMainLayout';
 import type { GetServerSideProps } from "next";
 import { normalizeSeoFromApi, toAbsoluteUrlIfPresent } from "@/utils/seo";
+import { ENV } from "@/config/env";
 
 function ProductDetails() {
  
@@ -32,8 +33,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { props: {} };
   }
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  const token = process.env.NEXT_PUBLIC_WEB_TOKEN;
+  const apiUrl = ENV.API_URL;
+  const token = ENV.WEB_TOKEN;
   let apiData = null;
 
   if (apiUrl && token) {
