@@ -17,7 +17,7 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
   const { token, publicToken, wishlist, setWishlist } = useGlobal();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const apiBase = typeof window !== "undefined" ? "/api" : `${process.env.NEXT_PUBLIC_API_URL}/api`;
+  const apiBase = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
@@ -179,14 +179,14 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
                   </div>
                   <div className="flex gap-2 mt-3">
                     {(product.product_tag && product.product_tag !== 'null') && (
-                    <span className="border px-2 py-1 bg-green-400 text-white font-medium uppercase text-[10px] md:text-xs">
-                      {product.product_tag}
-                    </span>
+                      <span className="border px-2 py-1 bg-green-400 text-white font-medium uppercase text-[10px] md:text-xs">
+                        {product.product_tag}
+                      </span>
                     )}
                     {(product.product_quality && product.product_quality !== 'null') && (
-                    <span className="border px-2 py-1 bg-gray-400 text-white font-medium uppercase text-[10px] md:text-xs">
-                      {product.product_quality}
-                    </span>
+                      <span className="border px-2 py-1 bg-gray-400 text-white font-medium uppercase text-[10px] md:text-xs">
+                        {product.product_quality}
+                      </span>
                     )}
                   </div>
                 </div>

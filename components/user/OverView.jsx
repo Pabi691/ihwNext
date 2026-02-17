@@ -10,7 +10,7 @@ import { themeBgColor } from '../../styles/typography';
 
 const OverView = () => {
   const { token } = useGlobal();
-  const apiBase = typeof window !== "undefined" ? "/api" : `${process.env.NEXT_PUBLIC_API_URL}/api`;
+  const apiBase = `${process.env.NEXT_PUBLIC_API_URL}/api`;
   // const [orders, setOrders] = useState([]);
   const [limitOrders, setLimitOrders] = useState([]);
   const [customers, setCustomers] = useState([]);

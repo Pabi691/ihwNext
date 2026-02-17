@@ -22,7 +22,7 @@ import HairPatchTryOnSection from '../ai/HairPatchTryOnSection';
 
 function ProductDetailsAll() {
   const { slug } = useParams();
-  const apiBase = typeof window !== "undefined" ? "/api" : `${process.env.NEXT_PUBLIC_API_URL}/api`;
+  const apiBase = `${process.env.NEXT_PUBLIC_API_URL}/api`;
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sizeChart, setSizeChart] = useState(false);
@@ -517,7 +517,7 @@ function ProductDetailsAll() {
                       }
                     }}
                     className={`text-white px-6 gap-2 py-3 m-2 
-        rounded-lg flex items-center text-sm font-semibold ${addSuccess ? 'bg-[#2CA003] flex-col w-full' : `${themeBgGray} hover:${themeBgDark} ${hoverScale}` }`}
+        rounded-lg flex items-center text-sm font-semibold ${addSuccess ? 'bg-[#2CA003] flex-col w-full' : `${themeBgGray} hover:${themeBgDark} ${hoverScale}`}`}
                   >
                     {addSuccess && addedProductName}
                     {addSuccess && (<hr className='h-1 text-white w-full' />)}

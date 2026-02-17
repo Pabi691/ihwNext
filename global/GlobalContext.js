@@ -5,8 +5,7 @@ const GlobalContext = createContext();
 export const useGlobal = () => useContext(GlobalContext);
 
 export const GlobalProvider = ({ children, initialGlobalContent }) => {
-  const isBrowser = typeof window !== "undefined";
-  const apiBase = isBrowser ? "/api" : `${process.env.NEXT_PUBLIC_API_URL}/api`;
+  const apiBase = `${process.env.NEXT_PUBLIC_API_URL}/api`;
   const [cart, setCart] = useState([]);
   const [products, setProducts] = useState([]);
   const [wishlist, setWishlist] = useState([]);

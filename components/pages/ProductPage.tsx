@@ -15,7 +15,7 @@ type ProductPageProps = {
 
 function ProductPage({ showAll }: ProductPageProps) {
   const { categorySlug } = useParams();
-  const apiBase = typeof window !== "undefined" ? "/api" : `${process.env.NEXT_PUBLIC_API_URL}/api`;
+  const apiBase = `${process.env.NEXT_PUBLIC_API_URL}/api`;
   const [productLength, setProductLength] = useState<number>(0);
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,11 +77,11 @@ function ProductPage({ showAll }: ProductPageProps) {
   }, [fetchProducts]);
 
   const safeTitle =
-  showAll
-    ? 'All Products'
-    : typeof categorySlug === 'object'
-      ? (categorySlug as any)?.title
-      : categorySlug;
+    showAll
+      ? 'All Products'
+      : typeof categorySlug === 'object'
+        ? (categorySlug as any)?.title
+        : categorySlug;
 
   // Show a loading indicator before the data is available
   if (loading) {

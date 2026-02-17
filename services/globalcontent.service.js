@@ -45,9 +45,7 @@ export const globalContent = async (token) => {
       return null;
     }
 
-    const isBrowser = typeof window !== "undefined";
-    // Use local proxy on client to avoid CORS/403, direct URL on server
-    const apiBase = isBrowser ? "/api" : `${ENV.API_URL}/api`;
+    const apiBase = `${ENV.API_URL}/api`;
     const endpoint = `${apiBase}/v1/global-content`;
 
     const res = await axios.get(endpoint, {

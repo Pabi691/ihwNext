@@ -25,7 +25,7 @@ import {
 
 function ProductDetailsPage() {
   const { slug } = useParams();
-  const apiBase = typeof window !== "undefined" ? "/api" : `${process.env.NEXT_PUBLIC_API_URL}/api`;
+  const apiBase = `${process.env.NEXT_PUBLIC_API_URL}/api`;
   const navigate = useNavigate();
   const { wishlist, setWishlist, addToCart, token } = useGlobal();
 
@@ -198,11 +198,11 @@ function ProductDetailsPage() {
             <ProductDetailsAccordian productdetails={product.prod_desc} />
 
             <ReviewRatingComments
-                  reviews={productReviews}
-                  ratingBreakdown={ratingBreakdown}
-                  totalRatings={productReviews.length}
-                  overallRating={overallRating}
-                />
+              reviews={productReviews}
+              ratingBreakdown={ratingBreakdown}
+              totalRatings={productReviews.length}
+              overallRating={overallRating}
+            />
           </div>
         </div>
 
