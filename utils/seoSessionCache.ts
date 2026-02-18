@@ -1,3 +1,6 @@
+import { ENV } from "@/config/env";
+import { toAbsoluteUrlIfPresent } from "@/utils/seo";
+
 type SeoShape = {
   title?: string;
   description?: string;
@@ -21,7 +24,9 @@ export const normalizeSeoPath = (path?: string) => {
   const raw = String(path || "/");
   const noHash = raw.split("#")[0] || "/";
   const noQuery = noHash.split("?")[0] || "/";
-  return noQuery || "/";
+  const segments = noQuery.split("/").filter(Boolean);
+  if (!segments.length) return "/";
+  return `/${segments[segments.length - 1]}`;
 };
 
 const getSeoSessionKey = (path?: string) => `seo:meta:${normalizeSeoPath(path)}`;
@@ -82,3 +87,168 @@ export const writeSeoToSession = (
   }
 };
 
+type CategoryNode = {
+  slug?: string;
+  category_name?: string;
+  cat_desc?: string;
+  cat_img?: string;
+  cat_banner?: string;
+  seo_metadata?: {
+    meta_title?: string;
+    meta_description?: string;
+    meta_keywords?: string;
+    canonical_url?: string;
+    og_title?: string;
+    og_description?: string;
+    og_image?: string;
+    og_url?: string;
+    og_type?: string;
+  };
+  child_categories?: unknown;
+  children?: unknown;
+};
+
+type ProductNode = {
+  slug?: string;
+  prod_name?: string;
+  prod_desc?: string;
+  product_tag?: string;
+  primary_img?: string;
+  seo_metadata?: {
+    meta_title?: string;
+    meta_description?: string;
+    meta_keywords?: string;
+    canonical_url?: string;
+    og_title?: string;
+    og_description?: string;
+    og_image?: string;
+    og_url?: string;
+    og_type?: string;
+  };
+};
+
+const SEO_PRELOAD_KEY = "seo:meta:preloaded:v1";
+let seoPreloadPromise: Promise<void> | null = null;
+
+const toArray = <T,>(value: unknown): T[] => {
+  if (Array.isArray(value)) return value as T[];
+  if (value && typeof value === "object") {
+    return Object.values(value as Record<string, unknown>) as T[];
+  }
+  return [];
+};
+
+const authHeaders: Record<string, string> = ENV.WEB_TOKEN
+  ? { Authorization: `Bearer ${ENV.WEB_TOKEN}` }
+  : {};
+
+const fetchJsonWithAuthFallback = async (url: string) => {
+  let res = await fetch(url, { headers: authHeaders });
+  if ((res.status === 401 || res.status === 403) && ENV.WEB_TOKEN) {
+    res = await fetch(url);
+  }
+  if (!res.ok) return null;
+  return res.json();
+};
+
+const categorySeoFromNode = (category: CategoryNode): SeoShape | null => {
+  if (!category?.slug) return null;
+  const seo = category.seo_metadata || {};
+  const canonicalUrl = toAbsoluteUrlIfPresent(
+    seo.canonical_url || seo.og_url || `/${category.slug}`
+  );
+  const ogImage = toAbsoluteUrlIfPresent(
+    seo.og_image || category.cat_banner || category.cat_img || ""
+  );
+
+  return {
+    title: seo.meta_title || category.category_name || "",
+    description: seo.meta_description || category.cat_desc || "",
+    keywords: seo.meta_keywords || category.category_name || "",
+    canonicalUrl,
+    ogTitle: seo.og_title || seo.meta_title || category.category_name || "",
+    ogDescription: seo.og_description || seo.meta_description || category.cat_desc || "",
+    ogImage,
+    ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
+    ogType: seo.og_type || "website",
+  };
+};
+
+const productSeoFromNode = (product: ProductNode): SeoShape | null => {
+  if (!product?.slug) return null;
+  const seo = product.seo_metadata || {};
+  const canonicalUrl = toAbsoluteUrlIfPresent(
+    seo.canonical_url || seo.og_url || `/product/${product.slug}`
+  );
+  const ogImage = toAbsoluteUrlIfPresent(seo.og_image || product.primary_img || "");
+
+  return {
+    title: seo.meta_title || product.prod_name || "",
+    description: seo.meta_description || product.prod_desc || "",
+    keywords: seo.meta_keywords || product.product_tag || "",
+    canonicalUrl,
+    ogTitle: seo.og_title || seo.meta_title || product.prod_name || "",
+    ogDescription: seo.og_description || seo.meta_description || product.prod_desc || "",
+    ogImage,
+    ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
+    ogType: seo.og_type || "product",
+  };
+};
+
+const collectCategoryNodes = (nodes: unknown): CategoryNode[] => {
+  const list = toArray<CategoryNode>(nodes);
+  const collected: CategoryNode[] = [];
+
+  for (const node of list) {
+    collected.push(node);
+    const nested = node?.child_categories ?? node?.children;
+    if (nested) {
+      collected.push(...collectCategoryNodes(nested));
+    }
+  }
+
+  return collected;
+};
+
+export const preloadSeoSessionBySlugs = async () => {
+  if (typeof window === "undefined") return;
+  if (seoPreloadPromise) return seoPreloadPromise;
+  if (sessionStorage.getItem(SEO_PRELOAD_KEY)) return;
+
+  seoPreloadPromise = (async () => {
+    try {
+      const apiBaseUrl = String(ENV.API_URL || "https://server.indianhairworld.com").replace(/\/+$/, "");
+      const [categoryJson, productJson] = await Promise.all([
+        fetchJsonWithAuthFallback(`${apiBaseUrl}/api/v1/categories`),
+        fetchJsonWithAuthFallback(`${apiBaseUrl}/api/v1/get_active_products`),
+      ]);
+
+      const categorySource =
+        categoryJson?.category_list ??
+        categoryJson?.categories ??
+        categoryJson?.data?.category_list ??
+        categoryJson?.data?.categories ??
+        [];
+      const categories = collectCategoryNodes(categorySource);
+      for (const category of categories) {
+        if (!category?.slug) continue;
+        writeSeoToSession(`/${category.slug}`, categorySeoFromNode(category));
+      }
+
+      const productSource = productJson?.products ?? productJson?.product_list ?? [];
+      const products = toArray<ProductNode>(productSource);
+      for (const product of products) {
+        if (!product?.slug) continue;
+        writeSeoToSession(`/${product.slug}`, productSeoFromNode(product));
+      }
+
+      sessionStorage.setItem(SEO_PRELOAD_KEY, String(Date.now()));
+    } catch {
+      // Silent fail: page-level SEO fetch continues to work.
+    } finally {
+      seoPreloadPromise = null;
+    }
+  })();
+
+  return seoPreloadPromise;
+};

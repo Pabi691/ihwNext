@@ -64,7 +64,13 @@ const fetchJsonWithAuthFallback = async (url: string) => {
 const fetchCategories = async () => {
   const json = await fetchJsonWithAuthFallback(`${API_BASE_URL}/api/v1/categories`);
   if (!json) return [];
-  return toArray<{ slug?: string; child_categories?: unknown }>(json?.category_list);
+  const source =
+    json?.category_list ??
+    json?.categories ??
+    json?.data?.category_list ??
+    json?.data?.categories ??
+    [];
+  return toArray<{ slug?: string; child_categories?: unknown; children?: unknown }>(source);
 };
 
 const fetchProducts = async () => {
@@ -78,16 +84,15 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   let productRoutes: string[] = [];
 
   const collectCategorySlugs = (nodes: unknown): string[] => {
-    const list = toArray<{ slug?: string; child_categories?: unknown }>(nodes);
+    const list = toArray<{ slug?: string; child_categories?: unknown; children?: unknown }>(nodes);
     const routes: string[] = [];
 
     for (const node of list) {
       if (node?.slug) {
         routes.push(`/${node.slug}`);
       }
-      if (node?.child_categories) {
-        routes.push(...collectCategorySlugs(node.child_categories));
-      }
+      const nested = node?.child_categories ?? node?.children;
+      if (nested) routes.push(...collectCategorySlugs(nested));
     }
 
     return routes;

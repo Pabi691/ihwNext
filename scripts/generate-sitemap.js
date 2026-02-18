@@ -40,7 +40,12 @@ const toArray = (value) => {
 const fetchCategories = async () => {
   try {
     const response = await axios.get(CATEGORIES_URL, getRequestConfig());
-    const listRaw = response.data?.category_list ?? [];
+    const listRaw =
+      response.data?.category_list ??
+      response.data?.categories ??
+      response.data?.data?.category_list ??
+      response.data?.data?.categories ??
+      [];
     return toArray(listRaw);
   } catch (error) {
     console.error('Error fetching categories:', error?.message || error);
@@ -74,13 +79,14 @@ const generateSitemap = async () => {
   const categoryRoutes = [];
   const productRoutes = [];
 
-  categories.forEach((cat) => {
-    if (cat?.slug) categoryRoutes.push(`/${cat.slug}`);
-    const childCategories = toArray(cat?.child_categories);
-    childCategories.forEach((child) => {
-      if (child?.slug) categoryRoutes.push(`/${child.slug}`);
+  const collectCategoryRoutes = (nodes) => {
+    toArray(nodes).forEach((cat) => {
+      if (cat?.slug) categoryRoutes.push(`/${cat.slug}`);
+      const nested = cat?.child_categories ?? cat?.children;
+      if (nested) collectCategoryRoutes(nested);
     });
-  });
+  };
+  collectCategoryRoutes(categories);
 
   products.forEach((product) => {
     if (product?.slug) {

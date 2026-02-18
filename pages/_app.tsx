@@ -32,7 +32,12 @@ import { useLoading } from "@/global/LoadingContext";
 import SeoHead from "@/components/SeoHead";
 import { getSeoSlugCandidatesFromPath } from "@/utils/slugUtils";
 import { fetchPageSeo } from "@/utils/serverSeo";
-import { normalizeSeoPath, readSeoFromSession, writeSeoToSession } from "@/utils/seoSessionCache";
+import {
+  normalizeSeoPath,
+  preloadSeoSessionBySlugs,
+  readSeoFromSession,
+  writeSeoToSession,
+} from "@/utils/seoSessionCache";
 
 // Prevent SSR crashes when code accesses localStorage/sessionStorage
 if (typeof window === "undefined") {
@@ -99,6 +104,10 @@ const MyApp = ({ Component, pageProps, pageSeoData }: AppProps & { pageSeoData: 
     const currentPath = normalizeSeoPath(router.asPath || "/");
     writeSeoToSession(currentPath, resolvedSeo);
   }, [router.asPath, resolvedSeo]);
+
+  useEffect(() => {
+    preloadSeoSessionBySlugs();
+  }, []);
 
   return (
     <LoadingProvider>

@@ -94,7 +94,9 @@ export const getSeoSlugCandidatesFromPath = (pathname) => {
     };
 
     const routeKey = parts[0];
-    const candidates = aliasMap[routeKey] || [parts[parts.length - 1]];
+    const endpointSlug = parts[parts.length - 1];
+    const aliasCandidates = aliasMap[routeKey] || [];
+    const candidates = [endpointSlug, ...aliasCandidates];
 
     return [...new Set(candidates.filter(Boolean))];
 };
