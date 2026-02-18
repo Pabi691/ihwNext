@@ -1,5 +1,6 @@
 const fs = require('fs');
 const axios = require('axios');
+const { STATIC_PUBLIC_ROUTES } = require('../utils/seoStaticRoutes');
 require('dotenv').config({ path: '.env.local' });
 const webToken = process.env.NEXT_PUBLIC_WEB_TOKEN || process.env.REACT_APP_WEB_TOKEN;
 
@@ -8,22 +9,7 @@ const CATEGORIES_URL = `${API_BASE_URL}/api/v1/categories`;
 const PRODUCTS_URL = `${API_BASE_URL}/api/v1/get_active_products`;
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.indianhairworld.com";
 
-const staticRoutes = [
-  "/",
-  "/shop",
-  "/about",
-  "/services",
-  "/our-gallery",
-  "/branch/kolkata",
-  "/branch/salt-lake",
-  "/branch/durgapur",
-  "/branch/siliguri",
-  "/terms-conditions",
-  "/privacy-policy",
-  "/return-exchange-policy",
-  "/shipping-and-delivery",
-  "/contact-us",
-];
+const staticRoutes = STATIC_PUBLIC_ROUTES;
 
 const getRequestConfig = () => ({
   headers: {

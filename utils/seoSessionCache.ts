@@ -1,5 +1,6 @@
 import { ENV } from "@/config/env";
 import { toAbsoluteUrlIfPresent } from "@/utils/seo";
+import { STATIC_ROUTE_SEO_CANDIDATES } from "@/utils/seoStaticRoutes";
 
 type SeoShape = {
   title?: string;
@@ -250,6 +251,57 @@ export const preloadSeoSessionBySlugs = async () => {
       for (const product of products) {
         if (!product?.slug) continue;
         writeSeoToSession(`/${product.slug}`, productSeoFromNode(product));
+      }
+
+      const staticRouteEntries = Object.entries(
+        STATIC_ROUTE_SEO_CANDIDATES as Record<string, string[]>
+      );
+      for (const [route, candidates] of staticRouteEntries) {
+        const candidate = toArray<string>(candidates)[0];
+        if (!candidate) continue;
+        const staticSeoJson = await fetchJsonWithAuthFallback(
+          `${apiBaseUrl}/api/v1/get_slug_data/${candidate}`
+        );
+        const payload = staticSeoJson?.pageData
+          ? {
+              title: staticSeoJson?.pageData?.seo_metadata?.meta_title || staticSeoJson?.pageData?.title || "",
+              description:
+                staticSeoJson?.pageData?.seo_metadata?.meta_description ||
+                staticSeoJson?.pageData?.description ||
+                "",
+              keywords:
+                staticSeoJson?.pageData?.seo_metadata?.meta_keywords ||
+                staticSeoJson?.pageData?.keywords ||
+                "",
+              canonicalUrl: toAbsoluteUrlIfPresent(
+                staticSeoJson?.pageData?.seo_metadata?.canonical_url ||
+                  staticSeoJson?.pageData?.seo_metadata?.og_url ||
+                  route
+              ),
+              ogTitle:
+                staticSeoJson?.pageData?.seo_metadata?.og_title ||
+                staticSeoJson?.pageData?.seo_metadata?.meta_title ||
+                staticSeoJson?.pageData?.title ||
+                "",
+              ogDescription:
+                staticSeoJson?.pageData?.seo_metadata?.og_description ||
+                staticSeoJson?.pageData?.seo_metadata?.meta_description ||
+                staticSeoJson?.pageData?.description ||
+                "",
+              ogImage: toAbsoluteUrlIfPresent(
+                staticSeoJson?.pageData?.seo_metadata?.og_image ||
+                  staticSeoJson?.pageData?.primary_img ||
+                  ""
+              ),
+              ogUrl: toAbsoluteUrlIfPresent(
+                staticSeoJson?.pageData?.seo_metadata?.og_url ||
+                  staticSeoJson?.pageData?.seo_metadata?.canonical_url ||
+                  route
+              ),
+              ogType: staticSeoJson?.pageData?.seo_metadata?.og_type || "website",
+            }
+          : null;
+        writeSeoToSession(route, payload);
       }
 
       sessionStorage.setItem(SEO_PRELOAD_KEY, String(Date.now()));

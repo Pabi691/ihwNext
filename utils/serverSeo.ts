@@ -9,6 +9,9 @@ type CachedSeo = {
 const seoCache = new Map<string, CachedSeo>();
 const SEO_CACHE_TTL_MS = 5 * 60 * 1000;
 
+const toRecord = (value: unknown): Record<string, unknown> =>
+    value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+
 export async function fetchPageSeo(
     path: string,
     slug: string | string[] = "home",
@@ -44,23 +47,41 @@ export async function fetchPageSeo(
 
     let apiData = null;
 
+    const baseHeaders: HeadersInit = {
+        "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        Accept: "application/json",
+    };
+
+    const fetchJsonWithFallback = async (url: string) => {
+        const withAuthHeaders: HeadersInit = token
+            ? { ...baseHeaders, Authorization: `Bearer ${token}` }
+            : baseHeaders;
+
+        let res = await fetch(url, { headers: withAuthHeaders });
+        if (!res.ok && token) {
+            res = await fetch(url, { headers: baseHeaders });
+        }
+        if (!res.ok) return null;
+        try {
+            return await res.json();
+        } catch {
+            return null;
+        }
+    };
+
     if (apiUrl) {
         try {
             if (isContactSeoDebug) {
                 console.log(`[SEO-DEBUG][contact-us] fetch start | path=${path} | slug=${primarySlug} | api=${apiUrl}`);
             }
-            const baseHeaders: HeadersInit = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-                "Accept": "application/json"
-            };
-
             const fetchSeo = async (candidateSlug: string, withAuth: boolean) => {
                 const headers: HeadersInit = { ...baseHeaders };
                 if (withAuth && token) {
                     (headers as Record<string, string>).Authorization = `Bearer ${token}`;
                 }
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 4000);
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
                 const response = await fetch(`${apiUrl}/api/v1/get_slug_data/${candidateSlug}`, {
                     headers,
                     signal: controller.signal,
@@ -102,6 +123,50 @@ export async function fetchPageSeo(
                 if (typedData?.pageData || typedData?.product_details || typedData?.category_data) {
                     apiData = typedData;
                     break;
+                }
+            }
+
+            // Fallback: resolve from category/product listing APIs when get_slug_data is unavailable.
+            if (!apiData) {
+                const [categoryJson, productJson] = await Promise.all([
+                    fetchJsonWithFallback(`${apiUrl}/api/v1/categories`),
+                    fetchJsonWithFallback(`${apiUrl}/api/v1/get_active_products`),
+                ]);
+
+                const categorySource =
+                    categoryJson?.category_list ??
+                    categoryJson?.categories ??
+                    categoryJson?.data?.category_list ??
+                    categoryJson?.data?.categories ??
+                    [];
+                const categoryList = Array.isArray(categorySource)
+                    ? categorySource
+                    : Object.values(categorySource || {});
+                const matchedCategory = categoryList.find((item) => {
+                    const rec = toRecord(item);
+                    return activeSlugs.includes(String(rec.slug || ""));
+                });
+                if (matchedCategory) {
+                    apiData = { category_data: matchedCategory };
+                }
+
+                if (!apiData) {
+                    const productSource =
+                        productJson?.products ??
+                        productJson?.product_list ??
+                        productJson?.data?.products ??
+                        productJson?.data?.product_list ??
+                        [];
+                    const productList = Array.isArray(productSource)
+                        ? productSource
+                        : Object.values(productSource || {});
+                    const matchedProduct = productList.find((item) => {
+                        const rec = toRecord(item);
+                        return activeSlugs.includes(String(rec.slug || ""));
+                    });
+                    if (matchedProduct) {
+                        apiData = { product_details: matchedProduct };
+                    }
                 }
             }
         } catch (e: unknown) {

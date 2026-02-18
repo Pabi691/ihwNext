@@ -1,4 +1,5 @@
 import type { GetServerSideProps } from "next";
+import { STATIC_PUBLIC_ROUTES } from "@/utils/seoStaticRoutes";
 
 const sanitizeApiUrl = (value?: string) => {
   const normalized = (value || "").trim();
@@ -12,25 +13,7 @@ const API_BASE_URL = sanitizeApiUrl(process.env.NEXT_PUBLIC_API_URL);
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.indianhairworld.com";
 const WEB_TOKEN = process.env.NEXT_PUBLIC_WEB_TOKEN;
 
-const STATIC_ROUTES = [
-  "/",
-  "/men",
-  "/women",
-  "/shop",
-  "/about",
-  "/services",
-  "/celebrity",
-  "/our-gallery",
-  "/branch/kolkata",
-  "/branch/salt-lake",
-  "/branch/durgapur",
-  "/branch/siliguri",
-  "/terms-conditions",
-  "/privacy-policy",
-  "/return-exchange-policy",
-  "/shipping-and-delivery",
-  "/contact-us",
-];
+const STATIC_ROUTES = STATIC_PUBLIC_ROUTES;
 
 const toArray = <T,>(value: unknown): T[] => {
   if (Array.isArray(value)) return value as T[];

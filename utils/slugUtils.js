@@ -1,18 +1,11 @@
+import { STATIC_ROUTE_SEO_CANDIDATES } from "@/utils/seoStaticRoutes";
+
 export const getSlugFromPath = (pathname) => {
     if (!pathname || pathname === "/") return "home";
 
     const routeToPageMap = {
         home: "home",
         "contact-us": "contact-us",
-    };
-
-    const routeSlugAliases = {
-        "contact-us": ["contact-us", "contact"],
-        "terms-conditions": ["terms-and-conditions", "terms-conditions"],
-        "return-exchange-policy": ["return-policy", "return-exchange-policy"],
-        men: ["men-products", "men"],
-        women: ["women-products", "women"],
-        "shipping-and-delivery": ["shipping-and-delivery"],
     };
 
     // Remove query strings if present
@@ -84,18 +77,9 @@ export const getSeoSlugCandidatesFromPath = (pathname) => {
         return [parts[1]];
     }
 
-    const aliasMap = {
-        "contact-us": ["contact-us", "contact"],
-        "terms-conditions": ["terms-and-conditions", "terms-conditions"],
-        "return-exchange-policy": ["return-policy", "return-exchange-policy"],
-        men: ["men-products", "men"],
-        women: ["women-products", "women"],
-        "shipping-and-delivery": ["shipping-and-delivery"],
-    };
-
-    const routeKey = parts[0];
+    const fullRoute = `/${parts.join("/")}`;
     const endpointSlug = parts[parts.length - 1];
-    const aliasCandidates = aliasMap[routeKey] || [];
+    const aliasCandidates = STATIC_ROUTE_SEO_CANDIDATES[fullRoute] || [];
     const candidates = [endpointSlug, ...aliasCandidates];
 
     return [...new Set(candidates.filter(Boolean))];
