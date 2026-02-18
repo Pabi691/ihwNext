@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import App, { AppProps, AppContext } from "next/app";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 
 import "@/index.css";
 import "@/App.css";
@@ -32,6 +32,7 @@ import { useLoading } from "@/global/LoadingContext";
 import SeoHead from "@/components/SeoHead";
 import { getSeoSlugCandidatesFromPath } from "@/utils/slugUtils";
 import { fetchPageSeo } from "@/utils/serverSeo";
+import { normalizeSeoPath, readSeoFromSession, writeSeoToSession } from "@/utils/seoSessionCache";
 
 // Prevent SSR crashes when code accesses localStorage/sessionStorage
 if (typeof window === "undefined") {
@@ -71,6 +72,7 @@ const RouteLoadingEvents = () => {
 };
 
 const MyApp = ({ Component, pageProps, pageSeoData }: AppProps & { pageSeoData: any }) => {
+  const router = useRouter();
   const resolvedSeo = pageProps?.seo ?? pageSeoData ?? null;
 
   useEffect(() => {
@@ -91,6 +93,12 @@ const MyApp = ({ Component, pageProps, pageSeoData }: AppProps & { pageSeoData: 
     };
     loadOwl();
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const currentPath = normalizeSeoPath(router.asPath || "/");
+    writeSeoToSession(currentPath, resolvedSeo);
+  }, [router.asPath, resolvedSeo]);
 
   return (
     <LoadingProvider>
@@ -128,9 +136,21 @@ MyApp.getInitialProps = async (appContext: AppContext) => {
       appContext.ctx.pathname ||
       appContext.router.asPath ||
       "/";
+    const normalizedPath = normalizeSeoPath(rawPath);
+
+    if (!pageSeoData && typeof window !== "undefined") {
+      const cachedSeo = readSeoFromSession(normalizedPath);
+      if (cachedSeo) {
+        pageSeoData = cachedSeo;
+      }
+    }
+
     const seoSlugCandidates = getSeoSlugCandidatesFromPath(rawPath);
     if (!pageSeoData && seoSlugCandidates.length > 0) {
       pageSeoData = await fetchPageSeo(rawPath, seoSlugCandidates, token || undefined);
+      if (typeof window !== "undefined") {
+        writeSeoToSession(normalizedPath, pageSeoData);
+      }
     }
   } catch (error) {
     console.error("Error fetching global/SEO data in _app:", error);
