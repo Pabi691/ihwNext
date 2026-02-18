@@ -4,6 +4,7 @@ import { Container, Box, Alert, CircularProgress } from '@mui/material';
 import MainLayOut from '../../layout/MainLayOut';
 // import API_BASE_URL from '../../global/apiConfig';
 import { useGlobal } from '../../global/GlobalContext';
+import { ENV } from '@/config/env';
 import { Link, useLocation, useNavigate } from '@/components/compat/router';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 // import GoogleLoginButton from './GoogleLoginButton';
@@ -12,6 +13,7 @@ import { toast } from 'react-toastify';
 import { themeBgColor, themeTextColor } from '../../styles/typography';
 
 const Login = () => {
+  const apiBaseUrl = ENV.API_URL;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isPasswordChange, setIsPasswordChange] = useState(false);
@@ -43,7 +45,7 @@ const Login = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/webuser/login`, {
+      const response = await fetch(`${apiBaseUrl}/api/v1/webuser/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -96,7 +98,7 @@ const Login = () => {
     setError(null);
 
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/forgot-password`, {
+      const response = await axios.post(`${apiBaseUrl}/api/v1/forgot-password`, {
         "email": email
       });
 
@@ -120,7 +122,7 @@ const Login = () => {
     setLoading(true);
     setSuccess(null);
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/resend_email_verification`, {
+      const response = await axios.get(`${apiBaseUrl}/api/v1/resend_email_verification`, {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${localStorage.getItem('userToken')}`
