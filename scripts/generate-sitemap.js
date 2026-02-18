@@ -4,7 +4,9 @@ const { STATIC_PUBLIC_ROUTES } = require('../utils/seoStaticRoutes');
 require('dotenv').config({ path: '.env.local' });
 const webToken = process.env.NEXT_PUBLIC_WEB_TOKEN || process.env.REACT_APP_WEB_TOKEN;
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com";
+const API_BASE_URL = String(process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com")
+  .replace(/\/+$/, "")
+  .replace(/\/api\/v1$/i, "");
 const CATEGORIES_URL = `${API_BASE_URL}/api/v1/categories`;
 const PRODUCTS_URL = `${API_BASE_URL}/api/v1/get_active_products`;
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.indianhairworld.com";

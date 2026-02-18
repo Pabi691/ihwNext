@@ -5,7 +5,7 @@ const sanitizePublicApiUrl = (value?: string) => {
   if (!normalized || normalized === "undefined" || normalized === "null") {
     return "https://server.indianhairworld.com";
   }
-  return normalized.replace(/\/+$/, "");
+  return normalized.replace(/\/+$/, "").replace(/\/api\/v1$/i, "");
 };
 
 const nextConfig: NextConfig = {

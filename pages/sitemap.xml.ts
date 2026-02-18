@@ -6,7 +6,7 @@ const sanitizeApiUrl = (value?: string) => {
   if (!normalized || normalized === "undefined" || normalized === "null") {
     return "https://server.indianhairworld.com";
   }
-  return normalized.replace(/\/+$/, "");
+  return normalized.replace(/\/+$/, "").replace(/\/api\/v1$/i, "");
 };
 
 const API_BASE_URL = sanitizeApiUrl(process.env.NEXT_PUBLIC_API_URL);
@@ -85,6 +85,8 @@ const fetchProducts = async () => {
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   let categoryRoutes: string[] = [];
   let productRoutes: string[] = [];
+  let categoryError = "";
+  let productError = "";
 
   const collectCategorySlugs = (nodes: unknown): string[] => {
     const list = toArray<{ slug?: string; child_categories?: unknown; children?: unknown }>(nodes);
@@ -102,16 +104,21 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   };
 
   try {
-    const [categories, products] = await Promise.all([fetchCategories(), fetchProducts()]);
-
+    const categories = await fetchCategories();
     categoryRoutes = collectCategorySlugs(categories);
+  } catch (err: unknown) {
+    categoryRoutes = [];
+    categoryError = err instanceof Error ? err.message : "category-fetch-failed";
+  }
 
+  try {
+    const products = await fetchProducts();
     productRoutes = products
       .map((product) => (product?.slug ? `/product/${product.slug}` : ""))
       .filter(Boolean);
-  } catch {
-    categoryRoutes = [];
+  } catch (err: unknown) {
     productRoutes = [];
+    productError = err instanceof Error ? err.message : "product-fetch-failed";
   }
 
   const allRoutes = [...new Set([...STATIC_ROUTES, ...categoryRoutes, ...productRoutes])];
@@ -123,7 +130,8 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     })
     .join("");
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?><!-- generated-by-next-ssr --><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`;
+  const debugComment = `generated-by-next-ssr; categories=${categoryRoutes.length}; products=${productRoutes.length}; categoryError=${categoryError || "none"}; productError=${productError || "none"}`;
+  const xml = `<?xml version="1.0" encoding="UTF-8"?><!-- ${debugComment} --><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`;
 
   res.setHeader("Content-Type", "application/xml; charset=utf-8");
   res.setHeader("Cache-Control", "public, s-maxage=1800, stale-while-revalidate=86400");

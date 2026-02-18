@@ -10,7 +10,10 @@ const sanitizeEnvValue = (value, fallback) => {
   return normalized;
 };
 
-const sanitizeApiUrl = (value) => sanitizeEnvValue(value, DEFAULT_API_URL).replace(/\/+$/, "");
+const sanitizeApiUrl = (value) => {
+  const base = sanitizeEnvValue(value, DEFAULT_API_URL).replace(/\/+$/, "");
+  return base.replace(/\/api\/v1$/i, "");
+};
 
 export const ENV = {
   API_URL: sanitizeApiUrl(process.env.NEXT_PUBLIC_API_URL),
