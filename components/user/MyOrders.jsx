@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useGlobal } from '../../global/GlobalContext';
 import axios from 'axios';
+import { ENV } from '@/config/env';
 import { BiChevronRight, BiLogoWhatsapp } from 'react-icons/bi';
 import { Link, useNavigate } from '@/components/compat/router';
 import { MdPending } from 'react-icons/md';
 import { themeBgColor } from '../../styles/typography';
 
 const MyOrders = () => {
+  const apiBaseUrl = ENV.API_URL;
   const { token } = useGlobal();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -18,7 +20,7 @@ const MyOrders = () => {
     try {
       const fetchOrders = async () => {
         setLoading(true);
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_my_orders`, {
+        const response = await axios.get(`${apiBaseUrl}/api/v1/get_my_orders`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

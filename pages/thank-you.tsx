@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from '@/components/compat/router';
+import { ENV } from '@/config/env';
 import MainLayOut from '../layout/MainLayOut';
 import { useGlobal } from '../global/GlobalContext';
 
 
 const ThankYou = () => {
-
+  const apiBaseUrl = ENV.API_URL;
   const { token } = useGlobal();
   const [orderId, setOrderId] = useState<any>(null);
   useEffect(() => {
     const fetchOrderId = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_my_orders`, {
+        const response = await fetch(`${apiBaseUrl}/api/v1/get_my_orders`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
