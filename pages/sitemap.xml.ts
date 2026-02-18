@@ -1,11 +1,21 @@
 import type { GetServerSideProps } from "next";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com";
+const sanitizeApiUrl = (value?: string) => {
+  const normalized = (value || "").trim();
+  if (!normalized || normalized === "undefined" || normalized === "null") {
+    return "https://server.indianhairworld.com";
+  }
+  return normalized.replace(/\/+$/, "");
+};
+
+const API_BASE_URL = sanitizeApiUrl(process.env.NEXT_PUBLIC_API_URL);
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.indianhairworld.com";
 const WEB_TOKEN = process.env.NEXT_PUBLIC_WEB_TOKEN;
 
 const STATIC_ROUTES = [
   "/",
+  "/men",
+  "/women",
   "/shop",
   "/about",
   "/services",
@@ -67,18 +77,26 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   let categoryRoutes: string[] = [];
   let productRoutes: string[] = [];
 
+  const collectCategorySlugs = (nodes: unknown): string[] => {
+    const list = toArray<{ slug?: string; child_categories?: unknown }>(nodes);
+    const routes: string[] = [];
+
+    for (const node of list) {
+      if (node?.slug) {
+        routes.push(`/${node.slug}`);
+      }
+      if (node?.child_categories) {
+        routes.push(...collectCategorySlugs(node.child_categories));
+      }
+    }
+
+    return routes;
+  };
+
   try {
     const [categories, products] = await Promise.all([fetchCategories(), fetchProducts()]);
 
-    categoryRoutes = categories.flatMap((cat) => {
-      const routes: string[] = [];
-      if (cat?.slug) routes.push(`/${cat.slug}`);
-      const childCategories = toArray<{ slug?: string }>(cat?.child_categories);
-      childCategories.forEach((child) => {
-        if (child?.slug) routes.push(`/${child.slug}`);
-      });
-      return routes;
-    });
+    categoryRoutes = collectCategorySlugs(categories);
 
     productRoutes = products
       .map((product) => (product?.slug ? `/product/${product.slug}` : ""))

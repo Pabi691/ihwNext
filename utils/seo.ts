@@ -148,6 +148,29 @@ export const normalizeSeoFromApi = (
     };
   }
 
+  if (apiResponse.category_data) {
+    const category = apiResponse.category_data;
+    const seo = category.seo_metadata || {};
+    const canonicalUrl = toAbsoluteUrlIfPresent(
+      seo.canonical_url || seo.og_url || `/${category.slug || slug || ""}`
+    );
+    const ogImage = toAbsoluteUrlIfPresent(
+      seo.og_image || category.cat_banner || category.cat_img
+    );
+
+    return {
+      title: seo.meta_title || category.category_name || "",
+      description: seo.meta_description || category.cat_desc || "",
+      keywords: seo.meta_keywords || category.category_name || "",
+      canonicalUrl,
+      ogTitle: seo.og_title || seo.meta_title || category.category_name || "",
+      ogDescription: seo.og_description || seo.meta_description || category.cat_desc || "",
+      ogImage,
+      ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
+      ogType: seo.og_type || "website",
+    };
+  }
+
   if (apiResponse.product_details) {
     const product = apiResponse.product_details;
     const seo = product.seo_metadata || {};

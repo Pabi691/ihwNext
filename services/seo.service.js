@@ -22,7 +22,7 @@ export const fetchSeoBySlug = async (slug, token) => {
     if (!slug) return null;
 
     const data = await tryFetch(slug);
-    if (data?.pageData || data?.product_details) {
+    if (data?.pageData || data?.product_details || data?.category_data) {
       return data;
     }
 

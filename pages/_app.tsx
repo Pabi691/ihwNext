@@ -30,7 +30,7 @@ import Loader from "@/components/Loader";
 import ScrollToTop from "@/components/ScrollToTop";
 import { useLoading } from "@/global/LoadingContext";
 import SeoHead from "@/components/SeoHead";
-import { getSlugFromPath } from "@/utils/slugUtils";
+import { getSeoSlugCandidatesFromPath } from "@/utils/slugUtils";
 import { fetchPageSeo } from "@/utils/serverSeo";
 
 // Prevent SSR crashes when code accesses localStorage/sessionStorage
@@ -128,9 +128,9 @@ MyApp.getInitialProps = async (appContext: AppContext) => {
       appContext.ctx.pathname ||
       appContext.router.asPath ||
       "/";
-    const slug = getSlugFromPath(rawPath);
-    if (!pageSeoData && slug) {
-      pageSeoData = await fetchPageSeo(rawPath, slug, token || undefined);
+    const seoSlugCandidates = getSeoSlugCandidatesFromPath(rawPath);
+    if (!pageSeoData && seoSlugCandidates.length > 0) {
+      pageSeoData = await fetchPageSeo(rawPath, seoSlugCandidates, token || undefined);
     }
   } catch (error) {
     console.error("Error fetching global/SEO data in _app:", error);
