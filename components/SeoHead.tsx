@@ -18,10 +18,8 @@ const SeoHead = ({ seo }: { seo: SeoData }) => {
   const router = useRouter();
 
   useEffect(() => {
-    if (router.asPath?.includes("/contact-us")) {
-      // Browser-side debug for contact page SEO payload
-      console.log("[SEO-DEBUG][contact-us] SeoHead payload:", seo);
-    }
+    // Browser-side debug for every page SEO payload
+    console.log(`[SEO-DEBUG] SeoHead payload | path=${router.asPath || "/"}`, seo);
   }, [router.asPath, seo]);
 
   if (!seo) return null;
