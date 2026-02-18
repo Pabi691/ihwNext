@@ -10,6 +10,7 @@ const sanitizeApiUrl = (value?: string) => {
 };
 
 const API_BASE_URL = sanitizeApiUrl(process.env.NEXT_PUBLIC_API_URL);
+const API_FALLBACK_BASE_URL = "https://server.indianhairworld.com";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.indianhairworld.com";
 const WEB_TOKEN = process.env.NEXT_PUBLIC_WEB_TOKEN;
 
@@ -22,6 +23,9 @@ const toArray = <T,>(value: unknown): T[] => {
   }
   return [];
 };
+
+const asRecord = (value: unknown): Record<string, unknown> =>
+  value && typeof value === "object" ? (value as Record<string, unknown>) : {};
 
 const xmlEscape = (value: string) =>
   value
@@ -58,26 +62,26 @@ const fetchJsonWithAuthFallback = async (url: string) => {
   return parseJsonSafe(res);
 };
 
-const fetchCategories = async () => {
-  const json = await fetchJsonWithAuthFallback(`${API_BASE_URL}/api/v1/categories`);
-  if (!json) return [];
+const extractCategoryList = (json: unknown) => {
+  const payload = asRecord(json);
+  const data = asRecord(payload.data);
   const source =
-    json?.category_list ??
-    json?.categories ??
-    json?.data?.category_list ??
-    json?.data?.categories ??
+    payload.category_list ??
+    payload.categories ??
+    data.category_list ??
+    data.categories ??
     [];
   return toArray<{ slug?: string; child_categories?: unknown; children?: unknown }>(source);
 };
 
-const fetchProducts = async () => {
-  const json = await fetchJsonWithAuthFallback(`${API_BASE_URL}/api/v1/get_active_products`);
-  if (!json) return [];
+const extractProductList = (json: unknown) => {
+  const payload = asRecord(json);
+  const data = asRecord(payload.data);
   const source =
-    json?.products ??
-    json?.product_list ??
-    json?.data?.products ??
-    json?.data?.product_list ??
+    payload.products ??
+    payload.product_list ??
+    data.products ??
+    data.product_list ??
     [];
   return toArray<{ slug?: string }>(source);
 };
@@ -87,6 +91,10 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   let productRoutes: string[] = [];
   let categoryError = "";
   let productError = "";
+  let categorySourceUsed = "";
+  let productSourceUsed = "";
+  let categoryPayloadKeys = "";
+  let productPayloadKeys = "";
 
   const collectCategorySlugs = (nodes: unknown): string[] => {
     const list = toArray<{ slug?: string; child_categories?: unknown; children?: unknown }>(nodes);
@@ -104,18 +112,50 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   };
 
   try {
-    const categories = await fetchCategories();
-    categoryRoutes = collectCategorySlugs(categories);
+    const categoryUrls = Array.from(
+      new Set([
+        `${API_BASE_URL}/api/v1/categories`,
+        `${API_FALLBACK_BASE_URL}/api/v1/categories`,
+      ])
+    );
+    for (const url of categoryUrls) {
+      const json = await fetchJsonWithAuthFallback(url);
+      if (!json) continue;
+      categoryPayloadKeys = Object.keys(json || {}).join(",");
+      const categories = extractCategoryList(json);
+      const routes = collectCategorySlugs(categories);
+      if (routes.length > 0) {
+        categoryRoutes = routes;
+        categorySourceUsed = url;
+        break;
+      }
+    }
   } catch (err: unknown) {
     categoryRoutes = [];
     categoryError = err instanceof Error ? err.message : "category-fetch-failed";
   }
 
   try {
-    const products = await fetchProducts();
-    productRoutes = products
-      .map((product) => (product?.slug ? `/product/${product.slug}` : ""))
-      .filter(Boolean);
+    const productUrls = Array.from(
+      new Set([
+        `${API_BASE_URL}/api/v1/get_active_products`,
+        `${API_FALLBACK_BASE_URL}/api/v1/get_active_products`,
+      ])
+    );
+    for (const url of productUrls) {
+      const json = await fetchJsonWithAuthFallback(url);
+      if (!json) continue;
+      productPayloadKeys = Object.keys(json || {}).join(",");
+      const products = extractProductList(json);
+      const routes = products
+        .map((product) => (product?.slug ? `/product/${product.slug}` : ""))
+        .filter(Boolean);
+      if (routes.length > 0) {
+        productRoutes = routes;
+        productSourceUsed = url;
+        break;
+      }
+    }
   } catch (err: unknown) {
     productRoutes = [];
     productError = err instanceof Error ? err.message : "product-fetch-failed";
@@ -130,7 +170,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     })
     .join("");
 
-  const debugComment = `generated-by-next-ssr; categories=${categoryRoutes.length}; products=${productRoutes.length}; categoryError=${categoryError || "none"}; productError=${productError || "none"}`;
+  const debugComment = `generated-by-next-ssr; categories=${categoryRoutes.length}; products=${productRoutes.length}; categorySource=${categorySourceUsed || "none"}; productSource=${productSourceUsed || "none"}; categoryKeys=${categoryPayloadKeys || "none"}; productKeys=${productPayloadKeys || "none"}; categoryError=${categoryError || "none"}; productError=${productError || "none"}`;
   const xml = `<?xml version="1.0" encoding="UTF-8"?><!-- ${debugComment} --><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`;
 
   res.setHeader("Content-Type", "application/xml; charset=utf-8");
