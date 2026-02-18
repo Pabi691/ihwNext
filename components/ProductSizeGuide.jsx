@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from '@/components/compat/router';
+import { ENV } from '@/config/env';
 import { useGlobal } from '../global/GlobalContext';
 import { themeBgColor } from '../styles/typography';
 // import API_BASE_URL from './../global/apiConfig';
 
 function ProductSizeGuide() {
+  const apiBaseUrl = ENV.API_URL;
   const [selectedSize, setSelectedSize] = useState(null);
   const [productVariations, setProductVariations] = useState([]);
   const [colorVariations, setColorVariations] = useState([]);
@@ -18,7 +20,7 @@ function ProductSizeGuide() {
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_slug_data/${slug}`, {
+        const response = await fetch(`${apiBaseUrl}/api/v1/get_slug_data/${slug}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -39,7 +41,7 @@ function ProductSizeGuide() {
     };
 
     fetchProductDetails();
-  }, [slug, token]);
+  }, [apiBaseUrl, slug, token]);
 
  
   return (

@@ -1,7 +1,20 @@
 import type { NextConfig } from "next";
 
+const sanitizePublicApiUrl = (value?: string) => {
+  const normalized = (value || "").trim();
+  if (!normalized || normalized === "undefined" || normalized === "null") {
+    return "https://server.indianhairworld.com";
+  }
+  return normalized.replace(/\/+$/, "");
+};
+
 const nextConfig: NextConfig = {
   output: "standalone",
+  env: {
+    NEXT_PUBLIC_API_URL: sanitizePublicApiUrl(process.env.NEXT_PUBLIC_API_URL),
+    NEXT_PUBLIC_SITE_URL:
+      process.env.NEXT_PUBLIC_SITE_URL || "https://www.indianhairworld.com",
+  },
   async redirects() {
     return [
       {

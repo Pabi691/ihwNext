@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from '@/components/compat/router';
+import { ENV } from '@/config/env';
 import { useGlobal } from '../global/GlobalContext';
 import axios from 'axios';
 import Skeleton from 'react-loading-skeleton';
@@ -7,6 +8,7 @@ import compressImage from '../utils/compressImage';
 import { themeBgColor } from '../styles/typography';
 
 function ShopByCategoryContainer({title}) {
+  const apiBaseUrl = ENV.API_URL;
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,7 +33,7 @@ function ShopByCategoryContainer({title}) {
         sessionStorage.removeItem('container');
       }
 
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_slug_data/container`, {
+      const response = await axios.get(`${apiBaseUrl}/api/v1/get_slug_data/container`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -52,7 +54,7 @@ function ShopByCategoryContainer({title}) {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [apiBaseUrl, token]);
 
   useEffect(() => {
     fetchContainerCategory();

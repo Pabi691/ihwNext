@@ -1,16 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useGlobal } from '../../global/GlobalContext';
 import { Link } from '@/components/compat/router';
+import { ENV } from '@/config/env';
 import compressImage from '../../utils/compressImage';
 
 const AllCatMobile = ({slug}) => {
+    const apiBaseUrl = ENV.API_URL;
     const [trend, setTrend] = useState([]);
     const { token, publicToken } = useGlobal();
 
     const fetchCat = useCallback(async () => {
         try {
             const authToken = publicToken || token;
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_slug_data/${slug}`, {
+            const response = await fetch(`${apiBaseUrl}/api/v1/get_slug_data/${slug}`, {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${authToken}`,
@@ -21,7 +23,7 @@ const AllCatMobile = ({slug}) => {
         } catch (error) {
             console.error('Error fetching categories:', error);
         }
-    }, [token, publicToken, slug]);
+    }, [apiBaseUrl, token, publicToken, slug]);
 
     useEffect(() => {
         fetchCat();

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from '@/components/compat/router';
+import { ENV } from '@/config/env';
 import { useGlobal } from '../global/GlobalContext';
 import axios from 'axios';
 import Skeleton from 'react-loading-skeleton';
@@ -7,6 +8,7 @@ import compressImage from '../utils/compressImage';
 import { themeBgColor } from '../styles/typography';
 
 function ShopByCategoryAccessories({ title }) {
+  const apiBaseUrl = ENV.API_URL;
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,7 +27,7 @@ function ShopByCategoryAccessories({ title }) {
       }
 
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_slug_data/accessories`,
+        `${apiBaseUrl}/api/v1/get_slug_data/accessories`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -48,7 +50,7 @@ function ShopByCategoryAccessories({ title }) {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [apiBaseUrl, token]);
 
   useEffect(() => {
     fetchAccessoriesCategory();

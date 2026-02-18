@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
 import { Link } from '@/components/compat/router';
+import { ENV } from '@/config/env';
 import 'swiper/swiper-bundle.css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -13,6 +14,7 @@ import { useGlobal } from '../global/GlobalContext';
 import Skeleton from 'react-loading-skeleton';
 
 const TargetAudience = () => {
+  const apiBaseUrl = ENV.API_URL;
   const { token } = useGlobal();
   const [cat, setCat] = useState([]);
 
@@ -21,7 +23,7 @@ const TargetAudience = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_slug_data/target-audience`, {
+        const res = await axios.get(`${apiBaseUrl}/api/v1/get_slug_data/target-audience`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = res.data.category_data?.child_categories
@@ -37,7 +39,7 @@ const TargetAudience = () => {
     };
 
     fetchCategories();
-  }, [token]);
+  }, [apiBaseUrl, token]);
 
 
 

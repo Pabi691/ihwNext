@@ -3,6 +3,11 @@ import type { GetServerSideProps } from "next";
 import ProductPage from "@/components/pages/ProductPage";
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const rawApiUrl = String(process.env.NEXT_PUBLIC_API_URL || "").trim();
+  const apiBaseUrl =
+    !rawApiUrl || rawApiUrl === "undefined" || rawApiUrl === "null"
+      ? "https://server.indianhairworld.com"
+      : rawApiUrl.replace(/\/+$/, "");
   const slugParam = ctx.params?.categorySlug;
   const slug = Array.isArray(slugParam) ? slugParam[0] : slugParam;
 
@@ -20,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/v1/categories`,
+      `${apiBaseUrl}/api/v1/categories`,
       { headers }
     );
 

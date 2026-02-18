@@ -1,5 +1,6 @@
     import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from '@/components/compat/router';
+import { ENV } from '@/config/env';
 import { useGlobal } from '../global/GlobalContext';
 import axios from 'axios';
 import Skeleton from 'react-loading-skeleton';
@@ -7,6 +8,7 @@ import compressImage from '../utils/compressImage';
 import { themeBgColor } from '../styles/typography';
 
 function ShopByCategoryFootwear({ title }) {
+  const apiBaseUrl = ENV.API_URL;
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,7 +31,7 @@ function ShopByCategoryFootwear({ title }) {
       }
 
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_slug_data/footwear`,
+        `${apiBaseUrl}/api/v1/get_slug_data/footwear`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -49,7 +51,7 @@ function ShopByCategoryFootwear({ title }) {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [apiBaseUrl, token]);
 
   useEffect(() => {
     fetchFootwearCategories();

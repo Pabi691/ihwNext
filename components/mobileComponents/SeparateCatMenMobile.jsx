@@ -5,15 +5,17 @@ import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import { useGlobal } from "../../global/GlobalContext";
 import axios from "axios";
+import { ENV } from "@/config/env";
 
 const SeparateCatMenMobile = ({ slug }) => {
+  const apiBaseUrl = ENV.API_URL;
   const [getCategory, setGetCategory] = useState([]);
   const { token } = useGlobal();
   const [loading, setLoading] = useState(true);
 
   const fetchCategory = useCallback(async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_slug_data/${slug}`, {
+      const response = await axios.get(`${apiBaseUrl}/api/v1/get_slug_data/${slug}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const categoryData = response.data;
@@ -23,7 +25,7 @@ const SeparateCatMenMobile = ({ slug }) => {
       console.error("Error fetching category data:", error);
       setLoading(false);
     }
-  }, [slug, token]);
+  }, [apiBaseUrl, slug, token]);
 
   useEffect(() => {
     fetchCategory();
