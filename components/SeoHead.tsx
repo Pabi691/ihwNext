@@ -1,7 +1,12 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { normalizeSeoPath, readSeoFromSession, writeSeoToSession } from "@/utils/seoSessionCache";
+import {
+  hasMeaningfulSeo,
+  normalizeSeoPath,
+  readSeoFromSession,
+  writeSeoToSession,
+} from "@/utils/seoSessionCache";
 
 type SeoData = {
   title: string;
@@ -17,22 +22,36 @@ type SeoData = {
 
 const SeoHead = ({ seo }: { seo: SeoData | null }) => {
   const router = useRouter();
-  const [effectiveSeo, setEffectiveSeo] = useState<SeoData | null>(seo || null);
+  const [effectiveSeo, setEffectiveSeo] = useState<SeoData | null>(
+    hasMeaningfulSeo(seo) ? seo : null
+  );
 
   useEffect(() => {
-    setEffectiveSeo(seo || null);
-  }, [seo]);
+    if (hasMeaningfulSeo(seo)) {
+      setEffectiveSeo(seo);
+      return;
+    }
+
+    const cached = readSeoFromSession(normalizeSeoPath(router.asPath || "/"));
+    if (cached && hasMeaningfulSeo(cached)) {
+      setEffectiveSeo(cached as SeoData);
+      return;
+    }
+
+    setEffectiveSeo(null);
+  }, [router.asPath, seo]);
 
   useEffect(() => {
     const path = normalizeSeoPath(router.asPath || "/");
 
-    if (seo) {
+    if (hasMeaningfulSeo(seo)) {
       writeSeoToSession(path, seo);
+      setEffectiveSeo(seo as SeoData);
       return;
     }
 
     const cached = readSeoFromSession(path);
-    if (cached) {
+    if (cached && hasMeaningfulSeo(cached)) {
       setEffectiveSeo(cached as SeoData);
     }
   }, [router.asPath, seo]);

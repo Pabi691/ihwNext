@@ -27,6 +27,8 @@ const staticRoutes = [
 
 const getRequestConfig = () => ({
   headers: {
+    "Accept": "application/json",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     "Authorization": webToken ? `Bearer ${webToken}` : undefined
   }
 });
@@ -39,7 +41,10 @@ const toArray = (value) => {
 
 const fetchCategories = async () => {
   try {
-    const response = await axios.get(CATEGORIES_URL, getRequestConfig());
+    let response = await axios.get(CATEGORIES_URL, getRequestConfig());
+    if (!response?.data && webToken) {
+      response = await axios.get(CATEGORIES_URL);
+    }
     const listRaw =
       response.data?.category_list ??
       response.data?.categories ??
@@ -55,8 +60,16 @@ const fetchCategories = async () => {
 
 const fetchProducts = async () => {
   try {
-    const response = await axios.get(PRODUCTS_URL, getRequestConfig());
-    const listRaw = response.data?.products ?? response.data?.product_list ?? [];
+    let response = await axios.get(PRODUCTS_URL, getRequestConfig());
+    if (!response?.data && webToken) {
+      response = await axios.get(PRODUCTS_URL);
+    }
+    const listRaw =
+      response.data?.products ??
+      response.data?.product_list ??
+      response.data?.data?.products ??
+      response.data?.data?.product_list ??
+      [];
     return toArray(listRaw);
   } catch (error) {
     console.error('Error fetching products:', error?.message || error);

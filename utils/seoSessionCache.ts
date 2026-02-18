@@ -143,12 +143,22 @@ const authHeaders: Record<string, string> = ENV.WEB_TOKEN
   : {};
 
 const fetchJsonWithAuthFallback = async (url: string) => {
-  let res = await fetch(url, { headers: authHeaders });
-  if ((res.status === 401 || res.status === 403) && ENV.WEB_TOKEN) {
-    res = await fetch(url);
+  const baseHeaders: Record<string, string> = {
+    Accept: "application/json",
+    "User-Agent":
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+  };
+
+  let res = await fetch(url, { headers: { ...baseHeaders, ...authHeaders } });
+  if (!res.ok && ENV.WEB_TOKEN) {
+    res = await fetch(url, { headers: baseHeaders });
   }
   if (!res.ok) return null;
-  return res.json();
+  try {
+    return await res.json();
+  } catch {
+    return null;
+  }
 };
 
 const categorySeoFromNode = (category: CategoryNode): SeoShape | null => {

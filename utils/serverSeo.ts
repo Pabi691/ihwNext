@@ -71,7 +71,7 @@ export async function fetchPageSeo(
 
             for (const candidateSlug of activeSlugs) {
                 let res = await fetchSeo(candidateSlug, true);
-                if ((res.status === 401 || res.status === 403) && token) {
+                if (!res.ok && token) {
                     // Some hosts/envs reject auth header formats differently; retry public fetch.
                     res = await fetchSeo(candidateSlug, false);
                 }
@@ -85,20 +85,29 @@ export async function fetchPageSeo(
                     continue;
                 }
 
-                const data = await res.json();
+                let data: unknown = null;
+                try {
+                    data = await res.json();
+                } catch {
+                    data = null;
+                }
+                const typedData = (data && typeof data === "object" ? data : null) as
+                    | { pageData?: unknown; product_details?: unknown; category_data?: unknown }
+                    | null;
                 if (isContactSeoDebug) {
                     console.log(
-                        `[SEO-DEBUG][contact-us] api data keys=${Object.keys(data || {}).join(",")} pageData=${Boolean(data?.pageData)} product_details=${Boolean(data?.product_details)} category_data=${Boolean(data?.category_data)}`
+                        `[SEO-DEBUG][contact-us] api data keys=${Object.keys(typedData || {}).join(",")} pageData=${Boolean(typedData?.pageData)} product_details=${Boolean(typedData?.product_details)} category_data=${Boolean(typedData?.category_data)}`
                     );
                 }
-                if (data?.pageData || data?.product_details || data?.category_data) {
-                    apiData = data;
+                if (typedData?.pageData || typedData?.product_details || typedData?.category_data) {
+                    apiData = typedData;
                     break;
                 }
             }
-        } catch (e: any) {
+        } catch (e: unknown) {
             if (isContactSeoDebug) {
-                console.log(`[SEO-DEBUG][contact-us] fetch error=${e?.message || "unknown"}`);
+                const message = e instanceof Error ? e.message : "unknown";
+                console.log(`[SEO-DEBUG][contact-us] fetch error=${message}`);
             }
             apiData = null;
         }

@@ -53,12 +53,26 @@ const authHeaders: Record<string, string> = WEB_TOKEN
   : {};
 
 const fetchJsonWithAuthFallback = async (url: string) => {
-  let res = await fetch(url, { headers: authHeaders });
-  if ((res.status === 401 || res.status === 403) && WEB_TOKEN) {
-    res = await fetch(url);
+  const baseHeaders: Record<string, string> = {
+    Accept: "application/json",
+    "User-Agent":
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+  };
+
+  const parseJsonSafe = async (res: Response) => {
+    try {
+      return await res.json();
+    } catch {
+      return null;
+    }
+  };
+
+  let res = await fetch(url, { headers: { ...baseHeaders, ...authHeaders } });
+  if (!res.ok && WEB_TOKEN) {
+    res = await fetch(url, { headers: baseHeaders });
   }
   if (!res.ok) return null;
-  return res.json();
+  return parseJsonSafe(res);
 };
 
 const fetchCategories = async () => {
@@ -76,7 +90,13 @@ const fetchCategories = async () => {
 const fetchProducts = async () => {
   const json = await fetchJsonWithAuthFallback(`${API_BASE_URL}/api/v1/get_active_products`);
   if (!json) return [];
-  return toArray<{ slug?: string }>(json?.products ?? json?.product_list);
+  const source =
+    json?.products ??
+    json?.product_list ??
+    json?.data?.products ??
+    json?.data?.product_list ??
+    [];
+  return toArray<{ slug?: string }>(source);
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
