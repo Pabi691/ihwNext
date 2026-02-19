@@ -1,9 +1,10 @@
 // @ts-nocheck
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import Script from "next/script";
 import { Link, useNavigate, useLocation } from '@/components/compat/router';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import SimpleLayout from '../layout/SimpleLayout';
+import SimpleLayout from "@/layout/SimpleLayout";
 import { BiCheck, BiCycling, BiRupee } from 'react-icons/bi';
 import { SiRazorpay } from "react-icons/si";
 import { motion } from "framer-motion";
@@ -13,6 +14,7 @@ import { toast } from 'react-toastify';
 import compressImage from '../utils/compressImage';
 import { themeBgColor } from '../styles/typography';
 import { useGlobal } from '../global/GlobalContext';
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const messages = [
   { icon: <BiCycling />, text: "Yayy! You got free delivery" },
@@ -149,7 +151,7 @@ const Checkout = () => {
   const calculateSummary = () => {
     const finalAmountNumber = finalAmount ? Number(finalAmount) : null;
     const newSubtotal = finalAmountNumber ? finalAmountNumber : grandTotal;
-    return { totalMRP, newSubtotal, savings: (newSubtotal < totalMRP ?  (totalMRP - grandTotal) : 'N/A') };
+    return { totalMRP, newSubtotal, savings: (newSubtotal < totalMRP ? (totalMRP - grandTotal) : 'N/A') };
   };
 
   const { savings, newSubtotal } = calculateSummary();
@@ -279,29 +281,30 @@ const Checkout = () => {
 
     const orderPayload = {
       order_items: cart.map((item) => {
-          const variation = item.product_variation;
-          const salePrice =
-            variation?.id === item.prod_variation_id
-              ? (variation.sale_price ?? item.sale_price)
-              : item.sale_price;
-          
-          const productName = variation?.id === item.prod_variation_id
-            ? variation.variations_name
-            : item.prod_name;
+        const variation = item.product_variation;
+        const salePrice =
+          variation?.id === item.prod_variation_id
+            ? (variation.sale_price ?? item.sale_price)
+            : item.sale_price;
 
-          const regularPrice = variation?.id === item.prod_variation_id
-            ? variation.regular_price
-            : item.regular_price;
+        const productName = variation?.id === item.prod_variation_id
+          ? variation.variations_name
+          : item.prod_name;
+
+        const regularPrice = variation?.id === item.prod_variation_id
+          ? variation.regular_price
+          : item.regular_price;
 
         return ({
-        product_id: item.product_id,
-        prod_variation_id: item.prod_variation_id,
-        product_name: productName,
-        quantity: item.quantity,
-        price: salePrice,
-        regular_price: regularPrice,
-        total_price: salePrice * item.quantity,
-      })}),
+          product_id: item.product_id,
+          prod_variation_id: item.prod_variation_id,
+          product_name: productName,
+          quantity: item.quantity,
+          price: salePrice,
+          regular_price: regularPrice,
+          total_price: salePrice * item.quantity,
+        })
+      }),
       // pay_method_id:,
       pay_method_id: (() => {
         if (safePaymentMethods.length === 0) return null;
@@ -579,275 +582,286 @@ const Checkout = () => {
   }
 
   return (
-    <SimpleLayout title='Checkout'>
+    <ProtectedRoute>
+      <SimpleLayout title='Checkout'>
+        {
+          varify ? (
+            <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md text-sm my-10 mx-auto w-1/2">
+              <p className="mb-2">
+                📧 A verification email has been sent to your email address. Please check your inbox and click the verification link.
+              </p>
+              <p>
+                Didn’t receive the email?{" "}
 
-      {varify ? (
-        <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded-md text-sm my-10 mx-auto w-1/2">
-          <p className="mb-2">
-            📧 A verification email has been sent to your email address. Please check your inbox and click the verification link.
-          </p>
-          <p>
-            Didn’t receive the email?{" "}
-
-            {loading ? 'Please Wait......' : success ? (
-              <div className='text-green-600 text-sm'>
-                A varification link send to your email.
-              </div>
-            ) : (
-              <button
-                onClick={resendHandler}
-                className="text-blue-600 underline hover:text-blue-800 font-medium"
-              >
-                {loading ? 'Please Wait......' : 'Resend Verification Link'}
-              </button>
-            )}
-          </p>
-        </div>
-
-      ) : (
-
-        <div className="checkout-page p-10 max-w-screen-2xl mx-auto">
-          <h4 className='font-semibold text-gray-600 text-lg md:text-2xl mt-2 mb-6'>Choose Your Payment Method</h4>
-          <div className="md:flex-row gap-6 flex-col flex">
-            {/* Payment Method Tabs */}
-            <div className="w-full md:w-1/5 flex flex-col border rounded-lg">
-              <button className={`p-3 border-b flex gap-4 items-center text-md md:text-xl ${activeTab === "cod" ? "text-black font-semibold" : "text-gray-300 font-medium"}`}
-                onClick={() => setActiveTab("cod")}>
-                <BiRupee className='p-2 border rounded-full text-5xl' />  Cash on Delivery
-              </button>
-              <button className={`p-3 border-b flex gap-4 items-center text-xl ${activeTab === "razorpay" ? "text-black font-semibold" : "text-gray-300 font-medium"}`}
-                onClick={() => setActiveTab("razorpay")}>
-                <SiRazorpay className='p-2 border rounded-full text-5xl' />  Razorpay
-              </button>
-            </div>
-            <div className="w-full md:w-2/5 border rounded-lg p-4 relative">
-
-              <div className={`absolute left-1/2 transform -translate-x-1/2 ${themeBgColor} rounded-ss-lg rounded-se-lg top-0 w-full overflow-hidden`}>
-                <motion.div
-                  key={currentMessage} // Re-renders motion.div for each new message
-                  initial={{ opacity: 0, y: 10 }} // In from bottom
-                  animate={{ opacity: 1, y: 0 }} // Visible
-                  exit={{ opacity: 0, y: -50 }} // Out through top
-                  transition={{ duration: 0.6 }}
-                  className=" text-white px-4 py-1 justify-center flex items-center gap-2 text-center text-xs"
-                >
-                  {messages[currentMessage].icon} <span>{messages[currentMessage].text}</span>
-                </motion.div>
-              </div>
-              {/* Payment Actions */}
-              {activeTab === "cod" ? (
-                <>
-                  <p className='mb-4 font-medium mt-10'>
-                    {isLoading ? 'Processsing' : 'Pay Cash on Delivery'}
-                  </p>
-                  <p className='text-sm mb-4'>
-                    Additional cash collection charges of ₹ 20 is applicable on this order.
-                  </p>
-                  <button disabled={loading} onClick={handleSubmit} className={`${loading ? 'bg-gray-400 text-black' : `${themeBgColor} text-white`} px-4 py-2 rounded w-full`}>
-                    {loading ? 'please wait...' : 'Place Order'}</button>
-                </>
-
-              ) : (
-                <>
-                  <div className='mt-10 text-xs mb-4'>
-                    ✅ Multiple payment modes including UPI, cards, and net banking. <br />
-                    ✅ Seamless Checkout – Enjoy quick and easy transactions.<br />
-                    ✅ Trusted & Reliable – Powered by Razorpay, ensuring 100% secure payments.<br />
+                {loading ? 'Please Wait......' : success ? (
+                  <div className='text-green-600 text-sm'>
+                    A varification link send to your email.
                   </div>
-
-                  <p className=' text-xs'>
-                    Select your preferred payment method and complete your purchase with confidence!
-                  </p>
-
-                  <button onClick={handleSubmit} className={`${themeBgColor} text-white px-4 py-2 rounded w-full mt-4`}>
-                    Pay {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(newSubtotal)}
+                ) : (
+                  <button
+                    onClick={resendHandler}
+                    className="text-blue-600 underline hover:text-blue-800 font-medium"
+                  >
+                    {loading ? 'Please Wait......' : 'Resend Verification Link'}
                   </button>
-                </>
-
-              )}
+                )}
+              </p>
             </div>
-            {/* Main Checkout Section */}
-            <div className="w-full md:w-2/5">
-              {/* Accordion for Address & Items */}
-              <div className={`mb-6 rounded-lg border ${(shippingValidate || shippingAddresses.length > 0) && 'border-blue-800'}`}>
-                <div className="p-4 cursor-pointer flex justify-between items-center" onClick={() => setIsAddressOpen(!isAddressOpen)}>
-                  <h4 className="font-medium text-gray-600">Select Delivery Address</h4>
-                  {isAddressOpen ? (
-                    <IoChevronUpSharp />
+
+          ) : (
+
+            <div className="checkout-page p-10 max-w-screen-2xl mx-auto">
+              <h4 className='font-semibold text-gray-600 text-lg md:text-2xl mt-2 mb-6'>Choose Your Payment Method</h4>
+              <div className="md:flex-row gap-6 flex-col flex">
+                {/* Payment Method Tabs */}
+                <div className="w-full md:w-1/5 flex flex-col border rounded-lg">
+                  <button className={`p-3 border-b flex gap-4 items-center text-md md:text-xl ${activeTab === "cod" ? "text-black font-semibold" : "text-gray-300 font-medium"}`}
+                    onClick={() => setActiveTab("cod")}>
+                    <BiRupee className='p-2 border rounded-full text-5xl' />  Cash on Delivery
+                  </button>
+                  <button className={`p-3 border-b flex gap-4 items-center text-xl ${activeTab === "razorpay" ? "text-black font-semibold" : "text-gray-300 font-medium"}`}
+                    onClick={() => setActiveTab("razorpay")}>
+                    <SiRazorpay className='p-2 border rounded-full text-5xl' />
+                    <div className="flex flex-col items-start text-left">
+                      <span>Online Payment</span>
+                      <span className="text-xs text-gray-400 font-normal">UPI, Cards, NetBanking</span>
+                    </div>
+                  </button>
+                </div>
+                <div className="w-full md:w-2/5 border rounded-lg p-4 relative">
+
+                  <div className={`absolute left-1/2 transform -translate-x-1/2 ${themeBgColor} rounded-ss-lg rounded-se-lg top-0 w-full overflow-hidden`}>
+                    <motion.div
+                      key={currentMessage} // Re-renders motion.div for each new message
+                      initial={{ opacity: 0, y: 10 }} // In from bottom
+                      animate={{ opacity: 1, y: 0 }} // Visible
+                      exit={{ opacity: 0, y: -50 }} // Out through top
+                      transition={{ duration: 0.6 }}
+                      className=" text-white px-4 py-1 justify-center flex items-center gap-2 text-center text-xs"
+                    >
+                      {messages[currentMessage].icon} <span>{messages[currentMessage].text}</span>
+                    </motion.div>
+                  </div>
+                  {/* Payment Actions */}
+                  {activeTab === "cod" ? (
+                    <>
+                      <p className='mb-4 font-medium mt-10'>
+                        {isLoading ? 'Processsing' : 'Pay Cash on Delivery'}
+                      </p>
+                      <p className='text-sm mb-4'>
+                        Additional cash collection charges of ₹ 20 is applicable on this order.
+                      </p>
+                      <button disabled={loading} onClick={handleSubmit} className={`${loading ? 'bg-gray-400 text-black' : `${themeBgColor} text-white`} px-4 py-2 rounded w-full`}>
+                        {loading ? 'please wait...' : 'Place Order'}</button>
+                    </>
+
                   ) : (
-                    <IoChevronDownSharp />
+                    <>
+                      <div className='mt-10 text-xs mb-4'>
+                        ✅ Multiple payment modes including UPI, cards, and net banking. <br />
+                        ✅ Seamless Checkout – Enjoy quick and easy transactions.<br />
+                        ✅ Trusted & Reliable – Powered by Razorpay, ensuring 100% secure payments.<br />
+                      </div>
+
+                      <p className=' text-xs'>
+                        Select your preferred payment method and complete your purchase with confidence!
+                      </p>
+
+                      <button disabled={loading} onClick={handleSubmit} className={`${loading ? 'bg-gray-400 text-black' : `${themeBgColor} text-white`} px-4 py-2 rounded w-full mt-4`}>
+                        {loading ? 'Processing...' : `Pay with Razorpay ${new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(newSubtotal)}`}
+                      </button>
+                    </>
+
                   )}
                 </div>
-                {isAddressOpen && (
-                  <div className="mt-2 p-4">
-                    {shippingAddresses.length > 0 ? (
-                      <div className="flex flex-col gap-2">
-                        {shippingAddresses.map((address) => (
-                          <div
-                            key={address.id}
-                            className='p-4 border rounded-lg flex gap-1'
-                          >
-                            <span
-                              onClick={() => handleAddressSelect(address)}
-                              className={`w-5 h-5 rounded-full cursor-pointer block border
+                {/* Main Checkout Section */}
+                <div className="w-full md:w-2/5">
+                  {/* Accordion for Address & Items */}
+                  <div className={`mb-6 rounded-lg border ${(shippingValidate || shippingAddresses.length > 0) && 'border-blue-800'}`}>
+                    <div className="p-4 cursor-pointer flex justify-between items-center" onClick={() => setIsAddressOpen(!isAddressOpen)}>
+                      <h4 className="font-medium text-gray-600">Select Delivery Address</h4>
+                      {isAddressOpen ? (
+                        <IoChevronUpSharp />
+                      ) : (
+                        <IoChevronDownSharp />
+                      )}
+                    </div>
+                    {isAddressOpen && (
+                      <div className="mt-2 p-4">
+                        {shippingAddresses.length > 0 ? (
+                          <div className="flex flex-col gap-2">
+                            {shippingAddresses.map((address) => (
+                              <div
+                                key={address.id}
+                                className='p-4 border rounded-lg flex gap-1'
+                              >
+                                <span
+                                  onClick={() => handleAddressSelect(address)}
+                                  className={`w-5 h-5 rounded-full cursor-pointer block border
                           ${selectedAddress?.id === address.id ? `${themeBgColor} text-white` : "border-gray-300"}`}>
-                              {selectedAddress?.id === address.id ? (<><BiCheck /></>) : ""}
-                            </span>
-                            <div className='text-xs'>
-                              <div className='font-medium mb-2'>{address.full_name}</div>
-                              <div>{address.address_line_1}</div>
-                              <div>{address.city}, {address.state} - {address.zip_code}</div>
-                            </div>
+                                  {selectedAddress?.id === address.id ? (<><BiCheck /></>) : ""}
+                                </span>
+                                <div className='text-xs'>
+                                  <div className='font-medium mb-2'>{address.full_name}</div>
+                                  <div>{address.address_line_1}</div>
+                                  <div>{address.city}, {address.state} - {address.zip_code}</div>
+                                </div>
 
-                            <Link
-                              to="/myaccount/addresses" state={{ status: "edit", address: address, slug: "checkout" }}
-                              className="text-black text-sm"
-                            >
-                              ✏️
-                            </Link>
+                                <Link
+                                  to="/myaccount/addresses" state={{ status: "edit", address: address, slug: "checkout" }}
+                                  className="text-black text-sm"
+                                >
+                                  ✏️
+                                </Link>
 
+                              </div>
+                            ))}
+                            <Link state={{ status: "add", slug: "checkout" }} className='px-2 py-1 text-blue-500 text-xs font-medium' to="/myaccount/addresses">Add</Link>
                           </div>
-                        ))}
-                        <Link state={{ status: "add", slug: "checkout" }} className='px-2 py-1 text-blue-500 text-xs font-medium' to="/myaccount/addresses">Add</Link>
+                        ) : (
+                          <Link to="/myaccount/addresses" className='px-2 py-1 text-blue-500 text-xs font-medium' state={{ status: "add", slug: "checkout" }}>Add your shipping address</Link>
+                        )}
                       </div>
-                    ) : (
-                      <Link to="/myaccount/addresses" className='px-2 py-1 text-blue-500 text-xs font-medium' state={{ status: "add", slug: "checkout" }}>Add your shipping address</Link>
                     )}
                   </div>
-                )}
-              </div>
 
-              <div className="mb-6 border rounded-lg">
-                <div className="p-4 cursor-pointer flex justify-between items-center" onClick={() => setIsItemsOpen(!isItemsOpen)}>
-                  <h4 className="font-medium text-gray-600">Order Items</h4>
-                  {isItemsOpen ? (
-                    <IoChevronUpSharp />
-                  ) : (
-                    <IoChevronDownSharp />
-                  )}
-                </div>
-                {isItemsOpen && (
-                  <div className="mt-2 p-4">
-                    {cart.map((item, index) => (
-                      <div key={index} className="flex items-center mb-4">
-                        {(() => {
-                          const customProduct = Array.isArray(item?.custom_products) ? item.custom_products[0] : null;
-                          const customImage = customProduct?.front_img_url || customProduct?.back_img_url || null;
-                          const productSlug = item?.slug || item?.product?.slug || "";
-                          const productImage = item?.primary_img || item?.product?.primary_img || "";
-                          const productName = item?.prod_name || item?.product?.prod_name || "";
+                  <div className="mb-6 border rounded-lg">
+                    <div className="p-4 cursor-pointer flex justify-between items-center" onClick={() => setIsItemsOpen(!isItemsOpen)}>
+                      <h4 className="font-medium text-gray-600">Order Items</h4>
+                      {isItemsOpen ? (
+                        <IoChevronUpSharp />
+                      ) : (
+                        <IoChevronDownSharp />
+                      )}
+                    </div>
+                    {isItemsOpen && (
+                      <div className="mt-2 p-4">
+                        {cart.map((item, index) => (
+                          <div key={index} className="flex items-center mb-4">
+                            {(() => {
+                              const customProduct = Array.isArray(item?.custom_products) ? item.custom_products[0] : null;
+                              const customImage = customProduct?.front_img_url || customProduct?.back_img_url || null;
+                              const productSlug = item?.slug || item?.product?.slug || "";
+                              const productImage = item?.primary_img || item?.product?.primary_img || "";
+                              const productName = item?.prod_name || item?.product?.prod_name || "";
 
-                          if (!customImage) {
-                            return (
-                              <Link to={`/product/${productSlug}`}>
-                            <img
-                                  src={compressImage(productImage, 400, 70, 'webp')}
+                              if (!customImage) {
+                                return (
+                                  <Link to={`/product/${productSlug}`}>
+                                    <img
+                                      src={compressImage(productImage, 400, 70, 'webp')}
+                                      alt={productName}
+                                      className="w-12 h-12 object-cover rounded"
+                                    />
+                                  </Link>
+                                );
+                              }
+
+                              return (
+                                <img
+                                  src={customImage}
                                   alt={productName}
-                              className="w-12 h-12 object-cover rounded"
-                            />
-                          </Link>
-                            );
-                          }
-
-                          return (
-                            <img
-                              src={customImage}
-                              alt={productName}
-                              className="w-12 h-12 object-cover rounded"
-                            />
-                          );
-                        })()}
-                        {/* <img src={item.primary_img} alt={item.prod_name} loading="lazy" className="w-12 h-12 object-cover rounded" /> */}
-                        <div className="ml-4">
-                          <p className="text-sm font-medium text-gray-500">{item?.prod_name || item?.product?.prod_name || ''}</p>
-                          <p className="text-sm font-medium text-gray-500">Items: <span className="text-green-600">{item.quantity}</span></p>
-                        </div>
+                                  className="w-12 h-12 object-cover rounded"
+                                />
+                              );
+                            })()}
+                            {/* <img src={item.primary_img} alt={item.prod_name} loading="lazy" className="w-12 h-12 object-cover rounded" /> */}
+                            <div className="ml-4">
+                              <p className="text-sm font-medium text-gray-500">{item?.prod_name || item?.product?.prod_name || ''}</p>
+                              <p className="text-sm font-medium text-gray-500">Items: <span className="text-green-600">{item.quantity}</span></p>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    )}
                   </div>
-                )}
-              </div>
 
-              {/* Order Summary */}
-              <div className="mb-6 p-4 border rounded-lg">
-                <h4 className='font-medium'>Order Summary</h4>
-                <div className='flex justify-between items-center mb-2'>
-                  <span className='text-gray-500 font-medium text-sm'>Total MRP :</span>
-                  <span className='text-gray-600 text-sm'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(totalMRP)}</span>
-                </div>
+                  {/* Order Summary */}
+                  <div className="mb-6 p-4 border rounded-lg">
+                    <h4 className='font-medium'>Order Summary</h4>
+                    <div className='flex justify-between items-center mb-2'>
+                      <span className='text-gray-500 font-medium text-sm'>Total MRP :</span>
+                      <span className='text-gray-600 text-sm'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(totalMRP)}</span>
+                    </div>
 
-                <div className='flex justify-between items-center mb-2'>
-                  <span className='text-gray-500 font-medium text-sm'>Price :</span>
-                  <span className='text-base'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(subtotal)}</span>
-                </div>
+                    <div className='flex justify-between items-center mb-2'>
+                      <span className='text-gray-500 font-medium text-sm'>Price :</span>
+                      <span className='text-base'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(subtotal)}</span>
+                    </div>
 
-                {/* <div className='flex justify-between items-center mb-2'>
+                    {/* <div className='flex justify-between items-center mb-2'>
                   <span className='text-gray-500 font-medium text-sm'>Total MRP :</span>
                   <span className='text-base'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(totalMRP)}</span>
                 </div> */}
 
-                <div className='flex justify-between items-center'>
-                  <span className='text-gray-500 font-medium text-sm'>CGST ( 9% ) :</span>
-                  <span className='text-gray-600 text-sm'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(CGST)}</span>
-                </div>
-
-                <div className='flex justify-between items-center'>
-                  <span className='text-gray-500 font-medium text-sm'>SGST ( 9% ) :</span>
-                  <span className='text-gray-600 text-sm'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(SGST)}</span>
-                </div>
-                <div className='text-gray-500 font-medium text-sm flex justify-between items-center my-3'>Bag Discount: 
-                  {Number.isFinite(savings) ?
-                  <span className='text-green-600 text-sm'> -{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(savings)}</span>
-                  : '' }
-                  </div>
-                <div className='text-gray-500 font-medium text-sm flex justify-between items-center'>{activeTab === 'cod' ? 'COD Fee:' : 'Delivery Fee:'} <span className='text-green-600'>{activeTab === 'cod' ? '+20' : 'Free'}</span></div>
-                <hr className='my-3' />
-                {!discount ? (
-                  <div className='text-gray-800 font-medium flex justify-between items-center'>Subtotal:
-                    <span className='text-green-600'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(`${activeTab === 'cod' ? (newSubtotal + 20) : newSubtotal}`)}</span>
-                  </div>
-                ) : (
-                  <>
-                    {discount && (
-                      <div className='text-gray-500 font-medium text-sm flex justify-between items-center'>Price:
-                        <span className='text-green-600'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(newSubtotal + discount)}</span>
-                      </div>
-                    )}
-                    {discount && (
-                      <div className='text-gray-500 font-medium text-sm flex justify-between items-center'>Coupon Code Discount:
-                        <span className='text-green-600'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(discount)}</span>
-                      </div>
-                    )}
-
-                    <div className='text-gray-500 font-medium text-sm flex justify-between items-center'>Discount Price:
-                      <span className='text-green-600'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(newSubtotal)}</span>
+                    <div className='flex justify-between items-center'>
+                      <span className='text-gray-500 font-medium text-sm'>CGST ( 9% ) :</span>
+                      <span className='text-gray-600 text-sm'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(CGST)}</span>
                     </div>
-                    {roundOff > 0 && (
-                      <div className='text-gray-500 font-medium text-sm flex justify-between items-center'>Round OFF:
-                        <span className='text-green-600'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(roundOff)}</span>
-                      </div>
-                    )}
+
+                    <div className='flex justify-between items-center'>
+                      <span className='text-gray-500 font-medium text-sm'>SGST ( 9% ) :</span>
+                      <span className='text-gray-600 text-sm'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(SGST)}</span>
+                    </div>
+                    <div className='text-gray-500 font-medium text-sm flex justify-between items-center my-3'>Bag Discount:
+                      {Number.isFinite(savings) ?
+                        <span className='text-green-600 text-sm'> -{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(savings)}</span>
+                        : ''}
+                    </div>
+                    <div className='text-gray-500 font-medium text-sm flex justify-between items-center'>{activeTab === 'cod' ? 'COD Fee:' : 'Delivery Fee:'} <span className='text-green-600'>{activeTab === 'cod' ? '+20' : 'Free'}</span></div>
                     <hr className='my-3' />
-                    <div className='text-gray-800 font-medium flex justify-between items-center'>
-                      Subtotal:
-                      <span className='text-green-600'>
-                        {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(
-                          Math.round(`${activeTab === 'cod' ? (newSubtotal + 20) : newSubtotal}`) // Ensure the final value is rounded
+                    {!discount ? (
+                      <div className='text-gray-800 font-medium flex justify-between items-center'>Subtotal:
+                        <span className='text-green-600'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(`${activeTab === 'cod' ? (newSubtotal + 20) : newSubtotal}`)}</span>
+                      </div>
+                    ) : (
+                      <>
+                        {discount && (
+                          <div className='text-gray-500 font-medium text-sm flex justify-between items-center'>Price:
+                            <span className='text-green-600'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(newSubtotal + discount)}</span>
+                          </div>
                         )}
-                      </span>
-                    </div>
-                  </>
-                )
-                }
+                        {discount && (
+                          <div className='text-gray-500 font-medium text-sm flex justify-between items-center'>Coupon Code Discount:
+                            <span className='text-green-600'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(discount)}</span>
+                          </div>
+                        )}
 
+                        <div className='text-gray-500 font-medium text-sm flex justify-between items-center'>Discount Price:
+                          <span className='text-green-600'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(newSubtotal)}</span>
+                        </div>
+                        {roundOff > 0 && (
+                          <div className='text-gray-500 font-medium text-sm flex justify-between items-center'>Round OFF:
+                            <span className='text-green-600'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(roundOff)}</span>
+                          </div>
+                        )}
+                        <hr className='my-3' />
+                        <div className='text-gray-800 font-medium flex justify-between items-center'>
+                          Subtotal:
+                          <span className='text-green-600'>
+                            {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(
+                              Math.round(`${activeTab === 'cod' ? (newSubtotal + 20) : newSubtotal}`) // Ensure the final value is rounded
+                            )}
+                          </span>
+                        </div>
+                      </>
+                    )
+                    }
+
+                  </div>
+                  <img src='../images/icons.jpg' alt='icons' loading="lazy" />
+                </div>
               </div>
-              <img src='../images/icons.jpg' alt='icons' loading="lazy" />
             </div>
-          </div>
-        </div>
 
-      )}
-    </SimpleLayout>
+          )
+        }
+        <Script
+          id="razorpay-checkout-js"
+          src="https://checkout.razorpay.com/v1/checkout.js"
+        />
+      </SimpleLayout>
+    </ProtectedRoute>
   );
 };
 

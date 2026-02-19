@@ -114,8 +114,8 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   try {
     const categoryUrls = Array.from(
       new Set([
-        `${API_BASE_URL}/api/v1/categories`,
-        `${API_FALLBACK_BASE_URL}/api/v1/categories`,
+        `${API_BASE_URL}/api/v1/categories?limit=10000`,
+        `${API_FALLBACK_BASE_URL}/api/v1/categories?limit=10000`,
       ])
     );
     for (const url of categoryUrls) {
@@ -138,8 +138,8 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   try {
     const productUrls = Array.from(
       new Set([
-        `${API_BASE_URL}/api/v1/get_active_products`,
-        `${API_FALLBACK_BASE_URL}/api/v1/get_active_products`,
+        `${API_BASE_URL}/api/v1/get_active_products?limit=10000`,
+        `${API_FALLBACK_BASE_URL}/api/v1/get_active_products?limit=10000`,
       ])
     );
     for (const url of productUrls) {
