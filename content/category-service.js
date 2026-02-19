@@ -4,8 +4,8 @@ import { ENV } from "../config/env";
 export const CategoryService = {
   async getAll() {
     const endpoint = `${ENV.API_URL}/api/v1/categories`;
-    const isBrowser = typeof window !== "undefined";
     const userToken = isBrowser ? localStorage.getItem("userToken") : null;
+    const isBrowser = typeof window !== "undefined";
 
     // Avoid noisy 403s by trying likely-valid modes first.
     const attempts = [

@@ -6,7 +6,6 @@ const GlobalContext = createContext();
 export const useGlobal = () => useContext(GlobalContext);
 
 export const GlobalProvider = ({ children, initialGlobalContent }) => {
-  const isBrowser = typeof window !== "undefined";
   const apiBase = `${ENV.API_URL}/api`;
   const [cart, setCart] = useState([]);
   const [products, setProducts] = useState([]);
@@ -16,6 +15,7 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
   const hasFetchedProducts = useRef(false);
 
   const webToken = ENV.WEB_TOKEN;
+  const isBrowser = typeof window !== "undefined";
   // const [token, setToken] = useState(() => localStorage.getItem("userToken") || webToken); 
 
   const [token, setToken] = useState(() => {
