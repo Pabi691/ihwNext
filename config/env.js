@@ -1,5 +1,6 @@
 const DEFAULT_API_URL = "https://server.indianhairworld.com";
 const DEFAULT_WEB_TOKEN = "2|SwAXG9wWqc4rwZPstwG42DUVpRhmkWjO5Vj2VpRF";
+const USER_TOEN = localStorage.getItem("user_token");
 
 const sanitizeEnvValue = (value, fallback) => {
   if (value === undefined || value === null) return fallback;
@@ -17,5 +18,5 @@ const sanitizeApiUrl = (value) => {
 
 export const ENV = {
   API_URL: sanitizeApiUrl(process.env.NEXT_PUBLIC_API_URL),
-  WEB_TOKEN: sanitizeEnvValue(process.env.NEXT_PUBLIC_WEB_TOKEN, DEFAULT_WEB_TOKEN),
+  WEB_TOKEN: sanitizeEnvValue(USER_TOEN ?? DEFAULT_WEB_TOKEN),
 };
