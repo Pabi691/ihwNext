@@ -5,10 +5,10 @@ import { ENV } from '@/config/env';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const isBrowser = typeof window !== "undefined";
   const [userToken, setUserToken] = useState(
     isBrowser ? localStorage.getItem("userToken") || ENV.WEB_TOKEN : null
   );
-  const isBrowser = typeof window !== "undefined";
   const [localCartItems, setLocalCartItems] = useState(
     isBrowser ? JSON.parse(localStorage.getItem("localCart") || "[]") : []
   );

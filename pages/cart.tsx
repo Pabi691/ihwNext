@@ -57,15 +57,16 @@ const Cart = () => {
     // console.log(`Setting quantity: product_id: ${itemId}, quantity: ${quantity}`);
     // console.log(`Setting quantity: product_id: ${variationId}, quantity: ${price}`);
     try {
-      const userToken = localStorage.getItem('userToken');
+      const isBrowser = typeof window !== "undefined";
+      const userToken = isBrowser ? localStorage.getItem('userToken') : null;
       if (!userToken) {
-        let localCart = JSON.parse(localStorage.getItem('localCart') || '[]');
+        let localCart = JSON.parse(isBrowser ? (localStorage.getItem('localCart') || '[]') : '[]');
         localCart = localCart.map((item) =>
           (item.product_id ?? item.id) === itemId && (item.prod_variation_id ?? null) === (variationId ?? null)
             ? { ...item, quantity }
             : item
         );
-        localStorage.setItem('localCart', JSON.stringify(localCart));
+        if (isBrowser) localStorage.setItem('localCart', JSON.stringify(localCart));
         setCart(localCart);
         setSelectedQuantity(null);
         return;
@@ -87,7 +88,7 @@ const Cart = () => {
         }
       );
 
-      if (localStorage.getItem('localCart')) {
+      if (typeof window !== 'undefined' && localStorage.getItem('localCart')) {
 
         let localCart = JSON.parse(localStorage.getItem('localCart') || '[]');
         // Update the local cart with the new quantity
@@ -112,7 +113,8 @@ const Cart = () => {
 
   // Remove Item from Cart
   const removeFromCart = async (cartId: any) => {
-    const userToken = localStorage.getItem('userToken');
+    const isBrowser = typeof window !== 'undefined';
+    const userToken = isBrowser ? localStorage.getItem('userToken') : null;
     setLoading(true);
     try {
       // If user is logged in, make API call to remove from backend cart
@@ -124,7 +126,7 @@ const Cart = () => {
           setCart(prevCart => prevCart.filter(item => item.id !== cartId));
         }
       } else {
-        let localCart = JSON.parse(localStorage.getItem('localCart') || '[]');
+        let localCart = JSON.parse(isBrowser ? (localStorage.getItem('localCart') || '[]') : '[]');
         const current = cart.find((c) => c.id === cartId);
         if (current) {
           localCart = localCart.filter(
@@ -137,7 +139,7 @@ const Cart = () => {
         } else {
           localCart = localCart.filter(item => (item.product_id ?? item.id) !== cartId);
         }
-        localStorage.setItem('localCart', JSON.stringify(localCart));
+        if (isBrowser) localStorage.setItem('localCart', JSON.stringify(localCart));
 
         // 👇 Correctly update cart
         setCart(localCart);

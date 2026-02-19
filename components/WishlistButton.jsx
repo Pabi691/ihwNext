@@ -9,7 +9,7 @@ const WishlistButton = ({ product, wishlist, setWishlist, token, content }) => {
 
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(false);
-  const username = localStorage.getItem('username');
+  const username = typeof window !== 'undefined' ? localStorage.getItem('username') : null;
   // Remove from wishlist handler
   const removeFromWishlist = async (productId) => {
     setLoading(true);

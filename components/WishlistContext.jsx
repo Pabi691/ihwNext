@@ -7,16 +7,15 @@ export const WishlistProvider = ({ children }) => {
 
   // Load wishlist from localStorage on mount
   useEffect(() => {
-    const rawWishlist = localStorage.getItem('wishlistItems');
-    // console.log('Raw Wishlist Data from localStorage:', rawWishlist);
+    const isBrowser = typeof window !== 'undefined';
+    const rawWishlist = isBrowser ? localStorage.getItem('wishlistItems') : null;
     if (rawWishlist) {
       try {
         const parsedWishlist = JSON.parse(rawWishlist);
-        // console.log('Parsed Wishlist:', parsedWishlist);
         setWishlistItems(parsedWishlist || []);
       } catch (error) {
         console.error('Error parsing wishlist data:', error);
-        setWishlistItems([]); // Initialize as empty if parsing fails
+        setWishlistItems([]);
       }
     }
   }, []);
@@ -24,8 +23,9 @@ export const WishlistProvider = ({ children }) => {
   // Sync wishlist to localStorage when it changes
   useEffect(() => {
     try {
-      localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
-      // console.log('Wishlist saved to localStorage:', wishlistItems);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
+      }
     } catch (error) {
       console.error('Error saving wishlist to localStorage:', error);
     }

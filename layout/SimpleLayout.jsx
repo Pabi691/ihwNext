@@ -11,8 +11,10 @@ const SimpleLayout = ({ children, title, ProductsCount, link }) => {
   const [mounted, setMounted] = useState(false);
   const { accessoriesCat, menCat, womenCat, loadingCategories } = useGlobal();
   const Footer = lazy(() => import('../components/layoutParts/Footer'));
-  const token = localStorage.getItem('userToken');
-  const username = localStorage.getItem('username');
+  const isBrowser = typeof window !== 'undefined';
+  const token = isBrowser ? localStorage.getItem('userToken') : null;
+  const username = isBrowser ? localStorage.getItem('username') : null;
+  const isVerified = isBrowser && localStorage.getItem('uservarified') && localStorage.getItem('uservarified') !== 'null';
   // const useremail = localStorage.getItem('useremail');
 
   useEffect(() => {
@@ -39,7 +41,7 @@ const SimpleLayout = ({ children, title, ProductsCount, link }) => {
           />
         </div>
         <div>
-          {token && localStorage.getItem('uservarified') !== 'null' ? (
+          {token && isVerified ? (
             <>
               <span className='text-xs font-medium text-gray-600'>Signed In as</span> <br />
               <span className="text-gray-900 font-medium">{username}</span>

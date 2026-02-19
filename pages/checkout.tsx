@@ -59,7 +59,8 @@ const Checkout = () => {
   const shippingInFlightRef = useRef(false);
 
   useEffect(() => {
-    const uservarified = localStorage.getItem('uservarified');
+    const isBrowser = typeof window !== "undefined";
+    const uservarified = isBrowser ? localStorage.getItem('uservarified') : null;
     if (uservarified && uservarified === 'null') {
       setVarify(true);
       return;
@@ -123,7 +124,7 @@ const Checkout = () => {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const userToken = localStorage.getItem("userToken");
+    const userToken = typeof window !== "undefined" ? localStorage.getItem("userToken") : null;
     if (!userToken) {
       setIsAuthenticated(false);
       setIsAuthChecked(true);
@@ -155,7 +156,8 @@ const Checkout = () => {
   useEffect(() => {
     if (!isAuthenticated) return;
     const payment = async () => {
-      const userToken = localStorage.getItem('userToken');
+      const isBrowser = typeof window !== "undefined";
+      const userToken = isBrowser ? localStorage.getItem('userToken') : null;
       if (!userToken) return;
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/get_payment_mothods`, {
         headers: {

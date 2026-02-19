@@ -380,7 +380,9 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
   // 🔐 Logout
   const logout = () => {
     setToken(webToken);
-    localStorage.removeItem("userToken");
+    if (isBrowser) {
+      localStorage.removeItem("userToken");
+    }
     setCart([]);
     setWishlist([]);
   };
