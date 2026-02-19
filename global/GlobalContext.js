@@ -118,21 +118,43 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
   const fetchProducts = useCallback(async () => {
     if (hasFetchedProducts.current) return;
 
-    // console.log("[GlobalContext] Fetching products...", { apiBase, safeToken });
-
-    const headers = {};
-    if (safeToken) {
-      headers.Authorization = `Bearer ${safeToken}`;
-    }
+    const endpoint = `${apiBase}/v1/get_active_products`;
+    const tokenCandidates = [safeToken, webToken].filter(
+      (t, i, arr) => t && arr.indexOf(t) === i
+    );
 
     try {
-      const res = await fetch(`${apiBase}/v1/get_active_products`, {
-        headers,
-      });
+      let res = null;
+
+      for (const candidate of tokenCandidates) {
+        try {
+          const withAuth = await fetch(endpoint, {
+            headers: {
+              Authorization: `Bearer ${candidate}`,
+            },
+          });
+
+          if (withAuth.ok) {
+            res = withAuth;
+            break;
+          }
+
+          if (withAuth.status !== 401 && withAuth.status !== 403) {
+            res = withAuth;
+            break;
+          }
+        } catch (err) {
+          console.error("[GlobalContext] Product fetch with auth token failed:", err);
+        }
+      }
+
+      if (!res) {
+        res = await fetch(endpoint);
+      }
 
       if (!res.ok) {
         console.error(`[GlobalContext] Product fetch failed: ${res.status} ${res.statusText}`);
-        throw new Error(`Server responded with ${res.status}`);
+        return;
       }
 
       const data = await res.json();
@@ -143,7 +165,7 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
     } catch (err) {
       console.error("[GlobalContext] Fetch products error:", err);
     }
-  }, [safeToken, apiBase]);
+  }, [safeToken, webToken, apiBase]);
 
   // 🧠 Add to Cart
   const addToCart = useCallback(async (product, selectedSize) => {
