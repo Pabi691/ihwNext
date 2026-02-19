@@ -1,6 +1,6 @@
 const DEFAULT_API_URL = "https://server.indianhairworld.com";
 const DEFAULT_WEB_TOKEN = "2|SwAXG9wWqc4rwZPstwG42DUVpRhmkWjO5Vj2VpRF";
-const USER_TOEN = localStorage.getItem("user_token");
+const USER_TOEN = localStorage.getItem("userToken");
 
 const sanitizeEnvValue = (value, fallback) => {
   if (value === undefined || value === null) return fallback;
