@@ -58,57 +58,58 @@ function ShopByCategoryAccessories({ title }) {
 
   return (
     <div className={`${themeBgColor} py-3 bg-opacity-5`}>
-    <h4 className="text-start md:text-center my-4 md:my-8  capitalize md:uppercase">
+      <h4 className="text-start md:text-center my-4 md:my-8  capitalize md:uppercase">
         {title}
-    </h4>
+      </h4>
 
-    {error && <p className="text-red-500 text-center">{error}</p>}
+      {error && <p className="text-red-500 text-center">{error}</p>}
 
-    <div className="men_category flex flex-wrap gap-x-2 gap-y-4 px-2">
+      <div className="men_category flex flex-wrap gap-x-2 gap-y-4 px-2">
         {loading
-        ? Array.from({ length: 4 }).map((_, index) => (
+          ? Array.from({ length: 4 }).map((_, index) => (
             <div className="w-1/2 md:w-1/4" key={index}>
-                <Skeleton height={200} width="100%" />
+              <Skeleton height={200} width="100%" />
             </div>
-            ))
-        : Array.isArray(categories) &&
-            categories.map((cat) => (
+          ))
+          : Array.isArray(categories) &&
+          categories.map((cat) => (
             <React.Fragment key={cat.id}>
-                <div className="w-1/2 md:w-1/4 relative">
+              <div className="w-1/2 md:w-1/4 relative">
                 <div className="bg-white shadow-md overflow-hidden rounded-md relative aspect-[3/4] w-full">
-                    <Link
+                  <Link
                     className="absolute inset-0 z-10"
                     to={`/${cat.slug}`}
-                    />
-                    <img
-                    src={compressImage(cat.cat_img, 400, 70, 'webp')}
+                  />
+                  <img
+                    // src={compressImage(cat.cat_img, 400, 70, 'webp')}
+                    src={cat.cat_img}
                     alt={cat.category_name}
                     className="w-full h-full object-cover absolute inset-0"
                     loading="lazy"
-                    />
+                  />
                 </div>
-                </div>
+              </div>
 
-                {cat.child_categories &&
+              {cat.child_categories &&
                 cat.child_categories.map((child) => (
-                    <div className="w-1/2 md:w-1/4 relative" key={child.id}>
+                  <div className="w-1/2 md:w-1/4 relative" key={child.id}>
                     <div className="bg-white shadow-md overflow-hidden rounded-md relative aspect-[3/4] w-full">
-                        <Link
+                      <Link
                         className="absolute inset-0 z-10"
                         to={`/${child.slug}`}
-                        />
-                        <img
+                      />
+                      <img
                         src={compressImage(child.cat_img, 400, 70, 'webp')}
                         alt={child.category_name}
                         className="w-full h-full object-cover absolute inset-0"
                         loading="lazy"
-                        />
+                      />
                     </div>
-                    </div>
+                  </div>
                 ))}
             </React.Fragment>
-            ))}
-    </div>
+          ))}
+      </div>
     </div>
 
   );

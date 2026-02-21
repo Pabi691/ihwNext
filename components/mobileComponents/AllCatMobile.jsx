@@ -4,7 +4,7 @@ import { Link } from '@/components/compat/router';
 import { ENV } from '@/config/env';
 import compressImage from '../../utils/compressImage';
 
-const AllCatMobile = ({slug}) => {
+const AllCatMobile = ({ slug }) => {
     const apiBaseUrl = ENV.API_URL;
     const [trend, setTrend] = useState([]);
     const { token, publicToken } = useGlobal();
@@ -52,9 +52,10 @@ const AllCatMobile = ({slug}) => {
                                 className="rounded-lg w-[150px] h-[175px] relative need_below_overley"
                             >
                                 <img
-                                src={compressImage(item.cat_img, 400, 70, 'webp')}
-                                alt={item.category_name}
-                                className='w-full h-full object-cover rounded-xl' loading="lazy"
+                                    // src={compressImage(item.cat_img, 400, 70, 'webp')}
+                                    src={item.cat_img}
+                                    alt={item.category_name}
+                                    className='w-full h-full object-cover rounded-xl' loading="lazy"
                                 />
                                 {/* <div className="text-center text-xs text-white font-semibold absolute bottom-2 w-full">
                                     {item.category_name}

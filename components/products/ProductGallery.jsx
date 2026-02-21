@@ -16,10 +16,10 @@ function ProductGallery({ product, selectedImage, setSelectedImage }) {
 
   const images = product
     ? [
-        product.primary_img,
-        product.secondary_img,
-        ...(product.product_image_list || []).map((img) => img.prod_img_url),
-      ]
+      product.primary_img,
+      product.secondary_img,
+      ...(product.product_image_list || []).map((img) => img.prod_img_url),
+    ]
     : [];
 
   return (
@@ -29,11 +29,11 @@ function ProductGallery({ product, selectedImage, setSelectedImage }) {
         {images.map((img, index) => (
           <LazyLoadImage
             key={index}
-            src={compressImage(img, 200, 50, 'webp')}
+            // src={compressImage(img, 200, 50, 'webp')}
+            src={img}
             alt={`thumb-${index}`}
-            className={`w-24 h-28 object-cover cursor-pointer ${
-              selectedImage === img ? 'scale-110' : 'hover:scale-105'
-            }`}
+            className={`w-24 h-28 object-cover cursor-pointer ${selectedImage === img ? 'scale-110' : 'hover:scale-105'
+              }`}
             onClick={() => setSelectedImage(img)}
           />
         ))}

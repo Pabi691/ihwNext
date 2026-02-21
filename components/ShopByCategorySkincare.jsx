@@ -23,7 +23,7 @@ function ShopByCategorySkincare({ title }) {
           setProducts(JSON.parse(cached));
         } catch (error) {
           console.error('Error parsing cached skincare products:', error);
-        } 
+        }
         setLoading(false);
         return;
       }
@@ -72,33 +72,34 @@ function ShopByCategorySkincare({ title }) {
       <div className="flex flex-wrap gap-3 px-2 justify-center">
         {loading
           ? Array.from({ length: 4 }).map((_, index) => (
-              <div className="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5" key={index}>
-                <Skeleton height={200} width="100%" />
-              </div>
-            ))
+            <div className="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5" key={index}>
+              <Skeleton height={200} width="100%" />
+            </div>
+          ))
           : products.map((product) => (
-              <div className="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5" key={product.id}>
-                <Link to={`/product/${product.slug}`} className="block bg-white shadow-md rounded-md overflow-hidden">
-                  <div className="relative aspect-[3/4]">
-                    <img
-                      src={compressImage(product.primary_img, 400, 70, 'webp')}
-                      alt={product.prod_name}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="p-2">
-                    <h5 className="text-sm font-semibold text-gray-800 line-clamp-2">{product.prod_name}</h5>
-                    <p className="text-sm text-green-600 font-bold mt-1">₹{product.sale_price || product.regular_price}</p>
-                    {product.product_tag && (
-                      <span className="inline-block mt-1 text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">
-                        {product.product_tag}
-                      </span>
-                    )}
-                  </div>
-                </Link>
-              </div>
-            ))}
+            <div className="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5" key={product.id}>
+              <Link to={`/product/${product.slug}`} className="block bg-white shadow-md rounded-md overflow-hidden">
+                <div className="relative aspect-[3/4]">
+                  <img
+                    // src={compressImage(product.primary_img, 400, 70, 'webp')}
+                    src={product.primary_img}
+                    alt={product.prod_name}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="p-2">
+                  <h5 className="text-sm font-semibold text-gray-800 line-clamp-2">{product.prod_name}</h5>
+                  <p className="text-sm text-green-600 font-bold mt-1">₹{product.sale_price || product.regular_price}</p>
+                  {product.product_tag && (
+                    <span className="inline-block mt-1 text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">
+                      {product.product_tag}
+                    </span>
+                  )}
+                </div>
+              </Link>
+            </div>
+          ))}
       </div>
     </div>
   );

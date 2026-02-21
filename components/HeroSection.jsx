@@ -13,7 +13,7 @@ import { branchData } from "../content/branchData";
 const HeroSection = () => {
   const [bannerImages, setBannerImages] = useState([]);
   // const [imageLoading, setImageLoading] = useState(false);
-  const {branch} = useParams();
+  const { branch } = useParams();
   const branchDetails = branchData[branch];
 
   const fetchBannerImages = useCallback(async () => {
@@ -52,12 +52,12 @@ const HeroSection = () => {
                   <br />
                   AND HAIR WIG
                   <br />
-                  IN {branchDetails? branchDetails.name : 'KOLKATA'}
+                  IN {branchDetails ? branchDetails.name : 'KOLKATA'}
                 </h1>
 
                 <p className="text-gray-600 text-base md:text-lg">
                   Transform Your Look with the Best Hair Patch and <br />
-                  Hair Wig in {branchDetails? branchDetails.name : 'Kolkata'}
+                  Hair Wig in {branchDetails ? branchDetails.name : 'Kolkata'}
                 </p>
 
                 <h5 className="text-xl md:text-2xl font-semibold text-black">
@@ -65,7 +65,7 @@ const HeroSection = () => {
                 </h5>
 
                 <a
-                  href="tel:+918910097668"
+                  href="tel:+917980221032"
                   className="inline-flex items-center gap-2 px-6 py-3 mt-4 text-white font-medium rounded-full bg-black hover:bg-gray-800 transition-all duration-300"
                   id="mainCTA"
                 >

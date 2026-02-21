@@ -456,7 +456,8 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
                       <>
                         <Link to={`/product/${product.slug}`} className="relative w-full h-[70%]">
                           <img
-                            src={compressImage(product.primary_img, 400, 70, 'webp')}
+                            // src={compressImage(product.primary_img, 400, 70, 'webp')}
+                            src={product.primary_img}
                             alt={product.prod_name}
                             className="w-full h-full transition-opacity duration-300 ease-in-out object-cover object-top"
                           />

@@ -201,7 +201,8 @@ function ProductDetailsAll() {
               {images.map((img, index) => (
                 <LazyLoadImage
                   key={index}
-                  src={compressImage(img, 200, 50, 'webp')}
+                  // src={compressImage(img, 200, 50, 'webp')}
+                  src={img}
                   alt={`${product.prod_name} thumbnail ${index + 1}`}
                   effect="blur"
                   className={`w-24 h-28 object-cover cursor-pointer transition-transform transform ${selectedImage === img ? "scale-110" : "hover:scale-105"

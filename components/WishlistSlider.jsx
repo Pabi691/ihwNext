@@ -73,36 +73,37 @@ const WishlistSlider = () => {
                   <div className="wishlist-item border rounded-lg shadow-md">
                     <Link to={`../product/${item.product.slug}`}>
                       <img
-                        src={compressImage(item.product.primary_img, 400, 70, 'webp')}
+                        // src={compressImage(item.product.primary_img, 400, 70, 'webp')}
+                        src={item.product.primary_img}
                         alt={item.product.prod_name}
                         className="w-full h-[350px] object-cover object-top" loading="lazy"
                       />
                     </Link>
                     <div className='p-4'>
-                    <h3 className="text-sm font-semibold mt-2 truncate">{item.product.prod_name}</h3>
+                      <h3 className="text-sm font-semibold mt-2 truncate">{item.product.prod_name}</h3>
 
-<div className="flex items-center gap-3 my-2">
-  <p className="text-black text-sm font-bold">₹{item.product.sale_price}</p>
-  <p className="text-gray-500 line-through text-sm">₹{item.product.regular_price}</p>
-  <p className="text_hightlight text-xs">
-    {(((item.product.regular_price - item.product.sale_price) / item.product.regular_price) * 100).toFixed(2)}% OFF
-  </p>
-</div>
+                      <div className="flex items-center gap-3 my-2">
+                        <p className="text-black text-sm font-bold">₹{item.product.sale_price}</p>
+                        <p className="text-gray-500 line-through text-sm">₹{item.product.regular_price}</p>
+                        <p className="text_hightlight text-xs">
+                          {(((item.product.regular_price - item.product.sale_price) / item.product.regular_price) * 100).toFixed(2)}% OFF
+                        </p>
+                      </div>
 
-<div className="flex justify-between border-t-2 pt-2">
-  <button onClick={() => removeFromWishlist(item.id)} className="text-black text-sm underline">
-    <FaTrashCan />
-  </button>
+                      <div className="flex justify-between border-t-2 pt-2">
+                        <button onClick={() => removeFromWishlist(item.id)} className="text-black text-sm underline">
+                          <FaTrashCan />
+                        </button>
 
-  <button
-    onClick={() => openSizePopup(item)}
-    className={`text-white ${themeBgColor} px-4 py-2 rounded-sm text-sm`}
-  >
-    Add to Cart
-  </button>
-</div>
+                        <button
+                          onClick={() => openSizePopup(item)}
+                          className={`text-white ${themeBgColor} px-4 py-2 rounded-sm text-sm`}
+                        >
+                          Add to Cart
+                        </button>
+                      </div>
                     </div>
-                    
+
                   </div>
                 </SwiperSlide>)
               ))}

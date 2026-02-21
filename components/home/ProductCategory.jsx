@@ -89,7 +89,8 @@ function ProductCategory({ title }) {
                 >
                   {/* Image */}
                   <img
-                    src={compressImage(cat.cat_img, 600, 75, "webp")}
+                    // src={compressImage(cat.cat_img, 600, 75, "webp")}
+                    src={cat.cat_img}
                     alt={cat.category_name}
                     loading="lazy"
                     className="

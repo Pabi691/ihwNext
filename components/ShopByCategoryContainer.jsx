@@ -7,7 +7,7 @@ import Skeleton from 'react-loading-skeleton';
 import compressImage from '../utils/compressImage';
 import { themeBgColor } from '../styles/typography';
 
-function ShopByCategoryContainer({title}) {
+function ShopByCategoryContainer({ title }) {
   const apiBaseUrl = ENV.API_URL;
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +29,7 @@ function ShopByCategoryContainer({title}) {
         return;
       }
 
-      if(cachedCategories === '') {
+      if (cachedCategories === '') {
         sessionStorage.removeItem('container');
       }
 
@@ -69,19 +69,20 @@ function ShopByCategoryContainer({title}) {
       <div className="women_category flex flex-wrap">
         {loading
           ? Array.from({ length: 4 }).map((_, index) => (
-              <div className="women_category_item w-1/2 md:w-1/4 mb-4" key={index}>
-                <Skeleton height={450} width={"100%"} />
-              </div>
-            ))
+            <div className="women_category_item w-1/2 md:w-1/4 mb-4" key={index}>
+              <Skeleton height={450} width={"100%"} />
+            </div>
+          ))
           : categories.map((cat) => (
 
             <>
 
-            <div className="women_category_item w-1/2 md:w-1/4 mb-4 relative" key={cat.id}>
+              <div className="women_category_item w-1/2 md:w-1/4 mb-4 relative" key={cat.id}>
                 <Link className="w-full h-full absolute left-0 top-0 z-10" to={`/${cat.slug}`} />
                 <div className="bg-white shadow overflow-hidden relative h-[450px] w-full">
                   <img
-                    src={compressImage(cat.cat_img, 400, 70, 'webp')}
+                    // src={compressImage(cat.cat_img, 400, 70, 'webp')}
+                    src={cat.cat_img}
                     alt={cat.category_name}
                     className="w-full absolute bottom-0 left-0" loading="lazy"
                   />
@@ -89,9 +90,9 @@ function ShopByCategoryContainer({title}) {
                 </div>
               </div>
 
-            {cat.child_categories && cat.child_categories.length > 0 && (
-                  cat.child_categories.map(child => (
-                    <div className="women_category_item w-1/2 md:w-1/4 mb-4 relative h-[450px]">
+              {cat.child_categories && cat.child_categories.length > 0 && (
+                cat.child_categories.map(child => (
+                  <div className="women_category_item w-1/2 md:w-1/4 mb-4 relative h-[450px]">
                     <div key={child.id}>
                       <Link className="w-full h-full absolute left-0 top-0 z-10" to={`/${child.slug}`} />
                       <div className="bg-white shadow overflow-hidden relative h-[450px] w-full">
@@ -102,12 +103,12 @@ function ShopByCategoryContainer({title}) {
                         />
                       </div>
                     </div>
-                    </div>
-                  ))          
+                  </div>
+                ))
               )}
             </>
-              
-            ))}
+
+          ))}
       </div>
     </div>
   );

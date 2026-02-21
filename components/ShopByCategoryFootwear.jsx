@@ -1,4 +1,4 @@
-    import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from '@/components/compat/router';
 import { ENV } from '@/config/env';
 import { useGlobal } from '../global/GlobalContext';
@@ -68,23 +68,24 @@ function ShopByCategoryFootwear({ title }) {
       <div className="flex flex-wrap gap-x-2 gap-y-4 px-2">
         {loading
           ? Array.from({ length: 4 }).map((_, index) => (
-              <div className="w-1/2 md:w-1/4" key={index}>
-                <Skeleton height={200} width="100%" />
-              </div>
-            ))
+            <div className="w-1/2 md:w-1/4" key={index}>
+              <Skeleton height={200} width="100%" />
+            </div>
+          ))
           : categories.map((cat) => (
-              <div className="w-1/2 md:w-1/4 relative" key={cat.id}>
-                <div className="bg-white shadow-md overflow-hidden rounded-md relative aspect-[3/4] w-full">
-                  <Link to={`/${cat.slug}`} className="absolute inset-0 z-10" />
-                  <img
-                    src={compressImage(cat.cat_img, 400, 70, 'webp')}
-                    alt={cat.category_name}
-                    className="w-full h-full object-cover absolute inset-0"
-                    loading="lazy"
-                  />
-                </div>
+            <div className="w-1/2 md:w-1/4 relative" key={cat.id}>
+              <div className="bg-white shadow-md overflow-hidden rounded-md relative aspect-[3/4] w-full">
+                <Link to={`/${cat.slug}`} className="absolute inset-0 z-10" />
+                <img
+                  // src={compressImage(cat.cat_img, 400, 70, 'webp')}
+                  src={cat.cat_img}
+                  alt={cat.category_name}
+                  className="w-full h-full object-cover absolute inset-0"
+                  loading="lazy"
+                />
               </div>
-            ))}
+            </div>
+          ))}
       </div>
     </div>
   );

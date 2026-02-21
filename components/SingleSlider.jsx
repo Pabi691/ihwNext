@@ -152,7 +152,8 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
 
                 <Link to={`/product/${product.slug}`}>
                   <img
-                    src={compressImage(product.primary_img, 300)}
+                    // src={compressImage(product.primary_img, 300)}
+                    src={product.primary_img}
                     alt={product.prod_name}
                     className="w-full rounded-xl absolute top-0 left-0"
                     loading="lazy"

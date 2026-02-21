@@ -138,11 +138,13 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
             res = withAuth;
             break;
           }
-
+          // If unauthorized or forbidden, try next token
           if (withAuth.status !== 401 && withAuth.status !== 403) {
-            res = withAuth;
-            break;
+            continue;
           }
+          // Other errors, stop
+          res = withAuth;
+          break;
         } catch (err) {
           console.error("[GlobalContext] Product fetch with auth token failed:", err);
         }
@@ -261,15 +263,15 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
             : item
         )
         : [
-            ...localCart,
-            {
-              ...product,
-              quantity: 1,
-              sale_price: resolvedPrice,
-              prod_variation_id: selectedSize ?? null,
-              product_id: product.id,
-            },
-          ];
+          ...localCart,
+          {
+            ...product,
+            quantity: 1,
+            sale_price: resolvedPrice,
+            prod_variation_id: selectedSize ?? null,
+            product_id: product.id,
+          },
+        ];
 
       localStorage.setItem("localCart", JSON.stringify(updatedCart));
       setCart(updatedCart);
@@ -286,21 +288,21 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
       );
       const updatedCart = exists
         ? localCart.map((item) =>
-            item.product_id === product.id &&
+          item.product_id === product.id &&
             (item.prod_variation_id ?? null) === (selectedSize ?? null)
-              ? { ...item, quantity: item.quantity + 1 }
-              : item
-          )
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
         : [
-            ...localCart,
-            {
-              ...product,
-              quantity: 1,
-              sale_price: resolvedPrice,
-              prod_variation_id: selectedSize ?? null,
-              product_id: product.id,
-            },
-          ];
+          ...localCart,
+          {
+            ...product,
+            quantity: 1,
+            sale_price: resolvedPrice,
+            prod_variation_id: selectedSize ?? null,
+            product_id: product.id,
+          },
+        ];
       localStorage.setItem("localCart", JSON.stringify(updatedCart));
       setCart(updatedCart);
       return true;

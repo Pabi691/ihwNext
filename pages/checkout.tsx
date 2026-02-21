@@ -749,7 +749,8 @@ const Checkout = () => {
                                 return (
                                   <Link to={`/product/${productSlug}`}>
                                     <img
-                                      src={compressImage(productImage, 400, 70, 'webp')}
+                                      // src={compressImage(productImage, 400, 70, 'webp')}
+                                      src={productImage}
                                       alt={productName}
                                       className="w-12 h-12 object-cover rounded"
                                     />

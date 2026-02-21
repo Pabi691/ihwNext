@@ -288,7 +288,8 @@ const Cart = () => {
                           <div className="w-1/4 h-24 md:h-48 mr-4">
                             <Link to={`/product/${item.slug ? item.slug : item.product?.slug}`}>
                               <img
-                                src={compressImage(item.primary_img || item.product?.primary_img, 400, 70, 'webp')}
+                                // src={compressImage(item.primary_img || item.product?.primary_img, 400, 70, 'webp')}
+                                src={item.primary_img || item.product?.primary_img}
                                 alt={item.prod_name || item.product?.prod_name}
                                 className="w-full h-full object-cover object-top rounded-lg"
                               />
