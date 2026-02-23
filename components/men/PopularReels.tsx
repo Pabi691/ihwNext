@@ -18,7 +18,7 @@ export default function PopularReels() {
 
             <p className="text-gray-600 hidden md:block max-w-md text-sm sm:text-base font-montserrat">
               <Link
-                href="/product-category/men"
+                href="/men-products"
                 className="inline-flex items-center text-black group transition-all duration-300"
               >
                 <span className="relative text-base overflow-hidden">
@@ -51,7 +51,7 @@ export default function PopularReels() {
           strategy="afterInteractive"
         />
 
-        <div id="whatmoreShopId" data-wh="STRYVED1TUP" />
+        <div id="whatmoreShopId" data-wh="STRKFU8FD36" />
         <div id="whatmoreHeading" data-wh="" />
         <div id="whatmoreTitleFontSize" data-wh="28" />
         <div id="whatmoreLandscapePadding" data-wh="40" />

@@ -33,7 +33,7 @@ const IHWCardSection = () => {
             </div>
 
             <a
-              href="https://indianhairworld.com/book-appointment"
+              href="/contact-us"
               className="inline-block bg-black text-white text-sm px-5 py-2 rounded hover:bg-gray-800 transition"
             >
               Book An Appointment
