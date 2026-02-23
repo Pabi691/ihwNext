@@ -10,8 +10,8 @@ const AppointmentSection = () => {
             Book an Appointment Today!
           </span>
 
-          Ready to elevate your hair game with our stunning multi-coloured hair strands? 
-          Don’t miss out on this opportunity to stand out without damaging your hair. 
+          Ready to elevate your hair game with our stunning multi-coloured hair strands?
+          Don’t miss out on this opportunity to stand out without damaging your hair.
           Embrace the latest trend and book an appointment with our skilled stylists today!
           <br /><br />
 
@@ -24,15 +24,15 @@ const AppointmentSection = () => {
 
           <span className="block text-[20px] font-extrabold mb-2">Conclusion:</span>
           <br />
-          Indian Hair World invites you to experience a whole new level of hair styling with our multi-coloured hair strands. 
-          Say goodbye to conventional hair colouring methods and say hello to a world of vibrant possibilities without compromising your hair’s health. 
+          Indian Hair World invites you to experience a whole new level of hair styling with our multi-coloured hair strands.
+          Say goodbye to conventional hair colouring methods and say hello to a world of vibrant possibilities without compromising your hair’s health.
           Book an appointment today and let our expert stylists help you make a statement that’s uniquely you!
         </p>
 
         {/* CTA Button */}
         <div className="mt-8 text-center">
           <a
-            href="https://indianhairworld.com/book-appointment"
+            href="/contact-us"
             className="inline-block bg-black text-white px-8 py-3 font-medium rounded hover:bg-gray-800 transition"
           >
             Book An Appointment

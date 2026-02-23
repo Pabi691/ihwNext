@@ -3,7 +3,7 @@ import { ENV } from "@/config/env";
 
 type CachedSeo = {
     expiresAt: number;
-    value: ReturnType<typeof normalizeSeoFromApi>;
+    value: ReturnType<typeof normalizeSeoFromApi> & { productData?: any };
 };
 
 const seoCache = new Map<string, CachedSeo>();
@@ -40,6 +40,7 @@ export async function fetchPageSeo(
             canonicalUrl: toAbsoluteUrlIfPresent(seo.canonicalUrl),
             ogUrl: toAbsoluteUrlIfPresent(seo.ogUrl),
             ogImage: toAbsoluteUrlIfPresent(seo.ogImage),
+            productData: seo.productData || null,
         };
     }
 
@@ -179,6 +180,8 @@ export async function fetchPageSeo(
     }
 
     const seo = normalizeSeoFromApi(apiData, path, primarySlug);
+    const productData = (apiData as any)?.product_details || null;
+
     if (isContactSeoDebug) {
         console.log(
             `[SEO-DEBUG][contact-us] normalized seo | title=${Boolean(seo.title)} desc=${Boolean(seo.description)} canonical=${Boolean(seo.canonicalUrl)} ogImage=${Boolean(seo.ogImage)}`
@@ -186,7 +189,7 @@ export async function fetchPageSeo(
     }
     if (apiData) {
         seoCache.set(cacheKey, {
-            value: seo,
+            value: { ...seo, productData },
             expiresAt: Date.now() + SEO_CACHE_TTL_MS,
         });
     }
@@ -196,5 +199,6 @@ export async function fetchPageSeo(
         canonicalUrl: toAbsoluteUrlIfPresent(seo.canonicalUrl),
         ogUrl: toAbsoluteUrlIfPresent(seo.ogUrl),
         ogImage: toAbsoluteUrlIfPresent(seo.ogImage),
+        productData,
     };
 }

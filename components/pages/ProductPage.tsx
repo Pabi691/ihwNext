@@ -53,6 +53,15 @@ function ProductPage({ showAll }: ProductPageProps) {
 
         if (response.data.status) {
           const dataProducts = response.data;
+
+          // Strict Routing Rule: If the backend returns a product dynamically 
+          // on a root path (via the category catch-all), force a 404 
+          // so it MUST be accessed using the `/product/` prefix.
+          // if (dataProducts.product_details) {
+          //   navigate('/404');
+          //   return;
+          // }
+
           setProductLength(dataProducts.total_products);
           setCatagoryProducts(dataProducts);
         } else {

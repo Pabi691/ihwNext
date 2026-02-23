@@ -6,21 +6,63 @@ import MobileMainLayout from '@/layout/MobileMainLayout';
 import type { GetServerSideProps } from "next";
 import { toAbsoluteUrlIfPresent } from "@/utils/seo";
 import { fetchPageSeo } from "@/utils/serverSeo";
+import Head from 'next/head';
 
-function ProductDetails() {
- 
+function ProductDetails({ seo, productData }: any) {
+  const schema = productData ? {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": productData.prod_name,
+    "image": productData.primary_img,
+    "description": productData.prod_desc ? productData.prod_desc.replace(/<[^>]*>?/gm, '').substring(0, 150) : "",
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "INR",
+      "price": productData.sale_price || productData.regular_price,
+      "availability": productData?.stock_qty > 0 || productData.product_variations?.some((v: any) => v.stock_qty > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+    }
+  } : null;
+
   return (
     <>
-    <div className='hidden md:block'>
-      <MainLayOut >
-        <ProductDetailsAll />
-      </MainLayOut>
-    </div>
-    <div className='md:hidden sigle_product_headline'>
-      <MobileMainLayout title='Indian Hair World' link={'/'}>
-        <ProductDetailsAll />
-      </MobileMainLayout>
-    </div>
+      {seo && (
+        <Head>
+          <title>{seo?.title}</title>
+          <meta name="description" content={seo?.description} />
+          <meta name="keywords" content={seo?.keywords} />
+          <meta property="og:title" content={seo?.ogTitle} />
+          <meta property="og:description" content={seo?.ogDescription} />
+          <meta property="og:image" content={seo?.ogImage} />
+          <meta property="og:url" content={seo?.ogUrl} />
+          <meta property="og:type" content={seo?.ogType} />
+          <meta name="twitter:card" content={seo?.twitterCard} />
+          <meta name="twitter:title" content={seo?.twitterTitle} />
+          <meta name="twitter:description" content={seo?.twitterDescription} />
+          <meta name="twitter:image" content={seo?.twitterImage} />
+          <link rel="canonical" href={seo?.canonicalUrl} />
+          {productData && (
+            <>
+              <meta property="product:price:amount" content={productData.sale_price || productData.regular_price || ""} />
+              <meta property="product:price:currency" content="INR" />
+              <meta property="product:availability" content={productData?.stock_qty > 0 || productData.product_variations?.some((v: any) => v.stock_qty > 0) ? "in stock" : "out of stock"} />
+              <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+              />
+            </>
+          )}
+        </Head>
+      )}
+      <div className='hidden md:block'>
+        <MainLayOut >
+          <ProductDetailsAll />
+        </MainLayOut>
+      </div>
+      <div className='md:hidden sigle_product_headline'>
+        <MobileMainLayout title='Indian Hair World' link={'/'}>
+          <ProductDetailsAll />
+        </MobileMainLayout>
+      </div>
     </>
   );
 }
@@ -34,7 +76,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const pathname = `/product/${slug}`;
-  const seo = await fetchPageSeo(pathname, slug);
+  const { productData, ...seo } = await fetchPageSeo(pathname, slug);
 
   return {
     props: {
@@ -44,6 +86,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         ogUrl: toAbsoluteUrlIfPresent(seo.ogUrl),
         ogImage: toAbsoluteUrlIfPresent(seo.ogImage),
       },
+      productData: productData || null,
     },
   };
 };

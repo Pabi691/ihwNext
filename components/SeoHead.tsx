@@ -22,6 +22,13 @@ type SeoData = {
 
 const SeoHead = ({ seo }: { seo: SeoData | null }) => {
   const router = useRouter();
+
+  // Strict 404 Guard: If Next.js has internally fallen back to the 404 page, 
+  // immediately escape and DO NOT render any cached or inferred SEO tags.
+  if (router.pathname === "/404") {
+    return null;
+  }
+
   const [effectiveSeo, setEffectiveSeo] = useState<SeoData | null>(
     hasMeaningfulSeo(seo) ? seo : null
   );

@@ -27,6 +27,10 @@ export const getSlugFromPath = (pathname) => {
         "wishlist",
         "payment",
         "thank-you",
+        "kolkata",
+        "salt-lake",
+        "durgapur",
+        "siliguri"
     ]);
 
     if (blocked.has(parts[0])) {
@@ -69,6 +73,10 @@ export const getSeoSlugCandidatesFromPath = (pathname) => {
         "wishlist",
         "payment",
         "thank-you",
+        "kolkata",
+        "salt-lake",
+        "durgapur",
+        "siliguri"
     ]);
 
     if (blocked.has(parts[0])) return [];

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import Head from 'next/head';
 import { Link, useNavigate, useParams } from '@/components/compat/router';
 import { FaCartPlus } from 'react-icons/fa';
 import Breadcrumb from '../Breadcrumb';
@@ -16,7 +17,7 @@ import RecentlyViewed from '../RecentlyViewed';
 import { FaBolt } from 'react-icons/fa6';
 import WishlistButton from '../WishlistButton';
 import confetti from 'canvas-confetti';
-import compressImage from '../../utils/compressImage';
+// import compressImage from '../../utils/compressImage';
 import { hoverScale, themeBgColor, themeBgDark, themeBgGray, themeTextColor } from '../../styles/typography';
 import HairPatchTryOnSection from '../ai/HairPatchTryOnSection';
 
@@ -440,61 +441,6 @@ function ProductDetailsAll() {
                     </div>
                   ) : ""}
                 </div>
-                {/* sizex */}
-                {/* {productVariations.some((size) => size.stock_qty === 0) && (
-                  <>
-                    <div className='flex justify-between items-center my-5'>
-                      <button onClick={() => setUnAvailableSize(true)} className="font-medium text-gray-800 flex gap-2">
-                        Could not find your size?
-                      </button>
-                      <Bell />
-                    </div>
-                    {unAvailableSize && (
-                        <div className="mt-2 openPopup">
-                          <div className='flex justify-between items-center font-semibold'>
-                            <p>Couldn't find your size in stock?</p>
-                            <button onClick={() => setUnAvailableSize(false)}>✕</button>
-                          </div>
-                          <p className='mt-4 my-2'>Be the first to be notified when this size is available.</p>
-
-                          {Array.isArray(productVariations) && productVariations.length > 0 ? (
-                            productVariations
-                              .filter((size) => size.stock_qty === 0 && size.size_id !== null)
-                              .map((size) => (
-                                <div className='inline-block mr-2 mb-2'>
-                                  <label
-                                    key={size.size_id}
-                                    className={`w-fit relative border-1 rounded-lg flex items-center justify-center border
-                                  transition-all duration-200 ease-in-out ${selectedUnAvailableSize === size.id
-                                        ? 'border-black ring-1 ring-black bg-[#203466] text-white'
-                                        : 'border-gray-300 text-gray-400'
-                                      } `}
-                                  >
-                                    <input
-                                      type="radio"
-                                      name="size"
-                                      value={size.size}
-                                      checked={selectedUnAvailableSize === size.id}
-                                      onChange={() => setSelectedUnAvailableSize(size.id)}
-                                      className='absolute opacity-0 -z-10'
-                                    />
-                                    <div className="flex items-center justify-center text-lg
-                              text-center px-3 py-1 font-medium w-fit">
-                                      {size.size}
-                                    </div>
-                                  </label>
-                                </div>
-                              ))
-                          ) : null}
-                          <button
-                            disabled={!selectedUnAvailableSize}
-                            className={`border block rounded-lg px-2 py-2 my-3 ${selectedUnAvailableSize ? 'bg-[#ef7f1a]' : ''}`}>Notify Me</button>
-                        </div>
-                      )
-                    }
-                  </>
-                )
-                } */}
 
                 {/* Add to Cart and Wishlist Button */}
                 <div className="flex items-center flex-wrap mt-4">

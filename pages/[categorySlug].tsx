@@ -15,6 +15,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     return { notFound: true };
   }
 
+  // Branch isolation: If the user requests a known branch directly at the root, force 404.
+  // Branches must be accessed via /branch/:slug
+  const knownBranches = ["kolkata", "salt-lake", "durgapur", "siliguri"];
+  if (knownBranches.includes(String(slug).toLowerCase())) {
+    return { notFound: true };
+  }
+
   try {
     const token = process.env.NEXT_PUBLIC_WEB_TOKEN;
     const headers: Record<string, string> = {

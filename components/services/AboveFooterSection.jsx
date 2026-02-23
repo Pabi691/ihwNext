@@ -17,7 +17,7 @@ const AboveFooterSection = () => {
           </h4>
 
           <a
-            href="https://indianhairworld.com/book-appointment"
+            href="/contact-us"
             className="inline-block bg-white text-black px-6 py-3 text-sm font-medium rounded hover:bg-gray-200 transition"
           >
             Book An Appointment

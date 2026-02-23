@@ -160,7 +160,7 @@ const CelebrityPage = () => {
                                     renowned actress and model Darshana Banik.
                                 </p>
                                 <button
-                                    onClick={() => (window.location.href = "/book-appointment")}
+                                    onClick={() => (window.location.href = "/contact-us")}
                                     className="bg-gray-800 text-white px-6 py-2 mt-6"
                                 >
                                     Book Appointment
