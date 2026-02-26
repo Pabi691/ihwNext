@@ -10,14 +10,16 @@ import NonSurgicalHairReplacement from '@/components/home/NonSurgicalHairReplace
 import ServiceSlider from '@/components/services/ServiceSlider';
 import WhoWeAre from '@/components/home/WhoWeAre';
 import SingleSlider from '@/components/SingleSlider';
+import PopularReels from '../home/PopularReels';
 
 const MobileHomeBody = () => {
-  
+
   return (
     <div>
 
       <BranchAppointmentBanner />
       <ShopOnlineBanner />
+      <PopularReels />
       <WelcomeSection />
       <ProductCategory
         title={
@@ -38,7 +40,7 @@ const MobileHomeBody = () => {
       <div className='ms-2 remove_nav'><AllCatMobile slug="men" /></div>
       <div className='ms-2 remove_nav'><AllCatMobile slug="women" /></div>
 
-      
+
       <div>
         <BottomFixedNav />
       </div>

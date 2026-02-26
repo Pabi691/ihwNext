@@ -11,7 +11,7 @@ const ServiceSlider = () => {
     <div className="pt-3 max-w-7xl mx-auto px-2">
       <div className="my-4 md:my-8">
         <h4 className={`${strokedHeading} mb-0`}>OUR POPULAR <span>SERVICES</span></h4>
-        <p className='text-center w-3/5 m-auto'>
+        <p className='md:w-3/5 ms-2 w-full md:m-auto text-left md:text-center'>
           We specialize in providing the best non-surgical hair replacement solutions such as natural wigs, hair
           wigs, male hair wigs, female hair wigs, etc. under one roof.
         </p>
