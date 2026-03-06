@@ -4,8 +4,8 @@ const SeoHelmet = ({ seo }) => {
 
     return (
         <>
-        <Head>
-                {/* <title>{seo.meta_title}</title> */}
+            <Head>
+                <title>{seo.meta_title}</title>
                 <link rel="canonical" href={seo.canonical_url} />
                 <meta name="description" content={seo.meta_description} />
                 <meta name="keywords" content={seo.meta_keywords} />
@@ -24,7 +24,7 @@ const SeoHelmet = ({ seo }) => {
             </Head>
 
         </>
-            
+
     );
 };
 

@@ -1,5 +1,17 @@
 const SITE_URL = "https://www.indianhairworld.com";
 
+/**
+ * Helper to strip HTML tags and truncate text to a maximum length for meta descriptions.
+ * Usually SEO descriptions should be around 150-160 characters.
+ */
+const stripHtmlAndTruncate = (htmlString: string | undefined | null, maxLength = 160): string => {
+  if (!htmlString) return "";
+  // Quick regex to strip all HTML tags
+  const plainText = htmlString.replace(/<[^>]+>/g, "").trim();
+  if (plainText.length <= maxLength) return plainText;
+  return plainText.substring(0, maxLength).trim() + "...";
+};
+
 const isAbsolute = (value: string) => /^https?:\/\//i.test(value);
 
 export const toAbsoluteUrl = (value?: string | null, fallbackPath = "/") => {
@@ -136,12 +148,12 @@ export const normalizeSeoFromApi = (
     return {
       title: seo.meta_title || pageData.title || "",
       description:
-        seo.meta_description || pageData.description || "",
+        seo.meta_description || stripHtmlAndTruncate(pageData.description),
       keywords: seo.meta_keywords || pageData.keywords || "",
       canonicalUrl,
       ogTitle: seo.og_title || pageData.title || "",
       ogDescription:
-        seo.og_description || pageData.description || "",
+        seo.og_description || stripHtmlAndTruncate(pageData.description),
       ogImage,
       ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
       ogType: seo.og_type || "",
@@ -160,11 +172,11 @@ export const normalizeSeoFromApi = (
 
     return {
       title: seo.meta_title || category.category_name || "",
-      description: seo.meta_description || category.cat_desc || "",
+      description: seo.meta_description || stripHtmlAndTruncate(category.cat_desc),
       keywords: seo.meta_keywords || category.category_name || "",
       canonicalUrl,
       ogTitle: seo.og_title || seo.meta_title || category.category_name || "",
-      ogDescription: seo.og_description || seo.meta_description || category.cat_desc || "",
+      ogDescription: seo.og_description || seo.meta_description || stripHtmlAndTruncate(category.cat_desc),
       ogImage,
       ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
       ogType: seo.og_type || "website",
@@ -184,12 +196,12 @@ export const normalizeSeoFromApi = (
     return {
       title: seo.meta_title || product.prod_name || "",
       description:
-        seo.meta_description || product.prod_desc || "",
+        seo.meta_description || stripHtmlAndTruncate(product.prod_desc),
       keywords: seo.meta_keywords || product.product_tag || "",
       canonicalUrl,
       ogTitle: seo.og_title || product.prod_name || "",
       ogDescription:
-        seo.og_description || product.prod_desc || "",
+        seo.og_description || stripHtmlAndTruncate(product.prod_desc),
       ogImage,
       ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
       ogType: seo.og_type || "",

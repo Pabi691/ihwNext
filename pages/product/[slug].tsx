@@ -25,32 +25,15 @@ function ProductDetails({ seo, productData }: any) {
 
   return (
     <>
-      {seo && (
+      {seo && productData && (
         <Head>
-          <title>{seo?.title}</title>
-          <meta name="description" content={seo?.description} />
-          <meta name="keywords" content={seo?.keywords} />
-          <meta property="og:title" content={seo?.ogTitle} />
-          <meta property="og:description" content={seo?.ogDescription} />
-          <meta property="og:image" content={seo?.ogImage} />
-          <meta property="og:url" content={seo?.ogUrl} />
-          <meta property="og:type" content={seo?.ogType} />
-          <meta name="twitter:card" content={seo?.twitterCard} />
-          <meta name="twitter:title" content={seo?.twitterTitle} />
-          <meta name="twitter:description" content={seo?.twitterDescription} />
-          <meta name="twitter:image" content={seo?.twitterImage} />
-          <link rel="canonical" href={seo?.canonicalUrl} />
-          {productData && (
-            <>
-              <meta property="product:price:amount" content={productData.sale_price || productData.regular_price || ""} />
-              <meta property="product:price:currency" content="INR" />
-              <meta property="product:availability" content={productData?.stock_qty > 0 || productData.product_variations?.some((v: any) => v.stock_qty > 0) ? "in stock" : "out of stock"} />
-              <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-              />
-            </>
-          )}
+          <meta property="product:price:amount" content={productData.sale_price || productData.regular_price || ""} />
+          <meta property="product:price:currency" content="INR" />
+          <meta property="product:availability" content={productData?.stock_qty > 0 || productData.product_variations?.some((v: any) => v.stock_qty > 0) ? "in stock" : "out of stock"} />
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          />
         </Head>
       )}
       <div className='hidden md:block'>

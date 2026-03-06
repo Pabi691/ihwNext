@@ -1,11 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import {
   hasMeaningfulSeo,
-  normalizeSeoPath,
-  readSeoFromSession,
-  writeSeoToSession,
 } from "@/utils/seoSessionCache";
 
 type SeoData = {
@@ -29,46 +25,11 @@ const SeoHead = ({ seo }: { seo: SeoData | null }) => {
     return null;
   }
 
-  const [effectiveSeo, setEffectiveSeo] = useState<SeoData | null>(
-    hasMeaningfulSeo(seo) ? seo : null
-  );
+  // Only render meaningful SEO data
+  if (!hasMeaningfulSeo(seo)) return null;
 
-  useEffect(() => {
-    if (hasMeaningfulSeo(seo)) {
-      setEffectiveSeo(seo);
-      return;
-    }
-
-    const cached = readSeoFromSession(normalizeSeoPath(router.asPath || "/"));
-    if (cached && hasMeaningfulSeo(cached)) {
-      setEffectiveSeo(cached as SeoData);
-      return;
-    }
-
-    setEffectiveSeo(null);
-  }, [router.asPath, seo]);
-
-  useEffect(() => {
-    const path = normalizeSeoPath(router.asPath || "/");
-
-    if (hasMeaningfulSeo(seo)) {
-      writeSeoToSession(path, seo);
-      setEffectiveSeo(seo as SeoData);
-      return;
-    }
-
-    const cached = readSeoFromSession(path);
-    if (cached && hasMeaningfulSeo(cached)) {
-      setEffectiveSeo(cached as SeoData);
-    }
-  }, [router.asPath, seo]);
-
-  useEffect(() => {
-    // Browser-side debug for every page SEO payload
-    console.log(`[SEO-DEBUG] SeoHead payload | path=${router.asPath || "/"}`, effectiveSeo);
-  }, [router.asPath, effectiveSeo]);
-
-  if (!effectiveSeo) return null;
+  // Type assertion for TS - hasMeaningfulSeo ensures it's fairly populated
+  const effectiveSeo = seo as SeoData;
 
   return (
     <Head>
