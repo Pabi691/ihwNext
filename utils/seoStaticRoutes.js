@@ -16,6 +16,18 @@ export const STATIC_PUBLIC_ROUTES = [
   "/return-exchange-policy",
   "/shipping-and-delivery",
   "/contact-us",
+  "/wishlist",
+  "/cart",
+  "/checkout",
+  "/login",
+  "/register",
+  "/payment",
+  "/thank-you",
+  "/myaccount",
+  "/search",
+  "/reset-password",
+  "/email-verification",
+  "/logout",
 ];
 
 export const STATIC_ROUTE_SEO_CANDIDATES = {
@@ -36,4 +48,17 @@ export const STATIC_ROUTE_SEO_CANDIDATES = {
   "/return-exchange-policy": ["return-exchange-policy", "return-policy"],
   "/shipping-and-delivery": ["shipping-and-delivery"],
   "/contact-us": ["contact-us", "contact"],
+  "/wishlist": ["wishlist"],
+  "/cart": ["cart"],
+  "/checkout": ["checkout"],
+  "/login": ["login"],
+  "/register": ["register"],
+  "/payment": ["payment"],
+  "/thank-you": ["thank-you"],
+  "/myaccount": ["myaccount"],
+  "/search": ["search"],
+  "/reset-password": ["reset-password"],
+  "/email-verification": ["email-verification"],
+  "/logout": ["logout"],
 };
+

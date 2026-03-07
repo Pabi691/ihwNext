@@ -37,18 +37,6 @@ const routeToPageMap: Record<string, string> = {
 const blocked = new Set([
   "_next",
   "api",
-  "login",
-  "register",
-  "reset-password",
-  "email-verification",
-  "myaccount",
-  "u",
-  "logout",
-  "checkout",
-  "cart",
-  "wishlist",
-  "payment",
-  "thank-you",
 ]);
 
 export const getSlugFromRoute = (
@@ -106,6 +94,13 @@ type SeoFields = {
   ogImage: string;
   ogUrl: string;
   ogType: string;
+  robots: string;
+};
+
+const buildRobots = (metaIndex?: string, metaFollow?: string): string => {
+  const index = metaIndex || "index";
+  const follow = metaFollow || "follow";
+  return `${index}, ${follow}`;
 };
 
 export const buildDefaultSeo = (): SeoFields => {
@@ -119,6 +114,7 @@ export const buildDefaultSeo = (): SeoFields => {
     ogImage: "",
     ogUrl: "",
     ogType: "",
+    robots: "index, follow",
   };
 };
 
@@ -157,6 +153,7 @@ export const normalizeSeoFromApi = (
       ogImage,
       ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
       ogType: seo.og_type || "",
+      robots: buildRobots(seo.meta_index, seo.meta_follow),
     };
   }
 
@@ -180,6 +177,7 @@ export const normalizeSeoFromApi = (
       ogImage,
       ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
       ogType: seo.og_type || "website",
+      robots: buildRobots(seo.meta_index, seo.meta_follow),
     };
   }
 
@@ -205,6 +203,7 @@ export const normalizeSeoFromApi = (
       ogImage,
       ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
       ogType: seo.og_type || "",
+      robots: buildRobots(seo.meta_index, seo.meta_follow),
     };
   }
 

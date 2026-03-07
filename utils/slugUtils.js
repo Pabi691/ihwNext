@@ -15,22 +15,7 @@ export const getSlugFromPath = (pathname) => {
     if (!parts.length) return "home";
 
     const blocked = new Set([
-        "login",
-        "register",
-        "reset-password",
-        "email-verification",
-        "myaccount",
         "u",
-        "logout",
-        "checkout",
-        "cart",
-        "wishlist",
-        "payment",
-        "thank-you",
-        "kolkata",
-        "salt-lake",
-        "durgapur",
-        "siliguri"
     ]);
 
     if (blocked.has(parts[0])) {
@@ -61,22 +46,7 @@ export const getSeoSlugCandidatesFromPath = (pathname) => {
     if (!parts.length) return ["home"];
 
     const blocked = new Set([
-        "login",
-        "register",
-        "reset-password",
-        "email-verification",
-        "myaccount",
         "u",
-        "logout",
-        "checkout",
-        "cart",
-        "wishlist",
-        "payment",
-        "thank-you",
-        "kolkata",
-        "salt-lake",
-        "durgapur",
-        "siliguri"
     ]);
 
     if (blocked.has(parts[0])) return [];

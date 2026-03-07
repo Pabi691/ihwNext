@@ -14,18 +14,7 @@ const getSlugFromPath = (pathname) => {
   if (!parts.length) return "home";
 
   const blocked = new Set([
-    "login",
-    "register",
-    "reset-password",
-    "email-verification",
-    "myaccount",
     "u",
-    "logout",
-    "checkout",
-    "cart",
-    "wishlist",
-    "payment",
-    "thank-you",
   ]);
 
   if (blocked.has(parts[0])) {

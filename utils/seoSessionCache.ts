@@ -12,6 +12,7 @@ type SeoShape = {
   ogImage?: string;
   ogUrl?: string;
   ogType?: string;
+  robots?: string;
 };
 
 type SeoCacheEntry = {
@@ -98,6 +99,8 @@ type CategoryNode = {
     meta_title?: string;
     meta_description?: string;
     meta_keywords?: string;
+    meta_index?: string;
+    meta_follow?: string;
     canonical_url?: string;
     og_title?: string;
     og_description?: string;
@@ -119,6 +122,8 @@ type ProductNode = {
     meta_title?: string;
     meta_description?: string;
     meta_keywords?: string;
+    meta_index?: string;
+    meta_follow?: string;
     canonical_url?: string;
     og_title?: string;
     og_description?: string;
@@ -182,6 +187,7 @@ const categorySeoFromNode = (category: CategoryNode): SeoShape | null => {
     ogImage,
     ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
     ogType: seo.og_type || "website",
+    robots: `${seo.meta_index || "index"}, ${seo.meta_follow || "follow"}`,
   };
 };
 
@@ -203,6 +209,7 @@ const productSeoFromNode = (product: ProductNode): SeoShape | null => {
     ogImage,
     ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
     ogType: seo.og_type || "product",
+    robots: `${seo.meta_index || "index"}, ${seo.meta_follow || "follow"}`,
   };
 };
 
@@ -264,42 +271,43 @@ export const preloadSeoSessionBySlugs = async () => {
         );
         const payload = staticSeoJson?.pageData
           ? {
-              title: staticSeoJson?.pageData?.seo_metadata?.meta_title || staticSeoJson?.pageData?.title || "",
-              description:
-                staticSeoJson?.pageData?.seo_metadata?.meta_description ||
-                staticSeoJson?.pageData?.description ||
-                "",
-              keywords:
-                staticSeoJson?.pageData?.seo_metadata?.meta_keywords ||
-                staticSeoJson?.pageData?.keywords ||
-                "",
-              canonicalUrl: toAbsoluteUrlIfPresent(
-                staticSeoJson?.pageData?.seo_metadata?.canonical_url ||
-                  staticSeoJson?.pageData?.seo_metadata?.og_url ||
-                  route
-              ),
-              ogTitle:
-                staticSeoJson?.pageData?.seo_metadata?.og_title ||
-                staticSeoJson?.pageData?.seo_metadata?.meta_title ||
-                staticSeoJson?.pageData?.title ||
-                "",
-              ogDescription:
-                staticSeoJson?.pageData?.seo_metadata?.og_description ||
-                staticSeoJson?.pageData?.seo_metadata?.meta_description ||
-                staticSeoJson?.pageData?.description ||
-                "",
-              ogImage: toAbsoluteUrlIfPresent(
-                staticSeoJson?.pageData?.seo_metadata?.og_image ||
-                  staticSeoJson?.pageData?.primary_img ||
-                  ""
-              ),
-              ogUrl: toAbsoluteUrlIfPresent(
-                staticSeoJson?.pageData?.seo_metadata?.og_url ||
-                  staticSeoJson?.pageData?.seo_metadata?.canonical_url ||
-                  route
-              ),
-              ogType: staticSeoJson?.pageData?.seo_metadata?.og_type || "website",
-            }
+            title: staticSeoJson?.pageData?.seo_metadata?.meta_title || staticSeoJson?.pageData?.title || "",
+            description:
+              staticSeoJson?.pageData?.seo_metadata?.meta_description ||
+              staticSeoJson?.pageData?.description ||
+              "",
+            keywords:
+              staticSeoJson?.pageData?.seo_metadata?.meta_keywords ||
+              staticSeoJson?.pageData?.keywords ||
+              "",
+            canonicalUrl: toAbsoluteUrlIfPresent(
+              staticSeoJson?.pageData?.seo_metadata?.canonical_url ||
+              staticSeoJson?.pageData?.seo_metadata?.og_url ||
+              route
+            ),
+            ogTitle:
+              staticSeoJson?.pageData?.seo_metadata?.og_title ||
+              staticSeoJson?.pageData?.seo_metadata?.meta_title ||
+              staticSeoJson?.pageData?.title ||
+              "",
+            ogDescription:
+              staticSeoJson?.pageData?.seo_metadata?.og_description ||
+              staticSeoJson?.pageData?.seo_metadata?.meta_description ||
+              staticSeoJson?.pageData?.description ||
+              "",
+            ogImage: toAbsoluteUrlIfPresent(
+              staticSeoJson?.pageData?.seo_metadata?.og_image ||
+              staticSeoJson?.pageData?.primary_img ||
+              ""
+            ),
+            ogUrl: toAbsoluteUrlIfPresent(
+              staticSeoJson?.pageData?.seo_metadata?.og_url ||
+              staticSeoJson?.pageData?.seo_metadata?.canonical_url ||
+              route
+            ),
+            ogType: staticSeoJson?.pageData?.seo_metadata?.og_type || "website",
+            robots: `${staticSeoJson?.pageData?.seo_metadata?.meta_index || "index"}, ${staticSeoJson?.pageData?.seo_metadata?.meta_follow || "follow"}`,
+          }
           : null;
         writeSeoToSession(route, payload);
       }

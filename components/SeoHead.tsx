@@ -14,6 +14,7 @@ type SeoData = {
   ogImage: string;
   ogUrl: string;
   ogType: string;
+  robots?: string;
 };
 
 const SeoHead = ({ seo }: { seo: SeoData | null }) => {
@@ -28,7 +29,6 @@ const SeoHead = ({ seo }: { seo: SeoData | null }) => {
   // Only render meaningful SEO data
   if (!hasMeaningfulSeo(seo)) return null;
 
-  // Type assertion for TS - hasMeaningfulSeo ensures it's fairly populated
   const effectiveSeo = seo as SeoData;
 
   return (
@@ -37,6 +37,9 @@ const SeoHead = ({ seo }: { seo: SeoData | null }) => {
       <meta name="description" content={effectiveSeo.description} key="description" />
       <meta name="keywords" content={effectiveSeo.keywords} key="keywords" />
       <link rel="canonical" href={effectiveSeo.canonicalUrl} key="canonical" />
+      {effectiveSeo.robots && (
+        <meta name="robots" content={effectiveSeo.robots} key="robots" />
+      )}
 
       <meta property="og:title" content={effectiveSeo.ogTitle} key="og:title" />
       <meta
@@ -62,3 +65,4 @@ const SeoHead = ({ seo }: { seo: SeoData | null }) => {
 };
 
 export default SeoHead;
+

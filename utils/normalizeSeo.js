@@ -15,6 +15,7 @@ export const normalizeSeo = (apiResponse) => {
       og_image: seo.og_image || "",
       og_url: seo.og_url || window.location.href,
       og_type: seo.og_type || "website",
+      robots: `${seo.meta_index || "index"}, ${seo.meta_follow || "follow"}`,
       head_content: seo.content || "",
     };
   }
@@ -34,6 +35,7 @@ export const normalizeSeo = (apiResponse) => {
       og_image: seo.og_image || product.primary_img,
       og_url: seo.og_url || window.location.href,
       og_type: seo.og_type || "product",
+      robots: `${seo.meta_index || "index"}, ${seo.meta_follow || "follow"}`,
       head_content: product.prod_desc || "",
     };
   }
