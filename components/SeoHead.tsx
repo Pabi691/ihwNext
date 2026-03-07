@@ -20,46 +20,37 @@ type SeoData = {
 const SeoHead = ({ seo }: { seo: SeoData | null }) => {
   const router = useRouter();
 
-  // Strict 404 Guard: If Next.js has internally fallen back to the 404 page, 
-  // immediately escape and DO NOT render any cached or inferred SEO tags.
-  if (router.pathname === "/404") {
-    return null;
-  }
+  // Strict 404 Guard
+  if (router.pathname === "/404") return null;
 
   // Only render meaningful SEO data
   if (!hasMeaningfulSeo(seo)) return null;
 
-  const effectiveSeo = seo as SeoData;
+  const s = seo as SeoData;
 
   return (
     <Head>
-      <title>{effectiveSeo.title}</title>
-      <meta name="description" content={effectiveSeo.description} key="description" />
-      <meta name="keywords" content={effectiveSeo.keywords} key="keywords" />
-      <link rel="canonical" href={effectiveSeo.canonicalUrl} key="canonical" />
-      {effectiveSeo.robots && (
-        <meta name="robots" content={effectiveSeo.robots} key="robots" />
-      )}
+      {s.title && <title>{s.title}</title>}
+      {s.description && <meta name="description" content={s.description} key="description" />}
+      {s.keywords && <meta name="keywords" content={s.keywords} key="keywords" />}
+      {s.canonicalUrl && <link rel="canonical" href={s.canonicalUrl} key="canonical" />}
+      {s.robots && <meta name="robots" content={s.robots} key="robots" />}
 
-      <meta property="og:title" content={effectiveSeo.ogTitle} key="og:title" />
-      <meta
-        property="og:description"
-        content={effectiveSeo.ogDescription}
-        key="og:description"
-      />
-      <meta property="og:image" content={effectiveSeo.ogImage} key="og:image" />
-      <meta property="og:url" content={effectiveSeo.ogUrl} key="og:url" />
-      <meta property="og:type" content={effectiveSeo.ogType} key="og:type" />
+      {s.ogTitle && <meta property="og:title" content={s.ogTitle} key="og:title" />}
+      {s.ogDescription && (
+        <meta property="og:description" content={s.ogDescription} key="og:description" />
+      )}
+      {s.ogImage && <meta property="og:image" content={s.ogImage} key="og:image" />}
+      {s.ogUrl && <meta property="og:url" content={s.ogUrl} key="og:url" />}
+      {s.ogType && <meta property="og:type" content={s.ogType} key="og:type" />}
       <meta property="og:site_name" content="Indian Hair World" key="og:site_name" />
 
       <meta name="twitter:card" content="summary_large_image" key="twitter:card" />
-      <meta name="twitter:title" content={effectiveSeo.ogTitle} key="twitter:title" />
-      <meta
-        name="twitter:description"
-        content={effectiveSeo.ogDescription}
-        key="twitter:description"
-      />
-      <meta name="twitter:image" content={effectiveSeo.ogImage} key="twitter:image" />
+      {s.ogTitle && <meta name="twitter:title" content={s.ogTitle} key="twitter:title" />}
+      {s.ogDescription && (
+        <meta name="twitter:description" content={s.ogDescription} key="twitter:description" />
+      )}
+      {s.ogImage && <meta name="twitter:image" content={s.ogImage} key="twitter:image" />}
     </Head>
   );
 };

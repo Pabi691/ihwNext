@@ -1,3 +1,14 @@
+/**
+ * The API sometimes returns the literal string "null" instead of actual null.
+ * This helper normalises that to an empty string.
+ */
+const sanitize = (value: string | undefined | null): string => {
+  if (value == null) return "";
+  const trimmed = String(value).trim();
+  if (trimmed === "null" || trimmed === "undefined") return "";
+  return trimmed;
+};
+
 const SITE_URL = "https://www.indianhairworld.com";
 
 /**
@@ -5,9 +16,10 @@ const SITE_URL = "https://www.indianhairworld.com";
  * Usually SEO descriptions should be around 150-160 characters.
  */
 const stripHtmlAndTruncate = (htmlString: string | undefined | null, maxLength = 160): string => {
-  if (!htmlString) return "";
+  const clean = sanitize(htmlString);
+  if (!clean) return "";
   // Quick regex to strip all HTML tags
-  const plainText = htmlString.replace(/<[^>]+>/g, "").trim();
+  const plainText = clean.replace(/<[^>]+>/g, "").trim();
   if (plainText.length <= maxLength) return plainText;
   return plainText.substring(0, maxLength).trim() + "...";
 };
@@ -23,8 +35,9 @@ export const toAbsoluteUrl = (value?: string | null, fallbackPath = "/") => {
 };
 
 export const toAbsoluteUrlIfPresent = (value?: string | null) => {
-  if (!value) return "";
-  return toAbsoluteUrl(value);
+  const clean = sanitize(value);
+  if (!clean) return "";
+  return toAbsoluteUrl(clean);
 };
 
 const routeToPageMap: Record<string, string> = {
@@ -98,8 +111,8 @@ type SeoFields = {
 };
 
 const buildRobots = (metaIndex?: string, metaFollow?: string): string => {
-  const index = metaIndex || "index";
-  const follow = metaFollow || "follow";
+  const index = sanitize(metaIndex) || "index";
+  const follow = sanitize(metaFollow) || "follow";
   return `${index}, ${follow}`;
 };
 
@@ -142,17 +155,17 @@ export const normalizeSeoFromApi = (
     );
 
     return {
-      title: seo.meta_title || pageData.title || "",
+      title: sanitize(seo.meta_title) || sanitize(pageData.title),
       description:
-        seo.meta_description || stripHtmlAndTruncate(pageData.description),
-      keywords: seo.meta_keywords || pageData.keywords || "",
+        sanitize(seo.meta_description) || stripHtmlAndTruncate(pageData.description),
+      keywords: sanitize(seo.meta_keywords) || sanitize(pageData.keywords),
       canonicalUrl,
-      ogTitle: seo.og_title || pageData.title || "",
+      ogTitle: sanitize(seo.og_title) || sanitize(pageData.title),
       ogDescription:
-        seo.og_description || stripHtmlAndTruncate(pageData.description),
+        sanitize(seo.og_description) || stripHtmlAndTruncate(pageData.description),
       ogImage,
       ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
-      ogType: seo.og_type || "",
+      ogType: sanitize(seo.og_type),
       robots: buildRobots(seo.meta_index, seo.meta_follow),
     };
   }
@@ -168,15 +181,15 @@ export const normalizeSeoFromApi = (
     );
 
     return {
-      title: seo.meta_title || category.category_name || "",
-      description: seo.meta_description || stripHtmlAndTruncate(category.cat_desc),
-      keywords: seo.meta_keywords || category.category_name || "",
+      title: sanitize(seo.meta_title) || sanitize(category.category_name),
+      description: sanitize(seo.meta_description) || stripHtmlAndTruncate(category.cat_desc),
+      keywords: sanitize(seo.meta_keywords) || sanitize(category.category_name),
       canonicalUrl,
-      ogTitle: seo.og_title || seo.meta_title || category.category_name || "",
-      ogDescription: seo.og_description || seo.meta_description || stripHtmlAndTruncate(category.cat_desc),
+      ogTitle: sanitize(seo.og_title) || sanitize(seo.meta_title) || sanitize(category.category_name),
+      ogDescription: sanitize(seo.og_description) || sanitize(seo.meta_description) || stripHtmlAndTruncate(category.cat_desc),
       ogImage,
       ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
-      ogType: seo.og_type || "website",
+      ogType: sanitize(seo.og_type) || "website",
       robots: buildRobots(seo.meta_index, seo.meta_follow),
     };
   }
@@ -192,17 +205,17 @@ export const normalizeSeoFromApi = (
     );
 
     return {
-      title: seo.meta_title || product.prod_name || "",
+      title: sanitize(seo.meta_title) || sanitize(product.prod_name),
       description:
-        seo.meta_description || stripHtmlAndTruncate(product.prod_desc),
-      keywords: seo.meta_keywords || product.product_tag || "",
+        sanitize(seo.meta_description) || stripHtmlAndTruncate(product.prod_desc),
+      keywords: sanitize(seo.meta_keywords) || sanitize(product.product_tag),
       canonicalUrl,
-      ogTitle: seo.og_title || product.prod_name || "",
+      ogTitle: sanitize(seo.og_title) || sanitize(product.prod_name),
       ogDescription:
-        seo.og_description || stripHtmlAndTruncate(product.prod_desc),
+        sanitize(seo.og_description) || stripHtmlAndTruncate(product.prod_desc),
       ogImage,
       ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
-      ogType: seo.og_type || "",
+      ogType: sanitize(seo.og_type),
       robots: buildRobots(seo.meta_index, seo.meta_follow),
     };
   }
