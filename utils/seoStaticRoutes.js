@@ -16,18 +16,6 @@ export const STATIC_PUBLIC_ROUTES = [
   "/return-exchange-policy",
   "/shipping-and-delivery",
   "/contact-us",
-  "/wishlist",
-  "/cart",
-  "/checkout",
-  "/login",
-  "/register",
-  "/payment",
-  "/thank-you",
-  "/myaccount",
-  "/search",
-  "/reset-password",
-  "/email-verification",
-  "/logout",
 ];
 
 export const STATIC_ROUTE_SEO_CANDIDATES = {
