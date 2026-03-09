@@ -18,6 +18,23 @@ const Home = () => {
         <DesktopNav />
         {/* <MobileNav /> */}
         <HeroSection />
+
+        {/* Shark Tank Images */}
+        <div className="w-full my-4 md:my-8 flex justify-center">
+          <div className="w-full max-w-7xl px-4 md:px-8">
+            <img
+              src="/images/sharkDesk.png"
+              alt="Featured on Shark Tank"
+              className="hidden md:block w-full h-auto object-contain rounded-lg"
+            />
+            <img
+              src="/images/sharkMobile.png"
+              alt="Featured on Shark Tank"
+              className="block md:hidden w-full h-auto object-contain rounded-lg"
+            />
+          </div>
+        </div>
+
         <div className="hidden md:block">
           <HomeBody />
         </div>
