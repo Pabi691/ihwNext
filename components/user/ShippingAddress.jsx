@@ -12,6 +12,7 @@ const ShippingAddress = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
   const [showWarning, setShowWarning] = useState(false);
   const [addressToCancel, setAddressToCancel] = useState(null);
   const isEditing = location.state?.address ? true : false;
@@ -111,10 +112,58 @@ const ShippingAddress = () => {
   // };
 
 
-  // ✅ **Add or Update Address**
+  const isValidPinCode = (value) => /^\d{6}$/.test(value);
+
+  const handleZipChange = (e) => {
+    const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 6);
+    setNewAddress({ ...newAddress, zip_code: digitsOnly });
+    if (errors.zip_code) {
+      setErrors((prev) => ({ ...prev, zip_code: "" }));
+    }
+  };
+
+  const validatePinCode = async (value) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/search_pin_code/${value}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await response.json();
+      return Boolean(data.status && data.result_data?.delivery_codes?.length > 0);
+    } catch (error) {
+      return false;
+    }
+  };
+
+  // Add or Update Address
   const handleSaveAddress = async (e) => {
     e.preventDefault();
+    const nextErrors = {};
+    if (!newAddress.zip_code) {
+      nextErrors.zip_code = "Pincode is required";
+    } else if (!isValidPinCode(newAddress.zip_code)) {
+      nextErrors.zip_code = "Enter a valid 6-digit pincode";
+    }
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      return;
+    }
+    if (Object.keys(errors).length > 0) {
+      setErrors({});
+    }
     setLoading(true);
+    const isServiceable = await validatePinCode(newAddress.zip_code);
+    if (!isServiceable) {
+      setErrors({ zip_code: "Pincode not serviceable" });
+      setLoading(false);
+      return;
+    }
     // console.log('newAddress.id', newAddress.id);
     try {
       const url = isEditing
@@ -231,7 +280,16 @@ const ShippingAddress = () => {
           </Box>
 
           <Box display="flex" gap={2}>
-            <TextField label="Zip Code" fullWidth margin="normal" value={newAddress.zip_code} onChange={(e) => setNewAddress({ ...newAddress, zip_code: e.target.value })} />
+            <TextField
+              label="Zip Code"
+              fullWidth
+              margin="normal"
+              value={newAddress.zip_code}
+              onChange={handleZipChange}
+              error={Boolean(errors.zip_code)}
+              helperText={errors.zip_code || "Enter 6-digit pincode"}
+              inputProps={{ inputMode: "numeric", pattern: "[0-9]*", maxLength: 6 }}
+            />
             <TextField label="Country" fullWidth margin="normal" value={newAddress.country} onChange={(e) => setNewAddress({ ...newAddress, country: e.target.value })} />
           </Box>
 
