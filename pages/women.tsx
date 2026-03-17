@@ -12,17 +12,19 @@ import HairTransformation from "@/components/women/HairTransformation";
 import Testimonials from "@/components/women/Testimonials";
 import HairWigSection from "@/components/women/HairWigSection";
 import SingleSlider from '@/components/men/SingleSlider';
+import OurCollections from "@/components/OurCollections";
 
 const Women = () => {
     return (
         <MainLayOut>
             <DesktopNav />
             <HeroSection />
+            <PopularReels /> 
             <section className="relative w-[99vw]">
                 <img src="/images/LAKE GARDENS.jpg" alt="Shark Tank India Banner" className="w-full h-auto object-cover" />
             </section>
 
-            <PopularReels />
+            <OurCollections title="Our Collections" />
 
             <SingleSlider slug_name="get_slug_data/women-products" title="WOMEN’S HAIR PRODUCTS" />
             <ReviewPopup />

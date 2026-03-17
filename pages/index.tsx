@@ -18,7 +18,6 @@ const Home = () => {
         <DesktopNav />
         {/* <MobileNav /> */}
         <HeroSection />
-
         {/* Shark Tank Images */}
         <div className="w-full my-4 md:my-8 flex justify-center">
           <div className="w-full max-w-7xl px-4 md:px-8">

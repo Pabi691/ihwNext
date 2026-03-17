@@ -11,13 +11,15 @@ import NonSurgicalHairReplacement from './NonSurgicalHairReplacement';
 import AchievementsSlider from './AchievementsSlider';
 import OurWorks from './OurWorks';
 import PopularReels from './PopularReels';
+import OurCollections from '../OurCollections';
 
 const HomeBody = () => {
   return (
     <>
+      <PopularReels />
       <BranchAppointmentBanner />
       <ShopOnlineBanner />
-      <PopularReels />
+      <OurCollections title="Womens Collections" />
       <WelcomeSection />
       <ProductCategory
         title={

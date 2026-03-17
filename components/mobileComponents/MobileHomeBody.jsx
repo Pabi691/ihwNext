@@ -11,15 +11,16 @@ import ServiceSlider from '@/components/services/ServiceSlider';
 import WhoWeAre from '@/components/home/WhoWeAre';
 import SingleSlider from '@/components/SingleSlider';
 import PopularReels from '../home/PopularReels';
+import OurCollections from '../OurCollections';
 
 const MobileHomeBody = () => {
 
   return (
     <div>
-
+      <PopularReels />
       <BranchAppointmentBanner />
       <ShopOnlineBanner />
-      <PopularReels />
+      <OurCollections title="Womens Collections" />
       <WelcomeSection />
       <ProductCategory
         title={
