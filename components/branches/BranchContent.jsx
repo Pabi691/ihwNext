@@ -10,7 +10,10 @@ const BranchContent = () => {
 
     return (
         <>
-            <h1 className="text-center mt-14 mb-10 text-6xl w-[80%] m-auto">{data.page_title}</h1>
+            <h2 className="text-center mt-14 mb-10 text-6xl w-[80%] m-auto">{data.page_title}</h2>
+            <p className="text-center mb-10 text-xl w-[80%] m-auto">
+                We provide expert non surgical hair replacement in {data.name} including hair topper, extensions, and hair patch for instant volume and confidence.
+            </p>
             <img src={data.banner_img} alt={data.name} />
             {data.component}
             <ProductCategory
