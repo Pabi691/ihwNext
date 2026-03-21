@@ -12,6 +12,7 @@ import WhoWeAre from '@/components/home/WhoWeAre';
 import SingleSlider from '@/components/SingleSlider';
 import PopularReels from '../home/PopularReels';
 import OurCollections from '../OurCollections';
+import OurWorks from '../home/OurWorks';
 
 const MobileHomeBody = () => {
 
@@ -35,11 +36,12 @@ const MobileHomeBody = () => {
 
       <AchievementsSlider />
       <NonSurgicalHairReplacement />
+      <OurWorks />
       <ServiceSlider />
       <WhoWeAre />
 
-      <div className='ms-2 remove_nav'><AllCatMobile slug="men" /></div>
-      <div className='ms-2 remove_nav'><AllCatMobile slug="women" /></div>
+      <div className='ms-2 remove_nav'><AllCatMobile slug="men-products" /></div>
+      <div className='ms-2 remove_nav'><AllCatMobile slug="women-products" /></div>
 
 
       <div>

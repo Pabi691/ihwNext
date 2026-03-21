@@ -30,8 +30,8 @@ const Branches = () => {
                     </div>
                 </div>
                 <PopularReels />
+                <OurWorks />
                 <BranchContent />
-                 <OurWorks />
             </MainLayOut>
         </>
     )

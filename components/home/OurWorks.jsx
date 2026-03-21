@@ -17,7 +17,7 @@ const OurWorks = () => {
         <h4 className={`${strokedHeading} mb-0`}>
           SOME OF <span>OUR WORKS</span>
         </h4>
-        <p className="text-center w-3/5 m-auto">
+        <p className="text-start md:text-center w-full md:w-3/5 m-auto">
           We specialize in providing the best non-surgical hair replacement solutions such as natural wigs, hair wigs, male hair wigs, female hair wigs, etc. under one roof.
         </p>
       </div>
@@ -48,7 +48,7 @@ const OurWorks = () => {
             ))
           : workData.map((work, index) => (
               <SwiperSlide key={index}>
-                <div className="group bg-white relative h-[250px] md:h-[400px] rounded-sm overflow-hidden">
+                <div className="group bg-white relative h-[400px] rounded-sm overflow-hidden">
                   
                   <img
                     src={work.imgSrc}
