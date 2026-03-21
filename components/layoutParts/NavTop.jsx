@@ -165,9 +165,9 @@ const NavTop = () => {
                 <Link className='text-xs font-medium' to={'/celebrity'}>- Celebrity</Link>
                 <p className='font-semibold'>Branches</p>
                 <Link onClick={() => setShowMenu(false)} className='text-xs font-medium' to={'/branch/kolkata'}>- Lake Gardens, Kolkata</Link>
-                <Link onClick={() => setShowMenu(false)} className='text-xs font-medium' to={'/branch/salt-lake'}>- Salt lake, Kolkata</Link>
-                <Link onClick={() => setShowMenu(false)} className='text-xs font-medium' to={'/branch/durgapur'}>- Durgapur, Kolkata</Link>
-                <Link onClick={() => setShowMenu(false)} className='text-xs font-medium' to={'/branch/siliguri'}>- Siliguri, Kolkata</Link>
+                <Link onClick={() => setShowMenu(false)} className='text-xs font-medium' to={'/branch/salt-lake'}>- Salt Lake, Kolkata</Link>
+                <Link onClick={() => setShowMenu(false)} className='text-xs font-medium' to={'/branch/durgapur'}>- Durgapur</Link>
+                <Link onClick={() => setShowMenu(false)} className='text-xs font-medium' to={'/branch/siliguri'}>- Siliguri</Link>
                 <p className='font-semibold'>Shop In</p>
                 <NavMenus />
                 {userToken && (
