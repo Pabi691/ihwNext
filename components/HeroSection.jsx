@@ -147,7 +147,7 @@ const HeroSection = () => {
               </div>
             </div>
             {/* RIGHT BANNER / SWIPER */}
-            <div className="w-full md:w-1/2 h-[500px] md:h-[750px] relative">
+            <div className="w-full md:w-1/2 h-[540px] md:h-[750px] relative">
               <Swiper
                 modules={[Navigation, Autoplay]}
                 loop={canLoop}
@@ -162,7 +162,7 @@ const HeroSection = () => {
                   <SwiperSlide key={index}>
                     <div
                       // to={card.btnLink}
-                      className="flex flex-col justify-end relative w-100 h-[500px] md:h-[750px]"
+                      className="flex flex-col justify-end relative w-100 h-[540px] md:h-[750px]"
                     >
                       <img
                         className="w-full absolute h-full object-cover top-0 left-0"
