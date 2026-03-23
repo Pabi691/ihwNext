@@ -18,8 +18,9 @@ const NavTop = () => {
   const [showMenu, setShowMenu] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { wishlist, cartLength } = useGlobal();
-  const { branch } = useParams();
-  const branchDetails = branchData[branch];
+  const params = useParams();
+  const branch = params?.branch;
+  const branchDetails = branch ? branchData[branch] : null;
 
   // const cartCount = cart.length;
   const wishlistCount = wishlist.length;
