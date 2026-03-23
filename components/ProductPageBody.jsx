@@ -438,8 +438,10 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
               </div>
               {/* end of filter */}
             </div>
-            {catagoryProducts.category_data?.cat_banner && (
+            {catagoryProducts.category_data?.cat_banner ? (
               <img className="w-[99%] my-3 hidden md:block" loading="lazy" alt="cat-banner" src={catagoryProducts.category_data.cat_banner} />
+              ) : (
+                <img className="w-[99%] my-3 hidden md:block" loading="lazy" alt="cat-banner" src="/images/sharkDesk.jpeg" />
             )}
             <div className="flex flex-wrap gap-4">
               {filteredProducts.map((product) => (
