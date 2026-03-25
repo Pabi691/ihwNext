@@ -5,14 +5,14 @@ const HairServiceSection = () => {
     <section className="w-full py-16">
       <div className="max-w-7xl mx-auto px-6 lg:px-0">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-          
+
           {/* Left Content */}
           <div>
             <h2 className="text-4xl font-semibold mb-4">
               Our Service
             </h2>
 
-            <p className="text-sm font-medium text-gray-700 leading-relaxed mb-6">
+            <p className="text-sm font-medium text-gray-900 leading-relaxed mb-6">
               At Indian Hair World, we offer a range of top-notch hair replacement
               services in Kolkata. Our non-surgical hair transplant solutions,
               including hair weaving and hair patch, are tailored to meet the
@@ -39,7 +39,7 @@ const HairServiceSection = () => {
               OUR POPULAR SERVICES
             </h4>
 
-            <ul className="list-disc list-inside space-y-1 text-gray-700">
+            <ul className="list-disc list-inside space-y-1 text-gray-900">
               <li>Hair Replacement</li>
               <li>Hair Bonding</li>
               <li>Hair Patches</li>

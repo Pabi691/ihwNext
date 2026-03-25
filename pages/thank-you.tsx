@@ -62,7 +62,7 @@ const ThankYou = () => {
                 <h3 className="text-lg font-semibold text-gray-900">
                   Thanks for contacting us!
                 </h3>
-                <p className="mt-2 text-sm text-gray-600">
+                <p className="mt-2 text-sm text-gray-900">
                   Your message has been sent successfully. We’ll be in touch very soon.
                 </p>
               </>

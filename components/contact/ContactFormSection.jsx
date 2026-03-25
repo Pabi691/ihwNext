@@ -20,7 +20,7 @@ export default function ContactFormSection() {
                 <span className="h-[2px] w-6 bg-[#04A9FF]" />
               </div>
 
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-900">
                 Drop us an e-mail using the form below.
               </p>
             </div>
@@ -30,7 +30,7 @@ export default function ContactFormSection() {
           </div>
 
           {/* Right: Text Content */}
-          <div className="text-gray-700 text-sm space-y-4 leading-relaxed">
+          <div className="text-gray-900 text-sm space-y-4 leading-relaxed">
             <p className="text-justify">
               Thank you for your interest in Indian Hair World. Our team is always ready to assist you with any questions or concerns you may have regarding our hair replacement services.
             </p>

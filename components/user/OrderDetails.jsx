@@ -91,8 +91,8 @@ const OrderDetails = () => {
                 <div className="max-w-7xl mx-auto px-6">
 
                   <div className="p-4 border rounded-lg border-gray-200 flex justify-between items-center">
-                    <p className="text-gray-700 text-lg font-medium">Order Number <br /> <span className="font-semibold">{order.id}</span></p>
-                    <p className="text-gray-700 text-lg font-medium">Placed On <br /> {formattedDate}</p>
+                    <p className="text-gray-900 text-lg font-medium">Order Number <br /> <span className="font-semibold">{order.id}</span></p>
+                    <p className="text-gray-900 text-lg font-medium">Placed On <br /> {formattedDate}</p>
                   </div>
 
                   {order.order_items.map((item) => (
@@ -102,26 +102,26 @@ const OrderDetails = () => {
                       </Link>
                       <div>
                         <p className="text-gray-900 font-bold mb-2">{item.product_details.brand_details?.brand_name}</p>
-                        <p className="text-gray-700 font-medium text-sm mb-2">{item.product_name}</p>
-                        <p className="text-gray-700 font-medium text-sm mb-2">Quantity: {item.quantity}</p>
-                        <p className="text-gray-700 font-medium text-sm mb-2">Price: ₹{item.price}</p>
-                        <p className="text-gray-700 font-semibold text-sm mb-2">Total: ₹{item.total_price}</p>
+                        <p className="text-gray-900 font-medium text-sm mb-2">{item.product_name}</p>
+                        <p className="text-gray-900 font-medium text-sm mb-2">Quantity: {item.quantity}</p>
+                        <p className="text-gray-900 font-medium text-sm mb-2">Price: ₹{item.price}</p>
+                        <p className="text-gray-900 font-semibold text-sm mb-2">Total: ₹{item.total_price}</p>
                       </div>
                     </div>
                   ))}
 
                   <div className="p-4 border rounded-lg border-gray-200">
-                    <p className="text-gray-700">Status: <span className="text-black font-semibold">{order.shipping_status}</span></p>
-                    {/* <p className="text-gray-700">Placed On <br /> {order.order_date}</p> */}
+                    <p className="text-gray-900">Status: <span className="text-black font-semibold">{order.shipping_status}</span></p>
+                    {/* <p className="text-gray-900">Placed On <br /> {order.order_date}</p> */}
                   </div>
 
                   {order.shipping_info && (
                     <div className="border p-4 rounded-md bg-gray-50 mt-2">
                       <h3 className=" text-gray-800 font-semibold my-4">Shipping Address</h3>
-                      <p className="text-gray-700 text-sm font-semibold">{order.shipping_info.full_name}</p>
-                      <p className="text-gray-700 text-sm">{order.shipping_info.address_line_1}, {order.shipping_info.city}</p>
-                      <p className="text-gray-700 text-sm">{order.shipping_info.state}, {order.shipping_info.zip_code}, {order.shipping_info.country}</p>
-                      <p className="text-gray-700 text-sm">Phone: {order.shipping_info.mobile_number}</p>
+                      <p className="text-gray-900 text-sm font-semibold">{order.shipping_info.full_name}</p>
+                      <p className="text-gray-900 text-sm">{order.shipping_info.address_line_1}, {order.shipping_info.city}</p>
+                      <p className="text-gray-900 text-sm">{order.shipping_info.state}, {order.shipping_info.zip_code}, {order.shipping_info.country}</p>
+                      <p className="text-gray-900 text-sm">Phone: {order.shipping_info.mobile_number}</p>
                     </div>
                   )}
 
@@ -225,9 +225,9 @@ const OrderDetails = () => {
                   {order.order_trackings.map((item) => (
                     <div key={item.id} className="p-4 me-2 bg-white rounded-md shadow-md border border-gray-300 mt-2 w-fit inline-block">
                       <p className="text-gray-800 font-medium">{item?.full_details}</p>
-                      <p className="text-gray-700">{item?.html_email_body}</p>
-                      <p className="text-gray-700">{item?.sms_body}</p>
-                      <p className="text-gray-700 font-semibold">{item?.whatsapp_sms_body}</p>
+                      <p className="text-gray-900">{item?.html_email_body}</p>
+                      <p className="text-gray-900">{item?.sms_body}</p>
+                      <p className="text-gray-900 font-semibold">{item?.whatsapp_sms_body}</p>
                     </div>
                   ))} */}
 
@@ -243,7 +243,7 @@ const OrderDetails = () => {
                           {/* <p className="text-lg font-semibold">₹{order.pay_amt.toFixed(2)}</p> */}
                           <p className="text-xs text-gray-500">Total Price</p>
                           <p className="text-xs text-gray-500">
-                            GST @ {order.gst_summary.gst_rate}%  
+                            GST @ {order.gst_summary.gst_rate}%
                             (CGST {order.gst_summary.cgst} + SGST {order.gst_summary.sgst})
                           </p>
 
@@ -284,9 +284,9 @@ const OrderDetails = () => {
                           {/* orders items */}
                           {order.order_items.map((item) => (
                             <div key={item.id} className="p-4 rounded-lg border border-gray-300 my-3 flex justify-between">
-                              <p className="text-gray-700 font-medium text-sm mb-2">{item.product_name}</p>
-                              <p className="text-gray-700 font-medium text-sm mb-2">Price: ₹{item.price} × {item.quantity}</p>
-                              <p className="text-gray-700 font-semibold text-sm mb-2">
+                              <p className="text-gray-900 font-medium text-sm mb-2">{item.product_name}</p>
+                              <p className="text-gray-900 font-medium text-sm mb-2">Price: ₹{item.price} × {item.quantity}</p>
+                              <p className="text-gray-900 font-semibold text-sm mb-2">
                                 Total: ₹{item.total_price}
                               </p>
                             </div>
@@ -306,7 +306,7 @@ const OrderDetails = () => {
                             <span>SGST ( 9% ) :</span>
                             <span>₹{order.gst_summary.sgst}</span>
                           </div>
-                          
+
                           <div className="flex justify-between">
                             <span>COD Fee</span>
                             <span>₹{order.shipping_total.toFixed(2)}</span>

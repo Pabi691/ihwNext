@@ -12,7 +12,7 @@ const ChooseSection = () => {
               Regain Confidence with Indian Hair World’s Hair Solutions
             </h3>
 
-            <p className="text-base text-gray-700 leading-relaxed">
+            <p className="text-base text-gray-900 leading-relaxed">
               Indian Hair World offers a comprehensive range of services designed
               to help individuals manage hair loss and regain their confidence.
               Our expert solutions include non-surgical hair replacement, hair

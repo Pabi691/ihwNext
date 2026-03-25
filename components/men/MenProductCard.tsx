@@ -34,9 +34,8 @@ export default function MenProductCard({
             src={image}
             alt={title}
             fill
-            className={`object-${imageFit} transition-opacity duration-300 ${
-              hoverImage ? "group-hover:opacity-0" : ""
-            }`}
+            className={`object-${imageFit} transition-opacity duration-300 ${hoverImage ? "group-hover:opacity-0" : ""
+              }`}
           />
 
           {hoverImage && (
@@ -55,7 +54,7 @@ export default function MenProductCard({
           <h3 className="text-[14px] sm:text-lg 2xl:text-2xl font-semibold text-gray-800 font-montserrat 2xl:text-center">
             {title}
           </h3>
-          <p className="text-sm text-gray-600">{subtitle}</p>
+          <p className="text-sm text-gray-900">{subtitle}</p>
 
           <div className="mt-1 flex flex-wrap items-start gap-1 sm:gap-2 2xl:items-center">
             <span className="text-xs sm:text-sm text-gray-900">{price}</span>

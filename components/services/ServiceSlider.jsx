@@ -49,7 +49,7 @@ const ServiceSlider = () => {
                 </Link>
 
                 <div className="absolute bottom-0 w-full bg-white p-3">
-                  <h4 className="font-semibold text-gray-600">
+                  <h4 className="font-semibold text-gray-900">
                     {service.service_name}
                   </h4>
                 </div>

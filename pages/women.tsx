@@ -1,4 +1,5 @@
 import React from "react";
+import type { GetServerSideProps } from "next";
 import MainLayOut from "../layout/MainLayOut";
 import { DesktopNav } from "../components/Navigation";
 import HeroSection from "@/components/women/HeroSection";
@@ -13,20 +14,34 @@ import Testimonials from "@/components/women/Testimonials";
 import HairWigSection from "@/components/women/HairWigSection";
 import SingleSlider from '@/components/men/SingleSlider';
 import OurCollections from "@/components/OurCollections";
+import { toAbsoluteUrlIfPresent } from "@/utils/seo";
+import { fetchPageSeo } from "@/utils/serverSeo";
+import JsonLd from "@/components/JsonLd";
 
 const Women = () => {
     return (
         <MainLayOut>
+            <JsonLd
+                service={{
+                    name: "Women's Hair Replacement Services",
+                    description: "Premium hair toppers, wigs, and extensions for women. Natural-looking solutions for thinning hair — comfortable and stunning.",
+                    url: "https://www.indianhairworld.com/women",
+                }}
+                breadcrumbs={[
+                    { name: "Home", url: "https://www.indianhairworld.com" },
+                    { name: "Women", url: "https://www.indianhairworld.com/women" },
+                ]}
+            />
             <DesktopNav />
             <HeroSection />
             <PopularReels /> 
             <section className="relative w-[99vw]">
-                <img src="/images/LAKE GARDENS.jpg" alt="Shark Tank India Banner" className="w-full h-auto object-cover" />
+                <img src="/images/LAKE GARDENS.jpg" alt="Indian Hair World featured on Shark Tank India - women's hair solutions" className="w-full h-auto object-cover" />
             </section>
 
             <OurCollections title="Our Collections" />
 
-            <SingleSlider slug_name="get_slug_data/women-products" title="WOMEN’S HAIR PRODUCTS" />
+            <SingleSlider slug_name="get_slug_data/women-products" title="WOMEN'S HAIR PRODUCTS" />
             <ReviewPopup />
             <ScrollingBanner />
             <OurStoresSection />
@@ -48,5 +63,21 @@ const Women = () => {
         </MainLayOut>
     )
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+    const pathname = "/women";
+    const seo = await fetchPageSeo(pathname, ["women", "women-products"]);
+
+    return {
+        props: {
+            seo: {
+                ...seo,
+                canonicalUrl: toAbsoluteUrlIfPresent(seo.canonicalUrl),
+                ogUrl: toAbsoluteUrlIfPresent(seo.ogUrl),
+                ogImage: toAbsoluteUrlIfPresent(seo.ogImage),
+            },
+        },
+    };
+};
 
 export default Women;

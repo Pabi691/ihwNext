@@ -151,7 +151,7 @@ const Wishlist = () => {
               />
             </svg>
 
-            <p className="text-center text-gray-700 font-semibold text-sm my-2">
+            <p className="text-center text-gray-900 font-semibold text-sm my-2">
               Your wishlist is feeling a little lonely 💔
             </p>
             <p className="text-center text-gray-400 mt-2 text-xs max-w-xs leading-5">
@@ -182,8 +182,8 @@ const Wishlist = () => {
                   <label
                     key={v.id}
                     className={`border px-3 py-1 text-xs cursor-pointer ${selectedSize === v.id
-                        ? `border-black ${themeBgColor} text-white`
-                        : 'border-gray-300'
+                      ? `border-black ${themeBgColor} text-white`
+                      : 'border-gray-300'
                       }`}
                   >
                     <input

@@ -18,7 +18,7 @@ export default function BranchContactSections() {
             <div className="rounded-xl border bg-white p-8 text-center shadow-sm">
               <MapPin className="mx-auto mb-4 h-9 w-9 text-primary" />
               <h4 className="font-semibold mb-3 text-lg">Address</h4>
-              <p className="text-sm text-gray-600 leading-relaxed">
+              <p className="text-sm text-gray-900 leading-relaxed">
                 {branch.address}
               </p>
             </div>
@@ -27,7 +27,7 @@ export default function BranchContactSections() {
             <div className="rounded-xl border bg-white p-8 text-center shadow-sm">
               <Phone className="mx-auto mb-4 h-9 w-9 text-primary" />
               <h4 className="font-semibold mb-3 text-lg">Phone</h4>
-              <div className="space-y-1 text-sm text-gray-600">
+              <div className="space-y-1 text-sm text-gray-900">
                 {branch.phones.map((phone) => (
                   <p key={phone}>
                     <a

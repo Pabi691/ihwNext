@@ -23,15 +23,15 @@ const Footer = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 py-10 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Branches Section */}
         <div className='lg:col-span-2'>
-          <h5 className="text-[#04A9FF] font-bold mb-4 text-base uppercase">
+          <p className="text-[#04A9FF] font-bold mb-4 text-base uppercase">
             Branches
-          </h5>
+          </p>
 
           {/* Grid for better balance on desktop */}
           <div className="grid gap-2 md:grid-cols-2 text-sm text-gray-200">
             {Object.entries(branchData).map(([slug, branch]) => (
               <div key={slug} className="space-y-1">
-                <h5 className="font-semibold mb-1 text-lg">{branch.name}</h5>
+                <p className="font-semibold mb-1 text-lg">{branch.name}</p>
                 <p className="font-medium mb-1 text-gray-300">Address: {branch.address}</p>
                 {/* Address */}
                 {/* {branch.address.split(",").map((line, idx) => (
@@ -57,7 +57,7 @@ const Footer = () => {
         </div>
         {/* Company Section */}
         <div className=''>
-          <h5 className="text-[#04A9FF] font-bold mb-3 text-base uppercase">Company</h5>
+          <p className="text-[#04A9FF] font-bold mb-3 text-base uppercase">Company</p>
           <ul className='flex flex-wrap gap-2 md:block'>
             {links.map((item, index) => (
               <li key={index} className="mb-2">
@@ -70,7 +70,7 @@ const Footer = () => {
         </div>
         {/* Customer Service Section */}
         <div>
-          <h5 className="text-[#04A9FF] font-bold mb-3 text-base uppercase">Customer Service</h5>
+          <p className="text-[#04A9FF] font-bold mb-3 text-base uppercase">Customer Service</p>
           <ul className='flex flex-wrap gap-2 md:block'>
             {links.map(
               (item, index) => (
@@ -89,7 +89,7 @@ const Footer = () => {
 
         {/* Social Media Section */}
         <div className='ml-0 md:ml-[-25px]'>
-          <h5 className="text-[#04A9FF] font-bold mb-3 text-base uppercase">Connect With Us</h5>
+          <p className="text-[#04A9FF] font-bold mb-3 text-base uppercase">Connect With Us</p>
           <ul className="flex space-x-6 items-center">
             <li className="flex items-center space-x-2">
               <Link
@@ -142,7 +142,7 @@ const Footer = () => {
               </Link>
             </li>
           </ul>
-          <h5 className="text-[#04A9FF] font-bold mb-3 text-base uppercase mt-4">Opening Hours</h5>
+          <p className="text-[#04A9FF] font-bold mb-3 text-base uppercase mt-4">Opening Hours</p>
           <p className='text-sm'>Monday to Sunday: 11Am - 7Pm</p>
         </div>
 

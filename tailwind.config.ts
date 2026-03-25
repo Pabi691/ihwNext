@@ -21,13 +21,22 @@ const config: Config = {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" },
         },
+        "glass-shimmer": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(100%)" },
+        },
       },
       animation: {
         "bounce-slow": "bounce-slow 3s infinite",
+        "glass-shimmer": "glass-shimmer 2s linear infinite",
       },
     },
   },
   plugins: [require("tailwind-scrollbar")],
+
+  safelist: [
+    "animate-glass-shimmer",
+  ],
 };
 
 export default config;

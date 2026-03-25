@@ -1,48 +1,177 @@
 import React from "react";
+import { CheckCircle2 } from 'lucide-react';
 
 const Durgapur = () => {
   return (
-    <section className="max-w-7xl mx-auto px-6 py-16">
-      {/* Intro paragraph */}
-      <p className="text-gray-700 mb-6 leading-relaxed">
-        Absolutely! Get ready to discover a transformative journey towards reclaiming confidence and embracing your true self. 
-        Durgapur’s highly anticipated grand opening of Indian Hair World in Durgapur is set to redefine your perception of hair solutions! 
-        Prepare for an unparalleled experience where luxury, affordability, and innovation unite to introduce the finest Hair Patch in Durgapur. 
-        Explore our exclusive Easy EMI plans with Zero Down Payment options to make your dream look a reality.
-        <br /><br />
-        <strong>DURGAPUR BRANCH ADDRESS</strong>–<br />
-        2nd Floor, Above Punjab National Bank, City Center, Durgapur, West Bengal – 713216
-      </p>
+    <section className="w-full">
 
-      {/* Main heading */}
-      <h2 className="text-3xl md:text-4xl font-semibold mb-4">
-        Unveiling Indian Hair World: A Haven for Hair Solutions
-      </h2>
+      {/* Services Section */}
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <h2 className="text-3xl md:text-4xl font-extrabold mb-8 text-center">
+          Hair Replacement Services at Our Durgapur Branch
+        </h2>
+        <div className="grid md:grid-cols-2 gap-8">
+          <div className="bg-gray-50 p-6 rounded-xl border border-gray-100 shadow-sm">
+            <h3 className="text-xl font-bold mb-3 text-gray-900 border-b pb-2 border-gray-200">Hair Patch for Men</h3>
+            <p className="text-gray-900 leading-relaxed">
+              Cover any partial or full bald spot with a natural, undetectable hair patch in Durgapur. Methods: bonding, clipping, taping or weaving. Result in 60 minutes from Rs.5999.
+            </p>
+          </div>
+          <div className="bg-gray-50 p-6 rounded-xl border border-gray-100 shadow-sm">
+            <h3 className="text-xl font-bold mb-3 text-gray-900 border-b pb-2 border-gray-200">Hair Wig for Men</h3>
+            <p className="text-gray-900 leading-relaxed">
+              Full head hair wig for completely bald men. Washable, adjustable, lasts 1–2 years. Swim, gym and run freely — no restrictions. Available at our Durgapur branch.
+            </p>
+          </div>
+          <div className="bg-gray-50 p-6 rounded-xl border border-gray-100 shadow-sm">
+            <h3 className="text-xl font-bold mb-3 text-gray-900 border-b pb-2 border-gray-200">Non-Surgical Hair Replacement</h3>
+            <p className="text-gray-900 leading-relaxed">
+              India's #1 non-surgical hair replacement service. No surgery, no medicine, no scars. Natural result in 60 minutes. Shark Tank India featured center.
+            </p>
+          </div>
+          <div className="bg-gray-50 p-6 rounded-xl border border-gray-100 shadow-sm">
+            <h3 className="text-xl font-bold mb-3 text-gray-900 border-b pb-2 border-gray-200">Hair Patch for Women</h3>
+            <p className="text-gray-900 leading-relaxed">
+              Crown thinning, frontal hair loss or alopecia — our women's hair patch blends seamlessly with your natural hair. Non-surgical and painless in Durgapur.
+            </p>
+          </div>
+          <div className="bg-gray-50 p-6 rounded-xl border border-gray-100 shadow-sm">
+            <h3 className="text-xl font-bold mb-3 text-gray-900 border-b pb-2 border-gray-200">Hair Extensions & Toppers</h3>
+            <p className="text-gray-900 leading-relaxed">
+              Clip-in extensions, hair toppers, color strands and buns for women in Durgapur. 100% natural Indian human hair.
+            </p>
+          </div>
+          <div className="bg-gray-50 p-6 rounded-xl border border-gray-100 shadow-sm">
+            <h3 className="text-xl font-bold mb-3 text-gray-900 border-b pb-2 border-gray-200">Hair Patch Servicing</h3>
+            <p className="text-gray-900 leading-relaxed">
+              Professional hair bonding maintenance every 25–45 days at our Durgapur branch to keep your patch looking fresh and natural.
+            </p>
+          </div>
+        </div>
+      </div>
 
-      <p className="text-gray-700 mb-6 leading-relaxed">
-        At Indian Hair World, we understand the significance of every strand of hair and its profound impact on one’s identity and self-esteem. 
-        Nestled in the heart of Kolkata, our grand opening at Salt Lake marks a pivotal moment in the realm of hair restoration and enhancement. 
-        Let’s delve into what sets us apart and why our hair patch solutions reign supreme!
-      </p>
+      {/* Why Choose Us Section */}
+      <div className="py-16">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col lg:flex-row items-center gap-12">
+            {/* Left side: Image */}
+            <div className="w-full lg:w-1/2">
+              <img
+                src="/images/LOL02994.png"
+                alt="Why Indian Hair World"
+                className="w-full h-auto rounded-2xl shadow-xl object-cover"
+              />
+            </div>
 
-      {/* Subheadings and lists */}
-      <h3 className="text-2xl font-semibold mb-2">Unmatched Quality and Authenticity</h3>
-      <ul className="list-disc list-inside mb-6 text-gray-700">
-        <li>Our commitment to excellence resonates through the unparalleled quality of our hair patches sourced from premium Indian donors.</li>
-        <li>Each hair patch undergoes rigorous quality checks to ensure authenticity, durability, and seamless integration, mirroring natural hair growth patterns.</li>
-      </ul>
+            {/* Right side: Content */}
+            <div className="w-full lg:w-1/2 space-y-6">
+              <h2 className="text-3xl md:text-4xl font-extrabold mb-8 text-gray-900 leading-tight">
+                Why Indian Hair World is Durgapur's Best Hair Patch Center
+              </h2>
 
-      <h3 className="text-2xl font-semibold mb-2">Revolutionary Easy EMI Zero Down Payment Scheme</h3>
-      <ul className="list-disc list-inside mb-6 text-gray-700">
-        <li>Striving to make luxury accessible to all, Indian Hair World introduces an innovative Easy EMI scheme with Zero Down Payment, empowering individuals to embark on their transformation journey without financial constraints.</li>
-        <li>Say goodbye to upfront payments and hello to flexible payment options tailored to suit your budget and lifestyle!</li>
-      </ul>
+              <div className="flex items-start gap-4">
+                <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-1" />
+                <p className="text-gray-900 text-lg"><strong>As featured on Shark Tank India</strong> — the professional hair replacement center in Durgapur with national TV credibility and investor backing.</p>
+              </div>
+              <div className="flex items-start gap-4">
+                <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-1" />
+                <p className="text-gray-900 text-lg"><strong>5-time nationally award winning</strong> — Times Brand Icons 2024, IEA 2024, GFA 2024, NPA 2022 and BPA 2021.</p>
+              </div>
+              <div className="flex items-start gap-4">
+                <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-1" />
+                <p className="text-gray-900 text-lg"><strong>100% natural Indian human hair</strong> — no artificial fibre, no plastic, no synthetic material. Every hair patch is made from premium Indian human hair.</p>
+              </div>
+              <div className="flex items-start gap-4">
+                <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-1" />
+                <p className="text-gray-900 text-lg"><strong>Result in 60 minutes</strong> — come in with hair loss, walk out with a full natural hairstyle. Same-day results at our Durgapur branch.</p>
+              </div>
+              <div className="flex items-start gap-4">
+                <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-1" />
+                <p className="text-gray-900 text-lg"><strong>Starting at just Rs.5999 with EMI</strong> — a fraction of the cost of a hair transplant. Easy monthly payment options available.</p>
+              </div>
+              <div className="flex items-start gap-4">
+                <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-1" />
+                <p className="text-gray-900 text-lg"><strong>Serving Durgapur & surrounds</strong> — Set in City Center. Open 7 days, 11am–7pm, no appointment needed.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <h3 className="text-2xl font-semibold mb-2">Expert Consultation and Personalized Solutions</h3>
-      <ul className="list-disc list-inside mb-6 text-gray-700">
-        <li>Our seasoned experts possess a wealth of experience in understanding diverse hair concerns and crafting bespoke solutions tailored to individual needs.</li>
-        <li>From meticulous scalp analysis to personalized styling sessions, we prioritize client satisfaction and strive to exceed expectations at every turn.</li>
-      </ul>
+      {/* How it works Section */}
+      <div className="py-16 bg-gray-50 mt-12">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col lg:flex-row items-center gap-12">
+
+            {/* Left Side: The Steps */}
+            <div className="w-full lg:w-1/2">
+              <h2 className="text-3xl md:text-4xl font-extrabold mb-8 text-gray-900 leading-tight">
+                How to Get Your Hair Patch at Durgapur — 4 Simple Steps
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[#ef7f1a] transition-all shadow-sm hover:shadow-md">
+                  <div className="absolute top-0 right-0 bg-[#ef7f1a] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">1</div>
+                  <h3 className="text-lg font-bold mb-2 text-gray-900">Free consultation</h3>
+                  <p className="text-gray-900 text-sm leading-relaxed">
+                    Walk into our Durgapur branch or call +91 9875517402. Our expert assesses your hair loss type, density and scalp condition — completely free.
+                  </p>
+                </div>
+
+                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[#ef7f1a] transition-all shadow-sm hover:shadow-md">
+                  <div className="absolute top-0 right-0 bg-[#ef7f1a] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">2</div>
+                  <h3 className="text-lg font-bold mb-2 text-gray-900">Select your hair patch</h3>
+                  <p className="text-gray-900 text-sm leading-relaxed">
+                    Choose from our range of 100% natural Indian human hair patches — matched to your hair colour, texture and style. Starts from Rs.5999.
+                  </p>
+                </div>
+
+                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[#ef7f1a] transition-all shadow-sm hover:shadow-md">
+                  <div className="absolute top-0 right-0 bg-[#ef7f1a] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">3</div>
+                  <h3 className="text-lg font-bold mb-2 text-gray-900">Professional fixing</h3>
+                  <p className="text-gray-900 text-sm leading-relaxed">
+                    Our technician applies your hair patch in Durgapur using your chosen method — bonding, clipping, taping or weaving. Completely painless.
+                  </p>
+                </div>
+
+                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[#ef7f1a] transition-all shadow-sm hover:shadow-md">
+                  <div className="absolute top-0 right-0 bg-[#ef7f1a] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">4</div>
+                  <h3 className="text-lg font-bold mb-2 text-gray-900">Walk out with a new look</h3>
+                  <p className="text-gray-900 text-sm leading-relaxed">
+                    Your hair patch is styled, trimmed and blended with your natural hair. The result is 100% undetectable. Total time: 60–90 minutes.
+                  </p>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Right Side: Image */}
+            <div className="w-full lg:w-1/2">
+              <div className="relative w-full aspect-square md:aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+                <img
+                  src="/images/serv_img.jpg"
+                  alt="4 Simple Steps to Get a Hair Patch"
+                  className="w-full h-full object-cover"
+                />
+
+                {/* Floating Action Highlight */}
+                <div className="absolute bottom-6 left-6 bg-white/95 backdrop-blur-sm p-4 rounded-2xl shadow-xl flex items-center gap-3">
+                  <div className="w-10 h-10 bg-[#ef7f1a]/10 rounded-full flex items-center justify-center">
+                    <CheckCircle2 className="w-6 h-6 text-[#ef7f1a]" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-gray-900">Result in 60 Minutes</p>
+                    <p className="text-xs text-gray-500">Fast & Painless</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
     </section>
   );
 };

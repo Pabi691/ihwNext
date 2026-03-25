@@ -109,7 +109,7 @@ const WishlistSlider = () => {
               ))}
             </Swiper>
           ) : (
-            <p className="text-center my-8 text-gray-600">Your wishlist is empty!</p>
+            <p className="text-center my-8 text-gray-900">Your wishlist is empty!</p>
           )}
 
           {showPopup && popupItem && (

@@ -15,7 +15,7 @@ export default function MensHairProductsSection() {
               </h3>
             </div>
 
-            <p className="text-gray-600 hidden md:block max-w-md text-sm sm:text-base font-montserrat">
+            <p className="text-gray-900 hidden md:block max-w-md text-sm sm:text-base font-montserrat">
               <Link
                 href="/product-category/men"
                 className="inline-flex items-center text-black group transition-all duration-300"

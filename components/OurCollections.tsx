@@ -58,7 +58,7 @@ const OurCollections = ({ title }: { title: string }) => {
                   />
                   <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/20 via-transparent to-transparent" />
                 </div>
-                <p className="mt-3 text-center text-sm md:text-base text-gray-700">
+                <p className="mt-3 text-center text-sm md:text-base text-gray-900">
                   {toTitle(item.name)}
                 </p>
               </Link>

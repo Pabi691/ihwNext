@@ -162,7 +162,7 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
 
                 <div className="p-1 md:p-4 absolute bottom-0 w-full bg-white">
                   <div className="flex align-middle justify-between">
-                    <h4 className="text-xs sm:text-sm font-semibold text-gray-600">
+                    <h4 className="text-xs sm:text-sm font-semibold text-gray-900">
                       {product.brand_details?.brand_name}
                     </h4>
                     <WishlistButton

@@ -27,13 +27,13 @@ const HairWigSection: React.FC<HairWigSectionProps> = ({
 
           {/* Text Content */}
           <div className="w-full lg:w-1/2 lg:pr-8">
-            <h3 className="text-1xl uppercase tracking-wider text-gray-600 mb-3 font-montserrat">
+            <h3 className="text-1xl uppercase tracking-wider text-gray-900 mb-3 font-montserrat">
               {subtitle}
             </h3>
             <h2 className="text-3xl md:text-5xl font-light text-gray-800 mb-6 font-montserrat">
               {title}
             </h2>
-            <p className="text-gray-600 mb-8 text-lg font-montserrat">
+            <p className="text-gray-900 mb-8 text-lg font-montserrat">
               {description}
             </p>
             <a

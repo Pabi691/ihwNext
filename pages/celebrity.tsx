@@ -75,7 +75,7 @@ const CelebrityPage = () => {
                                             <h1 className="text-3xl lg:text-4xl font-bold capitalize text-black">
                                                 {slide.title}
                                             </h1>
-                                            <p className="text-lg text-gray-700 mt-8">
+                                            <p className="text-lg text-gray-900 mt-8">
                                                 {slide.text}
                                             </p>
                                         </div>
@@ -105,7 +105,7 @@ const CelebrityPage = () => {
                         <h2 className="text-3xl font-bold italic">
                             The Faces Behind the Fame – Trusted by Celebrities
                         </h2>
-                        <p className="mt-6 text-lg text-gray-600 max-w-3xl mx-auto">
+                        <p className="mt-6 text-lg text-gray-900 max-w-3xl mx-auto">
                             Celebrities trust us for flawless hair transformations —
                             experience premium hair replacement solutions.
                         </p>
@@ -155,7 +155,7 @@ const CelebrityPage = () => {
                                 <h3 className="text-2xl font-semibold">
                                     Elevate Your Look with Professional Hair Extensions
                                 </h3>
-                                <p className="mt-6 text-gray-600">
+                                <p className="mt-6 text-gray-900">
                                     Explore our professional hair extensions service trusted by
                                     renowned actress and model Darshana Banik.
                                 </p>
@@ -174,7 +174,7 @@ const CelebrityPage = () => {
                 <section className="py-16">
                     <div className="text-center mb-12 px-4">
                         <h2 className="text-3xl font-bold">TOP RATED CELEBRITIES</h2>
-                        <p className="mt-6 text-gray-600 max-w-3xl mx-auto">
+                        <p className="mt-6 text-gray-900 max-w-3xl mx-auto">
                             Top-rated celebrities trust Indian Hair World for their hair
                             replacement needs.
                         </p>

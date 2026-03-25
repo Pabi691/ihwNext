@@ -14,7 +14,7 @@ const ShopOnlineBanner = () => {
               Shop Online Today
             </h2>
 
-            <p className="text-base sm:text-lg text-gray-700 font-medium">
+            <p className="text-base sm:text-lg text-gray-900 font-medium">
               Hair Extensions, Color Strands, Buns, Wigs &amp; Patches
             </p>
           </div>

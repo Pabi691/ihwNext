@@ -13,7 +13,7 @@ const MainLayOut = ({ children }) => {
   return (
     <>
       <NavTop />
-      <div>{children}</div>
+      <main>{children}</main>
 
       {/* Mobile Footer */}
       <div className="block md:hidden mb-12">

@@ -40,7 +40,7 @@ const ReviewSlider = ({ data }) => {
               "
                             >
                                 {/* Text */}
-                                <p className="text-gray-600 mb-4">
+                                <p className="text-gray-900 mb-4">
                                     {review.text}
                                 </p>
 

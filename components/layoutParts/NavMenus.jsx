@@ -12,12 +12,12 @@ function NavMenus() {
           </Link>
         </div>
         <div className='group'>
-          <Link to="/women" className="text-gray-900 hover:text-gray-700 pb-[25px] uppercase">
+          <Link to="/women" className="text-gray-900 hover:text-gray-900 pb-[25px] uppercase">
             Women
           </Link>
         </div>
         <div className='group'>
-          <Link to="/celebrity" className="text-gray-900 hover:text-gray-700 pb-[25px] uppercase">
+          <Link to="/celebrity" className="text-gray-900 hover:text-gray-900 pb-[25px] uppercase">
             Celebrity
           </Link>
         </div>

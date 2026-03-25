@@ -19,7 +19,7 @@ export default function ReviewPopup() {
       {/* Modal Overlay */}
       {open && (
         <div className="fixed inset-0 z-[1000] bg-black/60 flex justify-center items-start overflow-auto">
-          
+
           {/* Modal Box */}
           <div
             className="relative mt-20 w-[80%] max-w-[1000px] bg-white rounded-lg
@@ -28,7 +28,7 @@ export default function ReviewPopup() {
             {/* Close Button */}
             <button
               onClick={() => setOpen(false)}
-              className="absolute top-3 right-3 text-gray-600 hover:text-black text-xl"
+              className="absolute top-3 right-3 text-gray-900 hover:text-black text-xl"
               aria-label="Close reviews"
             >
               ✕

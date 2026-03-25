@@ -24,7 +24,7 @@ const Loader = () => {
     >
       <div className="flex flex-col items-center gap-3">
         <div className="loader" aria-label="Loading" />
-        <span className="text-xs text-gray-600">Loading...</span>
+        <span className="text-xs text-gray-900">Loading...</span>
       </div>
     </div>
   );

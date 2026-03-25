@@ -151,18 +151,18 @@ const SearchPage = () => {
             </div>
           ) : (
             <div className="text-center mt-20 h-screen">
-  <div className="text-5xl mb-4">😕</div>
-  <h2 className="text-xl font-semibold text-gray-700">No results found</h2>
-  <p className="text-gray-500 mt-2">
-    We couldn’t find anything matching <strong>"{query}"</strong>
-  </p>
-  <button
-    onClick={() => setQuery("")}
-    className={`mt-6 px-6 py-2 ${themeBgColor} text-white rounded-full hover:bg-gray-800 transition`}
-  >
-    Clear Search
-  </button>
-</div>
+              <div className="text-5xl mb-4">😕</div>
+              <h2 className="text-xl font-semibold text-gray-900">No results found</h2>
+              <p className="text-gray-500 mt-2">
+                We couldn’t find anything matching <strong>"{query}"</strong>
+              </p>
+              <button
+                onClick={() => setQuery("")}
+                className={`mt-6 px-6 py-2 ${themeBgColor} text-white rounded-full hover:bg-gray-800 transition`}
+              >
+                Clear Search
+              </button>
+            </div>
 
           )}
         </div>

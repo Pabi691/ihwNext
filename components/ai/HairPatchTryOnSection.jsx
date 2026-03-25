@@ -102,7 +102,7 @@ function HairPatchTryOnSection({ productImage }) {
         <h3 className="text-xl md:text-2xl font-semibold text-gray-900">
           Virtual Hair Patch Try-On
         </h3>
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-900">
           Upload a clear front-face photo and preview this hair patch with a realistic blend.
         </p>
       </div>
@@ -120,7 +120,7 @@ function HairPatchTryOnSection({ productImage }) {
             type="file"
             accept="image/png,image/jpeg,image/webp"
             onChange={handleFileChange}
-            className="block w-full text-sm text-gray-700 file:mr-4 file:rounded-md file:border-0 file:bg-black file:px-4 file:py-2 file:text-white file:cursor-pointer"
+            className="block w-full text-sm text-gray-900 file:mr-4 file:rounded-md file:border-0 file:bg-black file:px-4 file:py-2 file:text-white file:cursor-pointer"
           />
           <p className="mt-2 text-xs text-gray-500">
             Best results: plain background, good light, straight face angle.

@@ -9,14 +9,14 @@ const VerifyEmail = () => {
   const navigate = useNavigate();
   const [verifying, setVerifying] = useState(false);
   const [message, setMessage] = useState("");
-  const {token} = useGlobal();
+  const { token } = useGlobal();
 
   // Extract query params from URL
   const queryParams = new URLSearchParams(location.search);
   const tokenvarify = queryParams.get("token");
   const email = queryParams.get("email");
 
-  const handleVerify = useCallback( async () => {
+  const handleVerify = useCallback(async () => {
     // console.log('tokenvarify', tokenvarify);
     // console.log('email', email);
     // console.log('token', token);
@@ -31,13 +31,15 @@ const VerifyEmail = () => {
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/v1/verify_email_verification`,
-        {   token: tokenvarify,
-            email: email, },
         {
-          headers: { 
+          token: tokenvarify,
+          email: email,
+        },
+        {
+          headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`
-           },
+          },
         }
       );
 
@@ -72,7 +74,7 @@ const VerifyEmail = () => {
         {verifying ? (
           <p className="text-blue-500 font-medium">Please wait while we verify your email...</p>
         ) : (
-          <p className="text-gray-700">{message}</p>
+          <p className="text-gray-900">{message}</p>
         )}
       </div>
     </div>

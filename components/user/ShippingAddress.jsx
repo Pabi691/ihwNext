@@ -34,7 +34,7 @@ const ShippingAddress = () => {
   const hasFetchedRef = useRef(false);
   const inFlightRef = useRef(false);
 
-  useEffect(() => {  
+  useEffect(() => {
     if (location.state?.address) {
       // console.log("Location State:", location.state);
       setNewAddress(location.state.address);
@@ -58,10 +58,10 @@ const ShippingAddress = () => {
         });
 
         const data = response.data;
-       if(data.status) {
-        setShippingAddresses(data.shipping_addresses);
-        // console.log('data.shipping_addresses', data);
-       } 
+        if (data.status) {
+          setShippingAddresses(data.shipping_addresses);
+          // console.log('data.shipping_addresses', data);
+        }
 
       } catch (error) {
         console.error("Error fetching shipping:", error);
@@ -195,7 +195,7 @@ const ShippingAddress = () => {
         setShippingAddresses((prev) => [...prev, data.new_address]);
       }
 
-      if(isEditing || isAdd) {
+      if (isEditing || isAdd) {
         const target = location.state?.slug ? `/${location.state.slug}` : "/myaccount/addresses";
         navigate(target);
         // console.log('location',location);
@@ -204,7 +204,7 @@ const ShippingAddress = () => {
         window.location.reload();
       }
 
-     
+
       // window.location.reload();
     } catch (error) {
       console.error("Error saving address:", error);
@@ -215,7 +215,7 @@ const ShippingAddress = () => {
 
 
   const handleDeleteAddress = async () => {
-    if(!addressToCancel) return;
+    if (!addressToCancel) return;
     setLoading(true);
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/delete_customer_shipping_addresses/${addressToCancel}`, {
@@ -240,7 +240,7 @@ const ShippingAddress = () => {
       <div className="grid md:grid-cols-2 gap-4 mx-4 md:mx-0">
         {/* add address */}
         <Box component="form" onSubmit={handleSaveAddress}>
-        <h5 className="font-medium">{isEditing ? "Edit Shipping Address" : "Add New Shipping Address"}</h5>
+          <h5 className="font-medium">{isEditing ? "Edit Shipping Address" : "Add New Shipping Address"}</h5>
           <FormControl sx={{ fontSize: '12px' }} fullWidth margin="normal">
             <InputLabel sx={{ background: 'white' }}>Type of Address</InputLabel>
             <Select
@@ -294,14 +294,14 @@ const ShippingAddress = () => {
           </Box>
 
           <button type="submit" className={`${themeBgColor} text-white p-2 rounded-md mt-2 text-center block`}>
-        {isEditing ? "Update Address" : "Add Address"}
-      </button>
+            {isEditing ? "Update Address" : "Add Address"}
+          </button>
 
         </Box>
 
         {/* address list */}
         <div>
-          {shippingAddresses.length > 0  && (
+          {shippingAddresses.length > 0 && (
             <div className="flex flex-wrap flex-col gap-6">
               {shippingAddresses.map((ship) => ship ? (
                 <div
@@ -317,7 +317,7 @@ const ShippingAddress = () => {
                       ✏️
                     </Link>
                   </div>
-                  <div className="text-sm text-gray-600">{ship.address_label}</div>
+                  <div className="text-sm text-gray-900">{ship.address_label}</div>
                   <div className="mt-2 text-gray-800">
                     <p>{ship.address_line_1}</p>
                     {ship.address_line_2 && <p>{ship.address_line_2}</p>}
@@ -358,14 +358,14 @@ const ShippingAddress = () => {
                 </div>
               ) : null)}
             </div>
-          ) }
+          )}
         </div>
       </div>
 
       {showWarning && (
         <div className={`fixed inset-0 ${themeBgColor} bg-opacity-50 flex items-center justify-center z-50`}>
           <div className="bg-white p-6 rounded-lg shadow-lg">
-            <p className="text-xs text-gray-700">
+            <p className="text-xs text-gray-900">
               Your shipping address will be deleted permanently
             </p>
             <div className="mt-4 flex justify-end gap-4">

@@ -10,6 +10,7 @@ export default function HeroSection() {
         muted
         loop
         playsInline
+        aria-label="Men's hair patch and wig transformation video"
         className="absolute inset-0 w-full h-full object-cover"
       >
         <source src="/videos/men.mp4" type="video/mp4" />

@@ -23,7 +23,7 @@ const NotFound = () => {
         </h1>
 
         {/* Subtitle */}
-        <p className="text-lg sm:text-xl text-gray-600 mb-8">
+        <p className="text-lg sm:text-xl text-gray-900 mb-8">
           Oops! The page you’re looking for doesn’t exist.
         </p>
 

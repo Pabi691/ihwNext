@@ -258,12 +258,12 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
               {/* Category Filter */}
               {categories && (
                 <div className="hidden md:block">
-                  <button className="font-semibold mb-3 text-gray-700">Categories</button>
+                  <button className="font-semibold mb-3 text-gray-900">Categories</button>
                   <div className="flex flex-col items-start gap-3">
                     {categories.slice(0, showAllCategories ? categories.length : 4).map((cat) => (
                       <button
                         key={cat.category_id}
-                        className="border-none flex gap-2 items-baseline text-gray-600 font-medium text-sm text-left hover:text-[#04A9FF]"
+                        className="border-none flex gap-2 items-baseline text-gray-900 font-medium text-sm text-left hover:text-[#04A9FF]"
                         onClick={() => navigate(`../../${cat.category_slug}`)}
                       >
                         {cat.category}
@@ -284,7 +284,7 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
               <hr />
               {sizes && (
                 <div>
-                  <li className="font-medium mb-3 text-gray-700">Sizes</li>
+                  <li className="font-medium mb-3 text-gray-900">Sizes</li>
                   <div className="flex flex-col ms-5 items-start gap-3">
                     {sizes.slice(0, showAllSizes ? sizes.length : 4).map((sizeObj) => (
                       <button
@@ -315,7 +315,7 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
               {/* Brand Filter */}
               {brands && (
                 <div>
-                  <li className="font-medium mb-3 text-gray-700">Brands</li>
+                  <li className="font-medium mb-3 text-gray-900">Brands</li>
                   <div className="flex flex-col ms-5 items-start gap-3">
                     {brands.slice(0, showAllBrands ? brands.length : 4).map((brand) => (
                       <button
@@ -344,7 +344,7 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
               {/* Color Filter */}
               {colors && (
                 <div>
-                  <li className="font-bold mb-3 text-gray-700">Colors</li>
+                  <li className="font-bold mb-3 text-gray-900">Colors</li>
                   <div className="flex flex-col ms-5 items-start gap-3">
                     {colors.length > 0 ? (
                       colors
@@ -440,8 +440,8 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
             </div>
             {catagoryProducts.category_data?.cat_banner ? (
               <img className="w-[99%] my-3 hidden md:block" loading="lazy" alt="cat-banner" src={catagoryProducts.category_data.cat_banner} />
-              ) : (
-                <img className="w-[99%] my-3 hidden md:block" loading="lazy" alt="cat-banner" src="/images/sharkDesk.jpeg" />
+            ) : (
+              <img className="w-[99%] my-3 hidden md:block" loading="lazy" alt="cat-banner" src="/images/sharkDesk.jpeg" />
             )}
             <div className="flex flex-wrap gap-4">
               {filteredProducts.map((product) => (

@@ -203,13 +203,13 @@ const Login = () => {
               maxWidth="xs"
             >
               <Box mb={3} className="text-center">
-                <p className="text-[11px] uppercase tracking-[0.35em] text-gray-600">
+                <p className="text-[11px] uppercase tracking-[0.35em] text-gray-900">
                   Indian Hair World
                 </p>
                 <h2 className="mt-2 text-2xl font-bold text-gray-900">
                   Welcome back
                 </h2>
-                <p className="mt-1 text-xs text-gray-600">
+                <p className="mt-1 text-xs text-gray-900">
                   Sign in to continue your journey
                 </p>
 
@@ -264,7 +264,7 @@ const Login = () => {
                 <>
                   <form onSubmit={loginUser} className="sign_in_form p-4">
                     <div className="mb-4">
-                      <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wide text-gray-700">
+                      <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wide text-gray-900">
                         Email or phone
                       </label>
                       <input
@@ -277,7 +277,7 @@ const Login = () => {
                       />
                     </div>
                     <div className="mb-4 relative">
-                      <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wide text-gray-700">
+                      <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wide text-gray-900">
                         Password
                       </label>
                       <input
@@ -290,7 +290,7 @@ const Login = () => {
                       />
                       <button
                         type="button"
-                        className="absolute bottom-0 right-3 transform -translate-y-1/2 text-gray-600 hover:text-gray-900 transition"
+                        className="absolute bottom-0 right-3 transform -translate-y-1/2 text-gray-900 hover:text-gray-900 transition"
                         onClick={() => setShowPassword(!showPassword)}  // Toggle showPassword state
                       >
                         {showPassword ? (

@@ -26,7 +26,7 @@ const IHWCardSection = () => {
               <h4 className="text-lg font-semibold mb-2">
                 Monofilament Patches
               </h4>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-900">
                 Model, EKO, Unique gold, BMW, Silk based patches, Mirage
                 monofilament patches.
               </p>
@@ -51,7 +51,7 @@ const IHWCardSection = () => {
               <h4 className="text-lg font-semibold mb-2">
                 Front Lace Patches
               </h4>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-900">
                 Australian patch, Mirage French lace, Australian Mirage,
                 Monofilament Front lace.
               </p>
@@ -76,7 +76,7 @@ const IHWCardSection = () => {
               <h4 className="text-lg font-semibold mb-2">
                 Different Methods
               </h4>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-900">
                 Glue Method, Taping Method, Clipping Method, Hair Bonding.
               </p>
             </div>

@@ -9,6 +9,7 @@ import "swiper/css/navigation";
 import { ImageService } from "../content/image-service";
 import { toast } from "react-toastify";
 import { branchData } from "../content/branchData";
+import { FaPhone } from "react-icons/fa6";
 
 const HeroSection = () => {
   const [bannerImages, setBannerImages] = useState([]);
@@ -41,42 +42,40 @@ const HeroSection = () => {
 
       <section className="w-full">
         <div className="max-w-7xl mx-auto px-0 md:px-4">
-          <div className="flex flex-col-reverse md:flex-row items-center">
-
+          <div className="flex flex-col md:flex-row items-center">
+            <img src="/images/banner_top.jpg" alt="Hero Image" className="w-full h-auto object-contain md:hidden block" />
             {/* LEFT CONTENT */}
             <div className="w-full md:w-1/2 py-10 text-center md:text-left md:py-0">
               <div className="space-y-4">
 
-                <h1 className="text-3xl md:text-5xl font-extrabold leading-tight">
-                  BEST HAIR PATCH
-                  <br />
-                  AND HAIR WIG
-                  <br />
-                  IN {branchDetails ? branchDetails.name : 'KOLKATA'}
+                <h1 className="text-white md:text-black py-2 pr-[3px] pl-[3px] text-2xl md:text-5xl font-bold rounded-md natofont md:bg-transparent bg-black mx-auto md:mx-0 w-[90%]">
+                  {branchDetails ? branchDetails.h1 : 'Best Hair Patch & Non-Surgical Hair Replacement in Kolkata'}
                 </h1>
 
-                <p className="text-gray-600 text-base md:text-lg">
+                {/* <p className="text-gray-900 text-base md:text-lg hidden md:block">
                   Transform Your Look with the Best Hair Patch and <br />
                   Hair Wig in {branchDetails ? branchDetails.name : 'Kolkata'}
-                </p>
-
-                <h5 className="text-xl md:text-2xl font-semibold text-black">
-                  Starting just Rs. 5999/-
-                </h5>
-
+                </p> */}
+                <div className="flex items-center gap-2 md:justify-start justify-center w-[90%] mx-auto md:mx-0">
+                  <img src="/images/bajaj.png" alt="Bajaj" className="h-[85px] m-auto md:m-0" />
+                  <p className="text-xl md:text-2xl font-semibold dancing-text">
+                    Starting just Rs. 5999/-
+                  </p>
+                </div>
                 {branchDetails ? (
                   <div className="flex flex-col md:items-start items-center gap-4 mt-6">
 
                     {/* Call Button */}
                     <a
                       href={`tel:${branchDetails.phones[0]}`}
-                      className="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-full bg-black hover:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300"
+                      className="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-full bg-black hover:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 ring-2 ring-green-300 animate-pulse shadow-lg transition-all"
                       id="mainCTA"
                     >
-                      <span className="text-xs bg-white text-gray-700 px-2 py-0.5 rounded-full">
+                      {/* <span className="text-xs bg-white text-gray-900 px-2 py-0.5 rounded-full">
                         Recommended
-                      </span>
-                      📞 GET FREE CONSULTATION
+                      </span> */}
+                      <FaPhone />
+                      GET FREE CONSULTATION
                     </a>
 
                     {/* WhatsApp Button */}
@@ -109,13 +108,14 @@ const HeroSection = () => {
                     {/* Call Button */}
                     <a
                       href="tel:+917980221032"
-                      className="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-full bg-black hover:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300"
+                      className="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-full bg-blue-800 hover:bg-blue-900 shadow-lg hover:shadow-xl transition-all duration-300 ring-2 ring-blue-800 animate-pulse shadow-lg transition-all"
                       id="mainCTA"
                     >
-                      <span className="text-xs bg-white text-gray-700 px-2 py-0.5 rounded-full">
+                      {/* <span className="text-xs bg-white text-gray-900 px-2 py-0.5 rounded-full">
                         Recommended
-                      </span>
-                      📞 GET FREE CONSULTATION
+                      </span> */}
+                      <FaPhone />
+                      GET FREE CONSULTATION
                     </a>
 
                     {/* WhatsApp Button */}
@@ -123,7 +123,7 @@ const HeroSection = () => {
                       href="https://wa.me/917980221032?text=Hello%20Indian%20Hair%20World%2C%20I%20would%20like%20to%20inquire%20about%20your%20hair%20replacement%20services."
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-full bg-green-600 hover:bg-green-700 ring-2 ring-green-300 animate-pulse shadow-lg hover:shadow-xl transition-all duration-300"
+                      className="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-full bg-green-800 hover:bg-green-900 ring-2 ring-green-800 animate-pulse shadow-lg hover:shadow-xl transition-all duration-300"
                       id="whatsappCTA"
                     >
                       {/* <span className="text-xs bg-white text-green-700 px-2 py-0.5 rounded-full">
@@ -147,7 +147,7 @@ const HeroSection = () => {
               </div>
             </div>
             {/* RIGHT BANNER / SWIPER */}
-            <div className="w-full md:w-1/2 h-[540px] md:h-[750px] relative">
+            <div className="w-full md:w-1/2 h-[540px] md:h-[750px] relative hidden md:block">
               <Swiper
                 modules={[Navigation, Autoplay]}
                 loop={canLoop}
@@ -178,7 +178,6 @@ const HeroSection = () => {
           </div>
         </div>
       </section>
-
 
     </>
 

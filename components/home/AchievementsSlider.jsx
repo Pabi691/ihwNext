@@ -68,7 +68,7 @@ const AchievementsSlider = () => {
                         <SwiperSlide key={index}>
                             <div className="group h-full border rounded-sm overflow-hidden transition-all duration-300">
                                 <div className="p-6 bg-white group-hover:bg-black transition-colors duration-300 h-full flex flex-col">
-                                    <div className="text-sm text-gray-600 group-hover:text-gray-300 mb-2">
+                                    <div className="text-sm text-gray-900 group-hover:text-gray-300 mb-2">
                                         {item.designation}
                                     </div>
 
@@ -76,7 +76,7 @@ const AchievementsSlider = () => {
                                         {item.title}
                                     </h3>
 
-                                    <p className="text-sm text-gray-700 group-hover:text-gray-300 leading-relaxed">
+                                    <p className="text-sm text-gray-900 group-hover:text-gray-300 leading-relaxed">
                                         {item.description}
                                     </p>
                                 </div>

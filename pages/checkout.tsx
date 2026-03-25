@@ -611,7 +611,7 @@ const Checkout = () => {
           ) : (
 
             <div className="checkout-page p-10 max-w-screen-2xl mx-auto">
-              <h4 className='font-semibold text-gray-600 text-lg md:text-2xl mt-2 mb-6'>Choose Your Payment Method</h4>
+              <h4 className='font-semibold text-gray-900 text-lg md:text-2xl mt-2 mb-6'>Choose Your Payment Method</h4>
               <div className="md:flex-row gap-6 flex-col flex">
                 {/* Payment Method Tabs */}
                 <div className="w-full md:w-1/5 flex flex-col border rounded-lg">
@@ -679,7 +679,7 @@ const Checkout = () => {
                   {/* Accordion for Address & Items */}
                   <div className={`mb-6 rounded-lg border ${(shippingValidate || shippingAddresses.length > 0) && 'border-blue-800'}`}>
                     <div className="p-4 cursor-pointer flex justify-between items-center" onClick={() => setIsAddressOpen(!isAddressOpen)}>
-                      <h4 className="font-medium text-gray-600">Select Delivery Address</h4>
+                      <h4 className="font-medium text-gray-900">Select Delivery Address</h4>
                       {isAddressOpen ? (
                         <IoChevronUpSharp />
                       ) : (
@@ -727,7 +727,7 @@ const Checkout = () => {
 
                   <div className="mb-6 border rounded-lg">
                     <div className="p-4 cursor-pointer flex justify-between items-center" onClick={() => setIsItemsOpen(!isItemsOpen)}>
-                      <h4 className="font-medium text-gray-600">Order Items</h4>
+                      <h4 className="font-medium text-gray-900">Order Items</h4>
                       {isItemsOpen ? (
                         <IoChevronUpSharp />
                       ) : (
@@ -782,7 +782,7 @@ const Checkout = () => {
                     <h4 className='font-medium'>Order Summary</h4>
                     <div className='flex justify-between items-center mb-2'>
                       <span className='text-gray-500 font-medium text-sm'>Total MRP :</span>
-                      <span className='text-gray-600 text-sm'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(totalMRP)}</span>
+                      <span className='text-gray-900 text-sm'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(totalMRP)}</span>
                     </div>
 
                     <div className='flex justify-between items-center mb-2'>
@@ -797,12 +797,12 @@ const Checkout = () => {
 
                     <div className='flex justify-between items-center'>
                       <span className='text-gray-500 font-medium text-sm'>CGST ( 9% ) :</span>
-                      <span className='text-gray-600 text-sm'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(CGST)}</span>
+                      <span className='text-gray-900 text-sm'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(CGST)}</span>
                     </div>
 
                     <div className='flex justify-between items-center'>
                       <span className='text-gray-500 font-medium text-sm'>SGST ( 9% ) :</span>
-                      <span className='text-gray-600 text-sm'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(SGST)}</span>
+                      <span className='text-gray-900 text-sm'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(SGST)}</span>
                     </div>
                     <div className='text-gray-500 font-medium text-sm flex justify-between items-center my-3'>Bag Discount:
                       {Number.isFinite(savings) ?

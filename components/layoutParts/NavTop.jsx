@@ -12,6 +12,7 @@ import MetaData from '../../layout/MetaData';
 import { themeBgColor } from '../../styles/typography';
 import { branchData } from '@/content/branchData';
 import { useParams } from 'next/navigation';
+import Chatbot from '../Chatbot';
 
 const NavTop = () => {
   const { userToken, logout } = useAuth();
@@ -116,6 +117,22 @@ const NavTop = () => {
             </div> */}
           </div>
 
+          {/* Men / Women Buttons */}
+          <div className="hidden md:flex items-center gap-3">
+            <Link
+              to="/men"
+              className="px-5 py-2 text-sm font-semibold rounded-full border-2 border-black text-black hover:bg-black hover:text-white transition-all duration-300"
+            >
+              MEN
+            </Link>
+            <Link
+              to="/women"
+              className="px-5 py-2 text-sm font-semibold rounded-full border-2 border-black text-black hover:bg-black hover:text-white transition-all duration-300"
+            >
+              WOMEN
+            </Link>
+          </div>
+
           {/* Search Bar */}
           <HeaderSearchBar />
 
@@ -192,7 +209,7 @@ const NavTop = () => {
                     <div className='flex items-center gap-2'>
                       <UserRound className='rounded-full border-black border-2' />
                       <Link className='text-sm' to="/login" >
-                        <p className='md:hidden text-gray-600'>Hey There!</p>
+                        <p className='md:hidden text-gray-900'>Hey There!</p>
                         <p className='text-black font-bold'>LOGIN / SIGNUP</p>
                       </Link>
                     </div>
@@ -212,29 +229,29 @@ const NavTop = () => {
                 <NavMenus />
                 {userToken && (
                   <div>
-                    <p className='text-gray-600 text-[11px] my-1 font-medium'>MY PROFILE</p>
+                    <p className='text-gray-900 text-[11px] my-1 font-medium'>MY PROFILE</p>
                     <div className='flex gap-2 flex-wrap'>
                       <Link className='flex gap-2 items-center flex-col' to={'/myaccount'}>
                         <User2Icon className='border rounded-md p-4 w-16 h-16 text-gray-800' />
-                        <span className='text-xs text-gray-600 font-medium'>My Account</span>
+                        <span className='text-xs text-gray-900 font-medium'>My Account</span>
                       </Link>
 
                       <Link className='flex gap-2 items-center flex-col' to={'/myaccount/orders'}>
                         <FaTruckFast className='border rounded-md p-4 w-16 h-16 text-gray-800' />
-                        <span className='text-xs text-gray-600 font-medium'>My Order</span>
+                        <span className='text-xs text-gray-900 font-medium'>My Order</span>
                       </Link>
 
                       <Link className='flex gap-2 items-center flex-col' to={'/wishlist'}>
                         <Heart className='border rounded-md p-4 w-16 h-16 text-gray-800' />
-                        <span className='text-xs text-gray-600 font-medium'>My Wishlist</span>
+                        <span className='text-xs text-gray-900 font-medium'>My Wishlist</span>
                       </Link>
                     </div>
 
                   </div>
                 )}
-                <p className='text-gray-600 text-[11px] mt-1 font-medium'>CONTACT US</p>
+                <p className='text-gray-900 text-[11px] mt-1 font-medium'>CONTACT US</p>
                 <Link className='text-xs font-medium' to={'/contact-us'}>Help & Support</Link>
-                <p className='text-gray-600 text-[11px] mt-1 font-medium'>ABOUT US</p>
+                <p className='text-gray-900 text-[11px] mt-1 font-medium'>ABOUT US</p>
                 <Link className='text-xs font-medium' to={'/about'}>Our Story</Link>
                 {userToken && (
                   <button
@@ -250,6 +267,7 @@ const NavTop = () => {
 
         )}
       </div>
+      {/* <Chatbot phone="7980221032" /> */}
     </>
   );
 };

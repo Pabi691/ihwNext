@@ -25,9 +25,9 @@ const MyOrders = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        if(response.data.status){
+        if (response.data.status) {
           setLoading(false);
-          console.log('orders',response.data);
+          console.log('orders', response.data);
           setOrders(response.data.orders);
         } else {
           setLoading(false);
@@ -71,11 +71,11 @@ const MyOrders = () => {
 
               <button onClick={() => navigate(`/myaccount/order/${order.id}`)} className='border-b flex items-center justify-between w-full py-4'>
                 <div className="flex items-center justify-start gap-4">
-                  {order.shipping_status === 'Order Cancelled ' ||  order.shipping_status === "Payment Failed"? (
+                  {order.shipping_status === 'Order Cancelled ' || order.shipping_status === "Payment Failed" ? (
                     <span className='w-10 h-10 bg-gray-700 text-white rounded-full flex items-center justify-center font-medium'>
                       ✕
                     </span>
-                  ) : order.shipping_status === "Pending"? (
+                  ) : order.shipping_status === "Pending" ? (
                     <span className='w-10 h-10 bg-yellow-600 text-white rounded-full flex items-center justify-center font-medium'>
                       <MdPending />
                     </span>
@@ -85,8 +85,8 @@ const MyOrders = () => {
                     </span>
                   )}
                   <div>
-                    <p className="text-gray-600 font-medium text-start">{order.shipping_status}</p>
-                    <p className="text-sm text-gray-600 text-start">Order Placed On {order.order_date}</p>
+                    <p className="text-gray-900 font-medium text-start">{order.shipping_status}</p>
+                    <p className="text-sm text-gray-900 text-start">Order Placed On {order.order_date}</p>
                   </div>
                 </div>
                 <BiChevronRight className={`text-5xl text-gray-300 transform`} />
@@ -94,28 +94,28 @@ const MyOrders = () => {
 
               <>
                 <div className="order-items mt-4">
-                  <h4 className="text-md font-medium text-gray-700 mb-2">Order Items:</h4>
+                  <h4 className="text-md font-medium text-gray-900 mb-2">Order Items:</h4>
                   {order.order_items.map((item) => (
                     <div
                       key={item.id}
                       className="p-3 bg-gray-50 rounded-md shadow-sm mb-2 border border-gray-300"
                     >
-                      <p className="text-sm text-gray-700">
+                      <p className="text-sm text-gray-900">
                         {item.product_name}
                       </p>
-                      <p className="text-sm text-gray-700">
+                      <p className="text-sm text-gray-900">
                         Quantity: {item.quantity}
                       </p>
-                      <p className="text-sm text-gray-700">
+                      <p className="text-sm text-gray-900">
                         Price: ₹{item.price}
                       </p>
-                      <p className="text-sm text-gray-700">
+                      <p className="text-sm text-gray-900">
                         Total: ₹{item.total_price}
                       </p>
                     </div>
                   ))}
                 </div>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-900">
                   Net Amount: ₹{order.net_amt}
                 </p>
 
@@ -159,7 +159,7 @@ const MyOrders = () => {
                               >
                                 ✕ Cancel Order
                               </button>
-                              <Link to={'https://wa.me/+918240561627?text=Hello%20Indian%20Hair%20World%2C%20I%20need%20assistance%20regarding%20my%20order%20with%20order%20ID%20' + order.id} target="_blank" rel="noopener noreferrer" className='flex items-center gap-2 text-xs text-gray-600'>
+                              <Link to={'https://wa.me/+918240561627?text=Hello%20Indian%20Hair%20World%2C%20I%20need%20assistance%20regarding%20my%20order%20with%20order%20ID%20' + order.id} target="_blank" rel="noopener noreferrer" className='flex items-center gap-2 text-xs text-gray-900'>
                                 <BiLogoWhatsapp className='text-green-400 text-3xl' />
                               </Link>
                             </div>
@@ -176,7 +176,7 @@ const MyOrders = () => {
       {showWarning && (
         <div className={`fixed inset-0 ${themeBgColor} bg-opacity-50 flex items-center justify-center`}>
           <div className="bg-white p-6 rounded-lg shadow-lg mx-4 md:mx-0">
-            <p className="text-xs text-gray-700">
+            <p className="text-xs text-gray-900">
               It's important to keep in mind that too many cancellations can lead to an account ban,
               so let's try to avoid that! <br /> If you ever have any questions or concerns about cancellations,
               feel free to reach out to us for assistance through whatsapp. <br />Your understanding and cooperation are

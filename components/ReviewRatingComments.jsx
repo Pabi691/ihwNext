@@ -37,10 +37,10 @@ const ReviewRatingComments = ({ reviews, overallRating, totalRatings, ratingBrea
                 <div className="flex-1 bg-gray-200 rounded-full h-1 overflow-hidden">
                   <div
                     className={`h-1 rounded-full ${(ratingBreakdown[rating] / totalRatings) * 100 > 50
-                        ? "bg-green-700"
-                        : (ratingBreakdown[rating] / totalRatings) * 100 > 30
-                          ? "bg-green-300"
-                          : "bg-yellow-300"
+                      ? "bg-green-700"
+                      : (ratingBreakdown[rating] / totalRatings) * 100 > 30
+                        ? "bg-green-300"
+                        : "bg-yellow-300"
                       }`}
                     style={{
                       width: `${(ratingBreakdown[rating] / totalRatings) * 100}%`,
@@ -48,7 +48,7 @@ const ReviewRatingComments = ({ reviews, overallRating, totalRatings, ratingBrea
                   ></div>
 
                 </div>
-                <p className="text-gray-600 text-sm">{`(${ratingBreakdown[rating]})`}</p>
+                <p className="text-gray-900 text-sm">{`(${ratingBreakdown[rating]})`}</p>
               </div>
             ))}
           </div>
@@ -58,41 +58,41 @@ const ReviewRatingComments = ({ reviews, overallRating, totalRatings, ratingBrea
       {/* Individual Reviews Section */}
       {reviews && reviews.length > 0 ? (
         (openReviews ? reviews : reviews.slice(0, 3)).map((review, index) => (
-            <div key={index} className="mb-6 border-b pb-4 last:border-none">
-              <div className="flex items-center gap-4 mb-2">
-                <FaUserCircle className="text-gray-500 text-3xl" />
-                <div>
-                  <h4 className="font-medium text-gray-800 text-sm">{review.name}</h4>
-                  <div className="flex items-center text-black">
-                    {Array.from({ length: review.rating }, (_, i) => (
-                      <BiSolidStar key={i} />
-                    ))}
-                    {Array.from({ length: 5 - review.rating }, (_, i) => (
-                      <BiStar key={i + 10} className="text-gray-300" />
-                    ))}
-                    <span className="ml-2 text-xs text-gray-600">
-                      {review.rating} / 5
-                    </span>
-                  </div>
+          <div key={index} className="mb-6 border-b pb-4 last:border-none">
+            <div className="flex items-center gap-4 mb-2">
+              <FaUserCircle className="text-gray-500 text-3xl" />
+              <div>
+                <h4 className="font-medium text-gray-800 text-sm">{review.name}</h4>
+                <div className="flex items-center text-black">
+                  {Array.from({ length: review.rating }, (_, i) => (
+                    <BiSolidStar key={i} />
+                  ))}
+                  {Array.from({ length: 5 - review.rating }, (_, i) => (
+                    <BiStar key={i + 10} className="text-gray-300" />
+                  ))}
+                  <span className="ml-2 text-xs text-gray-900">
+                    {review.rating} / 5
+                  </span>
                 </div>
-                <div className="text-green-500 flex items-center gap-2 text-xs md:text-base">
-                  <span className=""><AiFillSafetyCertificate /></span> Verified Buyer</div>
               </div>
-              <p className="text-gray-600 text-sm">{review.review_text}</p>
-            </div>  
+              <div className="text-green-500 flex items-center gap-2 text-xs md:text-base">
+                <span className=""><AiFillSafetyCertificate /></span> Verified Buyer</div>
+            </div>
+            <p className="text-gray-900 text-sm">{review.review_text}</p>
+          </div>
         ))
       ) : (
         <p className="text-gray-500">No reviews available.</p>
       )}
 
       {totalRatings > 5 && (
-              <button
-                onClick={() => setOpenReviews(!openReviews)}
-                className="text-[#04A9FF] mt-2"
-              >
-                {openReviews ? 'View Less Reviews' : 'View All Reviews'}
-              </button>
-            )}
+        <button
+          onClick={() => setOpenReviews(!openReviews)}
+          className="text-[#04A9FF] mt-2"
+        >
+          {openReviews ? 'View Less Reviews' : 'View All Reviews'}
+        </button>
+      )}
     </div>
   );
 };

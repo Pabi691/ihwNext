@@ -32,9 +32,8 @@ export default function HairPatchCard({
             src={image}
             alt={title}
             fill
-            className={`object-contain transition-opacity duration-300 ${
-              hoverImage ? "group-hover:opacity-0" : ""
-            }`}
+            className={`object-contain transition-opacity duration-300 ${hoverImage ? "group-hover:opacity-0" : ""
+              }`}
           />
 
           {hoverImage && (
@@ -53,7 +52,7 @@ export default function HairPatchCard({
           <h3 className="text-[14px] sm:text-lg font-semibold text-gray-800 font-montserrat">
             {title}
           </h3>
-          <p className="text-sm text-gray-600">{subtitle}</p>
+          <p className="text-sm text-gray-900">{subtitle}</p>
 
           <div className="mt-1 flex gap-2 flex-wrap">
             <span className="text-gray-900 text-[11px] sm:text-sm">

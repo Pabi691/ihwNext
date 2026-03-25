@@ -41,7 +41,7 @@ const WhoWeAre = () => {
             </span>
           </h2>
 
-          <p className="text-gray-700 text-base md:text-lg leading-relaxed">
+          <p className="text-gray-900 text-base md:text-lg leading-relaxed">
             Indian Hair World offers top-quality, non-surgical hair replacement
             services in Kolkata. Our experienced team uses the finest Indian hair
             to create natural-looking patches and wigs.
@@ -67,7 +67,7 @@ const WhoWeAre = () => {
               <h3 className="mt-4 text-lg font-semibold">
                 {member.name}
               </h3>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-900">
                 {member.role}
               </p>
             </div>

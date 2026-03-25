@@ -43,7 +43,7 @@ const SimpleLayout = ({ children, title, ProductsCount, link }) => {
         <div>
           {token && isVerified ? (
             <>
-              <span className='text-xs font-medium text-gray-600'>Signed In as</span> <br />
+              <span className='text-xs font-medium text-gray-900'>Signed In as</span> <br />
               <span className="text-gray-900 font-medium">{username}</span>
             </>
           ) : (

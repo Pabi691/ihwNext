@@ -114,18 +114,18 @@ const Return = () => {
 
           {/* Order ID */}
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">Order ID</label>
+            <label className="block mb-1 text-sm font-medium text-gray-900">Order ID</label>
             <input
               type="text"
               value={orderId}
               disabled
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-900 cursor-not-allowed"
             />
           </div>
 
           {/* Reason for Return */}
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">Reason for Return</label>
+            <label className="block mb-1 text-sm font-medium text-gray-900">Reason for Return</label>
             <Select
               fullWidth
               value={reason}
@@ -142,7 +142,7 @@ const Return = () => {
           {/* Additional Reason */}
           {reason === "Others (explain)" && (
             <div>
-              <label className="block mb-1 text-sm font-medium text-gray-700">Explain Your Reason</label>
+              <label className="block mb-1 text-sm font-medium text-gray-900">Explain Your Reason</label>
               <TextField
                 fullWidth
                 variant="outlined"
@@ -157,7 +157,7 @@ const Return = () => {
           <div className="relative border-2 border-dashed border-gray-300 rounded-xl p-5 bg-gray-50 hover:bg-gray-100 transition-all">
             <label className="flex items-center space-x-3 cursor-pointer">
               <BiUpload className="text-2xl text-gray-500" />
-              <span className="text-gray-600 font-medium">
+              <span className="text-gray-900 font-medium">
                 {file ? file.name : "Click to upload video (Max 20MB)"}
               </span>
               <input type="file" accept="image/*,video/*" onChange={handleFileChange} className="hidden" />

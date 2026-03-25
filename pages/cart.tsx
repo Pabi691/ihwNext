@@ -306,13 +306,13 @@ const Cart = () => {
                               {item?.product?.brand_details?.brand_name || item?.brand_details?.brand_name || ''}
                             </h2>
 
-                            <h3 className="text-xs text-gray-600 font-medium my-1 md:my-3">{item.prod_name || item.product?.prod_name}</h3>
-                            <p className="text-gray-600 text-xs flex gap-2"> <FaTruck className='text-green-600' /> Ships in 2-3 days</p>
+                            <h3 className="text-xs text-gray-900 font-medium my-1 md:my-3">{item.prod_name || item.product?.prod_name}</h3>
+                            <p className="text-gray-900 text-xs flex gap-2"> <FaTruck className='text-green-600' /> Ships in 2-3 days</p>
                             {/* {item.variation_name && (
-                              <p className="text-gray-600 text-sm">Size: {item.variation_name}</p>
+                              <p className="text-gray-900 text-sm">Size: {item.variation_name}</p>
                             )}
                             {item.variation_name && (
-                              <p className="text-gray-600 text-sm">Size: {item.variation_name}</p>
+                              <p className="text-gray-900 text-sm">Size: {item.variation_name}</p>
                             )} */}
 
                             <div className='absolute bottom-14 md:bottom-4 right-4 text-xs'>
@@ -410,7 +410,7 @@ const Cart = () => {
                             key={qty}
                             onClick={() => setSelectedQuantity(qty)}
                             className={`w-full h-10 flex items-center justify-center rounded transition-none duration-0 border
-                                          ${selectedQuantity === qty ? `${themeBgColor} text-white border-black` : 'bg-gray-200 text-gray-700 border-gray-300'}`}
+                                          ${selectedQuantity === qty ? `${themeBgColor} text-white border-black` : 'bg-gray-200 text-gray-900 border-gray-300'}`}
                           >
                             {qty}
                           </button>
@@ -510,24 +510,24 @@ const Cart = () => {
                     )}
                     <div className='p-3 rounded-lg border mt-3'>
                       <h3 className="text-sm font-semibold mb-4">PRICE SUMMARY</h3>
-                      <p className="text-gray-600 text-sm mb-3 flex justify-between font-medium">
+                      <p className="text-gray-900 text-sm mb-3 flex justify-between font-medium">
                         Total MRP : <span>₹ {totalMRP.toFixed(2)}</span>
                       </p>
                       <div className='flex justify-between items-center mb-2'>
                         <span className='text-gray-500 font-medium text-sm'>Price :</span>
                         <span className='text-base'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(subtotal)}</span>
                       </div>
-                      <p className="text-gray-600 text-sm mb-3 flex justify-between font-medium">
+                      <p className="text-gray-900 text-sm mb-3 flex justify-between font-medium">
                         CGST ( 9% ): <span>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(CGST)}</span>
                       </p>
-                      <p className="text-gray-600 text-sm mb-3 flex justify-between font-medium">
+                      <p className="text-gray-900 text-sm mb-3 flex justify-between font-medium">
                         SGST ( 9% ): <span>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(SGST)}</span>
                       </p>
-                      {/* <p className="text-gray-600 text-sm mb-3 flex justify-between font-medium">
+                      {/* <p className="text-gray-900 text-sm mb-3 flex justify-between font-medium">
                         Total GST ( 18% ): <span>₹ {totalGST}</span>
                       </p> */}
-                      <p className="text-gray-600 text-sm mb-3 flex justify-between font-medium">Bag Discount: <span className='text-green-400'>{Number.isFinite(savings) ? `-₹ ${savings.toFixed(2)}` : ''}</span></p>
-                      <p className="text-gray-600 text-sm mb-3 flex justify-between font-medium">Delivery Fee: <span className='text-green-400'>Free</span></p>
+                      <p className="text-gray-900 text-sm mb-3 flex justify-between font-medium">Bag Discount: <span className='text-green-400'>{Number.isFinite(savings) ? `-₹ ${savings.toFixed(2)}` : ''}</span></p>
+                      <p className="text-gray-900 text-sm mb-3 flex justify-between font-medium">Delivery Fee: <span className='text-green-400'>Free</span></p>
                       <p className="font-medium border-dotted border-t text-black text-lg mt-2 flex justify-between my-3">Subtotal:
                         {discount > 0 ? (
                           <div className="text-green-400 text-right">
@@ -631,7 +631,7 @@ const Cart = () => {
             <div className="text-center my-8">
               <img alt='cart-png' loading="lazy" className='w-[350px] m-auto' src='images/bag.png' />
               <p className="text-xl font-semibold my-3">Hey, your bag feels a bit empty!</p>
-              <p className="text-gray-600 mt-2">
+              <p className="text-gray-900 mt-2">
                 Let’s add some awesome items to it!
               </p>
 

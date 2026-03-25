@@ -109,9 +109,9 @@ const OverView = () => {
 
                 <div>
                   <h1 className="md:text-xl text-base font-bold text-gray-800">{customers?.first_name}</h1>
-                  <p className="text-gray-600 text-sm">{customers?.email}</p>
+                  <p className="text-gray-900 text-sm">{customers?.email}</p>
                   {customers?.mobile_number && (
-                    <p className="text-gray-600 text-sm">{customers?.mobile_number}</p>
+                    <p className="text-gray-900 text-sm">{customers?.mobile_number}</p>
                   )}
 
                 </div>
@@ -122,9 +122,9 @@ const OverView = () => {
 
           {/* <div className="hidden md:flex flex-col gap-5 bg-white p-6 rounded-xl border mb-6 w-full md:w-[49%] md:bg-gradient-to-br from-gray-400 to-transparent">
             <h2 className="text-xl font-bold text-gray-800">Cloo+ Membership</h2>
-            <p className="text-gray-600">Upgrade to the premium experience now</p>
+            <p className="text-gray-900">Upgrade to the premium experience now</p>
             {customers?.mobile_number && (
-              <p className="text-gray-600">{customers?.mobile_number}</p>
+              <p className="text-gray-900">{customers?.mobile_number}</p>
             )}
 
             <div className="flex flex-col items-start md:items-center gap-4 md:flex-row">
@@ -153,45 +153,45 @@ const OverView = () => {
             to="/myaccount/orders"
             className="bg-white p-6 rounded-xl border-none md:border text-center flex flex-col items-center gap-3"
           >
-            <Package className="w-8 h-8 text-gray-700" />
+            <Package className="w-8 h-8 text-gray-900" />
             <h2 className="text-xs md:text-lg">Orders</h2>
-            <p className="text-sm text-gray-600 hidden md:block">View, modify, and track orders</p>
+            <p className="text-sm text-gray-900 hidden md:block">View, modify, and track orders</p>
           </Link>
 
           <Link
             to="/myaccount/addresses"
             className="bg-white p-6 rounded-xl border-none md:border text-center flex flex-col items-center gap-3"
           >
-            <MapPin className="w-8 h-8 text-gray-700" />
+            <MapPin className="w-8 h-8 text-gray-900" />
             <h2 className="text-xs md:text-lg">Addresses</h2>
-            <p className="text-sm text-gray-600 hidden md:block">Manage your delivery locations</p>
+            <p className="text-sm text-gray-900 hidden md:block">Manage your delivery locations</p>
           </Link>
 
           <Link
             to="/myaccount/profile"
             className="bg-white p-6 rounded-xl border-none md:border text-center flex flex-col items-center gap-3"
           >
-            <User className="w-8 h-8 text-gray-700" />
+            <User className="w-8 h-8 text-gray-900" />
             <h2 className="text-xs md:text-lg">Profile</h2>
-            <p className="text-sm text-gray-600 hidden md:block">Edit your personal information</p>
+            <p className="text-sm text-gray-900 hidden md:block">Edit your personal information</p>
           </Link>
 
           <Link
             to="../contact-us"
             className="bg-white p-6 rounded-xl border-none md:border text-center flex flex-col items-center gap-3"
           >
-            <HelpCircle className="w-8 h-8 text-gray-700" />
+            <HelpCircle className="w-8 h-8 text-gray-900" />
             <h2 className="text-xs md:text-lg">Help & Support</h2>
-            <p className="text-sm text-gray-600 hidden md:block">Get assistance with your queries</p>
+            <p className="text-sm text-gray-900 hidden md:block">Get assistance with your queries</p>
           </Link>
 
           <Link
             to="../about"
             className="bg-white p-6 rounded-xl border-none md:border text-center flex flex-col items-center gap-3"
           >
-            <SignalHigh className="w-8 h-8 text-gray-700" />
+            <SignalHigh className="w-8 h-8 text-gray-900" />
             <h2 className="text-xs md:text-lg">Our Story</h2>
-            <p className="text-sm text-gray-600 hidden md:block">Learn more about our journey</p>
+            <p className="text-sm text-gray-900 hidden md:block">Learn more about our journey</p>
           </Link>
         </div>
 
@@ -214,7 +214,7 @@ const OverView = () => {
                   {activity.order_items && activity.order_items.length > 0 ? (
                     activity.order_items.map((item, index) => (
                       <div key={index} className="mb-2">
-                        <span className="text-gray-600">{item.product_name || 'N/A'}</span>
+                        <span className="text-gray-900">{item.product_name || 'N/A'}</span>
                         <br />
                         <span className="text-gray-400 text-sm">
                           {item.updated_at

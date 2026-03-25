@@ -127,28 +127,28 @@ export default function VideoReelsSlider({
     const active = activeIndex !== null ? reels[activeIndex] : null;
 
     useEffect(() => {
-  if (activeIndex === null) return;
+        if (activeIndex === null) return;
 
-  const timer = setTimeout(() => {
-    modalVideoRefs.current.forEach((video, idx) => {
-      if (!video) return;
+        const timer = setTimeout(() => {
+            modalVideoRefs.current.forEach((video, idx) => {
+                if (!video) return;
 
-      if (idx === activeIndex) {
-        video.currentTime = 0;
-        video.muted = isMuted;
-        video.play().catch(() => {});
-      } else {
-        video.pause();
-        video.currentTime = 0;
-      }
-    });
+                if (idx === activeIndex) {
+                    video.currentTime = 0;
+                    video.muted = isMuted;
+                    video.play().catch(() => { });
+                } else {
+                    video.pause();
+                    video.currentTime = 0;
+                }
+            });
 
-    setIsPaused(false);
-  }, 120); // wait for DOM mount
+            setIsPaused(false);
+        }, 120); // wait for DOM mount
 
-  return () => clearTimeout(timer);
+        return () => clearTimeout(timer);
 
-}, [activeIndex, isMuted]);
+    }, [activeIndex, isMuted]);
 
     // useEffect(() => {
     //     if (activeIndex === null) return;
@@ -171,15 +171,15 @@ export default function VideoReelsSlider({
                 <div className="w-[98%] mx-auto">
                     <div className="flex justify-between items-start flex-wrap gap-4 w-[98%]">
                         <div className="text-start mb-2 relative">
-                            <h3 className="text-xl mx-6 sm:text-4xl font-bold text-gray-900 inline-block">
+                            <h2 className="text-xl mx-6 sm:text-4xl font-bold text-gray-900 inline-block">
                                 {sectionTitle}{' '}
                                 <span className="outline-text font-semibold">{sectionTitleHighlight}</span>
-                            </h3>
+                            </h2>
                         </div>
-                        <p className="text-gray-600 hidden md:block max-w-md text-sm sm:text-base font-montserrat">
+                        <p className="text-gray-900 hidden md:block max-w-md text-sm sm:text-base font-montserrat">
                             <Link href={viewMoreLink} className="inline-flex items-center text-black group transition-all duration-300">
                                 <span className="relative text-base overflow-hidden">
-                                    <span className="relative z-10">View More</span>
+                                    <span className="relative z-10">Shop Now</span>
                                     <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#04a9ff] scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100" />
                                 </span>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
@@ -235,7 +235,7 @@ export default function VideoReelsSlider({
                                                 playsInline
                                                 preload="metadata"
                                                 className="w-full h-full object-cover"
-                                                />
+                                            />
                                         ) : (
                                             <img
                                                 src={reel.thumbnail}
@@ -270,10 +270,10 @@ export default function VideoReelsSlider({
                     </Swiper>
 
                     {/* Nav */}
-                    <button onClick={() => swiperRef.current?.slidePrev()} className="absolute top-[35%] -translate-y-1/2 -left-1 md:left-0 z-10 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-all" aria-label="Previous">
+                    <button onClick={() => swiperRef.current?.slidePrev()} className="absolute top-[35%] -translate-y-1/2 -left-1 md:left-0 z-10 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white shadow-lg flex items-center justify-center text-gray-900 hover:bg-gray-50 transition-all" aria-label="Previous">
                         <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5"><path d="M15 19l-7-7 7-7" /></svg>
                     </button>
-                    <button onClick={() => swiperRef.current?.slideNext()} className="absolute top-[35%] -translate-y-1/2 -right-1 md:right-0 z-10 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white shadow-lg flex items-center justify-center text-gray-700 hover:bg-gray-50 transition-all" aria-label="Next">
+                    <button onClick={() => swiperRef.current?.slideNext()} className="absolute top-[35%] -translate-y-1/2 -right-1 md:right-0 z-10 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white shadow-lg flex items-center justify-center text-gray-900 hover:bg-gray-50 transition-all" aria-label="Next">
                         <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5"><path d="M9 5l7 7-7 7" /></svg>
                     </button>
                 </div>
@@ -331,7 +331,7 @@ export default function VideoReelsSlider({
                                                         muted={isMuted}
                                                         preload="metadata"
                                                         className="w-full h-full object-cover"
-                                                        />
+                                                    />
                                                     {/* <video
                                                         ref={el => { modalVideoRefs.current[index] = el; }}
                                                         src={reel.videoFile}

@@ -10,6 +10,7 @@ export default function HeroSection() {
         muted
         loop
         playsInline
+        aria-label="Women's hair topper and wig transformation video"
         className="absolute inset-0 w-full h-full object-cover"
       >
         <source src="/videos/banner.mp4" type="video/mp4" />

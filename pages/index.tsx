@@ -8,11 +8,13 @@ import { DesktopNav, MobileNav } from "../components/Navigation";
 import TopBar from "../components/home/TopBar";
 import { toAbsoluteUrlIfPresent } from "@/utils/seo";
 import { fetchPageSeo } from "@/utils/serverSeo";
+import JsonLd from "@/components/JsonLd";
 
 const Home = () => {
 
   return (
     <>
+      <JsonLd organization />
       <TopBar />
       <MainLayOut>
         <DesktopNav />
@@ -23,12 +25,12 @@ const Home = () => {
           <div className="w-full max-w-7xl px-4 md:px-8">
             <img
               src="/images/sharkDesk.jpeg"
-              alt="Featured on Shark Tank"
+              alt="Indian Hair World featured on Shark Tank India Season 4"
               className="hidden md:block w-full h-auto object-contain rounded-lg"
             />
             <img
               src="/images/sharkMobile.png"
-              alt="Featured on Shark Tank"
+              alt="Indian Hair World featured on Shark Tank India Season 4"
               className="block md:hidden w-full h-auto object-contain rounded-lg"
             />
           </div>
