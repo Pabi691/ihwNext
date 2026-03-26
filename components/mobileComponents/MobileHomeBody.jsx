@@ -1,6 +1,5 @@
 import React from 'react';
 import AllCatMobile from '@/components/mobileComponents/AllCatMobile';
-import BottomFixedNav from '@/components/mobileComponents/BottomFixedNav';
 import BranchAppointmentBanner from '@/components/branches/BranchAppointmentBanner';
 import ShopOnlineBanner from '@/components/ShopOnlineBanner';
 import WelcomeSection from '@/components/home/WelcomeSection';
@@ -42,12 +41,6 @@ const MobileHomeBody = () => {
 
       <div className='ms-2 remove_nav'><AllCatMobile slug="men-products" /></div>
       <div className='ms-2 remove_nav'><AllCatMobile slug="women-products" /></div>
-
-
-      <div>
-        <BottomFixedNav />
-      </div>
-
     </div>
   )
 }

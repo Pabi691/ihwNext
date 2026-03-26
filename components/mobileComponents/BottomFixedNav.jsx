@@ -5,10 +5,11 @@ import { Link, useLocation } from '@/components/compat/router';
 import { themeTextColor } from '../../styles/typography';
 import { ShoppingBagIcon } from '@heroicons/react/20/solid';
 import { GoHeartFill } from 'react-icons/go';
+import { ShoppingBasketIcon } from 'lucide-react';
 
 const BottomFixedNav = () => {
   const location = useLocation();
-  
+
   // Define active route styles
   const activeStyle = themeTextColor;
   const defaultStyle = 'text-gray-400';
@@ -18,16 +19,16 @@ const BottomFixedNav = () => {
       <div className='fixed bottom-0 z-50 w-full p-2 bg-white shadow-lg'>
         <div className='flex justify-between items-baseline'>
           <Link className='flex items-center flex-col gap-1 text-gray-500' to={'/'}>
-            <BiSolidHomeSmile className={`text-xl ${location.pathname === '/' ? activeStyle : defaultStyle}`} />    
+            <BiSolidHomeSmile className={`text-xl ${location.pathname === '/' ? activeStyle : defaultStyle}`} />
             <span className={`text-[10px] font-semibold ${location.pathname === '/' ? themeTextColor : 'text-gray-500'}`}>
               Home
             </span>
           </Link>
 
-          <Link className='flex items-center flex-col gap-1 text-gray-500' to={'/wishlist'}>
-            <GoHeartFill className={`text-xl ${location.pathname === '/wishlist' ? activeStyle : defaultStyle}`} />
-            <span className={`text-[10px] font-semibold ${location.pathname === '/wishlist' ? themeTextColor : 'text-gray-500'}`}>
-              Wishlist
+          <Link className='flex items-center flex-col gap-1 text-gray-500' to={'/shop'}>
+            <ShoppingBasketIcon className={`text-xl ${location.pathname === '/shop' ? activeStyle : defaultStyle}`} />
+            <span className={`text-[10px] font-semibold ${location.pathname === '/shop' ? themeTextColor : 'text-gray-500'}`}>
+              Shop
             </span>
           </Link>
 
@@ -42,7 +43,7 @@ const BottomFixedNav = () => {
             <FaUser className={`rounded-full text-xl ${location.pathname === '/myaccount' ? activeStyle : defaultStyle}`} />
             <span className={`text-[10px] font-semibold ${location.pathname === '/myaccount' ? themeTextColor : 'text-gray-500'}`}>
               Profile
-            </span>    
+            </span>
           </Link>
         </div>
       </div>

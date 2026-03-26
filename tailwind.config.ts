@@ -25,16 +25,27 @@ const config: Config = {
           "0%": { transform: "translateX(-100%)" },
           "100%": { transform: "translateX(100%)" },
         },
+        slideDown: {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(-20px)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)',
+          },
+        }
       },
       animation: {
         "bounce-slow": "bounce-slow 3s infinite",
         "glass-shimmer": "glass-shimmer 2s linear infinite",
+        "slideDown": "slideDown 0.5s ease",
       },
     },
   },
   plugins: [require("tailwind-scrollbar")],
-
   safelist: [
+    "animate-slideDown",
     "animate-glass-shimmer",
   ],
 };

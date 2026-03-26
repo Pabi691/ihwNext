@@ -5,6 +5,7 @@ import { Link } from '@/components/compat/router';
 import MobileHeader from '../components/layoutParts/mobile/MobileHeader';
 import { useGlobal } from '../global/GlobalContext';
 import { themeBgColor } from '../styles/typography';
+import BottomFixedNav from '@/components/mobileComponents/BottomFixedNav';
 
 const SimpleLayout = ({ children, title, ProductsCount, link }) => {
   const [showMenu, setShowMenu] = useState(false);
@@ -77,6 +78,10 @@ const SimpleLayout = ({ children, title, ProductsCount, link }) => {
             </Suspense>
 
           )}
+        </div>
+
+        <div className='md:hidden'>
+          <BottomFixedNav />
         </div>
       </div>
 

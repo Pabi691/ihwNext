@@ -4,6 +4,7 @@ import Footer from '../components/layoutParts/Footer';
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { useGlobal } from "../global/GlobalContext";
 import { themeBgColor } from "../styles/typography";
+import BottomFixedNav from "@/components/mobileComponents/BottomFixedNav";
 
 const MainLayOut = ({ children }) => {
   const [showMenu, setShowMenu] = useState(false);
@@ -34,6 +35,10 @@ const MainLayOut = ({ children }) => {
             loading={loadingCategories}
           />
         }
+
+        <div className='md:hidden'>
+          <BottomFixedNav />
+        </div>
       </div>
 
       {/* Desktop Footer */}

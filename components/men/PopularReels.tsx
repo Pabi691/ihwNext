@@ -2,6 +2,16 @@ import VideoReelsSlider, { ReelItem } from '@/components/VideoReelsSlider';
 
 const menReels: ReelItem[] = [
   {
+    reelId: 'DViJYP1DEQQ',
+    videoUrl: 'https://www.instagram.com/reel/DViJYP1DEQQ/',
+    productUrl: '/product/model-hair-patch-black',
+    thumbnail: 'https://cdn.indianhairworld.com/product-images/model-hair-patch-black.jpg',
+    productName: 'Model Hair Patch – Black',
+    price: 9999,
+    salePrice: 6999,
+    videoFile: '/videos/men-reel-4.mp4',
+  },
+  {
     reelId: 'DR2gOBik31w',
     videoUrl: 'https://www.instagram.com/reel/DR2gOBik31w/',
     productUrl: '/product/03-mm-hair-patch-black',

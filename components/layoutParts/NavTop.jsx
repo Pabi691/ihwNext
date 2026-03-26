@@ -51,41 +51,65 @@ const NavTop = () => {
       {/* <MetaData /> */}
       <header className="z-50 w-full sticky top-0">
         {branchDetails && (
-          <div className="flex md:hidden justify-between items-center bg-gray-700">
-
-            {/* Call Button */}
-            <a
-              href={`tel:${branchDetails.phones[0]}`}
-              className="text-[10px] flex-1 flex items-center justify-center gap-2 px-6 py-3 text-white font-semibold bg-gray-700 transition-all duration-300"
-            >
-              📞 GET FREE CONSULTATION
-            </a>
-
-            {/* WhatsApp Button */}
-            <a
-              href={`https://wa.me/${branchDetails.phones[0]}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[10px] flex-1 flex items-center justify-center gap-2 px-6 py-3 text-white font-semibold bg-green-600 animate-pulse transition-all duration-300"
-            >
-              {/* <span className="text-xs bg-white text-green-700 px-2 py-0.5 rounded-full">
-  Recommended
-</span> */}
-              {/* WhatsApp Icon */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 32 32"
-                className="w-5 h-5 fill-white"
+          <div className="md:hidden fixed top-2 left-0 w-full z-[999] px-3 animate-slideDown">
+            <div className="flex gap-2">
+              {/* Call Button */}
+              <a
+                href={`tel:${branchDetails.phones[0]}`}
+                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl
+        bg-sky-900 text-sky-200 font-semibold text-xs
+        shadow-md 
+        transition-all duration-300 active:scale-95"
               >
-                <path d="M16.001 3C8.821 3 3 8.822 3 16.002c0 2.82.922 5.44 2.48 7.56L4 29l5.59-1.45A12.94 12.94 0 0016 29c7.18 0 13.001-5.822 13.001-12.998C29.001 8.822 23.18 3 16 3zm0 23.5c-2.22 0-4.28-.64-6.02-1.74l-.43-.27-3.32.86.89-3.24-.28-.44A10.46 10.46 0 015.5 16c0-5.79 4.71-10.5 10.5-10.5S26.5 10.21 26.5 16 21.79 26.5 16 26.5zm5.74-7.84c-.31-.16-1.83-.9-2.11-1.01-.28-.1-.49-.16-.7.16s-.8 1.01-.98 1.22c-.18.21-.36.24-.67.08-.31-.16-1.3-.48-2.47-1.54-.91-.81-1.52-1.81-1.7-2.12-.18-.31-.02-.48.14-.63.14-.14.31-.36.47-.54.16-.18.21-.31.31-.52.1-.21.05-.39-.02-.55-.08-.16-.7-1.69-.96-2.31-.25-.61-.5-.53-.7-.54l-.6-.01c-.21 0-.55.08-.83.39-.28.31-1.1 1.07-1.1 2.61 0 1.54 1.13 3.03 1.29 3.24.16.21 2.22 3.39 5.38 4.75.75.32 1.34.51 1.8.65.76.24 1.45.21 2 .13.61-.09 1.83-.75 2.09-1.48.26-.73.26-1.36.18-1.48-.08-.11-.28-.18-.59-.34z" />
-              </svg>
+                <svg xmlns="http://www.w3.org/2000/svg"
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round"
+                    d="M3 5a2 2 0 012-2h2.28a2 2 0 011.94 1.515l.516 2.064a2 2 0 01-.45 1.94l-1.27 1.27a16.001 16.001 0 006.586 6.586l1.27-1.27a2 2 0 011.94-.45l2.064.516A2 2 0 0121 16.72V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                <span>Free Consultation</span>
+              </a>
+              {/* WhatsApp Button */}
+              <a
+                href={`https://wa.me/${branchDetails.phones[0]}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl
+        bg-[#10251E] text-[#0AA97A] font-semibold text-xs
+        shadow-md 
+        transition-all duration-300 active:scale-95 relative"
+              >
 
-              CHAT ON WHATSAPP
-            </a>
+                {/* Badge */}
+                {/* <span className="absolute -top-2 right-2 bg-yellow-400 text-black text-[9px] px-2 py-0.5 rounded-full font-bold shadow">
+                  2 min reply
+                </span> */}
 
+                {/* Icon */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 32 32"
+                  className="w-5 h-5 fill-current"
+                >
+                  <path d="M19.11 17.39c-.27-.14-1.61-.79-1.86-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.14-.42-2.17-1.33-.8-.71-1.34-1.58-1.5-1.85-.16-.27-.02-.42.12-.56.13-.13.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.48.07-.73.34-.25.27-.96.94-.96 2.3 0 1.36.99 2.67 1.13 2.86.14.18 1.95 2.98 4.73 4.18.66.28 1.17.45 1.57.58.66.21 1.26.18 1.73.11.53-.08 1.61-.66 1.84-1.29.23-.63.23-1.17.16-1.29-.07-.11-.25-.18-.52-.32z" />
+                  <path d="M16.001 3C8.821 3 3 8.822 3 16.002c0 2.82.922 5.44 2.48 7.56L4 29l5.59-1.45A12.94 12.94 0 0016 29c7.18 0 13.001-5.822 13.001-12.998C29.001 8.822 23.18 3 16 3zm0 23.3c-2.26 0-4.37-.66-6.15-1.79l-.44-.26-3.32.86.89-3.23-.29-.47a10.27 10.27 0 01-1.6-5.45c0-5.68 4.62-10.3 10.31-10.3 5.68 0 10.3 4.62 10.3 10.3 0 5.69-4.62 10.31-10.3 10.31z" />
+                </svg>
+
+                <span>WhatsApp</span>
+
+                {/* <span className="ml-1 text-[10px] px-2 py-0.5 
+        bg-white/20 text-[#0AA97A] 
+        rounded-full backdrop-blur-sm relative z-10">
+                  Fast⚡
+                </span> */}
+              </a>
+            </div>
           </div>
         )}
-        <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex flex-wrap justify-between items-center bg-black md:bg-white">
+        <div className={`max-w-7xl mx-auto px-4 ${branchDetails ? 'pt-[50px]' : 'pt-3'} md:pt-3 pb-3 sm:px-6 lg:px-8 flex flex-wrap justify-between items-center bg-black md:bg-white`}>
           {/* Mobile Menu Button */}
           <div className='md:hidden px-2 flex gap-3'>
             <button className="text-white text-lg" onClick={() => setShowMenu(!showMenu)}>
@@ -121,15 +145,19 @@ const NavTop = () => {
           <div className="hidden md:flex items-center gap-3">
             <Link
               to="/men"
-              className="px-5 py-2 text-sm font-semibold rounded-full border-2 border-black text-black hover:bg-black hover:text-white transition-all duration-300"
+              className="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-xl
+        bg-sky-900 text-sky-200 font-semibold text-xs
+        shadow-md"
             >
-              MEN
+              <span>Men</span>
             </Link>
             <Link
               to="/women"
-              className="px-5 py-2 text-sm font-semibold rounded-full border-2 border-black text-black hover:bg-black hover:text-white transition-all duration-300"
+              className="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-xl
+        bg-[#10251E] text-[#0AA97A] font-semibold text-xs
+        shadow-md relative"
             >
-              WOMEN
+              <span>Women</span>
             </Link>
           </div>
 

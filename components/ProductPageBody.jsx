@@ -441,13 +441,16 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
             {catagoryProducts.category_data?.cat_banner ? (
               <img className="w-[99%] my-3 hidden md:block" loading="lazy" alt="cat-banner" src={catagoryProducts.category_data.cat_banner} />
             ) : (
-              <img className="w-[99%] my-3 hidden md:block" loading="lazy" alt="cat-banner" src="/images/sharkDesk.jpeg" />
+              <>
+                <img className="w-[99%] my-3 hidden md:block" loading="lazy" alt="cat-banner" src="/images/sharkDesk.jpeg" />
+                <img className="w-[99%] my-3 md:hidden block" loading="lazy" alt="cat-banner" src="/images/banner_top.jpg" />
+              </>
             )}
             <div className="flex flex-wrap gap-4">
               {filteredProducts.map((product) => (
                 <div
                   key={product.id}
-                  className="item w-[47%] h-[250px] md:w-[32%] bg-white overflow-hidden relative md:h-[365px]"
+                  className="item w-[47%] h-[250px] md:w-[32%] bg-white overflow-hidden relative md:h-[500px]"
                 >
                   {
                     loading ? (
@@ -467,11 +470,9 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
 
                         <div className="p-2 md:p-4 absolute bottom-0 w-full bg-white bg-opacity-90">
                           <div className="flex justify-between items-center">
-                            {product.brand_details?.brand_name && (
-                              <h3 className="text-xs md:text-sm text-gray-900 w-4/5 font-semibold">
-                                {product.brand_details.brand_name}
-                              </h3>
-                            )}
+                            <h2 className="text-xs md:text-sm text-gray-900 truncate w-4/5 font-semibold">
+                              {product.prod_name}
+                            </h2>
                             <WishlistButton
                               product={product}
                               wishlist={wishlist}
@@ -480,9 +481,12 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
                               API_BASE_URL={API_BASE_URL}
                             />
                           </div>
-                          <h2 className="text-xs md:text-sm text-gray-500 truncate w-4/5 font-semibold">
-                            {product.prod_name}
-                          </h2>
+
+                          {product.brand_details?.brand_name && (
+                            <h3 className="text-xs md:text-sm text-gray-500 w-4/5 font-medium">
+                              {product.brand_details.brand_name}
+                            </h3>
+                          )}
 
                           <div className="flex gap-[2px] md:gap-2 items-end mt-1 mb-2">
                             <p className="text-black text-xs md:text-sm font-semibold md:font-bold flex gap-[2px]">

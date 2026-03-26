@@ -36,13 +36,17 @@ const Men = () => {
             <DesktopNav />
             <HeroSection />
             <section className="relative w-[99vw]">
-                <img src="/images/LAKE GARDENS.jpg" alt="Indian Hair World featured on Shark Tank India - men's hair solutions" className="w-full h-auto object-cover" />
+                <img src="/images/sharkDesk.png" alt="Indian Hair World featured on Shark Tank India - men's hair solutions" className="w-full h-auto object-cover hidden md:block" />
+                <img src="/images/sharkMobile.png" alt="Indian Hair World featured on Shark Tank India - men's hair solutions" className="w-full h-auto object-cover md:hidden" />
             </section>
 
             <PopularReels />
+            <section className="relative w-[99vw]">
+                <img src="/images/LAKE GARDENS.jpg" alt="Indian Hair World featured on Shark Tank India - men's hair solutions" className="w-full h-auto object-cover" />
+            </section>
             {/* <MensHairPatchSection /> */}
             <SingleSlider slug_name="get_slug_data/men-products" title="MEN'S HAIR PRODUCTS" />
-                  
+
             <ReviewPopup />
             <ScrollingBanner />
             {/* <MensHairProductsSection /> */}

@@ -4,6 +4,7 @@ import { FaLinkedinIn, FaThreads, FaYoutube } from 'react-icons/fa6';
 import { Link } from '@/components/compat/router';
 import { branchData } from '../../content/branchData';
 import useGlobalContent from '../../hooks/useGlobalContent';
+import BottomFixedNav from '../mobileComponents/BottomFixedNav';
 
 const Footer = () => {
   const { globalContentData } = useGlobalContent();
@@ -41,15 +42,15 @@ const Footer = () => {
                 <div className="mt-1">
                   <p>Phone:</p>
                   {branch.phones.map((phone) => (
-                  <p key={phone}>
-                    <a
-                      href={`tel:${phone.replace(/\s+/g, "")}`}
-                      className="hover:underline"
-                    >
-                      {phone}
-                    </a>
-                  </p>
-                ))}
+                    <p key={phone}>
+                      <a
+                        href={`tel:${phone.replace(/\s+/g, "")}`}
+                        className="hover:underline"
+                      >
+                        {phone}
+                      </a>
+                    </p>
+                  ))}
                 </div>
               </div>
             ))}
@@ -148,7 +149,7 @@ const Footer = () => {
 
       </div>
 
-      <div className="footer_down max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">       
+      <div className="footer_down max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <hr className='my-3' />
 
         <div className='flex-col flex justify-center text-sm md:justify-between items-center md:flex-row'>
@@ -162,10 +163,10 @@ const Footer = () => {
       </div>
       <div
         dangerouslySetInnerHTML={{
-            __html: globalContentData?.footer || "",
+          __html: globalContentData?.footer || "",
         }}
-        />
-       
+      />
+
     </footer>
   );
 };
