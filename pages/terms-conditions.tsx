@@ -130,7 +130,7 @@ const TermsCondition = () => {
               contact you as needed.
             </p>
 
-            
+
           </section>
           <section className="mt-8 space-y-4">
             <h2 className="text-xl font-semibold">
@@ -388,25 +388,25 @@ const TermsCondition = () => {
             <div className="mt-4">
               <p className="font-semibold">Indian Hair World</p>
               <p>Kolkata: 1A, Sultan Alam Rd, Lake Gardens, WB 700033</p>
-              <p>📞 +91 7980221032 / +91 8910097668</p>
+              <p>📞 +917980221032 / +918910097668</p>
             </div>
 
             <div className="mt-4">
               <p className="font-semibold">Salt Lake</p>
               <p>EC-20, Sector 1, Salt Lake City, Kolkata 700064</p>
-              <p>📞 +91 8961194044</p>
+              <p>📞 +918961194044</p>
             </div>
 
             <div className="mt-4">
               <p className="font-semibold">Durgapur</p>
               <p>City Center, Durgapur, WB 713216</p>
-              <p>📞 +91 9875517402 / +91 8910652352</p>
+              <p>📞 +919875517402 / +918910652352</p>
             </div>
 
             <div className="mt-4">
               <p className="font-semibold">Siliguri</p>
               <p>City Center, Siliguri, WB 734001</p>
-              <p>📞 +91 7439436698</p>
+              <p>📞 +917439436698</p>
             </div>
           </section>
         </div>

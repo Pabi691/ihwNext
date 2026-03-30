@@ -12,6 +12,7 @@ import JsonLd from "@/components/JsonLd";
 import { useParams } from "@/components/compat/router";
 import { branchData } from "@/content/branchData";
 import AchievementSlider from "@/components/men/AchievementSlider";
+import OurStoresSection from "@/components/men/OurStoresSection";
 
 
 const Branches = () => {
@@ -40,8 +41,8 @@ const Branches = () => {
                 <DesktopNav />
                 <BranchHero />
                 {/* Shark Tank Images */}
-                <div className="w-full my-4 md:my-8 justify-center hidden md:flex">
-                    <div className="w-full max-w-7xl px-4 md:px-8">
+                {/* <div className="w-full my-4 md:my-8 justify-center hidden md:flex">
+                    <div className="w-full max-w-7xl px-4 md:px-8 bg-blue-600">
                         <img
                             src="/images/sharkDesk.jpeg"
                             alt="Indian Hair World featured on Shark Tank India Season 4"
@@ -52,19 +53,47 @@ const Branches = () => {
                             alt="Indian Hair World featured on Shark Tank India Season 4"
                             className="block md:hidden w-full h-auto object-contain rounded-lg"
                         />
+                        <div className="max-w-4xl mx-auto">
+
+                            <div className="bg-white rounded-2xl shadow-sm p-6 md:p-8">
+                                <p className="text-gray-900 leading-relaxed text-base md:text-lg text-left tracking-wide">
+                                    {data.paragraph}
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div> */}
+                <div className="w-full my-6 md:my-16">
+                    <div className="max-w-6xl mx-auto px-4 md:px-6">
+
+                        {/* IMAGE */}
+                        <div className="rounded-2xl overflow-hidden">
+                            <img
+                                src="/images/sharkDesk.jpeg"
+                                alt="Indian Hair World featured on Shark Tank India Season 4"
+                                className="hidden md:block w-full h-auto object-contain rounded-lg"
+                            />
+                        </div>
+
+                        {/* PARAGRAPH SECTION */}
+                        <div className="mt-0 md:mt-10 border-l-4 border-blue-600 pl-6">
+
+                            {/* subtle top divider */}
+                            <div className="w-12 h-[2px] bg-blue-600 mb-6"></div>
+
+                            <p className="text-gray-900 text-base md:text-lg leading-loose tracking-[0.2px]">
+                                {data.paragraph}
+                            </p>
+
+                        </div>
+
                     </div>
                 </div>
                 <PopularReels />
-                <div className="max-w-7xl mx-auto px-4 md:px-8 mt-6">
-                    {/* <h2 className="text-2xl mx-6 sm:text-4xl font-bold text-gray-900 mb-4 text-center">
-                        Welcome to Indian Hair World {branchName}
-                    </h2> */}
-                    <p className="text-gray-900 font-bold text-base md:text-lg text-center">
-                        {data.paragraph}
-                    </p>
-                </div>
                 <AchievementSlider />
                 <OurWorks />
+                <OurStoresSection />
                 <BranchContent />
             </MainLayOut>
         </>

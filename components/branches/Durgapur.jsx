@@ -115,7 +115,7 @@ const Durgapur = () => {
                   <div className="absolute top-0 right-0 bg-[#ef7f1a] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">1</div>
                   <h3 className="text-lg font-bold mb-2 text-gray-900">Free consultation</h3>
                   <p className="text-gray-900 text-sm leading-relaxed">
-                    Walk into our Durgapur branch or call +91 9875517402. Our expert assesses your hair loss type, density and scalp condition — completely free.
+                    Walk into our Durgapur branch or call +919875517402. Our expert assesses your hair loss type, density and scalp condition — completely free.
                   </p>
                 </div>
 

@@ -9,7 +9,9 @@ import "swiper/css/navigation";
 import { ImageService } from "../content/image-service";
 import { toast } from "react-toastify";
 import { branchData } from "../content/branchData";
-import { FaPhone } from "react-icons/fa6";
+import { FaAward, FaPhone, FaRankingStar, FaStar, FaThumbsUp, FaTrophy, FaWhatsapp } from "react-icons/fa6";
+import GlassBadge from "./GlassBadge";
+import GlassButton from "./GlassButton";
 
 const HeroSection = () => {
   const [bannerImages, setBannerImages] = useState([]);
@@ -46,100 +48,77 @@ const HeroSection = () => {
             <img src="/images/banner_top.jpg" alt="Hero Image" className="w-full h-auto object-contain md:hidden block" />
             {/* LEFT CONTENT */}
             <div className="w-full md:w-1/2 py-10 text-center md:text-left md:py-0">
+              {/* CTR Hook Badge */}
+              <div className="w-fit mx-auto md:mx-0 mb-4 inline-flex items-center gap-1.5 bg-[#ef7f1a] text-white px-3 py-1.5 rounded-md text-xs sm:text-sm font-bold uppercase tracking-wider shadow-sm">
+                <FaRankingStar className="w-4 h-4" />
+                India's #1 Non-Surgical Hair Replacement
+              </div>
               <div className="space-y-4">
 
-                <h1 className="text-white md:text-black py-2 pr-[3px] pl-[3px] text-2xl md:text-5xl font-bold rounded-md natofont md:bg-transparent bg-black mx-auto md:mx-0 w-[90%]">
-                  {branchDetails ? branchDetails.h1 : 'Best Hair Patch & Non-Surgical Hair Replacement in Kolkata'}
+                <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 tracking-tight">
+                  <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+                    {branchDetails ? branchDetails.h1 : 'Best Hair Patch & Non-Surgical Hair Replacement in Kolkata'}
+                  </span>
                 </h1>
 
-                {/* <p className="text-gray-900 text-base md:text-lg hidden md:block">
-                  Transform Your Look with the Best Hair Patch and <br />
-                  Hair Wig in {branchDetails ? branchDetails.name : 'Kolkata'}
-                </p> */}
-                <div className="flex items-center gap-2 md:justify-start justify-center w-[90%] mx-auto md:mx-0">
-                  <img src="/images/bajaj.png" alt="Bajaj" className="h-[85px] m-auto md:m-0" />
-                  <p className="text-xl md:text-2xl font-semibold dancing-text">
-                    Starting just Rs. 5999/-
-                  </p>
+                {/* Keyword-rich Subheadline */}
+                <span className="text-gray-900 text-base md:text-xl mb-6 max-w-lg mx-auto md:mx-0">
+                  {/* Transform your look in 60 minutes with 100% natural, undetectable Indian human hair.  */}
+                  <strong className="text-blue-600 font-bold">No Surgery. No Side Effects.</strong>
+                </span>
+
+                {/* Price & EMI block */}
+                <div className="flex flex-row items-center gap-4 bg-[#ef7f1a]/5 border border-[#ef7f1a]/20 p-4 rounded-2xl mb-8 w-fit mx-auto md:mx-0">
+                  <div>
+                    <p className="text-sm text-gray-500 font-semibold uppercase tracking-wider mb-1">Starting At</p>
+                    <p className="text-2xl md:text-4xl font-extrabold text-[#ef7f1a]">Rs. 5999/-</p>
+                  </div>
+                  <div className="w-[1px] h-12 bg-gray-300 hidden md:block mx-2"></div>
+                  <div className="flex flex-col items-center justify-center">
+                    <img src="/images/bajaj.png" alt="Bajaj No Cost EMI" className="h-20 object-contain" />
+                    <span className="text-xs font-bold text-gray-900">Available</span>
+                  </div>
                 </div>
                 {branchDetails ? (
-                  <div className="flex flex-col md:items-start items-center gap-4 mt-6">
-
-                    {/* Call Button */}
-                    <a
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <GlassButton
                       href={`tel:${branchDetails.phones[0]}`}
-                      className="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-full bg-black hover:bg-gray-800 shadow-lg hover:shadow-xl transition-all duration-300 ring-2 ring-green-300 animate-pulse shadow-lg transition-all"
-                      id="mainCTA"
+                      icon={<FaPhone />}
+                      variant="primary"
                     >
-                      {/* <span className="text-xs bg-white text-gray-900 px-2 py-0.5 rounded-full">
-                        Recommended
-                      </span> */}
-                      <FaPhone />
-                      GET FREE CONSULTATION
-                    </a>
+                      BOOK FREE CONSULTATION
+                    </GlassButton>
 
-                    {/* WhatsApp Button */}
-                    <a
-                      href={`https://wa.me/${branchDetails.phones[0]}`}
+                    <GlassButton
+                      href={`https://wa.me/${branchDetails.whatsapp}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-full bg-green-600 hover:bg-green-700 ring-2 ring-green-300 animate-pulse shadow-lg hover:shadow-xl transition-all duration-300"
-                      id="whatsappCTA"
+                      icon={<FaWhatsapp />}
+                      variant="secondary"
                     >
-                      {/* <span className="text-xs bg-white text-green-700 px-2 py-0.5 rounded-full">
-  Recommended
-</span> */}
-                      {/* WhatsApp Icon */}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 32 32"
-                        className="w-5 h-5 fill-white"
-                      >
-                        <path d="M16.001 3C8.821 3 3 8.822 3 16.002c0 2.82.922 5.44 2.48 7.56L4 29l5.59-1.45A12.94 12.94 0 0016 29c7.18 0 13.001-5.822 13.001-12.998C29.001 8.822 23.18 3 16 3zm0 23.5c-2.22 0-4.28-.64-6.02-1.74l-.43-.27-3.32.86.89-3.24-.28-.44A10.46 10.46 0 015.5 16c0-5.79 4.71-10.5 10.5-10.5S26.5 10.21 26.5 16 21.79 26.5 16 26.5zm5.74-7.84c-.31-.16-1.83-.9-2.11-1.01-.28-.1-.49-.16-.7.16s-.8 1.01-.98 1.22c-.18.21-.36.24-.67.08-.31-.16-1.3-.48-2.47-1.54-.91-.81-1.52-1.81-1.7-2.12-.18-.31-.02-.48.14-.63.14-.14.31-.36.47-.54.16-.18.21-.31.31-.52.1-.21.05-.39-.02-.55-.08-.16-.7-1.69-.96-2.31-.25-.61-.5-.53-.7-.54l-.6-.01c-.21 0-.55.08-.83.39-.28.31-1.1 1.07-1.1 2.61 0 1.54 1.13 3.03 1.29 3.24.16.21 2.22 3.39 5.38 4.75.75.32 1.34.51 1.8.65.76.24 1.45.21 2 .13.61-.09 1.83-.75 2.09-1.48.26-.73.26-1.36.18-1.48-.08-.11-.28-.18-.59-.34z" />
-                      </svg>
-
-                      CHAT ON WHATSAPP
-                    </a>
+                      WhatsApp Us
+                    </GlassButton>
 
                   </div>
                 ) : (
-                  <div className="flex flex-col md:items-start items-center gap-4 mt-6">
-
-                    {/* Call Button */}
-                    <a
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <GlassButton
                       href="tel:+917980221032"
-                      className="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-full bg-blue-800 hover:bg-blue-900 shadow-lg hover:shadow-xl transition-all duration-300 ring-2 ring-blue-800 animate-pulse shadow-lg transition-all"
-                      id="mainCTA"
+                      icon={<FaPhone />}
+                      variant="primary"
                     >
-                      {/* <span className="text-xs bg-white text-gray-900 px-2 py-0.5 rounded-full">
-                        Recommended
-                      </span> */}
-                      <FaPhone />
-                      GET FREE CONSULTATION
-                    </a>
+                      BOOK FREE CONSULTATION
+                    </GlassButton>
 
-                    {/* WhatsApp Button */}
-                    <a
+                    <GlassButton
                       href="https://wa.me/917980221032?text=Hello%20Indian%20Hair%20World%2C%20I%20would%20like%20to%20inquire%20about%20your%20hair%20replacement%20services."
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-full bg-green-800 hover:bg-green-900 ring-2 ring-green-800 animate-pulse shadow-lg hover:shadow-xl transition-all duration-300"
-                      id="whatsappCTA"
+                      icon={<FaWhatsapp />}
+                      variant="secondary"
                     >
-                      {/* <span className="text-xs bg-white text-green-700 px-2 py-0.5 rounded-full">
-  Recommended
-</span> */}
-                      {/* WhatsApp Icon */}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 32 32"
-                        className="w-5 h-5 fill-white"
-                      >
-                        <path d="M16.001 3C8.821 3 3 8.822 3 16.002c0 2.82.922 5.44 2.48 7.56L4 29l5.59-1.45A12.94 12.94 0 0016 29c7.18 0 13.001-5.822 13.001-12.998C29.001 8.822 23.18 3 16 3zm0 23.5c-2.22 0-4.28-.64-6.02-1.74l-.43-.27-3.32.86.89-3.24-.28-.44A10.46 10.46 0 015.5 16c0-5.79 4.71-10.5 10.5-10.5S26.5 10.21 26.5 16 21.79 26.5 16 26.5zm5.74-7.84c-.31-.16-1.83-.9-2.11-1.01-.28-.1-.49-.16-.7.16s-.8 1.01-.98 1.22c-.18.21-.36.24-.67.08-.31-.16-1.3-.48-2.47-1.54-.91-.81-1.52-1.81-1.7-2.12-.18-.31-.02-.48.14-.63.14-.14.31-.36.47-.54.16-.18.21-.31.31-.52.1-.21.05-.39-.02-.55-.08-.16-.7-1.69-.96-2.31-.25-.61-.5-.53-.7-.54l-.6-.01c-.21 0-.55.08-.83.39-.28.31-1.1 1.07-1.1 2.61 0 1.54 1.13 3.03 1.29 3.24.16.21 2.22 3.39 5.38 4.75.75.32 1.34.51 1.8.65.76.24 1.45.21 2 .13.61-.09 1.83-.75 2.09-1.48.26-.73.26-1.36.18-1.48-.08-.11-.28-.18-.59-.34z" />
-                      </svg>
-
-                      CHAT ON WHATSAPP
-                    </a>
+                      WhatsApp Us
+                    </GlassButton>
 
                   </div>
                 )}
@@ -178,6 +157,145 @@ const HeroSection = () => {
           </div>
         </div>
       </section>
+
+      {/* TRUST BAR (AWARDS & CREDENTIALS) */}
+      <div className="mt-8 md:mt-12 pt-6 border-t border-gray-100 w-full overflow-hidden relative">
+        <style dangerouslySetInnerHTML={{
+          __html: `
+              @keyframes marqueeContinuous {
+                0% { transform: translateX(0%); }
+                100% { transform: translateX(-50%); }
+              }
+              .animate-marquee-continuous {
+                display: flex;
+                width: max-content;
+                animation: marqueeContinuous 30s linear infinite;
+              }
+              .animate-marquee-continuous:hover {
+                animation-play-state: paused;
+              }
+            `}} />
+
+        <div className="animate-marquee-continuous gap-4 md:gap-8 pb-4">
+
+          {/* SET 1 */}
+          <div className="flex items-center gap-4 md:gap-8">
+            <GlassBadge
+              img="/images/sharkDesk.jpeg"
+              text="As Seen on Shark Tank India"
+            />
+
+            <GlassBadge
+              icon={<FaStar className="text-yellow-400 w-4 h-4" />}
+              text="Trusted by 10,000+ Customers"
+            />
+
+            <GlassBadge
+              icon={<FaAward className="text-[#ef7f1a] w-4 h-4" />}
+              text="Times Brand Icons 2024"
+            />
+
+            <GlassBadge
+              icon={<FaTrophy className="text-[#ef7f1a] w-4 h-4" />}
+              text="International Excellence Award 2024"
+            />
+
+            <GlassBadge
+              icon={<FaTrophy className="text-[#ef7f1a] w-4 h-4" />}
+              text="Global Fame Award 2024"
+            />
+
+            <GlassBadge
+              icon={<FaThumbsUp className="text-[#ef7f1a] w-4 h-4" />}
+              text="Nation Pride Award 2022"
+            />
+
+            <GlassBadge
+              icon={<FaThumbsUp className="text-[#ef7f1a] w-4 h-4" />}
+              text="Bengal Pride Award 2021"
+            />
+
+            <GlassBadge
+              icon={<FaThumbsUp className="text-[#ef7f1a] w-4 h-4" />}
+              text="Bengal Pride Award 2021"
+            />
+          </div>
+
+          {/* SET 2 (Clone for infinite seamless loop) */}
+          <div className="flex items-center gap-4 md:gap-8">
+            <GlassBadge
+              img="/images/sharkDesk.jpeg"
+              text="As Seen on Shark Tank India"
+            />
+
+            <GlassBadge
+              icon={<FaStar className="text-yellow-400 w-4 h-4" />}
+              text="Trusted by 10,000+ Customers"
+            />
+
+            <GlassBadge
+              icon={<FaAward className="text-[#ef7f1a] w-4 h-4" />}
+              text="Times Brand Icons 2024"
+            />
+
+            <GlassBadge
+              icon={<FaTrophy className="text-[#ef7f1a] w-4 h-4" />}
+              text="International Excellence Award 2024"
+            />
+
+            <GlassBadge
+              icon={<FaTrophy className="text-[#ef7f1a] w-4 h-4" />}
+              text="Global Fame Award 2024"
+            />
+
+            <GlassBadge
+              icon={<FaThumbsUp className="text-[#ef7f1a] w-4 h-4" />}
+              text="Nation Pride Award 2022"
+            />
+
+            <GlassBadge
+              icon={<FaThumbsUp className="text-[#ef7f1a] w-4 h-4" />}
+              text="Bengal Pride Award 2021"
+            />
+
+            <GlassBadge
+              icon={<FaThumbsUp className="text-[#ef7f1a] w-4 h-4" />}
+              text="Bengal Pride Award 2021"
+            />
+
+            <GlassBadge
+              icon={<FaStar className="text-yellow-400 w-4 h-4" />}
+              text="Trusted by 10,000+ Customers"
+            />
+
+            <GlassBadge
+              icon={<FaAward className="text-[#ef7f1a] w-4 h-4" />}
+              text="Times Brand Icons 2024"
+            />
+
+            <GlassBadge
+              icon={<FaTrophy className="text-[#ef7f1a] w-4 h-4" />}
+              text="International Excellence Award 2024"
+            />
+
+            <GlassBadge
+              icon={<FaTrophy className="text-[#ef7f1a] w-4 h-4" />}
+              text="Global Fame Award 2024"
+            />
+
+            <GlassBadge
+              icon={<FaThumbsUp className="text-[#ef7f1a] w-4 h-4" />}
+              text="Nation Pride Award 2022"
+            />
+
+            <GlassBadge
+              icon={<FaThumbsUp className="text-[#ef7f1a] w-4 h-4" />}
+              text="Bengal Pride Award 2021"
+            />
+          </div>
+
+        </div>
+      </div>
 
     </>
 
