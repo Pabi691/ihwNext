@@ -41,29 +41,6 @@ const Branches = () => {
                 <DesktopNav />
                 <BranchHero />
                 {/* Shark Tank Images */}
-                {/* <div className="w-full my-4 md:my-8 justify-center hidden md:flex">
-                    <div className="w-full max-w-7xl px-4 md:px-8 bg-blue-600">
-                        <img
-                            src="/images/sharkDesk.jpeg"
-                            alt="Indian Hair World featured on Shark Tank India Season 4"
-                            className="hidden md:block w-full h-auto object-contain rounded-lg"
-                        />
-                        <img
-                            src="/images/sharkMobile.png"
-                            alt="Indian Hair World featured on Shark Tank India Season 4"
-                            className="block md:hidden w-full h-auto object-contain rounded-lg"
-                        />
-                        <div className="max-w-4xl mx-auto">
-
-                            <div className="bg-white rounded-2xl shadow-sm p-6 md:p-8">
-                                <p className="text-gray-900 leading-relaxed text-base md:text-lg text-left tracking-wide">
-                                    {data.paragraph}
-                                </p>
-                            </div>
-
-                        </div>
-                    </div>
-                </div> */}
                 <div className="w-full my-6 md:my-16">
                     <div className="max-w-6xl mx-auto px-4 md:px-6">
 

@@ -11,12 +11,14 @@ import AchievementSlider from "@/components/women/AchievementSlider";
 import CelebritySection from "@/components/women/CelebritySection";
 import HairTransformation from "@/components/women/HairTransformation";
 import Testimonials from "@/components/women/Testimonials";
+import WomenSeoContent from "@/components/women/WomenSeoContent";
 import HairWigSection from "@/components/women/HairWigSection";
 import SingleSlider from '@/components/men/SingleSlider';
 import OurCollections from "@/components/OurCollections";
 import { toAbsoluteUrlIfPresent } from "@/utils/seo";
 import { fetchPageSeo } from "@/utils/serverSeo";
 import JsonLd from "@/components/JsonLd";
+import OurWorks from "@/components/home/OurWorks";
 
 const Women = () => {
     return (
@@ -34,10 +36,33 @@ const Women = () => {
             />
             <DesktopNav />
             <HeroSection />
-            <section className="relative w-[99vw]">
-                <img src="/images/sharkDesk.png" alt="Indian Hair World featured on Shark Tank India - women's hair solutions" className="w-full h-auto object-cover hidden md:block" />
-                <img src="/images/sharkMobile.png" alt="Indian Hair World featured on Shark Tank India - women's hair solutions" className="w-full h-auto object-cover md:hidden" />
-            </section>
+            {/* Shark Tank Images */}
+            <div className="w-full my-6 md:my-16">
+                <div className="max-w-6xl mx-auto px-4 md:px-6">
+
+                    {/* IMAGE */}
+                    <div className="rounded-2xl overflow-hidden">
+                        <img
+                            src="/images/sharkDesk.jpeg"
+                            alt="Indian Hair World featured on Shark Tank India Season 4"
+                            className="hidden md:block w-full h-auto object-contain rounded-lg"
+                        />
+                    </div>
+
+                    {/* PARAGRAPH SECTION */}
+                    <div className="mt-0 md:mt-10 border-l-4 border-blue-600 pl-6">
+
+                        {/* subtle top divider */}
+                        <div className="w-12 h-[2px] bg-blue-600 mb-6"></div>
+
+                        <p className="text-gray-900 text-base md:text-lg leading-loose tracking-[0.2px]">
+                            Looking for the perfect hair topper for women in Kolkata? Indian Hair World offers a premium range of hair toppers, hair extensions, ladies hair patches, and wigs for women — all made with 100% natural human hair. Whether you're dealing with women hair loss, thinning crown, or simply want to add volume and length, our expert stylists will help you find the perfect solution at the best price in Kolkata.
+                        </p>
+
+                    </div>
+
+                </div>
+            </div>
             <PopularReels />
             <section className="relative w-[99vw]">
                 <img src="/images/LAKE GARDENS.jpg" alt="Indian Hair World featured on Shark Tank India - women's hair solutions" className="w-full h-auto object-cover" />
@@ -51,7 +76,8 @@ const Women = () => {
             <OurStoresSection />
             <AchievementSlider />
             <CelebritySection />
-            <HairTransformation />
+            <OurWorks />
+            <WomenSeoContent />
             <Testimonials />
 
             <HairWigSection

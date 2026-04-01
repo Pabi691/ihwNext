@@ -1,5 +1,5 @@
 import React from "react";
-import { CheckCircle2, ChevronRight } from 'lucide-react';
+import { CheckCircle2, ChevronRight, IndianRupee, Star, HeartPulse, MapPin } from 'lucide-react';
 
 const LakeGarden = () => {
   return (
@@ -154,33 +154,75 @@ const LakeGarden = () => {
             {/* Right side: Content */}
             <div className="w-full lg:w-1/2 space-y-6">
               <h2 className="text-3xl md:text-4xl font-extrabold mb-8 text-gray-900 leading-tight">
-                Why Indian Hair World Lake Gardens is Kolkata's Best Hair Patch Center
+                Why Choose Our Hair Wig Shop in Kolkata?
               </h2>
 
-              <div className="flex items-start gap-4">
-                <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-1" />
-                <p className="text-gray-900 text-lg"><strong>As featured on Shark Tank India</strong> — the only hair replacement center in Lake Gardens with national TV credibility and investor backing.</p>
+              <p className="text-gray-700 text-lg leading-relaxed">
+                Indian Hair World is a leading wig shop in Kolkata known for 100% natural hair wigs, personalized styling, and affordable pricing. From hair wigs for men to designer wigs for women, we cater to every need — whether it's fashion, hair loss, or medical use. We also offer custom hair patches for those looking for a lightweight, targeted solution.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* SEO Content Section */}
+      <div className="py-20 bg-gray-50/50 border-t border-gray-100 relative overflow-hidden">
+        {/* Subtle background decoration */}
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-orange-50/50 blur-3xl -z-10"></div>
+        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 rounded-full bg-blue-50/50 blur-3xl -z-10"></div>
+
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-8 relative z-10">
+            {/* Card 1 */}
+            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-1 hover:border-orange-200 transition-all duration-300 group">
+              <div className="w-16 h-16 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#ef7f1a] group-hover:text-white transition-all duration-300 shadow-sm">
+                <IndianRupee className="w-8 h-8" />
               </div>
-              <div className="flex items-start gap-4">
-                <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-1" />
-                <p className="text-gray-900 text-lg"><strong>5-time nationally award winning</strong> — Times Brand Icons 2024, IEA 2024, GFA 2024, NPA 2022 and BPA 2021. No other hair center in Kolkata has this recognition.</p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4 leading-snug">
+                Natural Hair Wig Price in Kolkata — Affordable & Transparent
+              </h3>
+              <p className="text-gray-600 leading-relaxed text-lg">
+                We believe everyone deserves access to premium wigs. Our hair wig price range starts from budget-friendly options to luxury collections. We also have competitive hair patch pricing for all budgets. Visit our store or call us for a complete price list with no hidden charges.
+              </p>
+            </div>
+
+            {/* Card 2 */}
+            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-1 hover:border-orange-200 transition-all duration-300 group">
+              <div className="w-16 h-16 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#ef7f1a] group-hover:text-white transition-all duration-300 shadow-sm">
+                <Star className="w-8 h-8" />
               </div>
-              <div className="flex items-start gap-4">
-                <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-1" />
-                <p className="text-gray-900 text-lg"><strong>100% natural Indian human hair</strong> — no artificial fibre, no plastic, no synthetic material. Every hair patch in Lake Gardens is made from premium Indian human hair.</p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4 leading-snug">
+                Best Hair Wig for Men & Women
+              </h3>
+              <p className="text-gray-600 leading-relaxed text-lg">
+                Looking for the best hair wig that looks completely natural? Our collection includes full lace wigs, front lace wigs, clip-on wigs, and custom-fitted wigs — all crafted from 100% natural human hair.
+              </p>
+            </div>
+
+            {/* Card 3 */}
+            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-1 hover:border-orange-200 transition-all duration-300 group">
+              <div className="w-16 h-16 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#ef7f1a] group-hover:text-white transition-all duration-300 shadow-sm">
+                <HeartPulse className="w-8 h-8" />
               </div>
-              <div className="flex items-start gap-4">
-                <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-1" />
-                <p className="text-gray-900 text-lg"><strong>Result in 60 minutes</strong> — come in with hair loss, walk out with a full natural hairstyle. Same-day results at our Lake Gardens branch near Tollygunge Metro.</p>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4 leading-snug">
+                Hair Wig for Medical & Hair Loss Solutions
+              </h3>
+              <p className="text-gray-600 leading-relaxed text-lg">
+                If you're experiencing hair thinning or hair loss, our non-surgical hair replacement solutions, including natural wigs and hair patches, offer a natural, undetectable look. Our specialists at the wig center in Kolkata provide private consultations.
+              </p>
+            </div>
+
+            {/* Card 4 */}
+            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-1 hover:border-orange-200 transition-all duration-300 group">
+              <div className="w-16 h-16 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#ef7f1a] group-hover:text-white transition-all duration-300 shadow-sm">
+                <MapPin className="w-8 h-8" />
               </div>
-              <div className="flex items-start gap-4">
-                <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-1" />
-                <p className="text-gray-900 text-lg"><strong>Starting at just Rs.5999 with EMI</strong> — a fraction of the Rs.70,000+ cost of hair transplant in Kolkata. Easy monthly payment options available.</p>
-              </div>
-              <div className="flex items-start gap-4">
-                <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-1" />
-                <p className="text-gray-900 text-lg"><strong>Serving all of south Kolkata</strong> — Lake Gardens, Tollygunge, Gariahat, Behala, New Alipore and Ballygunge. Open 7 days, 11am–7pm, no appointment needed.</p>
-              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4 leading-snug">
+                Visit Our Wig Shop in Kolkata
+              </h3>
+              <p className="text-gray-600 leading-relaxed text-lg">
+                Located in the heart of Kolkata, Indian Hair World is your go-to hair wig shop near me. Walk in for a free trial and experience the quality of our natural hair wigs and hair patches firsthand.
+              </p>
             </div>
           </div>
         </div>

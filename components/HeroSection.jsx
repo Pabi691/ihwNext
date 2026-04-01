@@ -70,8 +70,8 @@ const HeroSection = () => {
                 {/* Price & EMI block */}
                 <div className="flex flex-row items-center gap-4 bg-[#ef7f1a]/5 border border-[#ef7f1a]/20 p-4 rounded-2xl mb-8 w-fit mx-auto md:mx-0">
                   <div>
-                    <p className="text-sm text-gray-500 font-semibold uppercase tracking-wider mb-1">Starting At</p>
-                    <p className="text-2xl md:text-4xl font-extrabold text-[#ef7f1a]">Rs. 5999/-</p>
+                    <span className="text-sm text-gray-500 font-semibold uppercase tracking-wider mb-1">Starting At</span>
+                    <span className="text-2xl md:text-4xl font-extrabold text-[#ef7f1a]">Rs. 5999/-</span>
                   </div>
                   <div className="w-[1px] h-12 bg-gray-300 hidden md:block mx-2"></div>
                   <div className="flex flex-col items-center justify-center">

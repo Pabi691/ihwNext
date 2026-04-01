@@ -9,8 +9,8 @@ import reviewData from "./reviewsData";
 export const branchData = {
   kolkata: {
     name: "Lake Gardens, Kolkata",
-    h1: "Best Hair Patch & Non-Surgical Hair Replacement in Lake Gardens, Kolkata",
-    paragraph: "Looking for the best hair patch in Lake Gardens, Kolkata? Indian Hair World is Kolkata's most awarded non-surgical hair replacement center — as featured on Shark Tank India. Our Lake Gardens branch, near Tollygunge Metro, offers 100% natural hair patches, hair wigs, and complete hair replacement without surgery, starting at just Rs.5999. Our expert team covers every bald spot with an undetectable, natural-looking result in just 60 minutes. EMI available. Call +917980221032 or WhatsApp for a free consultation at our Lake Gardens branch today.",
+    h1: "Best Natural Hair Wig Shop in Kolkata",
+    paragraph: "Welcome to Indian Hair World — Kolkata's most trusted destination for natural hair wigs, hair extensions, and hair replacement solutions. Whether you're searching for the perfect wig or a custom hair patch for men, we offer the widest range of premium-quality products at the best hair wig price in Kolkata. Our expert team helps you find the ideal fit, style, and look — all under one roof at our wig center in Kolkata.",
     address:
       "1A, Sultan Alam Rd, Lake Gardens, Kolkata, West Bengal 700033",
     phones: ["+917980221032"],
@@ -28,12 +28,16 @@ export const branchData = {
     womenProduct: <SingleSlider slug_name="get_slug_data/women-products" title="WOMEN’S HAIR PRODUCTS" />,
     reviews: <ReviewSlider data={reviewData.lakeGarden} />,
     faqs: [
-      { question: "What is the cost of a hair patch in Lake Gardens, Kolkata?", answer: "Hair patches in Lake Gardens at Indian Hair World start from Rs.5999. We also offer easy EMI options. Prices vary based on the type of patch, coverage area and fixing method. Call +917980221032 or WhatsApp for a free price consultation." },
-      { question: "Is the hair patch result natural and undetectable?", answer: "Yes — 100%. Our hair patches in Kolkata use premium natural Indian human hair matched to your colour and texture. Friends and family will not be able to tell the difference. We guarantee a natural, undetectable result or we re-do it free of charge." },
-      { question: "How is hair patch different from hair transplant in Kolkata?", answer: "Hair transplant in Kolkata costs Rs.70,000+ with 2–3 weeks of recovery time and surgical risk. Our non-surgical hair replacement gives the same natural result from Rs.5999 in just 60 minutes — no surgery, no scars, no downtime. It is reversible and risk-free." },
-      { question: "Where is your Lake Gardens branch located?", answer: "We are at 1A, Sultan Alam Road, Lake Gardens, Kolkata 700033 — near Tollygunge Metro Station. Open Monday to Sunday, 11am to 7pm. No prior appointment is needed — walk in directly or call +917980221032." },
-      { question: "Can I swim or go to the gym with a hair patch?", answer: "Yes — once properly bonded, you can swim, go to the gym, run in rain, wear a helmet and do all normal activities. There are zero activity restrictions with a professionally fixed hair patch from our Lake Gardens branch." },
-      { question: "Do you also serve Tollygunge, Gariahat and Behala?", answer: "Yes — our Lake Gardens hair patch center serves all of south Kolkata including Tollygunge, Gariahat, Behala, New Alipore and Ballygunge. We are the nearest professional hair replacement center for all these areas." }
+      { question: "What is the price of a natural hair wig in Kolkata?", answer: "The price of a natural hair wig in Kolkata starts from ₹5,000 and can go up to ₹50,000+ depending on hair length, quality, and customization. At Indian Hair World, we offer transparent pricing with no hidden charges. Visit our store or call us for the latest price list." },
+      { question: "Which is the best hair wig shop in Kolkata?", answer: "Indian Hair World is one of the most trusted and best hair wig shops in Kolkata, offering 100% natural human hair wigs, professional fitting, and after-sale maintenance services at affordable prices." },
+      { question: "How long does a natural hair wig last?", answer: "A premium-quality natural hair wig can last anywhere from 1 to 3 years with proper care and maintenance. We provide complete guidance on wig care at the time of purchase." },
+      { question: "Do you offer hair patches for men in Kolkata?", answer: "Yes! We offer custom hair patches for men that are lightweight, breathable, and completely undetectable. Our hair patches are made with 100% natural human hair for a seamless, natural look." },
+      { question: "What is the difference between a hair wig and a hair patch?", answer: "A hair wig covers the entire head, while a hair patch is designed to cover a specific bald or thinning area. Both are available in natural human hair at Indian Hair World, and our experts can help you choose the right solution." },
+      { question: "Can I try a wig before buying?", answer: "Absolutely! At our wig shop in Kolkata, we offer free wig trials so you can see and feel the quality before making a purchase. Walk in anytime for a trial session." },
+      { question: "Do you provide non-surgical hair replacement in Kolkata?", answer: "Yes, we specialize in non-surgical hair replacement solutions including natural wigs and hair patches. It's a painless, instant, and affordable alternative to hair transplant surgery." },
+      { question: "How do I maintain my hair wig or hair patch?", answer: "We recommend gentle washing with sulfate-free shampoo, air drying, and regular conditioning. Our team at Indian Hair World provides a free maintenance guide and also offers professional wig and hair patch servicing." },
+      { question: "Do you have wigs for women in Kolkata?", answer: "Yes! We have a wide collection of hair wigs for women including full lace wigs, front lace wigs, clip-on wigs, and fashion wigs in various lengths, colors, and styles." },
+      { question: "Where is Indian Hair World located in Kolkata?", answer: "Indian Hair World is conveniently located in the heart of Kolkata. You can visit our wig center for a free consultation and trial. Contact us for directions and appointment booking." },
     ],
   },
   "salt-lake": {

@@ -38,8 +38,8 @@ export default function PopularReels() {
     <VideoReelsSlider
       reels={womenReels}
       viewMoreLink="/women-products"
-      sectionTitle="POPULAR"
-      sectionTitleHighlight="PRODUCTS"
+      sectionTitle="Trending"
+      sectionTitleHighlight="Videos"
     />
   );
 }

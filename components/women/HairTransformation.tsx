@@ -5,25 +5,24 @@ import Image from "next/image"
 
 import "swiper/css"
 import "swiper/css/navigation"
+import { strokedHeading } from "@/styles/typography"
 
 const transformations = [
-  "/images/hairtransformation3.jpg",
-  "/images/hairtransformation1.jpg",
-  "/images/hairtransformation2.jpg",
-  "/images/hairtransformation3.jpg",
-  "/images/hairtransformation1.jpg",
   "/images/hairtransformation2.jpg",
 ]
 
 export default function HairTransformation() {
   return (
     <section className="max-w-9xl mx-auto px-6 lg:px-8 py-16 bg-gradient-to-b from-white to-gray-100 mb-8">
-      
+
       {/* Header */}
-      <div className="w-full flex justify-center items-center mb-10">
-        <h3 className="text-1xl sm:text-4xl font-bold text-gray-900 inline-block">
-          HAIR <span className="outline-text font-semibold">TRANSFORMATION</span>
-        </h3>
+      <div className="my-4 md:my-8">
+        <h4 className={`${strokedHeading} mb-0`}>
+          REMARKABLE <span>TRANSFORMATIONS</span>
+        </h4>
+        <p className="text-start md:text-center w-full md:w-3/5 m-auto">
+          Non-surgical hair patch result at Indian Hair World. Natural look achieved in 60 minutes. Starting from ₹5999.
+        </p>
       </div>
 
       {/* Swiper Slider */}
