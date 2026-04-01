@@ -7,7 +7,7 @@ import PopularReels from "@/components/men/PopularReels";
 import MensHairPatchSection from "@/components/men/MensHairPatchSection";
 import ReviewPopup from "@/components/men/ReviewPopup";
 import ScrollingBanner from "@/components/men/ScrollingBanner";
-import MensHairProductsSection from "@/components/men/MensHairProductsSection";
+// import MensHairProductsSection from "@/components/men/MensHairProductsSection";
 import OurStoresSection from "@/components/men/OurStoresSection";
 import AchievementSlider from "@/components/men/AchievementSlider";
 import CelebritySection from "@/components/men/CelebritySection";
@@ -19,6 +19,8 @@ import SingleSlider from '@/components/men/SingleSlider';
 import { toAbsoluteUrlIfPresent } from "@/utils/seo";
 import { fetchPageSeo } from "@/utils/serverSeo";
 import JsonLd from "@/components/JsonLd";
+// import Image from "next/image";
+import OurWorks from "@/components/home/OurWorks";
 
 const Men = () => {
     return (
@@ -77,7 +79,7 @@ const Men = () => {
             <OurStoresSection />
             <AchievementSlider />
             <CelebritySection />
-            <HairTransformation />
+            <OurWorks />
             <MenSeoContent />
             <Testimonials />
 

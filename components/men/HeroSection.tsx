@@ -58,7 +58,7 @@ export default function HeroSection() {
             </div>
             <div className="flex flex-col justify-end sm:flex-row gap-4 ms-auto">
               <GlassButton
-                href="tel:+917980221032"
+                href="tel:+918961194044"
                 icon={<FaPhone />}
                 variant="primary"
               >
@@ -66,7 +66,7 @@ export default function HeroSection() {
               </GlassButton>
 
               <GlassButton
-                href="https://wa.me/917980221032?text=Hello%20Indian%20Hair%20World%2C%20I%20would%20like%20to%20inquire%20about%20your%20hair%20replacement%20services."
+                href="https://wa.me/918961194044?text=Hello%20Indian%20Hair%20World%2C%20I%20would%20like%20to%20inquire%20about%20your%20hair%20replacement%20services."
                 target="_blank"
                 rel="noopener noreferrer"
                 icon={<FaWhatsapp />}
