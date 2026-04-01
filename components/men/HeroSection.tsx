@@ -5,7 +5,7 @@ import GlassButton from "../GlassButton"
 
 export default function HeroSection() {
   return (
-    <section className="relative h-[60vh] md:h-screen xl:h-[90vh] overflow-hidden">
+    <section className="relative h-[100vh] md:h-screen xl:h-[90vh] overflow-hidden">
 
       {/* Background Video */}
       <video
