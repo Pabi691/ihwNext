@@ -520,6 +520,10 @@ function ProductDetailsAll() {
                 ) : null}
                 {/* <HairPatchTryOnSection
                   productImage={selectedImage || product.primary_img}
+                  productImages={[selectedImage || product.primary_img, ...images].filter(Boolean)}
+                  productName={product.prod_name}
+                  productTag={product.product_tag}
+                  productDescription={product.prod_desc}
                 /> */}
                 <ProductDetailsAccordian productdetails={product.prod_desc} />
                 <img src='../images/icons.jpg' alt='icons' loading="lazy" />

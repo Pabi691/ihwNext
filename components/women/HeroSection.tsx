@@ -34,7 +34,7 @@ export default function HeroSection() {
 
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 tracking-tight">
               <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
-                Best Hair Topper & Hair Wig for Women in Kolkata
+                Best Hair Extensions, Topper & Wig for Women in Kolkata
               </span>
             </h1>
 
