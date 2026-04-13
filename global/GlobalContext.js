@@ -170,6 +170,21 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
   }, [safeToken, webToken, apiBase]);
 
   // 🧠 Add to Cart
+  const fireAddToCartEvent = (product, resolvedPrice) => {
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      window.gtag('event', 'add_to_cart', {
+        currency: 'INR',
+        value: resolvedPrice,
+        items: [{
+          item_id: product.id,
+          item_name: product.name,
+          price: resolvedPrice,
+          quantity: 1,
+        }],
+      });
+    }
+  };
+
   const addToCart = useCallback(async (product, selectedSize) => {
     const userToken = isBrowser ? localStorage.getItem("userToken") : null;
 
@@ -230,6 +245,7 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
 
           if (!data || data.status !== false) {
             await fetchCart();
+            fireAddToCartEvent(product, resolvedPrice);
             return true;
           }
 
@@ -275,6 +291,7 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
 
       localStorage.setItem("localCart", JSON.stringify(updatedCart));
       setCart(updatedCart);
+      fireAddToCartEvent(product, resolvedPrice);
       return true;
     }
 
@@ -305,6 +322,7 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
         ];
       localStorage.setItem("localCart", JSON.stringify(updatedCart));
       setCart(updatedCart);
+      fireAddToCartEvent(product, resolvedPrice);
       return true;
     }
 

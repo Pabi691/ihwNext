@@ -34,7 +34,7 @@ export default function ContactForm() {
       if (res.ok) {
         setStatus("Message sent successfully!");
         setForm({ name: "", email: "", phone: "", message: "" });
-        navigate('/thank-you');
+        navigate('/thank-you-contact');
       } else {
         setError("Something went wrong. Please try again.");
       }

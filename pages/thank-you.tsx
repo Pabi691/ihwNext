@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import Head from 'next/head';
 import { Link } from '@/components/compat/router';
 import { ENV } from '@/config/env';
 import MainLayOut from '../layout/MainLayOut';
 import { useGlobal } from '../global/GlobalContext';
 
-
 const ThankYou = () => {
   const apiBaseUrl = ENV.API_URL;
   const { token } = useGlobal();
   const [orderId, setOrderId] = useState<any>(null);
+
   useEffect(() => {
     const fetchOrderId = async () => {
       try {
@@ -20,9 +21,7 @@ const ThankYou = () => {
           }
         });
         const data = await response.json();
-        // console.log('data', data);
         setOrderId(data.orders[0]);
-        // console.log('get my order',data);
         return data;
       } catch (error) {
         console.error(error);
@@ -32,52 +31,42 @@ const ThankYou = () => {
     fetchOrderId();
   }, [token]);
 
-
   return (
-    <MainLayOut>
-      <div className="thank-you-container">
-        <div className="thank-you-card">
-          <img
-            src={`/logo.png`}
-            alt="Thank You" loading="lazy"
-            className="thank-you-image"
-          />
-          {orderId ?
-            (
-              <>
-                <h1 className="thank-you-title">Thank You for Your Order!</h1>
-                <p className="thank-you-message">
-                  We truly appreciate your trust in us. Your order has been placed successfully!
-                </p>
-                <div className="thank-you-details">
-                  <p>Order ID: <strong>#IHW{orderId.id}</strong></p> {/* Replace dynamically */}
-                  <p>Estimated Delivery: <strong>3-5 Business Days</strong></p>
-                </div>
-                <Link to="/" className="thank-you-button">
-                  Continue Shopping
-                </Link>
-              </>
-            ) : (
-              <>
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Thanks for contacting us!
-                </h3>
-                <p className="mt-2 text-sm text-gray-900">
-                  Your message has been sent successfully. We’ll be in touch very soon.
-                </p>
-              </>
-
-            )
-          }
-
+    <>
+      <Head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `gtag('event', 'conversion_event_purchase_2', {});`,
+          }}
+        />
+      </Head>
+      <MainLayOut>
+        <div className="thank-you-container">
+          <div className="thank-you-card">
+            <img
+              src={`/logo.png`}
+              alt="Thank You"
+              loading="lazy"
+              className="thank-you-image"
+            />
+            <h1 className="thank-you-title">Thank You for Your Order!</h1>
+            <p className="thank-you-message">
+              We truly appreciate your trust in us. Your order has been placed successfully!
+            </p>
+            {orderId && (
+              <div className="thank-you-details">
+                <p>Order ID: <strong>#IHW{orderId.id}</strong></p>
+                <p>Estimated Delivery: <strong>3-5 Business Days</strong></p>
+              </div>
+            )}
+            <Link to="/" className="thank-you-button">
+              Continue Shopping
+            </Link>
+          </div>
         </div>
-      </div>
-    </MainLayOut>
-
+      </MainLayOut>
+    </>
   );
 };
 
 export default ThankYou;
-
-
-
