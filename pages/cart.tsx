@@ -36,6 +36,22 @@ const Cart = () => {
     }
   }, [cartLength]);
 
+  // GA4: view_cart
+  useEffect(() => {
+    if (cartLength > 0 && typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      window.gtag('event', 'view_cart', {
+        currency: 'INR',
+        value: grandTotal,
+        items: cart.map((item) => ({
+          item_id: item.product_id ?? item.id,
+          item_name: item.prod_name ?? item.product?.prod_name,
+          price: item.sale_price,
+          quantity: item.quantity,
+        })),
+      });
+    }
+  }, [cartLength]);
+
   const getFinalAmount = () => {
     let discount = 0;
     if (couponData && grandTotal >= couponData.minimum_order_value) {
@@ -113,6 +129,20 @@ const Cart = () => {
 
   // Remove Item from Cart
   const removeFromCart = async (cartId: any) => {
+    // GA4: remove_from_cart
+    const removedItem = cart.find((item) => item.id === cartId);
+    if (removedItem && typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      window.gtag('event', 'remove_from_cart', {
+        currency: 'INR',
+        value: removedItem.sale_price * removedItem.quantity,
+        items: [{
+          item_id: removedItem.product_id ?? removedItem.id,
+          item_name: removedItem.prod_name ?? removedItem.product?.prod_name,
+          price: removedItem.sale_price,
+          quantity: removedItem.quantity,
+        }],
+      });
+    }
     const isBrowser = typeof window !== 'undefined';
     const userToken = isBrowser ? localStorage.getItem('userToken') : null;
     setLoading(true);
@@ -217,6 +247,20 @@ const Cart = () => {
   };
 
   const proceedHandler = () => {
+    // GA4: begin_checkout
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      window.gtag('event', 'begin_checkout', {
+        currency: 'INR',
+        value: finalAmount,
+        items: cart.map((item) => ({
+          item_id: item.product_id ?? item.id,
+          item_name: item.prod_name ?? item.product?.prod_name,
+          price: item.sale_price,
+          quantity: item.quantity,
+        })),
+      });
+    }
+
     if (localStorage.getItem('userToken') && finalAmount > 0) {
       const params = new URLSearchParams();
       if (Number.isFinite(finalAmount)) {
