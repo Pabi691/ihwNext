@@ -9,7 +9,7 @@ import reviewData from "./reviewsData";
 export const branchData = {
   kolkata: {
     name: "Lake Gardens, Kolkata",
-    h1: "Best Natural Hair Wig Shop in Kolkata",
+    h1: "Best Hair Wig Near Me in Lake Gardens, Kolkata",
     paragraph: "Welcome to Indian Hair World — Kolkata's most trusted destination for natural hair wigs, hair extensions, and hair replacement solutions. Whether you're searching for the perfect wig or a custom hair patch for men, we offer the widest range of premium-quality products at the best hair wig price in Kolkata. Our expert team helps you find the ideal fit, style, and look — all under one roof at our wig center in Kolkata.",
     address:
       "1A, Sultan Alam Rd, Lake Gardens, Kolkata, West Bengal 700033",
@@ -38,12 +38,13 @@ export const branchData = {
       { question: "How do I maintain my hair wig or hair patch?", answer: "We recommend gentle washing with sulfate-free shampoo, air drying, and regular conditioning. Our team at Indian Hair World provides a free maintenance guide and also offers professional wig and hair patch servicing." },
       { question: "Do you have wigs for women in Kolkata?", answer: "Yes! We have a wide collection of hair wigs for women including full lace wigs, front lace wigs, clip-on wigs, and fashion wigs in various lengths, colors, and styles." },
       { question: "Where is Indian Hair World located in Kolkata?", answer: "Indian Hair World is conveniently located in the heart of Kolkata. You can visit our wig center for a free consultation and trial. Contact us for directions and appointment booking." },
+      { question: "Do you sell real wigs near me in Kolkata?", answer: "Yes — all wigs at Indian Hair World, Lake Gardens are made from 100% real human hair, not synthetic. Visit our wig shop near Tollygunge Metro Station for a free trial. Open 7 days, 11 AM–7 PM." },
     ],
   },
   "salt-lake": {
     name: "Salt Lake, Kolkata",
     h1: "Best Hair Patch in Kolkata – Non Surgical Hair Replacement",
-    paragraph: "Indian Hair World is the best hair patch centre in Kolkata, specializing in non surgical hair replacement since 2015. We offer premium hair patch for men in Kolkata that gives a completely natural, undetectable look — no surgery, no pain, no side effects. Looking for a hair patch near me? Our non surgical hair replacement centre in Kolkata has two branches — Lake Gardens and Salt Lake. Walk in for a free consultation today. Wondering about hair patch price in Kolkata? Our services start at just ₹5,999 — the most affordable hair patch in Kolkata. We use 100% human hair patch for a premium, natural finish. The hair patch cost in Kolkata varies based on base type, density, and coverage area. We also provide professional hair patch servicing in Kolkata, including re-bonding, cleaning, and maintenance to keep your non surgical hair replacement looking fresh for months.",
+    paragraph: "Indian Hair World is the best hair patch center in Kolkata, specializing in non surgical hair replacement since 2015. We offer premium hair patch for men in Kolkata that gives a completely natural, undetectable look — no surgery, no pain, no side effects. Looking for a hair patch near me? Our non surgical hair replacement center in Kolkata has two branches — Lake Gardens and Salt Lake. Walk in for a free consultation today. Wondering about hair patch price in Kolkata? Our services start at just ₹5,999 — the most affordable hair patch in Kolkata. We use 100% human hair patch for a premium, natural finish. The hair patch cost in Kolkata varies based on base type, density, and coverage area. We also provide professional hair patch servicing in Kolkata, including re-bonding, cleaning, and maintenance to keep your non surgical hair replacement looking fresh for months.",
     address:
       "EC-20, Ground Floor Back Side. Opp. CC1, Sector-1, Salt Lake City, Kolkata, West Bengal 700064",
     phones: ["+918961194044"],

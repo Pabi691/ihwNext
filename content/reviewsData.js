@@ -157,7 +157,7 @@ const reviewData = {
       {
         name: "Arijit Ghosh",
         rating: 5,
-        text: "Indian Hair World is by far the best hair replacement centre of Kolkata.",
+        text: "Indian Hair World is by far the best hair replacement center of Kolkata.",
         image: ""
       },
       {
@@ -175,7 +175,7 @@ const reviewData = {
     reviews: [
       {
         name: "Diya Chakraborty",
-        text: "This shop is the best hair replacement centre in Durgapur. The atmosphere of the shop is very nice and comfortable. Best quality hair patch available here. You can trust them without any doubt. 😌",
+        text: "This shop is the best hair replacement center in Durgapur. The atmosphere of the shop is very nice and comfortable. Best quality hair patch available here. You can trust them without any doubt. 😌",
         image: "",
         rating: 5,
       },

@@ -13,6 +13,7 @@ import { useParams } from "@/components/compat/router";
 import { branchData } from "@/content/branchData";
 import AchievementSlider from "@/components/men/AchievementSlider";
 import OurStoresSection from "@/components/men/OurStoresSection";
+import BranchMap from "@/components/branches/BranchMap";
 
 
 const Branches = () => {
@@ -40,6 +41,7 @@ const Branches = () => {
             <MainLayOut>
                 <DesktopNav />
                 <BranchHero />
+                <BranchMap data={data} compact />
                 {/* Shark Tank Images */}
                 <div className="w-full my-6 md:my-16">
                     <div className="max-w-6xl mx-auto px-4 md:px-6">
@@ -62,6 +64,12 @@ const Branches = () => {
                             <p className="text-gray-900 text-base md:text-lg leading-loose tracking-[0.2px]">
                                 {data.paragraph}
                             </p>
+
+                            {data.serving_areas && (
+                                <p className="mt-4 text-sm text-gray-500 font-medium">
+                                    Serving: {data.serving_areas}
+                                </p>
+                            )}
 
                         </div>
 

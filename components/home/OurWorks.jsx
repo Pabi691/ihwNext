@@ -2,6 +2,7 @@ import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { useRouter } from 'next/router';
 
 import workData from '../../content/workData';
 import { strokedHeading } from '../../styles/typography';
@@ -18,6 +19,9 @@ const chunkArray = (arr, size) => {
 
 const OurWorks = () => {
   const workChunks = chunkArray(workData, 2);
+  const router = useRouter();
+  const isSaltLake = router.query?.branch === 'salt-lake';
+  const isLakeGarden = router.query?.branch === 'kolkata';
 
   return (
     <div className="pt-3 max-w-7xl mx-auto px-2">
@@ -25,8 +29,27 @@ const OurWorks = () => {
         <h4 className={`${strokedHeading} mb-0`}>
           REMARKABLE <span>TRANSFORMATIONS</span>
         </h4>
+
+        {isSaltLake
+          ?
+          <>
+            <p className='text-start text-gray-500 md:text-center w-full md:w-3/5 m-auto mb-4'>
+              Hair patch service Kolkata
+            </p>
+            <p className="text-start md:text-center w-full md:w-3/5 m-auto mb-4">
+              Our hair patch service in Salt Lake includes cleaning, rebonding, and styling <br /> — starting at just ₹999.
+            </p>
+          </>
+
+          : isLakeGarden ? (
+            <p className="text-start md:text-center w-full md:w-3/5 m-auto mb-4">
+              Visit Kolkata's most trusted wig centre at 1A Sultan Alam
+Road, Lake Gardens.
+            </p>
+          ) : ''
+        }
         <p className="text-start md:text-center w-full md:w-3/5 m-auto">
-          Non-surgical hair patch result at Indian Hair World. Natural look achieved in 60 minutes. Starting from ₹5999.
+          Non-surgical hair patch result at Indian Hair World. Natural look achieved in 60 minutes. <br /> Starting from ₹5999.
         </p>
       </div>
 

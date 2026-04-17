@@ -90,6 +90,9 @@ export default function MenSeoContent() {
                 <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-blue-500 flex-shrink-0" /> <span className="font-bold">Full head hair patch</span> – Complete coverage solution</li>
                 <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-blue-500 flex-shrink-0" /> <span className="font-bold">Custom hair patch</span> – Tailored to exact shape & density</li>
               </ul>
+              <p className="text-gray-600 text-sm">
+                Our men hair patches are available in 4 base types — Skin, Lace, Mono, and Hybrid — each suited to different lifestyles and budgets.
+              </p>
               <div className="inline-block bg-blue-50 border border-blue-100 p-4 rounded-xl shadow-sm">
                 <p className="text-blue-800 text-sm font-bold">
                   Every piece is lightweight, breathable, and designed for daily comfort.
@@ -102,14 +105,18 @@ export default function MenSeoContent() {
           <div className="flex flex-col md:flex-row items-center gap-10 bg-slate-900 p-6 md:p-10 rounded-[2.5rem] shadow-sm border border-slate-800 hover:shadow-xl hover:border-blue-500/30 transition-all duration-300">
             <div className="w-full md:w-1/2 rounded-[2rem] overflow-hidden aspect-[4/3] relative group bg-slate-800 flex items-center justify-center">
               <div className="absolute inset-0 bg-blue-500/10 group-hover:bg-transparent transition-colors z-10" />
-              <img src="/images/shop-men.png" alt="Hair Wig for Men" className="object-cover object-top w-full h-full transform group-hover:scale-105 transition-transform duration-700" />
+              <img src="/images/shop-men.png" alt="Hair Wig for Men" className="object-contain object-top w-full h-full transform group-hover:scale-105 transition-transform duration-700" />
             </div>
             <div className="w-full md:w-1/2 space-y-5">
               <h2 className="text-3xl font-extrabold text-white tracking-tight">
-                Hair Wig for Men <br/><span className="text-blue-500 md:text-2xl text-xl mt-1 block">Full Coverage Solutions</span>
+                Hair Wig for Men in Kolkata<br/><span className="text-blue-500 md:text-2xl text-xl mt-1 block">Full Coverage Solutions</span>
               </h2>
+              
               <p className="text-gray-300 leading-relaxed text-lg">
                 If you're looking for a complete transformation, our hair wig for men collection offers full lace wigs, mono-filament wigs, and skin-base wigs. Each wig for men is handcrafted with natural hair, giving you a realistic hairline and natural movement.
+              </p>
+              <p className="text-gray-400 text-sm">
+                We stock a wide range of hair wigs for men including full lace, mono, and skin base options — available at our Lake Gardens and Salt Lake stores.
               </p>
             </div>
           </div>

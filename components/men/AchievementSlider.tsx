@@ -4,6 +4,7 @@ import Image from "next/image"
 
 // Swiper styles
 import "swiper/css"
+import { useRouter } from "next/router"
 
 export default function AchievementSlider() {
   const awards = [
@@ -13,15 +14,29 @@ export default function AchievementSlider() {
     "/images/Awards_4.jpg",
     "/images/Awards_5.jpg",
   ]
+  const router = useRouter();
+  const isSaltLake = router.query?.branch === 'salt-lake';
+  const isLakeGarden = router.query?.branch === 'kolkata';
 
   return (
     <section className="bg-gradient-to-b from-white to-gray-100 sm:py-8 md:py-12">
 
       {/* Heading */}
       <div className="text-center mb-4 mt-4 md:mt-0 md:mb-10">
-        <h3 className="text-xl mx-6 sm:text-4xl font-bold text-gray-900">
+        <h3 className="text-xl mx-6 sm:text-4xl font-bold text-gray-900 mb-4">
           OUR <span className="outline-text font-semibold">ACHIEVEMENT</span>
         </h3>
+        {isSaltLake ? (
+          <p className="mb-4">
+            Indian Hair World is Kolkata's most trusted hair
+            patch center <br />— serving Salt Lake, New Town, and Rajarhat.
+          </p>
+        ) : isLakeGarden ? (
+          <p className="mb-4">
+            Kolkata Wig Centre — Indian Hair World,
+            Lake Gardens
+          </p>
+        ) : null}
       </div>
 
       {/* Slider */}

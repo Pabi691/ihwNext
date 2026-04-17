@@ -53,9 +53,13 @@ const SaltLake = () => {
             {/* Right side: Content */}
             <div className="w-full lg:w-1/2">
 
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 leading-tight">
-                Why We're the Best Hair Patch Centre in Kolkata
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 leading-tight">
+                Why We're the Best Hair Patch Center in Kolkata
               </h2>
+              <p className="text-gray-600 mb-8">
+                Looking for
+                the best hair patch Kolkata has to offer? Walk into Indian Hair World...
+              </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
@@ -88,9 +92,13 @@ const SaltLake = () => {
       <section className="w-full py-16 px-4 md:px-10">
         <div className="max-w-6xl mx-auto">
 
-          <h2 className="text-2xl md:text-3xl font-semibold text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-semibold text-center mb-2">
             Hair Patch for Men in Kolkata – Natural & Undetectable
           </h2>
+          <p className="text-gray-600 mb-10">
+            Our non surgical hair patch service in Kolkata gives you a full head of
+            natural-looking hair in just 60 minutes — no surgery, no downtime.
+          </p>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
 
@@ -190,45 +198,6 @@ const SaltLake = () => {
         </div>
       </section>
 
-      {/* <section className="w-full py-16 px-4 md:px-10">
-        <div className="max-w-4xl mx-auto text-center">
-
-          <h2 className="text-2xl md:text-3xl font-semibold mb-6">
-            100% Natural Indian Human Hair
-          </h2>
-
-          <p className="text-gray-600 leading-relaxed">
-            We use only 100% natural Indian human hair — ensuring realistic texture, natural movement, styling flexibility, and long-lasting results. Ethically sourced and quality-checked for premium finish.
-          </p>
-
-        </div>
-      </section>
-
-      <section className="w-full py-16 px-4 md:px-10 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
-
-          <h2 className="text-2xl md:text-3xl font-semibold text-center mb-10">
-            Hair Patch Servicing in Kolkata
-          </h2>
-
-          <div className="grid md:grid-cols-4 gap-6">
-
-            {[
-              "Cleaning & Removal",
-              "Scalp Treatment",
-              "Re-bonding",
-              "Styling & Blending"
-            ].map((step, i) => (
-              <div key={i} className="bg-white p-5 rounded-xl border text-center">
-                <p className="font-medium">{step}</p>
-              </div>
-            ))}
-
-          </div>
-
-        </div>
-      </section> */}
-
       <section className="w-full py-20 px-4 md:px-10 bg-[#020617]">
         <div className="max-w-4xl mx-auto text-center">
 
@@ -255,6 +224,12 @@ const SaltLake = () => {
             <h2 className="text-3xl md:text-4xl font-bold text-white">
               Hair Patch Servicing in Kolkata
             </h2>
+            <p className="text-gray-400 mt-3">
+              The price of hair patch in Kolkata starts at
+              ₹
+              5,999 at
+              Indian Hair World — the most a ordable option in the city.
+            </p>
             <p className="text-gray-400 mt-3">
               Complete care for long-lasting and natural look
             </p>
@@ -373,7 +348,7 @@ const SaltLake = () => {
                   <div className="absolute top-0 right-0 bg-[#ef7f1a] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">1</div>
                   <h3 className="text-lg font-bold mb-2 text-gray-900">Free consultation</h3>
                   <p className="text-gray-900 text-sm leading-relaxed">
-                    Walk into our Salt Lake branch or call +918961194044. Our expert assesses your hair loss type, density and scalp condition — completely free.
+                    Walk into our Salt Lake hair patch shop or call +918961194044. Our expert assesses your hair loss type, density and scalp condition — completely free.
                   </p>
                 </div>
 

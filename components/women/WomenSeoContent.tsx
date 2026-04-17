@@ -74,6 +74,12 @@ export default function WomenSeoContent() {
                 <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-blue-500 flex-shrink-0" /> Clip-in hair topper — easy to wear daily</li>
                 <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-blue-500 flex-shrink-0" /> Custom hair topper — matched to your hair color</li>
               </ul>
+              <p className="text-gray-400 text-sm mt-2">
+                Shop hair toppers for women at Indian Hair World — Kolkata's most trusted hair topper shop with free trial and expert fitting.
+              </p>
+              <p className="text-gray-400 text-sm mt-1">
+                Hair topper Kolkata — Indian Hair World offers the best selection starting ₹5,999 at our Lake Gardens and Salt Lake branches.
+              </p>
             </div>
           </div>
 
@@ -85,7 +91,7 @@ export default function WomenSeoContent() {
             </div>
             <div className="w-full md:w-1/2 space-y-5">
               <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-                Hair Extension for Women <br/><span className="text-blue-600 md:text-2xl text-xl mt-1 block">Add Length & Volume Instantly</span>
+                Hair Extension for Women in Kolkata <br/><span className="text-blue-600 md:text-2xl text-xl mt-1 block">Add Length & Volume Instantly</span>
               </h2>
               <p className="text-gray-600 leading-relaxed text-lg">
                 Want longer, fuller hair without the wait? Our hair extensions are made from 100% natural human hair, giving you a flawless, natural look. Choose from:
@@ -96,11 +102,20 @@ export default function WomenSeoContent() {
                 <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-blue-500 flex-shrink-0" /> Micro-ring hair extensions — no heat, no glue</li>
                 <li className="flex items-center gap-3"><CheckCircle2 className="w-5 h-5 text-blue-500 flex-shrink-0" /> Keratin bonded extensions — long-lasting & seamless</li>
               </ul>
+              <div className="mt-4">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Clip-In Hair Extensions in Kolkata — Starting ₹3,999</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Our clip in hair extensions in Kolkata are the easiest way to add instant length and volume — no glue, no heat, no damage. Simply clip in and go. Available in 14", 18", and 22" lengths across 20+ natural shades, matched to your existing hair. Visit our Lake Gardens or Salt Lake store for a free colour match.
+                </p>
+              </div>
               <div className="inline-block bg-blue-50 border border-blue-100 p-4 rounded-xl shadow-sm">
                 <p className="text-blue-800 text-sm font-bold">
                   Available in all lengths, colors, and textures at the best price in Kolkata.
                 </p>
               </div>
+              <p className="text-gray-600 text-sm mt-3">
+                Visit our hair extensions shop in Kolkata at Lake Gardens or Salt Lake — walk in for a free trial, no appointment needed.
+              </p>
             </div>
           </div>
 
@@ -136,8 +151,11 @@ export default function WomenSeoContent() {
             </div>
             <div className="w-full md:w-1/2 space-y-5">
               <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-                Hair Wig for Women <br/><span className="text-blue-600 md:text-2xl text-xl mt-1 block">Complete Transformation</span>
+                Hair Wigs for Women in Kolkata <br/><span className="text-blue-600 md:text-2xl text-xl mt-1 block">Complete Transformation</span>
               </h2>
+              <p className="text-gray-600 leading-relaxed text-lg">
+                Explore our full range of wigs for women — from natural everyday wigs to glamorous fashion styles, all made with 100% real human hair.
+              </p>
               <p className="text-gray-600 leading-relaxed text-lg">
                 Explore our stunning collection of hair wigs for women — from everyday natural wigs to glamorous fashion wigs:
               </p>
@@ -152,6 +170,9 @@ export default function WomenSeoContent() {
                   Every wig for women is crafted with natural human hair for realistic movement and styling flexibility.
                 </p>
               </div>
+              <p className="text-gray-600 text-sm">
+                Our ladies wig collection includes full lace, front lace, headband, and custom wigs — all made from 100% natural human hair.
+              </p>
             </div>
           </div>
         </div>

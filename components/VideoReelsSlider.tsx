@@ -10,6 +10,7 @@ import Link from 'next/link';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/free-mode';
+import { useRouter } from 'next/router';
 
 export interface ReelItem {
     reelId: string;
@@ -42,6 +43,8 @@ export default function VideoReelsSlider({
     const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
     const modalSwiperRef = useRef<SwiperType | null>(null);
     const modalVideoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+    const router = useRouter();
+    const isSaltLake = router.query?.branch === 'salt-lake';
 
     // ── Modal controls ──
     const openModal = (index: number) => {
@@ -189,6 +192,15 @@ export default function VideoReelsSlider({
                         </p>
                     </div>
                 </div>
+                {/*  */}
+                {isSaltLake && (
+                    <div className="w-[86%] md:w-[94%] mx-auto text-xs md:text-base">
+                        <p className='text-gray-500'>
+                            Hair patch center Kolkata
+                        </p>
+                    </div>
+                )}
+
             </section>
 
             {/* ── Carousel ── */}

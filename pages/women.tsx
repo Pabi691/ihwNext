@@ -19,6 +19,7 @@ import { toAbsoluteUrlIfPresent } from "@/utils/seo";
 import { fetchPageSeo } from "@/utils/serverSeo";
 import JsonLd from "@/components/JsonLd";
 import OurWorks from "@/components/home/OurWorks";
+import FindUsNearYou from "@/components/FindUsNearYou";
 
 const Women = () => {
     return (
@@ -36,6 +37,7 @@ const Women = () => {
             />
             <DesktopNav />
             <HeroSection />
+            <FindUsNearYou />
             {/* Shark Tank Images */}
             <div className="w-full my-6 md:my-16">
                 <div className="max-w-6xl mx-auto px-4 md:px-6">

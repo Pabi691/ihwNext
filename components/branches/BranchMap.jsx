@@ -1,8 +1,38 @@
 import React from 'react';
 import { MapPin, Phone, MessageSquare, Clock, Navigation2, Map as MapIcon } from 'lucide-react';
 
-const BranchMap = ({ data }) => {
+const BranchMap = ({ data, compact = false }) => {
   if (!data || !data.mapUrl) return null;
+
+  if (compact) {
+    return (
+      <section className="w-full bg-gray-50 py-6 border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 md:px-10 flex flex-col md:flex-row gap-4 items-center justify-between">
+          <div className="flex items-center gap-3">
+            <MapPin className="text-[#ef7f1a] w-5 h-5 flex-shrink-0" />
+            <p className="text-gray-800 text-sm font-medium">{data.address}{data.landmark ? ` — ${data.landmark}` : ''}</p>
+          </div>
+          <a
+            href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(data.address)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 bg-[#ef7f1a] hover:bg-orange-600 text-white text-sm font-semibold px-5 py-2.5 rounded-full shadow transition whitespace-nowrap"
+          >
+            <Navigation2 className="w-4 h-4" /> Get Directions
+          </a>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 md:px-10 mt-4 h-[280px] rounded-2xl overflow-hidden shadow-md border border-gray-200">
+          <iframe
+            src={data.mapUrl}
+            className="w-full h-full border-0"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            title={`${data.name} Location Map`}
+          />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="w-full bg-gray-50 py-16 mt-8 border-t border-gray-200">
@@ -33,6 +63,14 @@ const BranchMap = ({ data }) => {
                       <Navigation2 className="w-3 h-3" /> Landmark: {data.landmark}
                     </p>
                   )}
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(data.address)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 mt-3 bg-[#ef7f1a] hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-full shadow transition"
+                  >
+                    <Navigation2 className="w-4 h-4" /> Get Directions
+                  </a>
                 </div>
               </div>
 
