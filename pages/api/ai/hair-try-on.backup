@@ -1,0 +1,342 @@
+import type { NextApiRequest, NextApiResponse } from "next";
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "12mb",
+    },
+  },
+};
+
+type HairTryOnRequestBody = {
+  faceImageBase64?: string;
+  faceImageMimeType?: string;
+  productImageUrl?: string;
+  productImageUrls?: string[];
+  productName?: string;
+  productTag?: string;
+  productDescription?: string;
+  hairStatus?: string;
+};
+
+function toBase64(buffer: ArrayBuffer) {
+  return Buffer.from(buffer).toString("base64");
+}
+
+function getApiKey() {
+  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY or GOOGLE_API_KEY is required.");
+  }
+  return apiKey;
+}
+
+function getBaseUrl(req: NextApiRequest) {
+  const forwardedProto = req.headers["x-forwarded-proto"];
+  const protocol = Array.isArray(forwardedProto) ? forwardedProto[0] : forwardedProto || "http";
+  const host = req.headers.host || "localhost:3000";
+  return `${protocol}://${host}`;
+}
+
+function resolveImageUrl(url: string, req: NextApiRequest) {
+  const trimmed = url.trim();
+  if (!trimmed) {
+    throw new Error("productImageUrl is required.");
+  }
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+  if (trimmed.startsWith("//")) {
+    return `https:${trimmed}`;
+  }
+  return new URL(trimmed, getBaseUrl(req)).toString();
+}
+
+async function fetchImageAsBase64(url: string, req: NextApiRequest) {
+  const resolvedUrl = resolveImageUrl(url, req);
+  const response = await fetch(resolvedUrl, { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error("Could not fetch product image.");
+  }
+  const contentType = response.headers.get("content-type") || "image/jpeg";
+  const arrayBuffer = await response.arrayBuffer();
+  return { mimeType: contentType, imageBytes: toBase64(arrayBuffer) };
+}
+
+async function fetchProductReferenceImages(
+  primaryUrl: string,
+  additionalUrls: string[] | undefined,
+  req: NextApiRequest
+) {
+  const urls = [primaryUrl, ...(additionalUrls || [])]
+    .map((url) => (typeof url === "string" ? url.trim() : ""))
+    .filter(Boolean);
+
+  const uniqueUrls = Array.from(new Set(urls)).slice(0, 4);
+  const images = await Promise.all(uniqueUrls.map((url) => fetchImageAsBase64(url, req)));
+  return images;
+}
+
+function extractInlineImage(response: any) {
+  const candidates = response?.candidates || [];
+  for (const candidate of candidates) {
+    for (const part of candidate?.content?.parts || []) {
+      const data = part?.inlineData?.data;
+      const mimeType = part?.inlineData?.mimeType || "image/png";
+      if (data && String(mimeType).startsWith("image/")) {
+        return { data, mimeType };
+      }
+    }
+  }
+  return null;
+}
+
+async function parseJsonSafely(response: Response) {
+  const raw = await response.text();
+  if (!raw) {
+    return null;
+  }
+  try {
+    return JSON.parse(raw);
+  } catch {
+    throw new Error("AI provider returned a non-JSON response.");
+  }
+}
+
+function stripHtml(value: string) {
+  return value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function inferProductType(productName: string, productTag: string, productDescription: string) {
+  const text = `${productName} ${productTag} ${productDescription}`.toLowerCase();
+
+  if (/(extension|extensions|clip[- ]?in|clip in|tape[- ]?in|weft|volumizer)/.test(text)) {
+    return "extension";
+  }
+
+  if (/(wig|frontal|closure|full cap|full wig)/.test(text)) {
+    return "wig";
+  }
+
+  if (/(patch|hair patch|toupee|topper|system|hair system)/.test(text)) {
+    return "hair patch";
+  }
+
+  return "hair replacement";
+}
+
+function buildHairPrompt(
+  productName: string,
+  productTag: string,
+  productDescription: string,
+  hairStatus: string
+) {
+  const cleanName = stripHtml(productName || "").trim();
+  const cleanTag = stripHtml(productTag || "").trim();
+  const cleanDescription = stripHtml(productDescription || "").slice(0, 500);
+  const productType = inferProductType(cleanName, cleanTag, cleanDescription);
+  const normalizedHairStatus = hairStatus === "bald_or_thinning" ? "bald or thinning" : "already has hair";
+
+  const productContext = [
+    cleanName ? `Product name: ${cleanName}` : "",
+    cleanTag && cleanTag !== "null" ? `Product tag: ${cleanTag}` : "",
+    cleanDescription ? `Product details: ${cleanDescription}` : "",
+    `Detected product type: ${productType}`,
+    `User hair situation: ${normalizedHairStatus}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const userHairInstructions =
+    hairStatus === "bald_or_thinning"
+      ? `The user is bald or thinning on top. You MUST add full visible hair coverage on the scalp using the product's exact style. The bare scalp must be fully covered. This transformation MUST be obvious and dramatic.`
+      : `The user already has hair. You MUST STILL visibly transform their hairstyle to match the product. COMPLETELY REPLACE the top/crown hair area with the product's exact style, shape, volume, and texture from the reference images. Do NOT leave the person's original hair unchanged — this is a virtual try-on and the output MUST look clearly different from the input.`;
+
+  const typeSpecificInstructions = {
+    extension: `TASK: Integrate the hair extension from IMAGE 2 into the person's hair. The result must look clearly different from the input — longer, fuller, or with added volume/color. Match the extension to the natural hair flow, root direction, density, and curl pattern. Blend join points invisibly so it looks professionally fitted.`,
+    wig: `TASK: Fully replace the person's hair with the wig from IMAGE 2. The person's original hair MUST NOT be visible — it should be completely covered by the wig. Place the wig cap and hairline naturally, match the skull shape and forehead, and make the result look like the person is genuinely wearing this exact wig after professional fitting.`,
+    "hair patch": `TASK: Apply the hair patch from IMAGE 2 onto the top/crown of the person's head. COMPLETELY REPLACE the top hair area with the product's exact hairstyle — its specific shape, volume, spikiness, texture, density, and color. The person's original top hair must be replaced/covered by the product style. The sides and back hair remain. The transformation on top MUST be clearly visible and match the product in the reference images exactly.`,
+    "hair replacement": `TASK: Replace the person's top hair area with the hair replacement product from IMAGE 2. The output MUST clearly show the product's hair style on the person's head. Replace the existing top hair with the product's exact style, volume, and texture. The result must be obviously different from the input photo.`,
+  }[productType];
+
+  return `You are a professional virtual hair try-on system for an ecommerce platform. Your ONLY job is to show the customer what they would look like wearing the specific product shown in the reference images.
+
+⚠️ CRITICAL RULE: The output image MUST show a clearly visible hair transformation. If the before and after images look the same or nearly identical, you have FAILED. A visible, obvious change is REQUIRED.
+
+TASK:
+IMAGE 1 = the customer's face photo. IMAGES 2+ = the hair product being sold.
+Apply the product from IMAGES 2+ onto the person in IMAGE 1 so the customer can see exactly how it will look on them.
+
+PRODUCT CONTEXT:
+${productContext}
+
+TRANSFORMATION REQUIREMENTS (ALL MANDATORY):
+1. REPLACE or COVER the top/crown hair area with the product's exact hair style from the reference images — exact color, spikiness, volume, density, texture, curl pattern, and shape.
+2. The product's hairstyle MUST be clearly recognizable on the person's head — if the reference shows spiky voluminous brown hair, the output must show spiky voluminous brown hair on the person.
+3. Preserve the person's face, skin tone, beard, expression, neck, shoulders, clothing, background, and camera angle completely.
+4. Match lighting, shadows, and scale to the person's head.
+5. The result must be a photorealistic portrait — not an illustration, collage, or mannequin mockup.
+6. If a reference image shows the product on a mannequin, copy that exact hairstyle shape and volume onto the person.
+7. If a reference image shows the product base/underside, use it only to understand placement area, not as the hair style output.
+8. Never leave two conflicting hairstyles visible at once — replace the conflict zone completely.
+9. Blend the hair edges seamlessly into the sides and avoid floating hair or obvious cut lines.
+
+FITTING INSTRUCTIONS:
+${typeSpecificInstructions}
+${userHairInstructions}
+
+OUTPUT RULES:
+- Output only ONE finished portrait image of the person wearing the product.
+- Do not show the original reference images or product separately.
+- Do not add any text, labels, borders, or watermarks.
+- The result must be convincing enough for an ecommerce before/after preview.
+- The hair transformation MUST be obvious when comparing to the original photo.`;
+}
+
+const DEFAULT_GEMINI_IMAGE_MODEL = "gemini-2.5-flash-image";
+const LEGACY_GEMINI_IMAGE_MODELS = new Set(["gemini-2.0-flash-exp"]);
+
+function resolveImageModel() {
+  const configuredModel = (process.env.GEMINI_IMAGE_MODEL || "").trim().replace(/^models\//, "");
+  if (!configuredModel || LEGACY_GEMINI_IMAGE_MODELS.has(configuredModel)) {
+    return DEFAULT_GEMINI_IMAGE_MODEL;
+  }
+  return configuredModel;
+}
+
+function getErrorMessage(error: unknown) {
+  if (error instanceof Error) {
+    return error.message || "Unknown AI generation error";
+  }
+  if (typeof error === "string" && error.trim()) {
+    return error;
+  }
+  return "Unknown AI generation error";
+}
+
+function mapProviderMessage(providerMessage: string, imageModel: string) {
+  const normalized = providerMessage.toLowerCase();
+
+  if (imageModel.startsWith("imagen-")) {
+    return {
+      status: 400,
+      message:
+        "This route performs a two-image try-on edit. Imagen generate models are text-to-image only here, so they cannot be used as a drop-in replacement. Use a billed Gemini image model or move this feature to Vertex AI image editing / virtual try-on.",
+    };
+  }
+
+  if (normalized.includes("quota exceeded") || normalized.includes("current quota")) {
+    return {
+      status: 429,
+      message:
+        "Virtual Hair Try-On is unavailable right now because this project has no Gemini image-editing quota. Please enable billing or add paid quota.",
+    };
+  }
+
+  if (normalized.includes("not found for api version") || normalized.includes("not supported for generatecontent")) {
+    return {
+      status: 400,
+      message:
+        `The configured model "${imageModel}" is not available for this Gemini generateContent image-edit request. Use a supported billed Gemini image model, or move this feature to Vertex AI.`,
+    };
+  }
+
+  return null;
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== "POST") {
+    res.setHeader("Allow", "POST");
+    return res.status(405).json({ message: "Method not allowed" });
+  }
+
+  try {
+    const body = (req.body || {}) as HairTryOnRequestBody;
+    const {
+      faceImageBase64,
+      productImageUrl,
+      productImageUrls,
+      productName,
+      productTag,
+      productDescription,
+      hairStatus,
+    } = body;
+    const faceImageMimeType = body.faceImageMimeType || "image/jpeg";
+
+    if (!faceImageBase64 || !productImageUrl) {
+      return res.status(400).json({ message: "faceImageBase64 and productImageUrl are required." });
+    }
+
+    const productImages = await fetchProductReferenceImages(productImageUrl, productImageUrls, req);
+    const apiKey = getApiKey();
+    const imageModel = resolveImageModel();
+    const modelGuard = mapProviderMessage("", imageModel);
+    if (modelGuard) {
+      return res.status(modelGuard.status).json({ message: modelGuard.message });
+    }
+    const apiVersion = process.env.GEMINI_API_VERSION || "v1beta";
+    const endpoint =
+      `https://generativelanguage.googleapis.com/${apiVersion}/models/${imageModel}:generateContent?key=${apiKey}`;
+
+    const productImageParts = productImages.map((productImage) => ({
+      inlineData: { data: productImage.imageBytes, mimeType: productImage.mimeType },
+    }));
+
+    const aiResponse = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: buildHairPrompt(
+                  productName || "",
+                  productTag || "",
+                  productDescription || "",
+                  hairStatus || "has_hair"
+                ),
+              },
+              { inlineData: { data: faceImageBase64, mimeType: faceImageMimeType } },
+              ...productImageParts,
+            ],
+          },
+        ],
+        generationConfig: {
+          responseModalities: ["TEXT", "IMAGE"],
+        },
+      }),
+    });
+
+    const payload = await parseJsonSafely(aiResponse);
+
+    if (!aiResponse.ok) {
+      const providerMessage =
+        payload?.error?.message ||
+        payload?.message ||
+        "AI generation failed. Please try again.";
+      const mapped = mapProviderMessage(providerMessage, imageModel);
+      return res.status(mapped?.status || aiResponse.status || 502).json({
+        message: mapped?.message || providerMessage,
+      });
+    }
+
+    const generated = extractInlineImage(payload);
+    if (!generated) {
+      return res.status(502).json({
+        message:
+          "AI did not return an image. Try a clearer face photo with good front lighting and plain background.",
+      });
+    }
+
+    return res.status(200).json({
+      generatedImageDataUrl: `data:${generated.mimeType};base64,${generated.data}`,
+    });
+  } catch (error: unknown) {
+    const message = getErrorMessage(error);
+    return res.status(500).json({ message });
+  }
+}

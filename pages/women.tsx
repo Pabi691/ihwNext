@@ -75,7 +75,7 @@ const Women = () => {
             <SingleSlider slug_name="get_slug_data/women-products" title="WOMEN'S HAIR PRODUCTS" />
             <ReviewPopup />
             <ScrollingBanner />
-            <OurStoresSection />
+            {/* <OurStoresSection /> */}
             <AchievementSlider />
             <CelebritySection />
             <OurWorks />

@@ -161,6 +161,7 @@ function HairPatchTryOnSection({
       const payload = await parseApiResponse(response);
       if (!response.ok) throw new Error(payload?.message || "Generation failed. Please try again.");
       setResultImageUrl(payload.generatedImageDataUrl);
+      setCompareValue(0);
     } catch (err) {
       setError(err?.message || "Could not generate the try-on image.");
     } finally {

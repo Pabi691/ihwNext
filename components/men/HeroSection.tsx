@@ -24,7 +24,7 @@ export default function HeroSection() {
 
       {/* Content */}
       <div className="relative z-20 h-full flex flex-col justify-end items-end px-4 sm:px-10 md:px-24 pb-16">
-        <div className="max-w-xl text-right">
+        <div className="max-w-xl text-center md:text-right">
           {/* CTR Hook Badge */}
           <div className="w-fit mx-auto md:mx-0 mb-4 inline-flex items-center gap-1.5 bg-[#ef7f1a] text-white px-3 py-1.5 rounded-md text-xs sm:text-sm font-bold uppercase tracking-wider shadow-sm">
             <FaRankingStar className="w-4 h-4" />
@@ -32,8 +32,13 @@ export default function HeroSection() {
           </div>
           <div className="space-y-4">
 
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 tracking-tight">
+            {/* <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 tracking-tight">
               <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+                Best Hair Patch & Hair Wig for Men in Kolkata
+              </span>
+            </h1> */}
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 tracking-tight">
+              <span className="text-white">
                 Best Hair Patch & Hair Wig for Men in Kolkata
               </span>
             </h1>
@@ -45,7 +50,7 @@ export default function HeroSection() {
             </span>
 
             {/* Price & EMI block */}
-            <div className="flex flex-row items-center gap-4 bg-[#ef7f1a]/5 border border-[#ef7f1a]/20 p-4 rounded-2xl mb-8 w-fit ms-auto">
+            <div className="flex flex-row justify-center items-center gap-4 bg-[#ef7f1a]/5 border border-[#ef7f1a]/20 p-4 rounded-2xl mb-8 w-full md:w-fit ms-0 md:ms-auto">
               <div className="flex flex-col">
                 <span className="text-sm text-gray-300 font-semibold uppercase tracking-wider mb-1">Starting At</span>
                 <span className="text-2xl md:text-4xl font-extrabold text-[#ef7f1a]"> Rs. 5999/-</span>

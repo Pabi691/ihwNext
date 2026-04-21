@@ -78,7 +78,7 @@ const Men = () => {
             <ReviewPopup />
             <ScrollingBanner />
             {/* <MensHairProductsSection /> */}
-            <OurStoresSection />
+            {/* <OurStoresSection /> */}
             <AchievementSlider />
             <CelebritySection />
             <OurWorks />
