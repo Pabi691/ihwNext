@@ -7,6 +7,8 @@ import Skeleton from 'react-loading-skeleton';
 import { Navigation, Pagination } from 'swiper/modules';
 import { themeBgColor } from '../styles/typography';
 
+const RECENTLY_VIEWED_KEY = 'recentlyViewedProducts:v3';
+
 const RecentlyViewed = () => {
   const [recentProduct, setRecentProduct] = useState([]);
   const { token, wishlist, setWishlist } = useGlobal();
@@ -17,7 +19,7 @@ const RecentlyViewed = () => {
         console.warn("Token missing. Aborting fetch.");
         return;
       }
-      const viewedProducts = JSON.parse(sessionStorage.getItem('recentlyViewedProducts')) || [];
+      const viewedProducts = JSON.parse(sessionStorage.getItem(RECENTLY_VIEWED_KEY)) || [];
 
       if (viewedProducts) {
         // console.log("Loading product from sessionStorage");

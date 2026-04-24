@@ -10,6 +10,8 @@ const sanitizePublicApiUrl = (value?: string) => {
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  compress: true,
+  poweredByHeader: false,
   env: {
     NEXT_PUBLIC_API_URL: sanitizePublicApiUrl(process.env.NEXT_PUBLIC_API_URL),
     NEXT_PUBLIC_SITE_URL:
@@ -31,21 +33,25 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    domains: ['indianhairworld.com', 'server.indianhairworld.com', 'api.indianhairworld.com'],
+    domains: ['indianhairworld.com', 'server.indianhairworld.com', 'api.indianhairworld.com', 'cdn.indianhairworld.com'],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: '**.indianhairworld.com',
       },
     ],
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 86400,
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 64, 128, 256, 384],
   },
-  reactStrictMode: true,
+  reactStrictMode: false,
   eslint: {
-    // Avoid build failure due to ESLint config mismatch while we migrate
     ignoreDuringBuilds: true,
   },
   experimental: {
     esmExternals: true,
+    optimizePackageImports: ['react-icons', 'swiper', 'lucide-react'],
   },
 };
 

@@ -13,6 +13,25 @@ import Skeleton from 'react-loading-skeleton';
 import { cacheManager } from '../utils/cacheManager'; // ✅ Import cacheManager
 import { themeBgColor } from '../styles/typography';
 
+const normalizeProductImageUrl = (url = '') => {
+  if (!url || typeof url !== 'string') return url;
+  if (!url.includes('/product-images/')) return url;
+
+  return url
+    .replace(/-\?{2,}-/g, '-%E2%80%93-')
+    .replace(/-%E2%80%94-/gi, '-%E2%80%93-')
+    .replace(/-(?:\u2013|\u2014)-/gu, '-%E2%80%93-');
+};
+
+const normalizeProductName = (name = '') => {
+  if (!name || typeof name !== 'string') return name;
+
+  return name
+    .replace(/\s\?{2,}\s/g, ' - ')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+};
+
 const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_slug_name }) => {
   const { token, publicToken, wishlist, setWishlist } = useGlobal();
   const [products, setProducts] = useState([]);
@@ -103,6 +122,21 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
     return `${imageKitBase}tr:w-${width},q-70/${originalUrl}`;
   };
 
+  const handleProductImageError = (event) => {
+    const fallbackSrc = normalizeProductImageUrl(event.currentTarget.src);
+
+    if (
+      !fallbackSrc ||
+      fallbackSrc === event.currentTarget.src ||
+      event.currentTarget.dataset.fallbackApplied === 'true'
+    ) {
+      return;
+    }
+
+    event.currentTarget.dataset.fallbackApplied = 'true';
+    event.currentTarget.src = fallbackSrc;
+  };
+
   return (
     <div className="pt-3 max-w-7xl mx-auto px-2">
       <div className="flex justify-between text-start my-4 md:my-8 capitalize">
@@ -141,7 +175,10 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
             </SwiperSlide>
           ))
         ) : (
-          products.map((product) => (
+          products.map((product) => {
+            const productName = normalizeProductName(product.prod_name);
+
+            return (
             <SwiperSlide key={product.id}>
               <div className="bg-white overflow-hidden relative md:h-[330px] h-[300px] border-none md:border rounded-sm">
                 {product.product_tag && product.product_tag !== 'null' && (
@@ -154,9 +191,10 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
                   <img
                     // src={compressImage(product.primary_img, 300)}
                     src={product.primary_img}
-                    alt={product.prod_name}
+                    alt={productName}
                     className="w-full rounded-xl absolute top-0 left-0"
                     loading="lazy"
+                    onError={handleProductImageError}
                   />
                 </Link>
 
@@ -176,9 +214,9 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
                   <Link
                     to={`/product/${product.slug}`}
                     className="text-gray-900 truncate max-w-fit text-nowrap text-xs block my-1"
-                    title={product.prod_name}
+                    title={productName}
                   >
-                    {product.prod_name}
+                    {productName}
                   </Link>
                   <div className="flex gap-[1px] sm:gap-2 items-end my-1">
                     <p className="text-black text-[10px] sm:text-sm font-semibold md:font-bold flex gap-[2px]">
@@ -216,7 +254,8 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
                 </div>
               </div>
             </SwiperSlide>
-          ))
+            );
+          })
         )}
       </Swiper>
     </div>

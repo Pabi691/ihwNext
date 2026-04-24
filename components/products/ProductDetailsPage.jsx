@@ -23,6 +23,8 @@ import {
   NotifySizeModal
 } from './';
 
+const RECENTLY_VIEWED_KEY = 'recentlyViewedProducts:v3';
+
 function ProductDetailsPage() {
   const { slug } = useParams();
   const apiBase = `${process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com"}/api`;
@@ -53,7 +55,7 @@ function ProductDetailsPage() {
   const fetchProductDetails = useCallback(async () => {
     if (!token) return;
 
-    const viewed = JSON.parse(sessionStorage.getItem('recentlyViewedProducts')) || [];
+    const viewed = JSON.parse(sessionStorage.getItem(RECENTLY_VIEWED_KEY)) || [];
     const cached = viewed.find(p => p.slug === slug);
 
     if (cached) {
@@ -85,7 +87,7 @@ function ProductDetailsPage() {
         setLikedProductsTag(p.product_tag);
 
         sessionStorage.setItem(
-          'recentlyViewedProducts',
+          RECENTLY_VIEWED_KEY,
           JSON.stringify([...viewed, p])
         );
       }

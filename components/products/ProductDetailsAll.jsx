@@ -21,6 +21,8 @@ import confetti from 'canvas-confetti';
 import { hoverScale, themeBgColor, themeBgDark, themeBgGray, themeTextColor } from '../../styles/typography';
 import HairPatchTryOnSection from '../ai/HairPatchTryOnSection';
 
+const RECENTLY_VIEWED_KEY = 'recentlyViewedProducts:v3';
+
 function ProductDetailsAll() {
   const { slug } = useParams();
   const apiBase = `${process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com"}/api`;
@@ -51,7 +53,7 @@ function ProductDetailsAll() {
     }
 
     // Get the array of previously viewed products
-    const viewedProducts = JSON.parse(sessionStorage.getItem('recentlyViewedProducts')) || [];
+    const viewedProducts = JSON.parse(sessionStorage.getItem(RECENTLY_VIEWED_KEY)) || [];
 
     // Check if the product is already in the list
     const existingProduct = viewedProducts.find((item) => item.slug === slug);
@@ -93,7 +95,7 @@ function ProductDetailsAll() {
 
         // Add to sessionStorage list
         const newViewedProducts = [...viewedProducts, selectedProduct];
-        sessionStorage.setItem('recentlyViewedProducts', JSON.stringify(newViewedProducts));
+        sessionStorage.setItem(RECENTLY_VIEWED_KEY, JSON.stringify(newViewedProducts));
       }
     } catch (error) {
       console.error('Error fetching product data:', error);
@@ -518,13 +520,13 @@ function ProductDetailsAll() {
                     </div>
                   </div>
                 ) : null}
-                {/* <HairPatchTryOnSection
+                <HairPatchTryOnSection
                   productImage={selectedImage || product.primary_img}
                   productImages={[selectedImage || product.primary_img, ...images].filter(Boolean)}
                   productName={product.prod_name}
                   productTag={product.product_tag}
                   productDescription={product.prod_desc}
-                /> */}
+                />
                 <ProductDetailsAccordian productdetails={product.prod_desc} />
                 <img src='../images/icons.jpg' alt='icons' loading="lazy" />
                 <ReviewRatingComments

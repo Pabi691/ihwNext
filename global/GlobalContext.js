@@ -70,7 +70,7 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
   const fetchCart = useCallback(async () => {
     if (!isBrowser) return;
     const userToken = localStorage.getItem("userToken");
-    if (!userToken) {
+    if (!userToken || userToken === webToken) {
       const localCart = JSON.parse(localStorage.getItem("localCart") || "[]");
       setCart(Array.isArray(localCart) ? localCart : []);
       return;
@@ -407,11 +407,16 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
     setWishlist([]);
   };
 
-  // 🧠 Initial Load
+  // 🧠 Initial Load — cart & wishlist immediately, products deferred until browser idle
   useEffect(() => {
-    fetchWishlist();
     fetchCart();
-    fetchProducts();
+    fetchWishlist();
+
+    const idleCallback = typeof window !== "undefined" && "requestIdleCallback" in window
+      ? (cb) => window.requestIdleCallback(cb, { timeout: 3000 })
+      : (cb) => setTimeout(cb, 200);
+
+    idleCallback(fetchProducts);
   }, [fetchWishlist, fetchCart, fetchProducts]);
 
   return (

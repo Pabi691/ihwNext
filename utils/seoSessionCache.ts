@@ -31,7 +31,8 @@ export const normalizeSeoPath = (path?: string) => {
   return `/${segments[segments.length - 1]}`;
 };
 
-const getSeoSessionKey = (path?: string) => `seo:meta:${normalizeSeoPath(path)}`;
+const SEO_SESSION_PREFIX = "seo:meta:v3:";
+const getSeoSessionKey = (path?: string) => `${SEO_SESSION_PREFIX}${normalizeSeoPath(path)}`;
 
 export const hasMeaningfulSeo = (seo: SeoShape | null | undefined) => {
   if (!seo) return false;
@@ -133,7 +134,7 @@ type ProductNode = {
   };
 };
 
-const SEO_PRELOAD_KEY = "seo:meta:preloaded:v1";
+const SEO_PRELOAD_KEY = "seo:meta:preloaded:v3";
 let seoPreloadPromise: Promise<void> | null = null;
 
 const toArray = <T,>(value: unknown): T[] => {

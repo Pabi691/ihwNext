@@ -1,15 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "@/components/compat/router";
 import { toast, ToastContainer } from "react-toastify";
-import { useGlobal } from "../../global/GlobalContext";
 
 const VerifyEmail = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [verifying, setVerifying] = useState(false);
   const [message, setMessage] = useState("");
-  const { token } = useGlobal();
+  const hasCalled = useRef(false);
 
   // Extract query params from URL
   const queryParams = new URLSearchParams(location.search);
@@ -17,9 +16,9 @@ const VerifyEmail = () => {
   const email = queryParams.get("email");
 
   const handleVerify = useCallback(async () => {
-    // console.log('tokenvarify', tokenvarify);
-    // console.log('email', email);
-    // console.log('token', token);
+    if (hasCalled.current) return;
+    hasCalled.current = true;
+
     if (!tokenvarify || !email) {
       setMessage("Invalid verification link.");
       return;
@@ -38,7 +37,6 @@ const VerifyEmail = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
           },
         }
       );
@@ -60,7 +58,7 @@ const VerifyEmail = () => {
     } finally {
       setVerifying(false);
     }
-  }, [tokenvarify, email, navigate, token]);
+  }, [tokenvarify, email, navigate]);
 
   useEffect(() => {
     handleVerify();
