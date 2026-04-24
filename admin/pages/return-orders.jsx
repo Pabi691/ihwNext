@@ -86,45 +86,77 @@ export default function ReturnOrders() {
         ) : paginated.length === 0 ? (
           <div className="py-20 text-center text-gray-400 text-sm">No return orders found</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide font-semibold">
-                  <th className="px-5 py-3.5 text-left">Order</th>
-                  <th className="px-5 py-3.5 text-left">Customer</th>
-                  <th className="px-5 py-3.5 text-left">Amount</th>
-                  <th className="px-5 py-3.5 text-left">Status</th>
-                  <th className="px-5 py-3.5 text-left">Date</th>
-                  <th className="px-5 py-3.5 text-left">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {paginated.map((order) => (
-                  <tr key={order.id} className="hover:bg-gray-50/70 transition-colors">
-                    <td className="px-5 py-3.5 font-mono font-bold text-gray-700">#{order.id}</td>
-                    <td className="px-5 py-3.5">
-                      <p className="font-medium text-gray-800">{order.customer?.first_name ? `${order.customer.first_name} ${order.customer.last_name || ""}`.trim() : (order.customer_name || order.shipping_name || "—")}</p>
-                      <p className="text-xs text-gray-400">{order.customer?.email || order.customer_email || ""}</p>
-                    </td>
-                    <td className="px-5 py-3.5 font-semibold text-gray-800">
-                      ₹{parseFloat(order.pay_amt || order.total_amount || order.grand_total || 0).toLocaleString("en-IN")}
-                    </td>
-                    <td className="px-5 py-3.5">
-                      <StatusBadge status={order.order_status?.status_description || order.order_status_name || order.status || "Returned"} />
-                    </td>
-                    <td className="px-5 py-3.5 text-gray-400 text-xs">
-                      {order.created_at ? new Date(order.created_at).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—"}
-                    </td>
-                    <td className="px-5 py-3.5">
-                      <button onClick={() => router.push(`/orders/${order.id}`)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#04A9FF]/10 text-[#04A9FF] text-xs font-semibold hover:bg-[#04A9FF]/20 transition-colors">
-                        <FiEye size={13} /> View
-                      </button>
-                    </td>
+          <div>
+            {/* Desktop table */}
+            <div className="hidden lg:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide font-semibold">
+                    <th className="px-5 py-3.5 text-left">Order</th>
+                    <th className="px-5 py-3.5 text-left">Customer</th>
+                    <th className="px-5 py-3.5 text-left">Amount</th>
+                    <th className="px-5 py-3.5 text-left">Status</th>
+                    <th className="px-5 py-3.5 text-left">Date</th>
+                    <th className="px-5 py-3.5 text-left">Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {paginated.map((order) => (
+                    <tr key={order.id} className="hover:bg-gray-50/70 transition-colors">
+                      <td className="px-5 py-3.5 font-mono font-bold text-gray-700">#{order.id}</td>
+                      <td className="px-5 py-3.5">
+                        <p className="font-medium text-gray-800">{order.customer?.first_name ? `${order.customer.first_name} ${order.customer.last_name || ""}`.trim() : (order.customer_name || order.shipping_name || "—")}</p>
+                        <p className="text-xs text-gray-400">{order.customer?.email || order.customer_email || ""}</p>
+                      </td>
+                      <td className="px-5 py-3.5 font-semibold text-gray-800">
+                        ₹{parseFloat(order.pay_amt || order.total_amount || order.grand_total || 0).toLocaleString("en-IN")}
+                      </td>
+                      <td className="px-5 py-3.5">
+                        <StatusBadge status={order.order_status?.status_description || order.order_status_name || order.status || "Returned"} />
+                      </td>
+                      <td className="px-5 py-3.5 text-gray-400 text-xs">
+                        {order.created_at ? new Date(order.created_at).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—"}
+                      </td>
+                      <td className="px-5 py-3.5">
+                        <button onClick={() => router.push(`/orders/${order.id}`)}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#04A9FF]/10 text-[#04A9FF] text-xs font-semibold hover:bg-[#04A9FF]/20 transition-colors">
+                          <FiEye size={13} /> View
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile card view */}
+            <div className="lg:hidden divide-y divide-gray-50">
+              {paginated.map((order) => (
+                <div key={order.id} className="px-4 py-3.5">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="font-mono font-bold text-gray-700 text-sm">#{order.id}</span>
+                    <StatusBadge status={order.order_status?.status_description || order.order_status_name || order.status || "Returned"} />
+                  </div>
+                  <p className="text-sm font-medium text-gray-800 truncate">
+                    {order.customer?.first_name ? `${order.customer.first_name} ${order.customer.last_name || ""}`.trim() : (order.customer_name || order.shipping_name || "—")}
+                  </p>
+                  <div className="flex items-center justify-between mt-2">
+                    <span className="font-semibold text-gray-800 text-sm">
+                      ₹{parseFloat(order.pay_amt || order.total_amount || order.grand_total || 0).toLocaleString("en-IN")}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-400">
+                        {order.created_at ? new Date(order.created_at).toLocaleDateString("en-IN", { day: "2-digit", month: "short" }) : ""}
+                      </span>
+                      <button onClick={() => router.push(`/orders/${order.id}`)}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#04A9FF]/10 text-[#04A9FF] text-xs font-semibold">
+                        <FiEye size={12} /> View
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>

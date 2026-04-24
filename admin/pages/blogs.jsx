@@ -65,7 +65,7 @@ function BlogModal({ blog, onClose, onSave, saving }) {
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="text-xs text-gray-500 font-semibold uppercase tracking-wide block mb-1.5">Title *</label>
               <input value={form.title} onChange={(e) => handleTitleChange(e.target.value)}
@@ -80,7 +80,7 @@ function BlogModal({ blog, onClose, onSave, saving }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="text-xs text-gray-500 font-semibold uppercase tracking-wide block mb-1.5">Slug</label>
               <input value={form.slug} onChange={(e) => set("slug", e.target.value)}

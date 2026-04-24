@@ -277,19 +277,19 @@ export default function OrderDetails() {
 
       {showInvoice && order && <InvoiceModal order={order} onClose={() => setShowInvoice(false)} />}
 
-      <div className="flex items-center justify-between gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div className="flex items-center gap-3">
           <button onClick={() => router.back()}
-            className="w-9 h-9 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors shadow-sm">
+            className="w-9 h-9 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors shadow-sm flex-shrink-0">
             <FiArrowLeft size={17} />
           </button>
           <div>
-            <h2 className="text-gray-900 font-bold text-xl">Order #{id}</h2>
+            <h2 className="text-gray-900 font-bold text-lg sm:text-xl">Order #{id}</h2>
             {currentStatusLabel && <StatusBadge status={currentStatusLabel} />}
           </div>
         </div>
         <button onClick={() => setShowInvoice(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm">
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-green-600 hover:bg-green-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm w-full sm:w-auto">
           <FiPrinter size={15} /> Download Invoice
         </button>
       </div>

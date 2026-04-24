@@ -40,3 +40,60 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* ========================== */
+/* MOBILE-ONLY STYLES (<1024px) */
+/* ========================== */
+@media (max-width: 1023px) {
+  /* Prevent horizontal scroll globally */
+  html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+  }
+
+  /* Convert desktop tables to mobile card layout */
+  .mobile-cards thead {
+    display: none !important;
+  }
+
+  .mobile-cards tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .mobile-cards tbody tr {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border-radius: 14px;
+    border: 1px solid #f1f5f9;
+    align-items: center;
+  }
+
+  .mobile-cards tbody tr:hover {
+    background: #f1f5f9 !important;
+  }
+
+  .mobile-cards td {
+    padding: 2px 0 !important;
+    border: none !important;
+    font-size: 13px;
+  }
+
+  /* Tighter main content padding on mobile */
+  .mobile-main-padding {
+    padding: 12px !important;
+  }
+
+  /* Invoice modal: make it full screen on mobile */
+  .invoice-modal {
+    max-width: 100% !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    height: 100vh;
+  }
+}

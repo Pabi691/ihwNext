@@ -91,67 +91,113 @@ export default function Products() {
         ) : paginated.length === 0 ? (
           <div className="py-20 text-center text-gray-400 text-sm">No products found</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide font-semibold">
-                  <th className="px-5 py-3.5 text-left">Product</th>
-                  <th className="px-5 py-3.5 text-left">SKU</th>
-                  <th className="px-5 py-3.5 text-left">Price</th>
-                  <th className="px-5 py-3.5 text-left">Stock</th>
-                  <th className="px-5 py-3.5 text-left">Status</th>
-                  <th className="px-5 py-3.5 text-left">Edit</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {paginated.map((product) => {
-                  const active = isActive(product);
-                  const name = product.prod_name || product.name || "—";
-                  const img = product.primary_img || product.image || product.thumbnail;
-                  return (
-                    <tr key={product.id} className="hover:bg-gray-50/70 transition-colors">
-                      <td className="px-5 py-3.5">
-                        <div className="flex items-center gap-3">
-                          {img ? (
-                            <img src={img} alt={name} className="w-10 h-10 rounded-lg object-cover flex-shrink-0 border border-gray-100" />
-                          ) : (
-                            <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
-                              <span className="text-gray-300 text-xs">IMG</span>
+          <div>
+            {/* Desktop table */}
+            <div className="hidden lg:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide font-semibold">
+                    <th className="px-5 py-3.5 text-left">Product</th>
+                    <th className="px-5 py-3.5 text-left">SKU</th>
+                    <th className="px-5 py-3.5 text-left">Price</th>
+                    <th className="px-5 py-3.5 text-left">Stock</th>
+                    <th className="px-5 py-3.5 text-left">Status</th>
+                    <th className="px-5 py-3.5 text-left">Edit</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {paginated.map((product) => {
+                    const active = isActive(product);
+                    const name = product.prod_name || product.name || "—";
+                    const img = product.primary_img || product.image || product.thumbnail;
+                    return (
+                      <tr key={product.id} className="hover:bg-gray-50/70 transition-colors">
+                        <td className="px-5 py-3.5">
+                          <div className="flex items-center gap-3">
+                            {img ? (
+                              <img src={img} alt={name} className="w-10 h-10 rounded-lg object-cover flex-shrink-0 border border-gray-100" />
+                            ) : (
+                              <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                <span className="text-gray-300 text-xs">IMG</span>
+                              </div>
+                            )}
+                            <div>
+                              <p className="font-medium text-gray-800 line-clamp-1">{name}</p>
+                              <p className="text-xs text-gray-400 font-mono">#{product.id}</p>
                             </div>
-                          )}
-                          <div>
-                            <p className="font-medium text-gray-800 line-clamp-1">{name}</p>
-                            <p className="text-xs text-gray-400 font-mono">#{product.id}</p>
                           </div>
+                        </td>
+                        <td className="px-5 py-3.5 font-mono text-gray-500 text-xs">{product.sku || "—"}</td>
+                        <td className="px-5 py-3.5">
+                          <p className="font-semibold text-gray-800">₹{parseFloat(product.sale_price || product.regular_price || 0).toLocaleString("en-IN")}</p>
+                          {product.regular_price && product.sale_price && product.regular_price !== product.sale_price && (
+                            <p className="text-xs text-gray-400 line-through">₹{parseFloat(product.regular_price).toLocaleString("en-IN")}</p>
+                          )}
+                        </td>
+                        <td className="px-5 py-3.5 text-gray-600 font-medium">
+                          {product.stock_qty ?? product.stock ?? "—"}
+                        </td>
+                        <td className="px-5 py-3.5">
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold ${active ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${active ? "bg-green-400" : "bg-gray-400"}`} />
+                            {active ? "Active" : "Inactive"}
+                          </span>
+                        </td>
+                        <td className="px-5 py-3.5">
+                          <Link href={`/products/${product.id}`}
+                            className="w-8 h-8 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                            <FiEdit2 size={13} />
+                          </Link>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile card view */}
+            <div className="lg:hidden divide-y divide-gray-50">
+              {paginated.map((product) => {
+                const active = isActive(product);
+                const name = product.prod_name || product.name || "—";
+                const img = product.primary_img || product.image || product.thumbnail;
+                return (
+                  <div key={product.id} className="px-4 py-3.5">
+                    <div className="flex items-start gap-3">
+                      {img ? (
+                        <img src={img} alt={name} className="w-12 h-12 rounded-lg object-cover flex-shrink-0 border border-gray-100" />
+                      ) : (
+                        <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+                          <span className="text-gray-300 text-xs">IMG</span>
                         </div>
-                      </td>
-                      <td className="px-5 py-3.5 font-mono text-gray-500 text-xs">{product.sku || "—"}</td>
-                      <td className="px-5 py-3.5">
-                        <p className="font-semibold text-gray-800">₹{parseFloat(product.sale_price || product.regular_price || 0).toLocaleString("en-IN")}</p>
-                        {product.regular_price && product.sale_price && product.regular_price !== product.sale_price && (
-                          <p className="text-xs text-gray-400 line-through">₹{parseFloat(product.regular_price).toLocaleString("en-IN")}</p>
-                        )}
-                      </td>
-                      <td className="px-5 py-3.5 text-gray-600 font-medium">
-                        {product.stock_qty ?? product.stock ?? "—"}
-                      </td>
-                      <td className="px-5 py-3.5">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold ${active ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"}`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${active ? "bg-green-400" : "bg-gray-400"}`} />
-                          {active ? "Active" : "Inactive"}
-                        </span>
-                      </td>
-                      <td className="px-5 py-3.5">
-                        <Link href={`/products/${product.id}`}
-                          className="w-8 h-8 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center justify-center transition-colors">
-                          <FiEdit2 size={13} />
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-gray-800 text-sm line-clamp-1">{name}</p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-xs text-gray-400 font-mono">#{product.id}</span>
+                          {product.sku && <span className="text-xs text-gray-400">• {product.sku}</span>}
+                        </div>
+                        <div className="flex items-center gap-3 mt-1.5">
+                          <span className="font-semibold text-gray-800 text-sm">
+                            ₹{parseFloat(product.sale_price || product.regular_price || 0).toLocaleString("en-IN")}
+                          </span>
+                          <span className="text-xs text-gray-500">Stock: {product.stock_qty ?? product.stock ?? "—"}</span>
+                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold ${active ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+                            <span className={`w-1 h-1 rounded-full ${active ? "bg-green-400" : "bg-gray-400"}`} />
+                            {active ? "Active" : "Off"}
+                          </span>
+                        </div>
+                      </div>
+                      <Link href={`/products/${product.id}`}
+                        className="w-8 h-8 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center flex-shrink-0">
+                        <FiEdit2 size={13} />
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>

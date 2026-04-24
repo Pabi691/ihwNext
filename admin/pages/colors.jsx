@@ -164,7 +164,7 @@ export default function Colors() {
           <div className="py-20 text-center text-gray-400 text-sm">No colors found</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm mobile-cards">
               <thead>
                 <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide font-semibold">
                   <th className="px-5 py-3.5 text-left">Color</th>

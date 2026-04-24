@@ -87,7 +87,7 @@ function CouponModal({ coupon, onClose, onSave, saving }) {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="text-xs text-gray-500 font-semibold uppercase tracking-wide block mb-1.5">Discount Type</label>
               <select
@@ -114,7 +114,7 @@ function CouponModal({ coupon, onClose, onSave, saving }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="text-xs text-gray-500 font-semibold uppercase tracking-wide block mb-1.5">Min Order (₹)</label>
               <input
@@ -139,7 +139,7 @@ function CouponModal({ coupon, onClose, onSave, saving }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="text-xs text-gray-500 font-semibold uppercase tracking-wide block mb-1.5">Start Date *</label>
               <input
@@ -274,84 +274,99 @@ export default function Coupons() {
         ) : filtered.length === 0 ? (
           <div className="py-20 text-center text-gray-400 text-sm">No coupons found</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide font-semibold">
-                  <th className="px-5 py-3.5 text-left">Code</th>
-                  <th className="px-5 py-3.5 text-left">Description</th>
-                  <th className="px-5 py-3.5 text-left">Discount</th>
-                  <th className="px-5 py-3.5 text-left">Min Order</th>
-                  <th className="px-5 py-3.5 text-left">Uses</th>
-                  <th className="px-5 py-3.5 text-left">Valid Till</th>
-                  <th className="px-5 py-3.5 text-left">Status</th>
-                  <th className="px-5 py-3.5 text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {filtered.map((coupon) => {
-                  const expired = isExpired(coupon);
-                  const active = coupon.is_active === 1 || coupon.is_active === "1" || coupon.is_active === true;
-                  return (
-                    <tr key={coupon.id} className="hover:bg-gray-50/70 transition-colors">
-                      <td className="px-5 py-3.5">
-                        <span className="font-mono font-bold text-gray-800 bg-gray-100 px-2.5 py-1 rounded-lg text-xs">
-                          {coupon.coupon_code}
-                        </span>
-                      </td>
-                      <td className="px-5 py-3.5 text-gray-500 text-xs max-w-[160px] truncate">{coupon.description || "—"}</td>
-                      <td className="px-5 py-3.5 font-semibold text-[#04A9FF]">
-                        {coupon.discount_type === "Percentage" || coupon.discount_type === "percentage"
-                          ? `${coupon.discount_value}%`
-                          : `₹${parseFloat(coupon.discount_value).toLocaleString("en-IN")}`}
-                      </td>
-                      <td className="px-5 py-3.5 text-gray-500">
-                        {coupon.minimum_order_value > 0
-                          ? `₹${parseFloat(coupon.minimum_order_value).toLocaleString("en-IN")}`
-                          : "—"}
-                      </td>
-                      <td className="px-5 py-3.5 text-gray-500">
-                        {coupon.used_count ?? 0}
-                        {coupon.usage_limit ? ` / ${coupon.usage_limit}` : ""}
-                      </td>
-                      <td className="px-5 py-3.5">
-                        {coupon.end_date ? (
-                          <span className={`text-xs font-medium ${expired ? "text-red-500" : "text-gray-500"}`}>
-                            {expired ? "Expired · " : ""}
-                            {new Date(coupon.end_date).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+          <div>
+            {/* Desktop table */}
+            <div className="hidden lg:block overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide font-semibold">
+                    <th className="px-5 py-3.5 text-left">Code</th>
+                    <th className="px-5 py-3.5 text-left">Description</th>
+                    <th className="px-5 py-3.5 text-left">Discount</th>
+                    <th className="px-5 py-3.5 text-left">Min Order</th>
+                    <th className="px-5 py-3.5 text-left">Uses</th>
+                    <th className="px-5 py-3.5 text-left">Valid Till</th>
+                    <th className="px-5 py-3.5 text-left">Status</th>
+                    <th className="px-5 py-3.5 text-left">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {filtered.map((coupon) => {
+                    const expired = isExpired(coupon);
+                    const active = coupon.is_active === 1 || coupon.is_active === "1" || coupon.is_active === true;
+                    return (
+                      <tr key={coupon.id} className="hover:bg-gray-50/70 transition-colors">
+                        <td className="px-5 py-3.5">
+                          <span className="font-mono font-bold text-gray-800 bg-gray-100 px-2.5 py-1 rounded-lg text-xs">{coupon.coupon_code}</span>
+                        </td>
+                        <td className="px-5 py-3.5 text-gray-500 text-xs max-w-[160px] truncate">{coupon.description || "—"}</td>
+                        <td className="px-5 py-3.5 font-semibold text-[#04A9FF]">
+                          {coupon.discount_type === "Percentage" || coupon.discount_type === "percentage" ? `${coupon.discount_value}%` : `₹${parseFloat(coupon.discount_value).toLocaleString("en-IN")}`}
+                        </td>
+                        <td className="px-5 py-3.5 text-gray-500">{coupon.minimum_order_value > 0 ? `₹${parseFloat(coupon.minimum_order_value).toLocaleString("en-IN")}` : "—"}</td>
+                        <td className="px-5 py-3.5 text-gray-500">{coupon.used_count ?? 0}{coupon.usage_limit ? ` / ${coupon.usage_limit}` : ""}</td>
+                        <td className="px-5 py-3.5">
+                          {coupon.end_date ? (
+                            <span className={`text-xs font-medium ${expired ? "text-red-500" : "text-gray-500"}`}>{expired ? "Expired · " : ""}{new Date(coupon.end_date).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</span>
+                          ) : (<span className="text-xs text-gray-400">—</span>)}
+                        </td>
+                        <td className="px-5 py-3.5">
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold ${active ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${active ? "bg-green-400" : "bg-gray-400"}`} />
+                            {active ? "Active" : "Inactive"}
                           </span>
-                        ) : (
-                          <span className="text-xs text-gray-400">—</span>
-                        )}
-                      </td>
-                      <td className="px-5 py-3.5">
-                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold ${active ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"}`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${active ? "bg-green-400" : "bg-gray-400"}`} />
-                          {active ? "Active" : "Inactive"}
+                        </td>
+                        <td className="px-5 py-3.5">
+                          <div className="flex items-center gap-2">
+                            <button onClick={() => setModal(coupon)} className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">Edit</button>
+                            <button onClick={() => handleDelete(coupon)} disabled={deleting === coupon.id} className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors disabled:opacity-60">
+                              {deleting === coupon.id ? "..." : <FiTrash2 size={13} />}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile card view */}
+            <div className="lg:hidden divide-y divide-gray-50">
+              {filtered.map((coupon) => {
+                const expired = isExpired(coupon);
+                const active = coupon.is_active === 1 || coupon.is_active === "1" || coupon.is_active === true;
+                return (
+                  <div key={coupon.id} className="px-4 py-3.5">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="font-mono font-bold text-gray-800 bg-gray-100 px-2.5 py-1 rounded-lg text-xs">{coupon.coupon_code}</span>
+                      <span className="font-semibold text-[#04A9FF] text-sm">
+                        {coupon.discount_type === "Percentage" || coupon.discount_type === "percentage" ? `${coupon.discount_value}%` : `₹${parseFloat(coupon.discount_value).toLocaleString("en-IN")}`}
+                      </span>
+                    </div>
+                    {coupon.description && <p className="text-xs text-gray-500 truncate mb-1">{coupon.description}</p>}
+                    <div className="flex items-center gap-2 flex-wrap mb-2">
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold ${active ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+                        <span className={`w-1 h-1 rounded-full ${active ? "bg-green-400" : "bg-gray-400"}`} />
+                        {active ? "Active" : "Off"}
+                      </span>
+                      {coupon.end_date && (
+                        <span className={`text-xs font-medium ${expired ? "text-red-500" : "text-gray-400"}`}>
+                          {expired ? "Expired" : "Till "}{new Date(coupon.end_date).toLocaleDateString("en-IN", { day: "2-digit", month: "short" })}
                         </span>
-                      </td>
-                      <td className="px-5 py-3.5">
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => setModal(coupon)}
-                            className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDelete(coupon)}
-                            disabled={deleting === coupon.id}
-                            className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors disabled:opacity-60"
-                          >
-                            {deleting === coupon.id ? "..." : <FiTrash2 size={13} />}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                      )}
+                      {coupon.minimum_order_value > 0 && <span className="text-xs text-gray-400">Min ₹{parseFloat(coupon.minimum_order_value).toLocaleString("en-IN")}</span>}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => setModal(coupon)} className="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-gray-100 text-gray-600">Edit</button>
+                      <button onClick={() => handleDelete(coupon)} disabled={deleting === coupon.id} className="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-red-50 text-red-600 disabled:opacity-60">
+                        {deleting === coupon.id ? "..." : <FiTrash2 size={13} />}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>

@@ -48,3 +48,5 @@ next-env.d.ts
 # local project folders
 /backend/
 /adminold/
+admin/node_modules/
+admin/.next/
