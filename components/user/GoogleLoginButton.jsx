@@ -28,6 +28,7 @@ const GoogleLoginButton = () => {
             // localStorage.setItem("token", data.token);
             // console.log('dataGoogle', data);
             if(data.status){
+                localStorage.setItem('userToken', data.user_token);
                 setToken(data.user_token);
                 localStorage.setItem('username', data.user_data.name);
                 localStorage.setItem('useremail', data.user_data.email);

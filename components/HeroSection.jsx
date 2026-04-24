@@ -28,7 +28,7 @@ const HeroSection = () => {
       // console.log('filtered Images:', filterBannerImages);
       setBannerImages(filterBannerImages);
     } catch (err) {
-      toast.error('Failed to load images.');
+      console.warn('Banner images fetch failed:', err?.message || err);
     }
     // setImageLoading(false);
   }, [setBannerImages]);

@@ -74,7 +74,9 @@ const Login = () => {
           localStorage.setItem('uservarified', data.user_data.email_verified_at);
         }
 
-        // return;
+        // Set token directly in localStorage before merge/reload so fetchCart
+        // and addToCart read the real user token after the page reloads.
+        localStorage.setItem('userToken', data.user_token);
         setToken(data.user_token);
         localStorage.setItem('username', data.user_data.name);
         localStorage.setItem('useremail', data.user_data.email);
