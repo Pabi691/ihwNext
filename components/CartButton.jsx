@@ -3,9 +3,11 @@ import { FaCartPlus } from "react-icons/fa";
 import { FaCartShopping } from "react-icons/fa6";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useGuestCheck } from "../global/GuestCheckContext";
 
-const CartButton = ({ product, cart, setCart, token, API_BASE_URL, fetchCart, addToCart, selectedSize  }) => {
-  const [loading, setLoading] = useState(false); // State for loader
+const CartButton = ({ product, cart, setCart, token, API_BASE_URL, fetchCart, addToCart, selectedSize }) => {
+  const [loading, setLoading] = useState(false);
+  const { requireGuestInfo } = useGuestCheck();
 
   // Remove from cart handler
   const removeFromCart = async (cartId) => {
@@ -85,8 +87,11 @@ const CartButton = ({ product, cart, setCart, token, API_BASE_URL, fetchCart, ad
   ) : (
     <button
       className="text-gray-400"
-      onClick={() => { handleAddToCart(product); }}
-      disabled={loading} // Disable button while loading
+      onClick={async () => {
+        const ok = await requireGuestInfo();
+        if (ok) handleAddToCart(product);
+      }}
+      disabled={loading}
     >
       {loading ? (
         <span className="loader"></span> // Add a loader (can customize with CSS)

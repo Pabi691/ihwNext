@@ -15,6 +15,7 @@ import compressImage from '../utils/compressImage';
 import { themeBgColor } from '../styles/typography';
 import { useGlobal } from '../global/GlobalContext';
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { FaCalendarAlt, FaEnvelope, FaEye, FaEyeSlash, FaLock } from 'react-icons/fa';
 
 const messages = [
   { icon: <BiCycling />, text: "Yayy! You got free delivery" },
@@ -27,9 +28,19 @@ const Checkout = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [guestInfo, setGuestInfo] = useState(null);
+  const [showCompleteReg, setShowCompleteReg] = useState(false);
+  // Complete-registration form state (for guests proceeding to checkout)
+  const [regEmail, setRegEmail] = useState('');
+  const [regDob, setRegDob] = useState('');
+  const [regPassword, setRegPassword] = useState('');
+  const [regShowPassword, setRegShowPassword] = useState(false);
+  const [regErrors, setRegErrors] = useState({});
+  const [regLoading, setRegLoading] = useState(false);
+  const [showVerify, setShowVerify] = useState(false);
   const [shippingValidate, setShippingValidate] = useState(false);
   // const [cartItems, setCartItems] = useState([]);
-  const { cart, token, CGST, SGST, grandTotal, totalGST, subtotal, totalMRP } = useGlobal();
+  const { cart, token, CGST, SGST, grandTotal, totalGST, subtotal, totalMRP, setToken, mergeLocalCartWithServer } = useGlobal();
   const [shippingAddresses, setShippingAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethods, setPaymentMethods] = useState([]);
@@ -126,10 +137,20 @@ const Checkout = () => {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const userToken = typeof window !== "undefined" ? localStorage.getItem("userToken") : null;
-    if (!userToken) {
-      setIsAuthenticated(false);
+    // 'username' is only in localStorage for real logged-in users.
+    // 'userToken' is unreliable because AuthContext stores the web token there too.
+    const isLoggedIn = !!localStorage.getItem("username");
+    if (!isLoggedIn) {
       setIsAuthChecked(true);
+      setIsAuthenticated(false);
+      try {
+        const stored = JSON.parse(localStorage.getItem('guestInfo') || 'null');
+        if (stored) {
+          setGuestInfo(stored);
+          setShowCompleteReg(true);
+          return;
+        }
+      } catch (_) {}
       navigate('/login', { state: { slug: '/checkout' } });
       return;
     }
@@ -577,9 +598,246 @@ const Checkout = () => {
     }
   }
 
-  if (!isAuthChecked || !isAuthenticated) {
-    return null;
+  const handleCompleteRegistration = async (e) => {
+    e.preventDefault();
+    const errs = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regEmail.trim() || !emailRegex.test(regEmail)) errs.email = 'Enter a valid email address';
+    if (!regPassword || regPassword.length < 6) errs.password = 'Password must be at least 6 characters';
+    if (!regDob || new Date(regDob) > new Date(new Date().setFullYear(new Date().getFullYear() - 10)))
+      errs.dob = 'You must be at least 10 years old';
+    setRegErrors(errs);
+    if (Object.keys(errs).length > 0) return;
+
+    setRegLoading(true);
+    try {
+      if (guestInfo?.guestToken) {
+        // Guest account already created at modal stage — just update email/password/dob
+        // and trigger email verification using the stored guest token.
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/complete_guest_registration`,
+          { email: regEmail, password: regPassword, dob: regDob },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${guestInfo.guestToken}`,
+            },
+          }
+        );
+
+        if (!response.data?.status) {
+          setRegErrors({ form: response.data?.message || 'Registration failed.' });
+          return;
+        }
+
+        // Store token for the resend handler, but don't fully log in yet.
+        setToken(guestInfo.guestToken);
+        localStorage.removeItem('guestInfo');
+        setShowVerify(true);
+        return;
+      }
+
+      // Fallback: no guest token (modal sign_up failed) — create a full account now.
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/webuser/sign_up`,
+        {
+          username: regEmail,
+          password: regPassword,
+          name: guestInfo.name,
+          gender: guestInfo.gender,
+          dob: regDob,
+          mobile_number: guestInfo.mobile,
+        },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+
+      const userData = response.data;
+      if (!userData.status) {
+        setRegErrors({ form: userData.message || 'Registration failed.' });
+        return;
+      }
+
+      setToken(userData.user_token);
+      localStorage.removeItem('guestInfo');
+      setShowVerify(true);
+    } catch (error) {
+      setRegErrors({ form: error.response?.data?.message || 'Something went wrong. Try again.' });
+    } finally {
+      setRegLoading(false);
+    }
+  };
+
+  const finaliseLogin = async (userToken, userData) => {
+    setToken(userToken);
+    localStorage.setItem('username', userData.name);
+    localStorage.setItem('useremail', userData.email);
+    localStorage.setItem('uservarified', userData.email_verified_at);
+    localStorage.removeItem('guestInfo');
+    await mergeLocalCartWithServer(userToken);
+    setIsAuthenticated(true);
+    setShowCompleteReg(false);
+    if (userData.email_verified_at) fetchShippingAddresses();
+  };
+
+  if (!isAuthChecked) return null;
+
+  if (showCompleteReg && !isAuthenticated) {
+    if (showVerify) {
+      return (
+        <SimpleLayout title="Verify Your Email – Checkout">
+          <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-sky-50 to-blue-100 px-4 py-10">
+            <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
+              <div className="bg-gradient-to-r from-[#04A9FF] to-[#0070cc] px-8 pt-8 pb-10 text-center relative">
+                <h1 className="text-white text-2xl font-extrabold tracking-tight">Check Your Email!</h1>
+                <p className="text-blue-100 text-sm mt-1">One last step before you can checkout</p>
+                <div className="absolute bottom-0 left-0 right-0 h-6 bg-white"
+                  style={{ borderRadius: '50% 50% 0 0 / 100% 100% 0 0', transform: 'scaleX(1.1)' }} />
+              </div>
+              <div className="px-8 pt-6 pb-8 text-center">
+                <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl">📧</span>
+                </div>
+                <p className="text-gray-600 text-sm mb-5 leading-relaxed">
+                  A verification link has been sent to your email address. Please check your inbox and click the link to activate your account, then log in to complete your order.
+                </p>
+                {loading ? (
+                  <p className="text-gray-400 text-sm mb-4">Sending...</p>
+                ) : success ? (
+                  <p className="text-green-600 text-sm font-medium mb-4">{success}</p>
+                ) : (
+                  <button
+                    onClick={resendHandler}
+                    className="text-[#04A9FF] text-sm font-semibold hover:underline transition mb-4 block mx-auto"
+                  >
+                    Resend Verification Link
+                  </button>
+                )}
+                <a
+                  href="/login"
+                  className="w-full py-3 rounded-xl font-bold text-white text-sm tracking-wide
+                    bg-gradient-to-r from-[#04A9FF] to-[#0070cc]
+                    hover:from-[#0070cc] hover:to-[#004fa3]
+                    transition-all duration-200 shadow-lg shadow-[#04A9FF]/30
+                    flex items-center justify-center"
+                >
+                  I verified — Log In
+                </a>
+              </div>
+            </div>
+          </div>
+        </SimpleLayout>
+      );
+    }
+
+    return (
+      <SimpleLayout title="Complete Registration – Checkout">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 via-sky-50 to-blue-100 px-4 py-10">
+          <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-[#04A9FF] to-[#0070cc] px-8 pt-8 pb-10 text-center relative">
+              <h1 className="text-white text-2xl font-extrabold tracking-tight">Almost There!</h1>
+              <p className="text-blue-100 text-sm mt-1">Complete your account to proceed to checkout</p>
+              <div className="absolute bottom-0 left-0 right-0 h-6 bg-white"
+                style={{ borderRadius: '50% 50% 0 0 / 100% 100% 0 0', transform: 'scaleX(1.1)' }} />
+            </div>
+
+            <div className="px-8 pt-6 pb-8">
+              {/* Pre-filled read-only info */}
+              <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 mb-5 text-sm text-blue-800">
+                <p className="font-semibold mb-1">Your saved details</p>
+                <p>Name: <span className="font-medium">{guestInfo?.name}</span></p>
+                <p>Gender: <span className="font-medium capitalize">{guestInfo?.gender}</span></p>
+                <p>Mobile: <span className="font-medium">+91 {guestInfo?.mobile}</span></p>
+              </div>
+
+              {regErrors.form && (
+                <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3 mb-5">
+                  ⚠ {regErrors.form}
+                </div>
+              )}
+
+              <form onSubmit={handleCompleteRegistration}>
+                {/* Email */}
+                <div className="mb-4">
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-1.5">Email Address</label>
+                  <div className={`flex items-center gap-2 border-2 rounded-xl bg-gray-50 px-3 transition-all duration-200
+                    ${regErrors.email ? 'border-red-400 bg-red-50' : 'border-gray-200 focus-within:border-[#04A9FF] focus-within:bg-white'}`}>
+                    <FaEnvelope size={14} className="text-gray-400 flex-shrink-0" />
+                    <input
+                      type="text"
+                      value={regEmail}
+                      onChange={(e) => setRegEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      className="flex-1 py-3 bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none"
+                    />
+                  </div>
+                  {regErrors.email && <p className="text-red-500 text-xs mt-1">⚠ {regErrors.email}</p>}
+                </div>
+
+                {/* Date of Birth */}
+                <div className="mb-4">
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-1.5">Date of Birth</label>
+                  <div className={`flex items-center gap-2 border-2 rounded-xl bg-gray-50 px-3 transition-all duration-200
+                    ${regErrors.dob ? 'border-red-400 bg-red-50' : 'border-gray-200 focus-within:border-[#04A9FF] focus-within:bg-white'}`}>
+                    <FaCalendarAlt size={13} className="text-gray-400 flex-shrink-0" />
+                    <input
+                      type="date"
+                      value={regDob}
+                      onChange={(e) => setRegDob(e.target.value)}
+                      className="flex-1 py-3 bg-transparent text-sm text-gray-700 outline-none"
+                    />
+                  </div>
+                  {regErrors.dob && <p className="text-red-500 text-xs mt-1">⚠ {regErrors.dob}</p>}
+                </div>
+
+                {/* Password */}
+                <div className="mb-5">
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-widest mb-1.5">Password</label>
+                  <div className={`flex items-center gap-2 border-2 rounded-xl bg-gray-50 px-3 transition-all duration-200
+                    ${regErrors.password ? 'border-red-400 bg-red-50' : 'border-gray-200 focus-within:border-[#04A9FF] focus-within:bg-white'}`}>
+                    <FaLock size={14} className="text-gray-400 flex-shrink-0" />
+                    <input
+                      type={regShowPassword ? 'text' : 'password'}
+                      value={regPassword}
+                      onChange={(e) => setRegPassword(e.target.value)}
+                      placeholder="Minimum 6 characters"
+                      className="flex-1 py-3 bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none"
+                    />
+                    <button type="button" onClick={() => setRegShowPassword(!regShowPassword)}
+                      className="text-gray-400 hover:text-[#04A9FF] transition-colors flex-shrink-0">
+                      {regShowPassword ? <FaEye size={16} /> : <FaEyeSlash size={16} />}
+                    </button>
+                  </div>
+                  {regErrors.password && <p className="text-red-500 text-xs mt-1">⚠ {regErrors.password}</p>}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={regLoading}
+                  className="w-full py-3.5 rounded-xl font-bold text-white text-sm tracking-wide
+                    bg-gradient-to-r from-[#04A9FF] to-[#0070cc]
+                    hover:from-[#0070cc] hover:to-[#004fa3]
+                    transition-all duration-200 shadow-lg shadow-[#04A9FF]/30
+                    disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {regLoading ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                      </svg>
+                      Creating Account...
+                    </>
+                  ) : 'Complete Registration & Continue'}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </SimpleLayout>
+    );
   }
+
+  if (!isAuthenticated) return null;
 
   return (
     <ProtectedRoute>

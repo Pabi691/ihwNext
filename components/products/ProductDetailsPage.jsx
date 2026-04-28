@@ -11,6 +11,7 @@ import DeliveryEstimate from '../DeliveryEstimate';
 import ProductDetailsAccordian from '../ProductDetailsAccordian';
 import ReviewRatingComments from '../ReviewRatingComments';
 import { useGlobal } from '../../global/GlobalContext';
+import { useGuestCheck } from '../../global/GuestCheckContext';
 
 import {
   ProductGallery,
@@ -30,6 +31,7 @@ function ProductDetailsPage() {
   const apiBase = `${process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com"}/api`;
   const navigate = useNavigate();
   const { wishlist, setWishlist, addToCart, token } = useGlobal();
+  const { requireGuestInfo } = useGuestCheck();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -184,10 +186,15 @@ function ProductDetailsPage() {
               product={product}
               addSuccess={addSuccess}
               addedProductName={addedProductName}
-              onAdd={() => handleAddToCart(product)}
+              onAdd={async () => {
+                const ok = await requireGuestInfo();
+                if (ok) handleAddToCart(product);
+              }}
               onBuy={async () => {
-                const ok = await handleAddToCart(product);
-                if (ok) navigate('/checkout');
+                const ok = await requireGuestInfo();
+                if (!ok) return;
+                const added = await handleAddToCart(product);
+                if (added) navigate('/checkout');
               }}
               wishlist={wishlist}
               setWishlist={setWishlist}

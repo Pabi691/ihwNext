@@ -19,7 +19,8 @@ import WishlistButton from '../WishlistButton';
 import confetti from 'canvas-confetti';
 // import compressImage from '../../utils/compressImage';
 import { hoverScale, themeBgColor, themeBgDark, themeBgGray, themeTextColor } from '../../styles/typography';
-import HairPatchTryOnSection from '../ai/HairPatchTryOnSection';
+import { useGuestCheck } from '../../global/GuestCheckContext';
+// import HairPatchTryOnSection from '../ai/HairPatchTryOnSection';
 
 const RECENTLY_VIEWED_KEY = 'recentlyViewedProducts:v3';
 
@@ -45,6 +46,7 @@ function ProductDetailsAll() {
   const [addedProductName, setAddedProductName] = useState("");
 
   const navigate = useNavigate();
+  const { requireGuestInfo } = useGuestCheck();
 
   const fetchProductDetails = useCallback(async () => {
     if (!token) {
@@ -447,14 +449,16 @@ function ProductDetailsAll() {
                 {/* Add to Cart and Wishlist Button */}
                 <div className="flex items-center flex-wrap mt-4">
                   <button
-                    onClick={() => {
+                    onClick={async () => {
+                      const canProceed = await requireGuestInfo();
+                      if (!canProceed) return;
                       if (addSuccess) {
                         navigate('/cart');
                       } else {
                         handleAddToCart(product);
                       }
                     }}
-                    className={`text-white px-6 gap-2 py-3 m-2 
+                    className={`text-white px-6 gap-2 py-3 m-2
         rounded-lg flex items-center text-sm font-semibold ${addSuccess ? 'bg-[#2CA003] flex-col w-full' : `${themeBgGray} hover:${themeBgDark} ${hoverScale}`}`}
                   >
                     {addSuccess && addedProductName}
@@ -472,11 +476,13 @@ function ProductDetailsAll() {
 
                   <button
                     onClick={async () => {
+                      const canProceed = await requireGuestInfo();
+                      if (!canProceed) return;
                       const success = await handleAddToCart(product);
                       if (success) {
                         setTimeout(() => {
                           navigate('/checkout');
-                        }, 800)
+                        }, 800);
                       }
                     }}
                     className={`text-white ${themeBgColor} px-6 gap-2 py-3 m-2 rounded-lg flex items-center text-sm font-semibold ${hoverScale}`}
@@ -520,13 +526,13 @@ function ProductDetailsAll() {
                     </div>
                   </div>
                 ) : null}
-                <HairPatchTryOnSection
+                {/* <HairPatchTryOnSection
                   productImage={selectedImage || product.primary_img}
                   productImages={[selectedImage || product.primary_img, ...images].filter(Boolean)}
                   productName={product.prod_name}
                   productTag={product.product_tag}
                   productDescription={product.prod_desc}
-                />
+                /> */}
                 <ProductDetailsAccordian productdetails={product.prod_desc} />
                 <img src='../images/icons.jpg' alt='icons' loading="lazy" />
                 <ReviewRatingComments

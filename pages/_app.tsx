@@ -23,6 +23,7 @@ import "@/styles/FloatingContact.css";
 
 import { AuthProvider } from "@/components/user/AuthContext";
 import { GlobalProvider } from "@/global/GlobalContext";
+import { GuestCheckProvider } from "@/global/GuestCheckContext";
 import { LoadingProvider } from "@/global/LoadingContext";
 import LoadingWrapper from "@/global/LoadingWrapper";
 // import GlobalSeo from "@/global/GlobalSeo";
@@ -121,14 +122,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       <LoadingProvider>
         <AuthProvider>
           <GlobalProvider initialGlobalContent={null}>
-            <RouteLoadingEvents />
-            <SeoHead seo={resolvedSeo} />
-            <FloatingContact />
-            <Loader />
-            <LoadingWrapper>
-              <ScrollToTop />
-              <Component {...pageProps} />
-            </LoadingWrapper>
+            <GuestCheckProvider>
+              <RouteLoadingEvents />
+              <SeoHead seo={resolvedSeo} />
+              <FloatingContact />
+              <Loader />
+              <LoadingWrapper>
+                <ScrollToTop />
+                <Component {...pageProps} />
+              </LoadingWrapper>
+            </GuestCheckProvider>
           </GlobalProvider>
         </AuthProvider>
       </LoadingProvider>

@@ -4,11 +4,13 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "@/components/compat/router";
 import { hoverScale } from "../styles/typography";
+import { useGuestCheck } from "../global/GuestCheckContext";
 
 const WishlistButton = ({ product, wishlist, setWishlist, token, content }) => {
 
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(false);
+  const { requireGuestInfo } = useGuestCheck();
   const username = typeof window !== 'undefined' ? localStorage.getItem('username') : null;
   // Remove from wishlist handler
   const removeFromWishlist = async (productId) => {
@@ -39,7 +41,8 @@ const WishlistButton = ({ product, wishlist, setWishlist, token, content }) => {
   // Add to wishlist handler
   const handleAddToWishlist = async (product) => {
     if (!username) {
-      navigate('/login');
+      const ok = await requireGuestInfo();
+      if (!ok) return;
     }
 
     setLoading(true);

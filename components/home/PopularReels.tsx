@@ -19,7 +19,7 @@ const allReels: ReelItem[] = [
         thumbnail: 'https://cdn.indianhairworld.com/product-images/0.3-mm-hair-patch-black-2.jpg',
         productName: '0.3 Mm Hair Patch – Black',
         price: 39999,
-        salePrice: 24999,
+        salePrice: 26999,
         videoFile: '/videos/men-reel-1.mp4',
     },
     {
@@ -29,7 +29,7 @@ const allReels: ReelItem[] = [
         thumbnail: 'https://cdn.indianhairworld.com/product-images/hairline-patch-with-net-base-%E2%80%93-100-percent-natural-human-hair.jpg',
         productName: 'Hairline Patch With Net Base – 100% Natural Human Hair',
         price: 12999,
-        salePrice: 4999,
+        salePrice: 6999,
         videoFile: '/videos/men-reel-2.mp4',
     },
     {
@@ -39,7 +39,7 @@ const allReels: ReelItem[] = [
         thumbnail: 'https://cdn.indianhairworld.com/product-images/curly-hair-patch-with-mono-base-%E2%80%93-brown.jpg',
         productName: 'Curly Hair Patch With Mono Base – Brown',
         price: 14999,
-        salePrice: 6999,
+        salePrice: 10999,
         videoFile: '/videos/men-reel-3.mp4',
     },
     // ── Women's Reels ──

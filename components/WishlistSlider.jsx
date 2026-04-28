@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useGlobal } from '../global/GlobalContext';
+import { useGuestCheck } from '../global/GuestCheckContext';
 import { FaTrashCan } from 'react-icons/fa6';
 import { Link } from '@/components/compat/router';
 import compressImage from '../utils/compressImage';
@@ -12,6 +13,7 @@ import { themeBgColor } from '../styles/typography';
 
 const WishlistSlider = () => {
   const { setCart, wishlist, addToCart, token, setWishlist } = useGlobal();
+  const { requireGuestInfo } = useGuestCheck();
   const [selectedSize, setSelectedSize] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [popupItem, setPopupItem] = useState(null);
@@ -96,7 +98,10 @@ const WishlistSlider = () => {
                         </button>
 
                         <button
-                          onClick={() => openSizePopup(item)}
+                          onClick={async () => {
+                            const ok = await requireGuestInfo();
+                            if (ok) openSizePopup(item);
+                          }}
                           className={`text-white ${themeBgColor} px-4 py-2 rounded-sm text-sm`}
                         >
                           Add to Cart
