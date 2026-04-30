@@ -12,6 +12,7 @@ import ProductDetailsAccordian from '../ProductDetailsAccordian';
 import ReviewRatingComments from '../ReviewRatingComments';
 import { useGlobal } from '../../global/GlobalContext';
 import { useGuestCheck } from '../../global/GuestCheckContext';
+import { ENV } from '../../config/env';
 
 import {
   ProductGallery,
@@ -28,7 +29,7 @@ const RECENTLY_VIEWED_KEY = 'recentlyViewedProducts:v3';
 
 function ProductDetailsPage() {
   const { slug } = useParams();
-  const apiBase = `${process.env.NEXT_PUBLIC_API_URL || "https://connect.indianhairworld.com"}/api`;
+  const apiBase = `${ENV.API_URL}/api`;
   const navigate = useNavigate();
   const { wishlist, setWishlist, addToCart, token } = useGlobal();
   const { requireGuestInfo } = useGuestCheck();

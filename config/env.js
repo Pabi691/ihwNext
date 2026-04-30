@@ -12,6 +12,12 @@ const sanitizeEnvValue = (value, fallback) => {
 };
 
 const sanitizeApiUrl = (value) => {
+  // In the browser, always use a relative base so requests go through
+  // the Next.js proxy at /api/[...path].ts — avoids CORS entirely.
+  // On the server (SSR), use the real backend URL for direct calls.
+  if (typeof window !== "undefined") {
+    return "";
+  }
   const base = sanitizeEnvValue(value, DEFAULT_API_URL).replace(/\/+$/, "");
   return base.replace(/\/api\/v1$/i, "");
 };

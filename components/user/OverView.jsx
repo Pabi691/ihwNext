@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useGlobal } from '../../global/GlobalContext';
-// import API_BASE_URL from '../../global/apiConfig';
+import { ENV } from '../../config/env';
 import axios from 'axios';
 import { Link, useNavigate } from '@/components/compat/router';
 import { Package, MapPin, User, HelpCircle, SignalHigh } from "lucide-react";
@@ -10,7 +10,7 @@ import { themeBgColor } from '../../styles/typography';
 
 const OverView = () => {
   const { token } = useGlobal();
-  const apiBase = `${process.env.NEXT_PUBLIC_API_URL || "https://connect.indianhairworld.com"}/api`;
+  const apiBase = `${ENV.API_URL}/api`;
   // const [orders, setOrders] = useState([]);
   const [limitOrders, setLimitOrders] = useState([]);
   const [customers, setCustomers] = useState([]);
