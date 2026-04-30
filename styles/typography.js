@@ -1,7 +1,12 @@
 // src/styles/typography.js
 
+// Consistent section heading used across all home-page sections
 export const strokedHeading =
-  "text-start md:text-center my-4 md:mt-8 italic font-bold text-[28px] md:text-[45px] text-white [-webkit-text-stroke:1.5px_black] md:pb-[30px] ";
+  "text-start md:text-center font-extrabold text-[26px] md:text-[40px] uppercase tracking-tight text-gray-900 mb-3 md:mb-6";
+
+// Shared body paragraph style
+export const sectionPara =
+  "text-base text-gray-600 leading-relaxed";
 
 export const themeTextColor =
   "text-[#04A9FF]";

@@ -24,7 +24,7 @@ const HomeBody = () => {
       <ProductCategory
         title={
           <>
-            SHOP FROM <span className="text-red-500">OUR COLLECTION</span>
+            SHOP FROM <span className="text-[#04A9FF]">OUR COLLECTION</span>
           </>
         }
       />

@@ -1,139 +1,111 @@
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import { useRouter } from 'next/router';
+import { Navigation, Autoplay } from 'swiper/modules';
 
 import workData from '../../content/workData';
-import { strokedHeading } from '../../styles/typography';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 
-const chunkArray = (arr, size) => {
-  return Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+const chunkArray = (arr, size) =>
+  Array.from({ length: Math.ceil(arr.length / size) }, (_, i) =>
     arr.slice(i * size, i * size + size)
   );
-};
 
 const OurWorks = () => {
   const workChunks = chunkArray(workData, 2);
-  const router = useRouter();
-  const isSaltLake = router.query?.branch === 'salt-lake';
-  const isLakeGarden = router.query?.branch === 'kolkata';
 
   return (
-    <div className="pt-3 max-w-7xl mx-auto px-2">
-      <div className="my-4 md:my-8">
-        <h4 className={`${strokedHeading} mb-0`}>
-          REMARKABLE <span>TRANSFORMATIONS</span>
-        </h4>
+    <section className="py-16 md:py-20 bg-white">
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
 
-        {isSaltLake
-          ?
-          <>
-            <p className='text-start text-gray-500 md:text-center w-full md:w-3/5 m-auto mb-4'>
-              Hair patch service Kolkata
-            </p>
-            <p className="text-start md:text-center w-full md:w-3/5 m-auto mb-4">
-              Our hair patch service in Salt Lake includes cleaning, rebonding, and styling <br /> — starting at just ₹999.
-            </p>
-          </>
+        <div className="text-center mb-10 md:mb-14">
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#04A9FF] mb-3">
+            Before &amp; After
+          </p>
+          <h2 className="text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-gray-900">
+            Remarkable <span className="text-[#04A9FF]">Transformations</span>
+          </h2>
+          <p className="mt-4 text-base text-gray-500 leading-relaxed max-w-xl mx-auto">
+            Non-surgical hair patch results at Indian Hair World. Natural look achieved in 60 minutes — starting from ₹5,999.
+          </p>
+        </div>
 
-          : isLakeGarden ? (
-            <p className="text-start md:text-center w-full md:w-3/5 m-auto mb-4">
-              Visit Kolkata's most trusted wig centre at 1A Sultan Alam
-Road, Lake Gardens.
-            </p>
-          ) : ''
-        }
-        <p className="text-start md:text-center w-full md:w-3/5 m-auto">
-          Non-surgical hair patch result at Indian Hair World. Natural look achieved in 60 minutes. <br /> Starting from ₹5999.
-        </p>
-      </div>
+        {/* Mobile: stacked pairs */}
+        <div className="block md:hidden">
+          <Swiper
+            navigation
+            loop
+            spaceBetween={12}
+            autoplay={{ delay: 2500, pauseOnMouseEnter: true, disableOnInteraction: false }}
+            modules={[Navigation, Autoplay]}
+            slidesPerView={1}
+          >
+            {workData.length === 0
+              ? [...Array(4)].map((_, i) => (
+                  <SwiperSlide key={i}>
+                    <div className="flex flex-col gap-3">
+                      <Skeleton className="h-[250px]" />
+                      <Skeleton className="h-[250px]" />
+                    </div>
+                  </SwiperSlide>
+                ))
+              : workChunks.map((pair, i) => (
+                  <SwiperSlide key={i}>
+                    <div className="flex flex-col gap-3">
+                      {pair.map((work, j) => (
+                        <div key={j} className="group relative h-[320px] w-full rounded-xl overflow-hidden shadow-sm">
+                          <img
+                            src={work.imgSrc}
+                            alt={work.work_name}
+                            loading="lazy"
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </SwiperSlide>
+                ))}
+          </Swiper>
+        </div>
 
-      {/* MOBILE SLIDER (Stacked Vertically, 1 Slide Per View) */}
-      <div className="block md:hidden">
-        <Swiper
-          navigation
-          loop
-          spaceBetween={10}
-          autoplay={{
-            delay: 2500,
-            pauseOnMouseEnter: true,
-            disableOnInteraction: false,
-          }}
-          modules={[Navigation, Pagination, Autoplay]}
-          slidesPerView={1}
-        >
-          {workData.length === 0
-            ? [...Array(4)].map((_, idx) => (
-              <SwiperSlide key={`skeleton-m-${idx}`}>
-                <div className="flex flex-col gap-3">
-                  <Skeleton className="h-[250px]" />
-                  <Skeleton className="h-[250px]" />
-                </div>
-              </SwiperSlide>
-            ))
-            : workChunks.map((pair, index) => (
-              <SwiperSlide key={index}>
-                <div className="flex flex-col gap-3">
-                  {pair.map((work, idx) => (
-                    <div key={idx} className="group bg-white relative h-[350px] w-full rounded-md overflow-hidden border border-gray-100 shadow-sm">
+        {/* Desktop: 3 per row */}
+        <div className="hidden md:block">
+          <Swiper
+            navigation
+            loop
+            spaceBetween={20}
+            autoplay={{ delay: 2500, pauseOnMouseEnter: true, disableOnInteraction: false }}
+            modules={[Navigation, Autoplay]}
+            breakpoints={{
+              768: { slidesPerView: 3 },
+              1024: { slidesPerView: 3 },
+            }}
+          >
+            {workData.length === 0
+              ? [...Array(3)].map((_, i) => (
+                  <SwiperSlide key={i}>
+                    <Skeleton className="h-[400px] rounded-xl" />
+                  </SwiperSlide>
+                ))
+              : workData.map((work, i) => (
+                  <SwiperSlide key={i}>
+                    <div className="group relative h-[400px] w-full rounded-xl overflow-hidden shadow-sm">
                       <img
                         src={work.imgSrc}
                         alt={work.work_name}
                         loading="lazy"
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.1]"
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       />
                     </div>
-                  ))}
-                </div>
-              </SwiperSlide>
-            ))}
-        </Swiper>
-      </div>
+                  </SwiperSlide>
+                ))}
+          </Swiper>
+        </div>
 
-      {/* DESKTOP SLIDER (Horizontal Row, 3 Slides Per View) */}
-      <div className="hidden md:block">
-        <Swiper
-          navigation
-          loop
-          spaceBetween={20}
-          autoplay={{
-            delay: 2500,
-            pauseOnMouseEnter: true,
-            disableOnInteraction: false,
-          }}
-          modules={[Navigation, Pagination, Autoplay]}
-          breakpoints={{
-            768: { slidesPerView: 3 },
-            1024: { slidesPerView: 3 },
-            1280: { slidesPerView: 3 },
-          }}
-        >
-          {workData.length === 0
-            ? [...Array(4)].map((_, idx) => (
-              <SwiperSlide key={`skeleton-d-${idx}`}>
-                <Skeleton className="h-[400px]" />
-              </SwiperSlide>
-            ))
-            : workData.map((work, index) => (
-              <SwiperSlide key={index}>
-                <div className="group bg-white relative h-[400px] w-full rounded-xl overflow-hidden border border-gray-100 shadow-sm">
-                  <img
-                    src={work.imgSrc}
-                    alt={work.work_name}
-                    loading="lazy"
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.1]"
-                  />
-                </div>
-              </SwiperSlide>
-            ))}
-        </Swiper>
       </div>
-    </div>
+    </section>
   );
 };
 

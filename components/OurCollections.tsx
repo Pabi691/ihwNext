@@ -4,16 +4,17 @@ import Link from "next/link";
 type CollectionVideo = {
   name: string;
   src: string;
+  slug: string;
 };
 
 const collectionVideos: CollectionVideo[] = [
-  { name: "CLIP IN BANGS", src: "/videos/our-collection/CLIP IN BANGS.mp4" },
-  { name: "COLOR STRANDS", src: "/videos/our-collection/COLOR STRANDS.mp4" },
-  { name: "HAIR BUN", src: "/videos/our-collection/HAIR BUN.mp4" },
-  { name: "HAIR EXTENSIONS", src: "/videos/our-collection/HAIR EXTENSIONS.mp4" },
-  { name: "WOMEN HAIR PATCH", src: "/videos/our-collection/HAIR PATCH.mp4" },
-  { name: "HAIR TOPPERS", src: "/videos/our-collection/HAIR TOPPER.mp4" },
-  { name: "WOMEN HAIR WIG", src: "/videos/our-collection/HAIR WIG.mp4" },
+  { name: "CLIP IN BANGS", slug: "hair-bangs", src: "/videos/our-collection/CLIP IN BANGS.mp4" },
+  { name: "COLOR STRANDS", slug: "hair-strands", src: "/videos/our-collection/COLOR STRANDS.mp4" },
+  { name: "HAIR BUN", slug: "hair-bun", src: "/videos/our-collection/HAIR BUN.mp4" },
+  { name: "HAIR EXTENSIONS", slug: "hair-extensions", src: "/videos/our-collection/HAIR EXTENSIONS.mp4" },
+  { name: "WOMEN HAIR PATCH", slug: "women-hair-patch", src: "/videos/our-collection/HAIR PATCH.mp4" },
+  { name: "HAIR TOPPERS", slug: "hair-toppers", src: "/videos/our-collection/HAIR TOPPER.mp4" },
+  { name: "WOMEN HAIR WIG", slug: "women-hair-wig", src: "/videos/our-collection/HAIR WIG.mp4" },
 ];
 
 const toSlug = (name: string) =>
@@ -42,7 +43,7 @@ const OurCollections = ({ title }: { title: string }) => {
             return (
               <Link
                 key={item.name}
-                href={`/${slug}`}
+                href={`/${item.slug}`}
                 className="group block border-b border-r border-gray-200"
                 aria-label={toTitle(item.name)}
               >

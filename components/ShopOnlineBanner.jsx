@@ -1,46 +1,43 @@
 const ShopOnlineBanner = () => {
   return (
-    <section className="w-full bg-white mt-100">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="bg-white rounded-lg overflow-hidden flex flex-col md:flex-row items-center gap-6">
+    <section className="w-full bg-white py-16 md:py-20">
+      <div className="max-w-7xl mx-auto px-4 md:px-6">
+        <div className="flex flex-col md:flex-row items-center gap-8">
 
-          {/* TEXT SECTION */}
-          <div className="w-full md:w-1/2 text-gray-800 px-2 sm:px-4 mt-10 md:mt-0">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold mb-2 dancing-text">
-              Your Hair, Your Style –
+          {/* TEXT */}
+          <div className="w-full md:w-1/2 text-gray-900">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#04A9FF] mb-3">
+              Shop Online
+            </p>
+            <h2 className="text-3xl md:text-5xl font-extrabold leading-tight mb-3 dancing-text">
+              Your Hair, Your Style
             </h2>
-
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-semibold mb-2">
+            <h2 className="text-3xl md:text-5xl font-extrabold leading-tight mb-4">
               Shop Online Today
             </h2>
-
-            <p className="text-base sm:text-lg text-gray-900 font-medium">
+            <p className="text-base text-gray-600 leading-relaxed">
               Hair Extensions, Color Strands, Buns, Wigs &amp; Patches
             </p>
           </div>
 
-          {/* IMAGE SECTION */}
-          <div className="w-full md:w-1/2 flex justify-center items-center gap-4 relative">
-
-            {/* Women */}
-            <a href="/women" className="w-1/2 flex justify-center">
+          {/* IMAGES */}
+          <div className="w-full md:w-1/2 flex justify-center items-end gap-4">
+            <a href="/women" className="w-1/2 flex justify-center hover:opacity-90 transition-opacity">
               <img
                 src="/images/shop-women.png"
                 alt="Women"
-                className="w-[280px] sm:w-[350px] object-contain"
+                className="w-[260px] sm:w-[320px] object-contain drop-shadow-md"
               />
             </a>
-
-            {/* Men */}
-            <a href="/men" className="w-1/2 flex justify-center">
+            <a href="/men" className="w-1/2 flex justify-center hover:opacity-90 transition-opacity">
               <img
                 src="/images/shop-men.png"
                 alt="Men"
-                className="w-[280px] sm:w-[350px] object-contain"
+                className="w-[260px] sm:w-[320px] object-contain drop-shadow-md"
               />
             </a>
-
           </div>
+
         </div>
       </div>
     </section>

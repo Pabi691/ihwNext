@@ -138,18 +138,18 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
   };
 
   return (
-    <div className="pt-3 max-w-7xl mx-auto px-2">
-      <div className="flex justify-between text-start my-4 md:my-8 capitalize">
-        <div>
-          <h4>{title}</h4>
-          {/* <p className="text-gray-500"></p> */}
-        </div>
+    <section className="py-10 md:py-14 bg-white">
+    <div className="max-w-7xl mx-auto px-4 md:px-6">
+      <div className="flex justify-between items-center mb-6 md:mb-8">
+        <h2 className="text-2xl md:text-3xl font-extrabold uppercase tracking-tight text-gray-900">
+          {title}
+        </h2>
         {cat_slug_name && (
           <Link
-            className="w-16 text-[10px] font-medium text-[#04A9FF]"
+            className="text-xs font-semibold text-[#04A9FF] hover:underline"
             to={`/${cat_slug_name}`}
           >
-            {'Explore All'}
+            Explore All →
           </Link>
         )}
       </div>
@@ -259,6 +259,7 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
         )}
       </Swiper>
     </div>
+    </section>
   );
 };
 
