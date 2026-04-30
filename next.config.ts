@@ -17,6 +17,14 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_SITE_URL:
       process.env.NEXT_PUBLIC_SITE_URL || "https://www.indianhairworld.com",
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "https://connect.indianhairworld.com/api/:path*",
+      },
+    ];
+  },
   async redirects() {
     return [
       {
