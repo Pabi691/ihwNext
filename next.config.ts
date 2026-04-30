@@ -1,21 +1,19 @@
 import type { NextConfig } from "next";
 
-const sanitizePublicApiUrl = (value?: string) => {
-  const normalized = (value || "").trim();
-  if (!normalized || normalized === "undefined" || normalized === "null") {
-    return "https://connect.indianhairworld.com";
-  }
-  return normalized.replace(/\/+$/, "").replace(/\/api\/v1$/i, "");
-};
+// The site's own public URL — all browser API calls are routed here so
+// they go through the Next.js proxy (pages/api/[...path].ts) and never
+// hit connect.indianhairworld.com directly from the browser (avoids CORS).
+const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://www.indianhairworld.com"
+).replace(/\/+$/, "");
 
 const nextConfig: NextConfig = {
   output: "standalone",
   compress: true,
   poweredByHeader: false,
   env: {
-    NEXT_PUBLIC_API_URL: sanitizePublicApiUrl(process.env.NEXT_PUBLIC_API_URL),
-    NEXT_PUBLIC_SITE_URL:
-      process.env.NEXT_PUBLIC_SITE_URL || "https://www.indianhairworld.com",
+    NEXT_PUBLIC_API_URL: SITE_URL,
+    NEXT_PUBLIC_SITE_URL: SITE_URL,
   },
   async redirects() {
     return [
