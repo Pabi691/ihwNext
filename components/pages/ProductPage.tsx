@@ -15,7 +15,7 @@ type ProductPageProps = {
 
 function ProductPage({ showAll }: ProductPageProps) {
   const { categorySlug } = useParams();
-  const apiBase = `${process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com"}/api`;
+  const apiBase = `${process.env.NEXT_PUBLIC_API_URL || "https://connect.indianhairworld.com"}/api`;
   const [productLength, setProductLength] = useState<number>(0);
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

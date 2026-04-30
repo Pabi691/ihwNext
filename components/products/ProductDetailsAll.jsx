@@ -26,7 +26,7 @@ const RECENTLY_VIEWED_KEY = 'recentlyViewedProducts:v3';
 
 function ProductDetailsAll() {
   const { slug } = useParams();
-  const apiBase = `${process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com"}/api`;
+  const apiBase = `${process.env.NEXT_PUBLIC_API_URL || "https://connect.indianhairworld.com"}/api`;
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sizeChart, setSizeChart] = useState(false);

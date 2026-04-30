@@ -1,7 +1,7 @@
 const axios = require('axios');
 require('dotenv').config({ path: '.env.local' });
 
-const API_BASE_URL = "https://server.indianhairworld.com";
+const API_BASE_URL = "https://connect.indianhairworld.com";
 const WEB_TOKEN = process.env.NEXT_PUBLIC_WEB_TOKEN;
 
 const authHeaders = WEB_TOKEN ? { Authorization: `Bearer ${WEB_TOKEN}` } : {};

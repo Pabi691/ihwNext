@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-const API_BASE = "https://server.indianhairworld.com/api";
+const API_BASE = "https://connect.indianhairworld.com/api";
 
 export const config = {
   api: {

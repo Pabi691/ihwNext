@@ -5,7 +5,7 @@ const nextConfig = {
     domains: [
       'indianhairworld.com',
       'cdn.indianhairworld.com',
-      'server.indianhairworld.com',
+      'connect.indianhairworld.com',
     ],
   },
 };

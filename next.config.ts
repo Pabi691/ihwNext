@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const sanitizePublicApiUrl = (value?: string) => {
   const normalized = (value || "").trim();
   if (!normalized || normalized === "undefined" || normalized === "null") {
-    return "https://server.indianhairworld.com";
+    return "https://connect.indianhairworld.com";
   }
   return normalized.replace(/\/+$/, "").replace(/\/api\/v1$/i, "");
 };
@@ -33,7 +33,7 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    domains: ['indianhairworld.com', 'server.indianhairworld.com', 'api.indianhairworld.com', 'cdn.indianhairworld.com'],
+    domains: ['indianhairworld.com', 'connect.indianhairworld.com', 'api.indianhairworld.com', 'cdn.indianhairworld.com'],
     remotePatterns: [
       {
         protocol: 'https',

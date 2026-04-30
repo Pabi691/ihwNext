@@ -6,7 +6,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const rawApiUrl = String(process.env.NEXT_PUBLIC_API_URL || "").trim();
   const apiBaseUrl =
     !rawApiUrl || rawApiUrl === "undefined" || rawApiUrl === "null"
-      ? "https://server.indianhairworld.com"
+      ? "https://connect.indianhairworld.com"
       : rawApiUrl.replace(/\/+$/, "");
   const slugParam = ctx.params?.categorySlug;
   const slug = Array.isArray(slugParam) ? slugParam[0] : slugParam;

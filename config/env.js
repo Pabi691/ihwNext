@@ -1,4 +1,4 @@
-const DEFAULT_API_URL = "https://server.indianhairworld.com";
+const DEFAULT_API_URL = "https://connect.indianhairworld.com";
 const DEFAULT_WEB_TOKEN = "2|SwAXG9wWqc4rwZPstwG42DUVpRhmkWjO5Vj2VpRF";
 const USER_TOEN = typeof window !== "undefined" ? localStorage.getItem("userToken") : null;
 

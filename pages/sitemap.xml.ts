@@ -4,13 +4,13 @@ import { STATIC_PUBLIC_ROUTES } from "@/utils/seoStaticRoutes";
 const sanitizeApiUrl = (value?: string) => {
   const normalized = (value || "").trim();
   if (!normalized || normalized === "undefined" || normalized === "null") {
-    return "https://server.indianhairworld.com";
+    return "https://connect.indianhairworld.com";
   }
   return normalized.replace(/\/+$/, "").replace(/\/api\/v1$/i, "");
 };
 
 const API_BASE_URL = sanitizeApiUrl(process.env.NEXT_PUBLIC_API_URL);
-const API_FALLBACK_BASE_URL = "https://server.indianhairworld.com";
+const API_FALLBACK_BASE_URL = "https://connect.indianhairworld.com";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.indianhairworld.com";
 const WEB_TOKEN = process.env.NEXT_PUBLIC_WEB_TOKEN;
 
