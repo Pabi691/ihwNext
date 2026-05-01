@@ -1,10 +1,11 @@
 /** @type {import('next').NextConfig} */
 
-// Admin's own URL — browser API calls are routed here so they go through
-// the Next.js proxy (rewrites below) and never hit connect.indianhairworld.com
-// directly from the browser, avoiding CORS entirely.
 const ADMIN_URL = (
   process.env.NEXT_PUBLIC_ADMIN_URL || "https://ihwadmin.vercel.app"
+).replace(/\/+$/, "");
+
+const BACKEND_URL = (
+  process.env.API_BACKEND_URL || "https://server.indianhairworld.com"
 ).replace(/\/+$/, "");
 
 const nextConfig = {
@@ -14,17 +15,24 @@ const nextConfig = {
   },
   async rewrites() {
     return [
+      // Proxy all /api/* calls to the actual backend (server-to-server, no CORS)
       {
         source: "/api/:path*",
-        destination: "https://connect.indianhairworld.com/api/:path*",
+        destination: `${BACKEND_URL}/api/:path*`,
+      },
+      // Proxy /uploads/* to backend so blog images load correctly
+      {
+        source: "/uploads/:path*",
+        destination: `${BACKEND_URL}/uploads/:path*`,
       },
     ];
   },
   images: {
     domains: [
-      'indianhairworld.com',
-      'cdn.indianhairworld.com',
-      'connect.indianhairworld.com',
+      "indianhairworld.com",
+      "cdn.indianhairworld.com",
+      "connect.indianhairworld.com",
+      "server.indianhairworld.com",
     ],
   },
 };

@@ -1,5 +1,4 @@
 import React from 'react';
-// import ProductSliderHome from '../ProductSliderHome';
 import SingleSlider from '../SingleSlider';
 import ProductCategory from './ProductCategory';
 import ShopOnlineBanner from '../ShopOnlineBanner';
@@ -12,6 +11,7 @@ import AchievementsSlider from './AchievementsSlider';
 import OurWorks from './OurWorks';
 import PopularReels from './PopularReels';
 import OurCollections from '../OurCollections';
+import BlogSection from './BlogSection';
 
 const HomeBody = () => {
   return (
@@ -29,21 +29,15 @@ const HomeBody = () => {
         }
       />
 
-      <SingleSlider slug_name="get_slug_data/men-products" title="MEN’S HAIR PRODUCTS" />
-      <SingleSlider slug_name="get_slug_data/women-products" title="WOMEN’S HAIR PRODUCTS" />
-      {/* <SingleSlider slug_name="get_active_products" discountPercentage="2" title="deals minimum 2% off" /> */}
+      <SingleSlider slug_name="get_slug_data/men-products" title="MEN'S HAIR PRODUCTS" />
+      <SingleSlider slug_name="get_slug_data/women-products" title="WOMEN'S HAIR PRODUCTS" />
 
-      {/* <SingleSlider slug_name="get_active_products" discountPercentage="5" title="Steal Now: 5% and Above" /> */}
-      {/* <SingleSlider slug_name="get_slug_data/bucket" price_filter="999" title="bucket under rs 999" /> */}
-      {/* <TargetAudience /> */}
-
-      {/* <SingleSlider slug_name="get_active_products" discountPercentage="10" title="under 10% off" /> */}
       <ServiceSlider />
       <NonSurgicalHairReplacement />
       <AchievementsSlider />
       <OurWorks />
+      <BlogSection />
       <WhoWeAre />
-
     </>
   );
 };

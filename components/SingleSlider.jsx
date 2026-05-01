@@ -36,7 +36,7 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
   const { token, publicToken, wishlist, setWishlist } = useGlobal();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const apiBase = `${process.env.NEXT_PUBLIC_API_URL || "https://connect.indianhairworld.com"}/api`;
+  const apiBase = `${process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com"}/api`;
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);

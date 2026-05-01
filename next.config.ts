@@ -12,9 +12,19 @@ const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
   env: {
-    NEXT_PUBLIC_API_URL: SITE_URL,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || SITE_URL,
     NEXT_PUBLIC_SITE_URL: SITE_URL,
   },
+  async rewrites() {
+    const backend = (process.env.API_BACKEND_URL || "https://server.indianhairworld.com").replace(/\/+$/, "");
+    return [
+      {
+        source: "/uploads/:path*",
+        destination: `${backend}/uploads/:path*`,
+      },
+    ];
+  },
+
   async redirects() {
     return [
       {

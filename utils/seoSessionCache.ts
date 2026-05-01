@@ -236,7 +236,7 @@ export const preloadSeoSessionBySlugs = async () => {
 
   seoPreloadPromise = (async () => {
     try {
-      const apiBaseUrl = String(ENV.API_URL || "https://connect.indianhairworld.com").replace(/\/+$/, "");
+      const apiBaseUrl = String(process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com").replace(/\/+$/, "");
       const [categoryJson, productJson] = await Promise.all([
         fetchJsonWithAuthFallback(`${apiBaseUrl}/api/v1/categories`),
         fetchJsonWithAuthFallback(`${apiBaseUrl}/api/v1/get_active_products`),

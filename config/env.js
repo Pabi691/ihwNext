@@ -1,4 +1,4 @@
-const DEFAULT_API_URL = "https://connect.indianhairworld.com";
+const DEFAULT_API_URL = "https://server.indianhairworld.com";
 const DEFAULT_WEB_TOKEN = "2|SwAXG9wWqc4rwZPstwG42DUVpRhmkWjO5Vj2VpRF";
 const USER_TOEN = typeof window !== "undefined" ? localStorage.getItem("userToken") : null;
 
@@ -12,12 +12,13 @@ const sanitizeEnvValue = (value, fallback) => {
 };
 
 const getApiUrl = () => {
-  // Browser: empty string → relative URL → goes through Next.js proxy → no CORS
   if (typeof window !== "undefined") {
-    return "";
+    // Browser: NEXT_PUBLIC_API_URL = same origin as the Next.js app
+    // Calls go through pages/api/[...path].ts proxy → no CORS
+    return sanitizeEnvValue(process.env.NEXT_PUBLIC_API_URL, DEFAULT_API_URL);
   }
-  // Server (SSR/API routes): always call the backend directly, no loopback
-  return DEFAULT_API_URL;
+  // Server (SSR/API routes): call backend directly, no CORS for server-to-server
+  return sanitizeEnvValue(process.env.API_BACKEND_URL, DEFAULT_API_URL);
 };
 
 export const ENV = {

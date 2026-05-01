@@ -1,12 +1,10 @@
-// src/content/navItems.js
-
 export const desktopNavItems = [
   { label: "Home", path: "/" },
   { label: "Shop", path: "/shop" },
   { label: "About Us", path: "/about" },
   { label: "Services", path: "/services" },
+  { label: "Blog", path: "/blog" },
   { label: "Gallery", path: "/our-gallery" },
-
   {
     label: "Branches",
     children: [
@@ -17,7 +15,6 @@ export const desktopNavItems = [
     ],
   },
   { label: "Celebs", path: "/celebrity" },
-
   { label: "Contact Us", path: "/contact-us" },
 ];
 
@@ -26,7 +23,7 @@ export const mobileNavItems = [
   { label: "Shop", path: "/shop" },
   { label: "About Us", path: "/about" },
   { label: "Services", path: "/services" },
-
+  { label: "Blog", path: "/blog" },
   {
     label: "Branches",
     children: [
@@ -36,6 +33,5 @@ export const mobileNavItems = [
       { label: "Siliguri", path: "/branch/siliguri" },
     ],
   },
-
   { label: "Contact Us", path: "/contact-us" },
 ];

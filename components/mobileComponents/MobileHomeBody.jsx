@@ -12,9 +12,9 @@ import SingleSlider from '@/components/SingleSlider';
 import PopularReels from '../home/PopularReels';
 import OurCollections from '../OurCollections';
 import OurWorks from '../home/OurWorks';
+import BlogSection from '../home/BlogSection';
 
 const MobileHomeBody = () => {
-
   return (
     <div>
       <PopularReels />
@@ -30,19 +30,20 @@ const MobileHomeBody = () => {
         }
       />
 
-      <SingleSlider slug_name="get_slug_data/men-products" title="MEN’S HAIR PRODUCTS" />
-      <SingleSlider slug_name="get_slug_data/women-products" title="WOMEN’S HAIR PRODUCTS" />
+      <SingleSlider slug_name="get_slug_data/men-products" title="MEN'S HAIR PRODUCTS" />
+      <SingleSlider slug_name="get_slug_data/women-products" title="WOMEN'S HAIR PRODUCTS" />
 
       <AchievementsSlider />
       <NonSurgicalHairReplacement />
       <OurWorks />
       <ServiceSlider />
+      <BlogSection />
       <WhoWeAre />
 
       <div className='ms-2 remove_nav'><AllCatMobile slug="men-products" /></div>
       <div className='ms-2 remove_nav'><AllCatMobile slug="women-products" /></div>
     </div>
-  )
-}
+  );
+};
 
-export default MobileHomeBody
+export default MobileHomeBody;
