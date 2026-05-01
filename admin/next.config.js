@@ -15,12 +15,7 @@ const nextConfig = {
   },
   async rewrites() {
     return [
-      // Proxy all /api/* calls to the actual backend (server-to-server, no CORS)
-      {
-        source: "/api/:path*",
-        destination: `${BACKEND_URL}/api/:path*`,
-      },
-      // Proxy /uploads/* to backend so blog images load correctly
+      // Proxy /uploads/* to backend so images load correctly
       {
         source: "/uploads/:path*",
         destination: `${BACKEND_URL}/uploads/:path*`,
