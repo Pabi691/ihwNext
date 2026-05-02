@@ -138,7 +138,7 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
   };
 
   return (
-    <section className="py-10 md:py-14 bg-white">
+    <section className="py-4 md:py-6 bg-white">
     <div className="max-w-7xl mx-auto px-4 md:px-6">
       <div className="flex justify-between items-center mb-6 md:mb-8">
         <h2 className="text-2xl md:text-3xl font-extrabold uppercase tracking-tight text-gray-900">

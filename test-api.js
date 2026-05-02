@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const API_URL = 'https://connect.indianhairworld.com/api/v1/categories';
+const API_URL = 'https://server.indianhairworld.com/api/v1/categories';
 const TOKEN = '2|SwAXG9wWqc4rwZPstwG42DUVpRhmkWjO5Vj2VpRF';
 
 async function testEndpoint() {

@@ -1,6 +1,6 @@
 const ShopOnlineBanner = () => {
   return (
-    <section className="w-full bg-white py-16 md:py-20">
+    <section className="w-full bg-white pt-14 pb-2 md:pt-2">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         <div className="flex flex-col md:flex-row items-center gap-8">
 

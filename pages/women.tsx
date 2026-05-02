@@ -37,7 +37,7 @@ const Women = () => {
             />
             <DesktopNav />
             <HeroSection />
-            <FindUsNearYou />
+            
             {/* Shark Tank Images */}
             <div className="w-full my-6 md:my-16">
                 <div className="max-w-6xl mx-auto px-4 md:px-6">
@@ -72,10 +72,17 @@ const Women = () => {
 
             <OurCollections title="Our Collections" />
 
-            <SingleSlider slug_name="get_slug_data/women-products" title="WOMEN'S HAIR PRODUCTS" />
+            <SingleSlider slug_name="get_slug_data/hair-extensions" title="HAIR EXTENSIONS" />
+            <SingleSlider slug_name="get_slug_data/women-hair-wig" title="WOMEN'S HAIR WIGS" />
+            <SingleSlider slug_name="get_slug_data/hair-toppers" title="WOMEN'S HAIR TOPPERS" />
+            <SingleSlider slug_name="get_slug_data/women-hair-patch" title="WOMEN'S HAIR PATCHES" />
+            <SingleSlider slug_name="get_slug_data/hair-strands" title="HAIR STRANDS" />
+            <SingleSlider slug_name="get_slug_data/hair-bun" title="HAIR BUN" />
+            <SingleSlider slug_name="get_slug_data/hair-bangs" title="HAIR BANGS" />
             <ReviewPopup />
             <ScrollingBanner />
             {/* <OurStoresSection /> */}
+            <FindUsNearYou />
             <AchievementSlider />
             <CelebritySection />
             <OurWorks />

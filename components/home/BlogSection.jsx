@@ -80,7 +80,7 @@ export default function BlogSection() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const apiBase = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/+$/, "");
+    const apiBase = (process.env.API_BACKEND_URL || "").replace(/\/+$/, "");
     fetch(`${apiBase}/api/v1/blogs`)
       .then((r) => r.json())
       .then((data) => {

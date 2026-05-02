@@ -39,7 +39,6 @@ const Men = () => {
             />
             <DesktopNav />
             <HeroSection />
-            <FindUsNearYou />
             {/* Shark Tank Images */}
             <div className="w-full my-6 md:my-16">
                 <div className="max-w-6xl mx-auto px-4 md:px-6">
@@ -73,12 +72,13 @@ const Men = () => {
                 <img src="/images/LAKE GARDENS.jpg" alt="Indian Hair World featured on Shark Tank India - men's hair solutions" className="w-full h-auto object-cover" />
             </section>
             {/* <MensHairPatchSection /> */}
-            <SingleSlider slug_name="get_slug_data/men-products" title="MEN'S HAIR PRODUCTS" />
-
+            <SingleSlider slug_name="get_slug_data/men-hair-wig" title="MEN'S HAIR WIGS" />
+            <SingleSlider slug_name="get_slug_data/men-hair-patch" title="MEN'S HAIR PATCHES" />
             <ReviewPopup />
             <ScrollingBanner />
             {/* <MensHairProductsSection /> */}
             {/* <OurStoresSection /> */}
+            <FindUsNearYou />
             <AchievementSlider />
             <CelebritySection />
             <OurWorks />
