@@ -17,6 +17,11 @@ type HairTryOnRequestBody = {
   productTag?: string;
   productDescription?: string;
   hairStatus?: string;
+  haircutStyle?: string;
+  hairlineStyle?: string;
+  hairDensity?: string;
+  hairStyling?: string;
+  viewAngle?: string;
 };
 
 function toBase64(buffer: ArrayBuffer) {
@@ -168,11 +173,69 @@ function inferProductType(productName: string, productTag: string, productDescri
   return "hair replacement";
 }
 
+function describeCutStyle(haircutStyle: string): string {
+  const map: Record<string, string> = {
+    default:         "Keep the hair style exactly as shown in the product reference image — do not alter the length or shape.",
+    short_clean:     "After applying the patch, show the hair trimmed very short (1–3 cm), neat and clean — like a fresh professional trim.",
+    crew_cut:        "After applying the patch, show a classic crew cut: short on the sides and back, slightly longer on top, very uniform.",
+    medium_natural:  "After applying the patch, show a medium-length natural style (4–6 cm), flowing naturally with the head shape.",
+    textured_layers: "After applying the patch, show a textured layered style — visible layers, natural volume, with defined texture throughout.",
+    slick_back:      "After applying the patch, style all hair swept smoothly back away from the forehead — polished, formal look.",
+    side_part:       "After applying the patch, show a classic side-parted style — hair combed neatly to one side with a visible part line.",
+  };
+  return map[haircutStyle] || map["default"];
+}
+
+function describeHairline(hairlineStyle: string): string {
+  const map: Record<string, string> = {
+    natural: "Hairline should be soft and graduated — a natural-looking gradual transition, not a hard edge.",
+    sharp:   "Hairline should be crisp and sharply defined — a very clean, precise front edge, like a freshly groomed patch.",
+    m_shape: "Hairline should have a slight M-shape — minimal recession at the temples giving a mature, realistic look.",
+  };
+  return map[hairlineStyle] || map["natural"];
+}
+
+function describeDensity(hairDensity: string): string {
+  const map: Record<string, string> = {
+    light:  "Hair density should appear light and sparse — thin coverage, some scalp may subtly show through.",
+    medium: "Hair density should appear natural and medium — balanced coverage, looks like healthy natural hair.",
+    full:   "Hair density should appear full and thick — maximum coverage, lush and dense throughout.",
+  };
+  return map[hairDensity] || map["medium"];
+}
+
+function describeStyling(hairStyling: string): string {
+  const map: Record<string, string> = {
+    natural_flow: "Hair should flow naturally following the head's contour — no strong part or directional styling.",
+    left_part:    "Hair should be clearly parted on the LEFT side — combed from a left-side part line.",
+    right_part:   "Hair should be clearly parted on the RIGHT side — combed from a right-side part line.",
+    center_part:  "Hair should be parted directly in the CENTER — flowing symmetrically to both sides.",
+    combed_back:  "All hair should be swept straight back — no part line, hair goes from forehead toward the back of the head.",
+    messy:        "Hair should appear casual and tousled — slightly messy, textured, relaxed everyday look.",
+  };
+  return map[hairStyling] || map["natural_flow"];
+}
+
+function describeViewAngle(viewAngle: string): string {
+  const map: Record<string, string> = {
+    front:      "FRONT VIEW: Show the person looking straight at the camera. Standard portrait angle.",
+    left_side:  "LEFT SIDE PROFILE VIEW: The person is turned so they face to the LEFT. Show the complete left-side profile of the head, face, and hair. The right side of the face should not be visible. Infer the left-side appearance from the front photo provided.",
+    right_side: "RIGHT SIDE PROFILE VIEW: The person is turned so they face to the RIGHT. Show the complete right-side profile of the head, face, and hair. The left side of the face should not be visible. Infer the right-side appearance from the front photo provided.",
+    back:       "BACK VIEW (REAR): Show the BACK of the person's head. The face is NOT visible — only the back and top of the head with the hair product applied. Focus on how the hair looks from behind — the neckline, the back of the patch, and the overall shape.",
+  };
+  return map[viewAngle] || map["front"];
+}
+
 function buildHairPrompt(
   productName: string,
   productTag: string,
   productDescription: string,
-  hairStatus: string
+  hairStatus: string,
+  haircutStyle: string = "default",
+  hairlineStyle: string = "natural",
+  hairDensity: string = "medium",
+  hairStyling: string = "natural_flow",
+  viewAngle: string = "front"
 ) {
   const cleanName = stripHtml(productName || "").trim();
   const cleanTag = stripHtml(productTag || "").trim();
@@ -244,6 +307,12 @@ function buildHairPrompt(
 - If reference hair is brown → output MUST be brown
 - NEVER keep original black hair color`;
 
+  const cutDesc     = describeCutStyle(haircutStyle);
+  const lineDesc    = describeHairline(hairlineStyle);
+  const densityDesc = describeDensity(hairDensity);
+  const stylingDesc = describeStyling(hairStyling);
+  const angleDesc   = describeViewAngle(viewAngle);
+
   return `You are a professional AI hair try-on system.
 
 ⚠️ HARD RULE: The output MUST show a CLEAR and OBVIOUS hairstyle transformation.
@@ -264,13 +333,28 @@ FITTING:
 ${typeSpecificInstructions}
 ${userHairInstructions}
 
+HAIRCUT STYLE:
+${cutDesc}
+
+HAIRLINE STYLE:
+${lineDesc}
+
+HAIR DENSITY:
+${densityDesc}
+
+HAIR STYLING / PARTING DIRECTION:
+${stylingDesc}
+
+VIEW ANGLE (CRITICAL — follow exactly):
+${angleDesc}
+
 OUTPUT:
-- ONE realistic final image
+- ONE realistic final image showing the requested VIEW ANGLE
 - NO text, NO watermark
 - MUST look like real person wearing product
 
 FINAL CHECK:
-The product's effect must be instantly recognizable in the output.`;
+The product's effect and the requested view angle must both be instantly recognizable in the output.`;
 }
 
 const DEFAULT_GEMINI_IMAGE_MODEL = "gemini-2.5-flash-image";
@@ -340,6 +424,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       productTag,
       productDescription,
       hairStatus,
+      haircutStyle,
+      hairlineStyle,
+      hairDensity,
+      hairStyling,
+      viewAngle,
     } = body;
     const faceImageMimeType = body.faceImageMimeType || "image/jpeg";
 
@@ -397,7 +486,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 ]
               : []),
 
-            { text: buildHairPrompt(productName || "", productTag || "", productDescription || "", hairStatus || "has_hair") },
+            { text: buildHairPrompt(
+                productName || "",
+                productTag || "",
+                productDescription || "",
+                hairStatus || "has_hair",
+                haircutStyle || "default",
+                hairlineStyle || "natural",
+                hairDensity || "medium",
+                hairStyling || "natural_flow",
+                viewAngle || "front"
+              ) },
           ],
           },
         ],

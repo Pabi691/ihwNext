@@ -20,7 +20,7 @@ import confetti from 'canvas-confetti';
 // import compressImage from '../../utils/compressImage';
 import { hoverScale, themeBgColor, themeBgDark, themeBgGray, themeTextColor } from '../../styles/typography';
 import { useGuestCheck } from '../../global/GuestCheckContext';
-// import HairPatchTryOnSection from '../ai/HairPatchTryOnSection';
+import HairPatchTryOnSection from '../ai/HairPatchTryOnSection';
 
 const RECENTLY_VIEWED_KEY = 'recentlyViewedProducts:v3';
 
@@ -526,13 +526,13 @@ function ProductDetailsAll() {
                     </div>
                   </div>
                 ) : null}
-                {/* <HairPatchTryOnSection
+                <HairPatchTryOnSection
                   productImage={selectedImage || product.primary_img}
                   productImages={[selectedImage || product.primary_img, ...images].filter(Boolean)}
                   productName={product.prod_name}
                   productTag={product.product_tag}
                   productDescription={product.prod_desc}
-                /> */}
+                />
                 <ProductDetailsAccordian productdetails={product.prod_desc} />
                 <img src='../images/icons.jpg' alt='icons' loading="lazy" />
                 <ReviewRatingComments
