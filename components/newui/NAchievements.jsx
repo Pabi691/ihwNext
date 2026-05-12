@@ -1,0 +1,49 @@
+import React from "react";
+import { FaTrophy } from "react-icons/fa6";
+
+const achievements = [
+  { badge: "TBI 2024", title: "Times Brand Icons 2024", subtitle: "Leading Hair Replacement Center of West Bengal 2024", description: "Indian Hair World (IHW) is thrilled to be recognized as the Leading Hair Replacement Center of West Bengal 2024 by the prestigious Times Brand Icons." },
+  { badge: "IEA 2024", title: "International Excellence Award 2024", subtitle: "Best Hair Replacement Center In East Zone", description: "Indian Hair World has been recognized with the prestigious International Excellence Award 2024 for exceptional services as the Best Hair Replacement Center in the East Zone." },
+  { badge: "GFA 2024", title: "Global Fame Award 2024", subtitle: "Best Hair Replacement Center In Kolkata", description: "Indian Hair World has been honoured with the Global Fame Award 2024 for being the Best Hair Replacement Center in Kolkata, West Bengal." },
+  { badge: "NPA 2022", title: "Nation Pride Award 2022", subtitle: "Best Hair Replacement Center of West Bengal", description: "Indian Hair World received the prestigious Nation Pride Award 2022 for being the Best Hair Replacement Center in West Bengal." },
+  { badge: "BPA 2021", title: "Bengal Pride Award 2021", subtitle: "Best Hair Replacement Center of Kolkata", description: "Indian Hair World was awarded the prestigious Bengal Pride Award 2021 for its top-notch professional services in Kolkata." },
+];
+
+export default function NAchievements() {
+  return (
+    <section className="py-16 md:py-24 bg-[#0f1a2c]">
+      <div className="max-w-7xl mx-auto px-4 md:px-8">
+        {/* Header */}
+        <div className="text-center mb-14">
+          <span className="text-[#04A9FF] text-xs font-bold uppercase tracking-widest">Recognition</span>
+          <h2 className="text-3xl md:text-4xl font-black text-white mt-1">
+            Indian Hair World <span className="text-[#04A9FF]">Achievements</span>
+          </h2>
+          <p className="text-gray-400 text-sm mt-3 max-w-md mx-auto">
+            Nationally recognised for excellence in hair replacement services.
+          </p>
+        </div>
+
+        {/* Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
+          {achievements.map((a, i) => (
+            <div
+              key={i}
+              className="group bg-white/5 border border-white/10 rounded-3xl p-6 hover:bg-white/10 hover:border-[#04A9FF]/50 transition-all duration-300 flex flex-col gap-3"
+            >
+              <div className="flex items-center justify-between">
+                <span className="bg-[#04A9FF]/20 text-[#04A9FF] text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">
+                  {a.badge}
+                </span>
+                <FaTrophy className="w-5 h-5 text-[#ef7f1a]" />
+              </div>
+              <h3 className="text-white font-bold text-sm leading-snug">{a.title}</h3>
+              <p className="text-[#04A9FF] text-xs font-semibold leading-snug">{a.subtitle}</p>
+              <p className="text-gray-400 text-xs leading-relaxed line-clamp-3 flex-1">{a.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

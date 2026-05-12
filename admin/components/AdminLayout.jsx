@@ -6,7 +6,7 @@ import {
   FiGrid, FiShoppingBag, FiPackage, FiUsers, FiTag, FiGift,
   FiStar, FiBookOpen, FiMenu, FiBell, FiLogOut, FiChevronRight,
   FiX, FiTruck, FiRotateCcw, FiAward, FiDroplet, FiMaximize2,
-  FiFileText, FiChevronDown, FiChevronUp, FiPlus,
+  FiFileText, FiChevronDown, FiChevronUp, FiPlus, FiBox, FiNavigation,
 } from "react-icons/fi";
 
 const NAV = [
@@ -14,9 +14,11 @@ const NAV = [
   {
     label: "Orders", icon: FiShoppingBag,
     children: [
-      { href: "/orders",         label: "All Orders",     icon: FiShoppingBag },
-      { href: "/shipped-orders", label: "Shipped Orders", icon: FiTruck },
-      { href: "/return-orders",  label: "Return Orders",  icon: FiRotateCcw },
+      { href: "/orders",                 label: "All Orders",           icon: FiShoppingBag },
+      { href: "/process-orders",         label: "Process Orders",       icon: FiBox },
+      { href: "/assigned-for-delivery",  label: "Assigned For Delivery",icon: FiNavigation },
+      { href: "/shipped-orders",         label: "Shipped Orders",       icon: FiTruck },
+      { href: "/return-orders",          label: "Return Orders",        icon: FiRotateCcw },
     ],
   },
   {

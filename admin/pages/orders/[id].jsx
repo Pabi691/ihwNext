@@ -507,7 +507,7 @@ export default function OrderDetails() {
                 </select>
                 <button onClick={handleStatusUpdate} disabled={updating || !selectedStatus}
                   className="w-full flex items-center justify-center gap-2 py-2.5 bg-[#04A9FF] hover:bg-[#0070cc] text-white text-sm font-bold rounded-xl transition-colors disabled:opacity-60">
-                  <FiSave size={15} />{updating ? "Updating..." : "Update Product"}
+                  <FiSave size={15} />{updating ? "Updating..." : "Update Status"}
                 </button>
               </div>
             </div>
