@@ -60,7 +60,7 @@ export async function fetchPageSeo(
             : baseHeaders;
 
         let res = await fetch(url, { headers: withAuthHeaders });
-        if (!res.ok && token) {
+        if (!res.ok && token && (res.status === 401 || res.status === 403)) {
             res = await fetch(url, { headers: baseHeaders });
         }
         if (!res.ok) return null;
@@ -93,8 +93,8 @@ export async function fetchPageSeo(
 
             for (const candidateSlug of activeSlugs) {
                 let res = await fetchSeo(candidateSlug, true);
-                if (!res.ok && token) {
-                    // Some hosts/envs reject auth header formats differently; retry public fetch.
+                // Only retry without auth on 401/403 (auth rejection), not on 500 (server error).
+                if (!res.ok && token && (res.status === 401 || res.status === 403)) {
                     res = await fetchSeo(candidateSlug, false);
                 }
                 if (isContactSeoDebug) {
@@ -187,12 +187,12 @@ export async function fetchPageSeo(
             `[SEO-DEBUG][contact-us] normalized seo | title=${Boolean(seo.title)} desc=${Boolean(seo.description)} canonical=${Boolean(seo.canonicalUrl)} ogImage=${Boolean(seo.ogImage)}`
         );
     }
-    if (apiData) {
-        seoCache.set(cacheKey, {
-            value: { ...seo, productData },
-            expiresAt: Date.now() + SEO_CACHE_TTL_MS,
-        });
-    }
+    // Cache even when apiData is null so repeated SSR renders of utility pages
+    // (login, register, etc.) don't hit the backend on every request.
+    seoCache.set(cacheKey, {
+        value: { ...seo, productData },
+        expiresAt: Date.now() + SEO_CACHE_TTL_MS,
+    });
 
     return {
         ...seo,

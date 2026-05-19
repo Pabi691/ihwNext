@@ -5,6 +5,8 @@ import { useAdmin } from "@/components/AdminContext";
 import { useAuthGuard } from "@/components/useAuthGuard";
 import AdminLayout from "@/components/AdminLayout";
 import { FiArrowLeft, FiPackage, FiUser, FiMapPin, FiCreditCard, FiSave, FiPrinter, FiX } from "react-icons/fi";
+import logo from "@/images/logo.png";
+import logoWhite from "@/images/logo-white.png";
 
 const STATUS_STYLES = {
   Pending:    { bg: "bg-yellow-50", text: "text-yellow-700", dot: "bg-yellow-400" },
@@ -70,6 +72,7 @@ function InvoiceModal({ order, onClose }) {
     const win = window.open("", "_blank");
     win.document.write(`
       <html><head><title>Invoice #${order?.id}</title>
+      <base href="${window.location.origin}" />
       <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: Arial, sans-serif; font-size: 11px; color: #000; padding: 20px; }
@@ -77,6 +80,7 @@ function InvoiceModal({ order, onClose }) {
         th, td { border: 1px solid #000; padding: 4px 6px; font-size: 11px; }
         th { background: #f2f2f2; font-weight: bold; }
         p { margin-bottom: 2px; }
+        img { max-width: 100%; }
         @page { size: A4 portrait; margin: 10mm; }
       </style></head>
       <body>${content}</body></html>
@@ -84,7 +88,6 @@ function InvoiceModal({ order, onClose }) {
     win.document.close();
     win.focus();
     win.print();
-    win.close();
   };
 
   return (
@@ -106,8 +109,10 @@ function InvoiceModal({ order, onClose }) {
         <div className="flex-1 overflow-y-auto p-6">
           <div ref={printRef} style={{ fontFamily: "Arial, sans-serif", fontSize: "11px", color: "#000" }}>
             {/* Header */}
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
-              <div><strong style={{ fontSize: "18px" }}>INDIANHAIRWORLD</strong></div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+              <div>
+                <img src={logo.src} alt="IndianHairWorld" style={{ height: "55px", width: "auto" }} />
+              </div>
               <div style={{ textAlign: "right" }}>
                 <strong style={{ fontSize: "14px" }}>Tax Invoice / Bill of Supply</strong>
                 <p style={{ fontSize: "11px" }}>(Original for Recipient)</p>
@@ -151,7 +156,8 @@ function InvoiceModal({ order, onClose }) {
                   <th style={{ border: "1px solid #000", padding: "4px 6px", background: "#f2f2f2", textAlign: "right" }}>Unit Price</th>
                   <th style={{ border: "1px solid #000", padding: "4px 6px", background: "#f2f2f2", textAlign: "center" }}>Qty</th>
                   <th style={{ border: "1px solid #000", padding: "4px 6px", background: "#f2f2f2", textAlign: "right" }}>Net Amt</th>
-                  <th style={{ border: "1px solid #000", padding: "4px 6px", background: "#f2f2f2", textAlign: "right" }}>Tax</th>
+                  <th style={{ border: "1px solid #000", padding: "4px 6px", background: "#f2f2f2", textAlign: "right" }}>CGST (9%)</th>
+                  <th style={{ border: "1px solid #000", padding: "4px 6px", background: "#f2f2f2", textAlign: "right" }}>SGST (9%)</th>
                   <th style={{ border: "1px solid #000", padding: "4px 6px", background: "#f2f2f2", textAlign: "right" }}>Total</th>
                 </tr>
               </thead>
@@ -163,13 +169,29 @@ function InvoiceModal({ order, onClose }) {
                     <td style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "right" }}>₹{parseFloat(item.price || 0).toFixed(2)}</td>
                     <td style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "center" }}>{item.quantity}</td>
                     <td style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "right" }}>₹{(parseFloat(item.price || 0) * item.quantity).toFixed(2)}</td>
-                    <td style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "right" }}>₹{(parseFloat(item.total_price || 0) * 0.18).toFixed(2)}</td>
-                    <td style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "right" }}>₹{parseFloat(item.total_price || 0).toFixed(2)}</td>
+                    <td style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "right" }}>₹{(parseFloat(item.total_price || 0) * 0.09).toFixed(2)}</td>
+                    <td style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "right" }}>₹{(parseFloat(item.total_price || 0) * 0.09).toFixed(2)}</td>
+                    <td style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "right" }}>₹{(parseFloat(item.total_price || 0) * 1.18).toFixed(2)}</td>
                   </tr>
                 ))}
+                {parseFloat(order?.shipping_total) > 0 && (
+                  <tr>
+                    <td colSpan={7} style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "right" }}>COD Charge:</td>
+                    <td style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "right" }}>₹{parseFloat(order?.shipping_total).toFixed(2)}</td>
+                  </tr>
+                )}
+                {order?.r_off != null && parseFloat(order?.r_off) !== 0 && (
+                  <tr>
+                    <td colSpan={7} style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "right" }}>Round Off:</td>
+                    <td style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "right" }}>
+                      {parseFloat(order?.r_off) < 0 ? "−" : "+"}₹{Math.abs(parseFloat(order?.r_off)).toFixed(2)}
+                    </td>
+                  </tr>
+                )}
                 <tr>
                   <td colSpan={5} style={{ border: "1px solid #000", padding: "4px 6px", background: "#f2f2f2", fontWeight: "bold" }}>TOTAL:</td>
-                  <td style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "right", fontWeight: "bold" }}>₹{parseFloat(order?.tax_total || 0).toFixed(2)}</td>
+                  <td style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "right", fontWeight: "bold" }}>₹{(parseFloat(order?.tax_total || 0) / 2).toFixed(2)}</td>
+                  <td style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "right", fontWeight: "bold" }}>₹{(parseFloat(order?.tax_total || 0) / 2).toFixed(2)}</td>
                   <td style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "right", fontWeight: "bold" }}>₹{parseFloat(order?.pay_amt || 0).toFixed(2)}</td>
                 </tr>
               </tbody>
@@ -184,7 +206,9 @@ function InvoiceModal({ order, onClose }) {
                 <p><strong>Date:</strong> {order?.created_at ? new Date(order.created_at).toLocaleString("en-IN") : "—"}</p>
               </div>
               <div style={{ textAlign: "right" }}>
-                <p style={{ marginBottom: "30px" }}><strong>For INDIANHAIRWORLD:</strong></p>
+                <div style={{ backgroundColor: "#111", display: "inline-block", padding: "6px 12px", borderRadius: "4px", marginBottom: "28px" }}>
+                  <img src={logoWhite.src} alt="IndianHairWorld" style={{ height: "30px", width: "auto" }} />
+                </div>
                 <p>________________________</p>
                 <p><strong>Authorized Signatory</strong></p>
               </div>

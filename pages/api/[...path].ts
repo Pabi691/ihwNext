@@ -47,6 +47,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const upstream = await fetch(targetUrl, requestInit);
 
+    if (!upstream.ok) {
+      console.error(`[proxy] ${req.method} ${targetUrl} → ${upstream.status} ${upstream.statusText}`);
+    }
+
     res.status(upstream.status);
     upstream.headers.forEach((value, key) => {
       const lower = key.toLowerCase();
