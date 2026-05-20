@@ -1,10 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import Head from "next/head";
 import axios from "axios";
+import { useRouter } from "next/router";
 import { useAdmin } from "@/components/AdminContext";
 import { useAuthGuard } from "@/components/useAuthGuard";
 import AdminLayout from "@/components/AdminLayout";
-import { FiSearch, FiChevronLeft, FiChevronRight, FiX, FiUser, FiPhone, FiMail, FiCalendar, FiShoppingBag, FiSend, FiArrowLeft, FiMessageSquare, FiCheckCircle, FiAlertCircle } from "react-icons/fi";
+import { FiSearch, FiChevronLeft, FiChevronRight, FiX, FiUser, FiPhone, FiMail, FiCalendar, FiShoppingBag, FiSend, FiArrowLeft, FiCheckCircle, FiAlertCircle, FiLayout } from "react-icons/fi";
 
 const PER_PAGE = 15;
 
@@ -397,6 +398,7 @@ function CustomerPanel({ customerId, onClose, api }) {
 export default function Customers() {
   const { ready } = useAuthGuard();
   const { api } = useAdmin();
+  const router = useRouter();
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -530,6 +532,12 @@ export default function Customers() {
                               View
                             </button>
                             <button
+                              onClick={() => router.push(`/customer-view/${customer.id}`)}
+                              className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-violet-50 text-violet-600 hover:bg-violet-100 transition-colors"
+                            >
+                              <FiLayout size={12} /> Dashboard
+                            </button>
+                            <button
                               onClick={() => toggleStatus(customer)}
                               disabled={toggling === customer.id}
                               className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60 ${
@@ -573,6 +581,12 @@ export default function Customers() {
                           <button onClick={() => setViewId(customer.id)}
                             className="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-[#04A9FF]/10 text-[#04A9FF]">
                             View
+                          </button>
+                          <button
+                            onClick={() => router.push(`/customer-view/${customer.id}`)}
+                            className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-violet-50 text-violet-600"
+                          >
+                            <FiLayout size={11} /> Dashboard
                           </button>
                           <button
                             onClick={() => toggleStatus(customer)}
