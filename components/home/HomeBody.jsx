@@ -19,6 +19,8 @@ const HomeBody = () => {
       <PopularReels />
       <BranchAppointmentBanner />
       <ShopOnlineBanner />
+      <SingleSlider slug_name="get_slug_data/men-products" title="MEN'S HAIR PRODUCTS" />
+      <SingleSlider slug_name="get_slug_data/women-products" title="WOMEN'S HAIR PRODUCTS" />
       <OurCollections title="Womens Collections" />
       <WelcomeSection />
       <ProductCategory
@@ -28,9 +30,6 @@ const HomeBody = () => {
           </>
         }
       />
-
-      <SingleSlider slug_name="get_slug_data/men-products" title="MEN'S HAIR PRODUCTS" />
-      <SingleSlider slug_name="get_slug_data/women-products" title="WOMEN'S HAIR PRODUCTS" />
 
       <ServiceSlider />
       <NonSurgicalHairReplacement />

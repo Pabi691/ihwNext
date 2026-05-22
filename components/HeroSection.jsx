@@ -54,12 +54,16 @@ const HeroSection = () => {
                 India's #1 Non-Surgical Hair Replacement
               </div>
               <div className="space-y-4">
-
                 <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 tracking-tight">
-                  <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-[#0A3D91] via-[#1E5CCB] to-[#F5D76E] bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(255,215,100,0.35)]">
                     {branchDetails ? branchDetails.h1 : 'Best Hair Patch & Non-Surgical Hair Replacement in Kolkata'}
                   </span>
                 </h1>
+                {/* <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 tracking-tight">
+                  <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+                    {branchDetails ? branchDetails.h1 : 'Best Hair Patch & Non-Surgical Hair Replacement in Kolkata'}
+                  </span>
+                </h1> */}
 
                 {/* Keyword-rich Subheadline */}
                 <span className="text-gray-900 text-base md:text-xl mb-6 max-w-lg mx-auto md:mx-0">
