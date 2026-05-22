@@ -11,6 +11,8 @@ import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import { themeBgColor, themeTextColor } from '../../styles/typography';
 import DownloadInvoiceButton from '../DownloadInvoiceButton';
 
+const CANCELLABLE_STATUSES = ['New Order', 'Processing'];
+
 const OrderDetails = () => {
   const { orderId } = useParams();
   const [order, setOrder] = useState(null);
@@ -20,6 +22,8 @@ const OrderDetails = () => {
   const navigate = useNavigate();
   const [showBreakup, setShowBreakup] = useState(false);
   const toggleBreakup = () => setShowBreakup(!showBreakup);
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelError, setCancelError] = useState(null);
 
   useEffect(() => {
     if (!orderId) return;
@@ -44,6 +48,27 @@ const OrderDetails = () => {
     };
     fetchOrder();
   }, [orderId, token]);
+
+  const handleCancelOrder = async () => {
+    if (!window.confirm('Are you sure you want to cancel this order?')) return;
+    setCancelling(true);
+    setCancelError(null);
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/order_cancel_by_customer/${orderId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (response.data.status) {
+        window.location.reload();
+      } else {
+        setCancelError(response.data.message || 'Could not cancel order.');
+      }
+    } catch {
+      setCancelError('Something went wrong. Please try again.');
+    } finally {
+      setCancelling(false);
+    }
+  };
 
   const formattedDate = new Date(order?.order_date).toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -249,7 +274,7 @@ const OrderDetails = () => {
 
                           <div className="flex justify-between font-semibold">
                             <span>Total (incl. GST)</span>
-                            <span>₹{order.shipping_total ? (order.gst_summary.total_with_gst + order.shipping_total) : order.gst_summary.total_with_gst}</span>
+                            <span>₹{parseFloat(order.pay_amt).toFixed(2)}</span>
                           </div>
 
                         </div>
