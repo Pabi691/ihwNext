@@ -260,7 +260,7 @@ const OrderDetails = () => {
                     <BankDetails order={order} token={token} />
                   )}
 
-                  {["pending", "completed", "cancelled"].includes(order.order_payments?.[0]?.payment_status) && (
+                  {["pending", "completed", "cancelled", "failed"].includes(order.order_payments?.[0]?.payment_status) && (
                     <div className="text-sm text-gray-800 border rounded-lg border-gray-200 p-4 my-3 shadow-md space-y-4">
                       {/* Summary Section (Always Visible) */}
                       <div className="flex items-center justify-between">
@@ -281,6 +281,11 @@ const OrderDetails = () => {
                         <div className="text-right">
                           {order.order_payments?.[0]?.payment_status === "completed" ? (
                             <p className="text-green-600 font-medium">Paid via {order.payment_method?.method_name}</p>
+                          ) : order.order_payments?.[0]?.payment_status === "failed" ? (
+                            <p className="text-red-600 font-medium flex gap-2 items-center justify-end">
+                              <span className="w-5 h-5 bg-red-100 text-red-700 flex justify-center items-center rounded-full text-xs font-bold">✕</span>
+                              Payment Failed — Order Cancelled
+                            </p>
                           ) : order.payment_method?.method_name === "COD" ? (
                             <p className="text-green-600 font-medium">To be paid by {order.payment_method?.method_name}</p>
                           ) : order.payment_method?.method_name === "Razorpay" ? (
@@ -350,7 +355,27 @@ const OrderDetails = () => {
                     </div>
                   )}
 
-                  <DownloadInvoiceButton order={order} />
+                  {/* Cancel Order */}
+                  {CANCELLABLE_STATUSES.includes(order.shipping_status) && (
+                    <div className="my-4">
+                      {cancelError && (
+                        <p className="text-red-600 text-sm mb-2">{cancelError}</p>
+                      )}
+                      <button
+                        onClick={handleCancelOrder}
+                        disabled={cancelling}
+                        className="border border-red-500 text-red-600 px-6 py-2 rounded-md font-medium hover:bg-red-50 transition disabled:opacity-60"
+                      >
+                        {cancelling ? 'Cancelling...' : 'Cancel Order'}
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Invoice — only after payment */}
+                  {(order.order_payments?.[0]?.payment_status === 'completed' ||
+                    (order.payment_method?.method_name === 'COD' && order.shipping_status === 'Delivered')) && (
+                    <DownloadInvoiceButton order={order} />
+                  )}
 
                 </div>
               </div>

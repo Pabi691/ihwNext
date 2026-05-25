@@ -1,109 +1,188 @@
 import React from "react";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-import Montserrat from "../fonts/Montserrat"; // base64 string
-import { toWords } from "number-to-words";
+
+function toWords(num) {
+  if (!num) return "Zero Rupees Only";
+  const ones = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+  const tens = ["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+  const convert = (n) => {
+    if (n < 20) return ones[n];
+    if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 ? " " + ones[n % 10] : "");
+    if (n < 1000) return ones[Math.floor(n / 100)] + " Hundred" + (n % 100 ? " and " + convert(n % 100) : "");
+    return "";
+  };
+  const main = Math.floor(num);
+  let res = "", n = main;
+  const cr = Math.floor(n / 10000000); n %= 10000000;
+  const lk = Math.floor(n / 100000); n %= 100000;
+  const th = Math.floor(n / 1000); n %= 1000;
+  if (cr) res += convert(cr) + " Crore ";
+  if (lk) res += convert(lk) + " Lakh ";
+  if (th) res += convert(th) + " Thousand ";
+  if (n) res += convert(n);
+  return (res.trim() || "Zero") + " Rupees Only";
+}
 
 const DownloadInvoiceButton = ({ order }) => {
-  const generateInvoice = () => {
-    const doc = new jsPDF("p", "mm", "a4");
+  const handlePrint = () => {
+    const customer = order?.customer || {};
+    const shipping = order?.shipping_info || {};
+    const items = order?.order_items || [];
+    const payMethod = order?.payment_method || {};
+    const logoUrl = `${window.location.origin}/images/logo.png`;
 
-    // ===== Font =====
-    doc.addFileToVFS("Montserrat-Regular.ttf", Montserrat);
-    doc.addFont("Montserrat-Regular.ttf", "Montserrat", "normal");
-    doc.setFont("Montserrat");
+    const itemRows = items.map((item, i) => {
+      const netAmt = parseFloat(item.price || 0) * item.quantity;
+      const cgst = netAmt * 0.09;
+      const sgst = netAmt * 0.09;
+      const total = netAmt * 1.18;
+      return `
+        <tr>
+          <td style="border:1px solid #000;padding:4px 6px;text-align:center;">${i + 1}</td>
+          <td style="border:1px solid #000;padding:4px 6px;">${item.product_name}</td>
+          <td style="border:1px solid #000;padding:4px 6px;text-align:right;">&#8377;${parseFloat(item.price || 0).toFixed(2)}</td>
+          <td style="border:1px solid #000;padding:4px 6px;text-align:center;">${item.quantity}</td>
+          <td style="border:1px solid #000;padding:4px 6px;text-align:right;">&#8377;${netAmt.toFixed(2)}</td>
+          <td style="border:1px solid #000;padding:4px 6px;text-align:right;">&#8377;${cgst.toFixed(2)}</td>
+          <td style="border:1px solid #000;padding:4px 6px;text-align:right;">&#8377;${sgst.toFixed(2)}</td>
+          <td style="border:1px solid #000;padding:4px 6px;text-align:right;">&#8377;${total.toFixed(2)}</td>
+        </tr>`;
+    }).join("");
 
-    // ===== Header =====
-    doc.setFontSize(18);
-    doc.text("TAX INVOICE OF INDIAN HAIR WORLD", 14, 20);
+    const codRow = parseFloat(order?.shipping_total) > 0 ? `
+      <tr>
+        <td colspan="7" style="border:1px solid #000;padding:4px 6px;text-align:right;">COD Charge:</td>
+        <td style="border:1px solid #000;padding:4px 6px;text-align:right;">&#8377;${parseFloat(order.shipping_total).toFixed(2)}</td>
+      </tr>` : "";
 
-    doc.setFontSize(10);
-    doc.text(`Order ID: ${order.id}`, 14, 30);
-    doc.text(
-      `Order Date: ${new Date(order.order_date).toLocaleDateString("en-GB")}`,
-      14,
-      36
-    );
-    doc.text(`Payment Method: ${order.payment_method?.method_name}`, 14, 42);
+    const rOffRow = order?.r_off != null && parseFloat(order?.r_off) !== 0 ? `
+      <tr>
+        <td colspan="7" style="border:1px solid #000;padding:4px 6px;text-align:right;">Round Off:</td>
+        <td style="border:1px solid #000;padding:4px 6px;text-align:right;">
+          ${parseFloat(order.r_off) < 0 ? "−" : "+"}&#8377;${Math.abs(parseFloat(order.r_off)).toFixed(2)}
+        </td>
+      </tr>` : "";
 
-    // ===== Shipping Info =====
-    doc.setFontSize(12);
-    doc.text("Shipping Address", 14, 55);
+    const totalCGST = (parseFloat(order?.tax_total || 0) / 2).toFixed(2);
+    const totalSGST = (parseFloat(order?.tax_total || 0) / 2).toFixed(2);
 
-    doc.setFontSize(10);
-    doc.text(order.shipping_info.full_name, 14, 62);
-    doc.text(
-      `${order.shipping_info.address_line_1}, ${order.shipping_info.city}`,
-      14,
-      68
-    );
-    doc.text(
-      `${order.shipping_info.state} - ${order.shipping_info.zip_code}, ${order.shipping_info.country}`,
-      14,
-      74
-    );
-    doc.text(`Phone: ${order.shipping_info.mobile_number}`, 14, 80);
+    const html = `
+      <html>
+      <head>
+        <title>Invoice #${order?.id}</title>
+        <base href="${window.location.origin}" />
+        <style>
+          * { box-sizing: border-box; margin: 0; padding: 0; }
+          body { font-family: Arial, sans-serif; font-size: 11px; color: #000; padding: 20px; }
+          table { border-collapse: collapse; width: 100%; }
+          th, td { border: 1px solid #000; padding: 4px 6px; font-size: 11px; }
+          th { background: #f2f2f2; font-weight: bold; }
+          p { margin-bottom: 2px; }
+          @page { size: A4 portrait; margin: 10mm; }
+        </style>
+      </head>
+      <body>
+        <!-- Header -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <div><img src="${logoUrl}" alt="IndianHairWorld" style="height:55px;width:auto;" /></div>
+          <div style="text-align:right;">
+            <strong style="font-size:14px;">Tax Invoice / Bill of Supply</strong>
+            <p style="font-size:11px;">(Original for Recipient)</p>
+          </div>
+        </div>
 
-    // ===== Table 1: Order Items =====
-    const itemsColumns = ["Product", "Unit Price", "Qty", "Net Amount"];
-    const itemsRows = order.order_items.map((item) => [
-      item.product_name,
-      `₹${Number(item.price).toFixed(2)}`,
-      item.quantity,
-      `₹${(item.price * item.quantity).toFixed(2)}`,
-    ]);
+        <!-- Addresses -->
+        <div style="display:flex;justify-content:space-between;margin-bottom:15px;gap:20px;">
+          <div style="width:48%;">
+            <p><strong>Sold By:</strong></p>
+            <p>INDIANHAIRWORLD</p>
+            <p>EC-20, Ground Floor Back Side. Opp. CC1,</p>
+            <p>Sector-1, Salt Lake City, Kolkata, West Bengal 700064</p>
+            <p>Phone: +918961194044</p>
+            <p style="margin-top:10px;"><strong>PAN No:</strong> AAJFI1527P</p>
+            <p><strong>GST Registration No:</strong> 19AAJFI1527P1ZV</p>
+          </div>
+          <div style="width:48%;text-align:right;">
+            <p><strong>Billing Address:</strong></p>
+            <p>${customer.first_name || ""} ${customer.last_name || ""}</p>
+            <p>${customer.address_line_1 || ""}${customer.address_line_2 ? ", " + customer.address_line_2 : ""}</p>
+            <p>${[customer.city, customer.state, customer.zip_code].filter(Boolean).join(", ")}</p>
+            <p style="margin-bottom:10px;">${customer.country || "India"}</p>
+            <p><strong>Shipping Address:</strong></p>
+            <p>${shipping.full_name || ""}</p>
+            <p>${shipping.address_line_1 || ""}${shipping.address_line_2 ? ", " + shipping.address_line_2 : ""}</p>
+            <p>${[shipping.city, shipping.state, shipping.zip_code].filter(Boolean).join(", ")}</p>
+            <p>${shipping.country || "India"}</p>
+          </div>
+        </div>
 
-    autoTable(doc, {
-      startY: 90,
-      head: [itemsColumns],
-      body: itemsRows,
-      theme: "grid",
-      styles: { font: "Montserrat", fontSize: 9 },
-      headStyles: { fillColor: [240, 240, 240], textColor: 0 },
-    });
+        <!-- Order Info -->
+        <div style="margin-bottom:15px;">
+          <p><strong>Order Number:</strong> ${order?.id}</p>
+          <p><strong>Order Date:</strong> ${order?.order_date ? new Date(order.order_date).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—"}</p>
+        </div>
 
-    const afterItemsY = doc.lastAutoTable.finalY + 8;
+        <!-- Items Table -->
+        <table style="margin-bottom:0;">
+          <thead>
+            <tr>
+              <th style="text-align:center;">Sl.</th>
+              <th style="text-align:left;">Description</th>
+              <th style="text-align:right;">Unit Price</th>
+              <th style="text-align:center;">Qty</th>
+              <th style="text-align:right;">Net Amt</th>
+              <th style="text-align:right;">CGST (9%)</th>
+              <th style="text-align:right;">SGST (9%)</th>
+              <th style="text-align:right;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemRows}
+            ${codRow}
+            ${rOffRow}
+            <tr>
+              <td colspan="5" style="background:#f2f2f2;font-weight:bold;">TOTAL:</td>
+              <td style="text-align:right;font-weight:bold;">&#8377;${totalCGST}</td>
+              <td style="text-align:right;font-weight:bold;">&#8377;${totalSGST}</td>
+              <td style="text-align:right;font-weight:bold;">&#8377;${parseFloat(order?.pay_amt || 0).toFixed(2)}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="border:1px solid #000;border-top:none;padding:6px;">
+          <strong>Amount in Words: </strong>${toWords(order?.pay_amt)}
+        </div>
 
-    // ===== Table 2: Totals =====
-    const totalsColumns = ["Description", "Amount"];
-    const payableAmountInWords = `${toWords(order.pay_amt)} Rupees Only`;
-    const totalsRows = [
-      ["Subtotal", `₹${order.net_amt.toFixed(2)}`],
-      ["CGST (9%)", `₹${order.gst_summary.cgst.toFixed(2)}`],
-      ["SGST (9%)", `₹${order.gst_summary.sgst.toFixed(2)}`],
-    ];
+        <!-- Footer -->
+        <div style="border:1px solid #000;padding:15px;display:flex;justify-content:space-between;margin-top:10px;">
+          <div>
+            <p><strong>Mode of Payment:</strong> ${payMethod?.method_name || "—"}</p>
+            <p><strong>Date:</strong> ${order?.order_date ? new Date(order.order_date).toLocaleString("en-IN") : "—"}</p>
+          </div>
+          <div style="text-align:right;">
+            <div style="background-color:#111;display:inline-block;padding:6px 12px;border-radius:4px;margin-bottom:28px;">
+              <img src="${logoUrl}" alt="IndianHairWorld" style="height:30px;width:auto;filter:invert(1);" />
+            </div>
+            <p>________________________</p>
+            <p><strong>Authorized Signatory</strong></p>
+          </div>
+        </div>
 
-    if (order.shipping_total > 0) {
-      totalsRows.push(["COD Fee", `₹${order.shipping_total.toFixed(2)}`]);
-    }
+        <p style="text-align:center;font-size:9px;margin-top:10px;color:#666;">
+          Thank you for choosing IndianHairWorld. Please retain this invoice for your records.
+        </p>
+      </body>
+      </html>`;
 
-    totalsRows.push(["Total Payable", `₹${order.pay_amt.toFixed(2)}`]);
-    totalsRows.push(["Amount in Words", payableAmountInWords]);
-
-    autoTable(doc, {
-      startY: afterItemsY,
-      head: [totalsColumns],
-      body: totalsRows,
-      theme: "grid",
-      styles: { font: "Montserrat", fontSize: 9 },
-      headStyles: { fillColor: [240, 240, 240], textColor: 0 },
-    });
-
-    // ===== Footer =====
-    doc.setFontSize(9);
-    doc.text(
-      "This is a system generated invoice and does not require signature.",
-      14,
-      280
-    );
-
-    doc.save(`Invoice_Order_${order.id}.pdf`);
+    const win = window.open("", "_blank");
+    win.document.write(html);
+    win.document.close();
+    win.focus();
+    win.print();
   };
 
   return (
     <button
-      onClick={generateInvoice}
-      className="bg-green-600 text-white px-6 py-3 rounded-md font-medium hover:bg-green-700 transition"
+      onClick={handlePrint}
+      className="bg-green-600 text-white px-6 py-3 rounded-md font-medium hover:bg-green-700 transition mt-4"
     >
       Download Invoice
     </button>

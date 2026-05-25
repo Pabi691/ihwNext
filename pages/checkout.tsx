@@ -455,6 +455,53 @@ const Checkout = () => {
     }
   };
 
+  const cancelOrderAndRestoreCart = async (orderId: number, userToken: string) => {
+    try {
+      // Cancel the order
+      await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/order_cancel_by_customer/${orderId}`,
+        { headers: { Authorization: `Bearer ${userToken}` } }
+      );
+    } catch (err) {
+      console.error('Failed to cancel order:', err);
+    }
+
+    try {
+      // Record the failed payment
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/add_order_payment`,
+        {
+          order_id: orderId,
+          payment_method: "razorpay",
+          payment_status: "failed",
+          payment_amount: 0,
+          payment_reference: null,
+          payment_details: JSON.stringify({ message: "Payment failed or cancelled by user" }),
+        },
+        { headers: { Authorization: `Bearer ${userToken}` } }
+      );
+    } catch (err) {
+      console.error('Failed to record failed payment:', err);
+    }
+
+    // Re-add cart items to server (cart was deleted when the order was created)
+    for (const item of cart) {
+      try {
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/add_to_cart`,
+          {
+            product_id: item.product_id,
+            prod_variation_id: item.prod_variation_id,
+            quantity: item.quantity,
+          },
+          { headers: { Authorization: `Bearer ${userToken}` } }
+        );
+      } catch (err) {
+        console.error('Failed to restore cart item:', err);
+      }
+    }
+  };
+
   const initiateRazorpayPayment = (orderId, amount, userToken) => {
     const options = {
       // key: "rzp_test_RxOgC9sPpereLC",
@@ -466,11 +513,14 @@ const Checkout = () => {
 
       handler: async function (response) {
         if (!response.razorpay_payment_id) {
+          await cancelOrderAndRestoreCart(orderId, userToken);
           Swal.fire({
-            title: "Payment Cancelled!",
-            text: "You cancelled the payment. Please try again.",
-            icon: "warning",
-            confirmButtonText: "OK",
+            title: "Payment Failed!",
+            text: "Your payment could not be processed. Your order has been cancelled and items have been added back to your cart.",
+            icon: "error",
+            confirmButtonText: "Go to Cart",
+          }).then(() => {
+            navigate("/cart");
           });
           return;
         }
@@ -490,7 +540,6 @@ const Checkout = () => {
               headers: { Authorization: `Bearer ${userToken}` },
             }
           );
-          // console.log('paymentResponse', paymentResponse);
 
           if (paymentResponse.data.status) {
             Swal.fire({
@@ -530,30 +579,14 @@ const Checkout = () => {
       modal: {
         escape: true,
         ondismiss: async function () {
-          // try {
-          //   const res = await axios.post(
-          //     `${process.env.NEXT_PUBLIC_API_URL}/api/v1/add_order_payment`,
-          //     {
-          //       order_id: orderId,
-          //       payment_method: "razorpay",
-          //       payment_status: "cancelled",
-          //       payment_amount: amount,
-          //       payment_reference: null,
-          //       payment_details: JSON.stringify({ message: "Payment was cancelled or dismissed by user" }),
-          //     },
-          //     {
-          //       headers: { Authorization: `Bearer ${token}` },
-          //     }
-          //   );
-          // } catch (err) {
-          //   console.error("Failed to notify server about cancellation:", err);
-          // }
-
+          await cancelOrderAndRestoreCart(orderId, userToken);
           Swal.fire({
             title: "Payment Cancelled!",
-            text: "You cancelled the payment. Please try again.",
+            text: "Your payment was cancelled. Your order has been cancelled and items have been added back to your cart.",
             icon: "warning",
-            confirmButtonText: "OK",
+            confirmButtonText: "Go to Cart",
+          }).then(() => {
+            navigate("/cart");
           });
         },
       }
