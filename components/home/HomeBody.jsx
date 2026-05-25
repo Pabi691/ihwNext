@@ -13,7 +13,7 @@ import {
 } from './HomeSkeleton';
 
 /* ── Above the fold — loaded eagerly ─────────────────────────────── */
-import PopularReels from '../PopularReels';
+import PopularReels from './PopularReels';
 import BranchAppointmentBanner from '../branches/BranchAppointmentBanner';
 import ShopOnlineBanner from '../ShopOnlineBanner';
 
