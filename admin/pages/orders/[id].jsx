@@ -468,9 +468,31 @@ export default function OrderDetails() {
                 <h3 className="font-bold text-gray-800 text-sm">Payment Method</h3>
               </div>
               <div className="px-5 py-4">
-                <p className="text-sm text-gray-700 font-semibold mb-3">
-                  {payMethod?.method_name || "—"}
-                </p>
+                {(() => {
+                  const razorpayEntry = payments.find((p) =>
+                    (p.payment_method || "").toLowerCase().includes("razor")
+                  );
+                  const hasSuccessfulOnline = razorpayEntry &&
+                    (p => (p.payment_status || "").toLowerCase() === "success")(razorpayEntry);
+                  const hasFailedOnline = razorpayEntry &&
+                    (p => (p.payment_status || "").toLowerCase() === "failed")(razorpayEntry);
+
+                  let methodLabel = payMethod?.method_name || "—";
+                  let methodBadge = null;
+                  if (hasSuccessfulOnline) {
+                    methodLabel = "Razorpay";
+                    methodBadge = <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-green-50 text-green-700 ml-2">Paid</span>;
+                  } else if (hasFailedOnline) {
+                    methodLabel = "Razorpay";
+                    methodBadge = <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-red-50 text-red-600 ml-2">Payment Failed</span>;
+                  }
+
+                  return (
+                    <p className="text-sm text-gray-700 font-semibold mb-3 flex items-center">
+                      {methodLabel}{methodBadge}
+                    </p>
+                  );
+                })()}
                 {payments.length > 0 && (
                   <div className="overflow-x-auto">
                     <table className="w-full text-xs">
@@ -488,7 +510,11 @@ export default function OrderDetails() {
                             <td className="px-3 py-2">{p.payment_method}</td>
                             <td className="px-3 py-2 font-mono">{p.payment_reference || "—"}</td>
                             <td className="px-3 py-2 text-right font-semibold">₹{p.payment_amount}</td>
-                            <td className="px-3 py-2">{p.payment_status}</td>
+                            <td className={`px-3 py-2 font-medium ${
+                              (p.payment_status || "").toLowerCase() === "success" ? "text-green-600" :
+                              (p.payment_status || "").toLowerCase() === "failed" ? "text-red-500" :
+                              "text-gray-600"
+                            }`}>{p.payment_status}</td>
                           </tr>
                         ))}
                       </tbody>

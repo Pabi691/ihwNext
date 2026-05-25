@@ -68,6 +68,16 @@ const Cart = () => {
 
   const { finalAmount, discount } = getFinalAmount();
 
+  const bestCoupon = defaultCoupon.length > 0
+    ? defaultCoupon.reduce((best: any, curr: any) => {
+        const saving = (c: any) =>
+          c.discount_type === "Percentage"
+            ? (grandTotal * (c.discount_value || 0)) / 100
+            : (c.discount_value || 0);
+        return saving(curr) > saving(best) ? curr : best;
+      })
+    : null;
+
   const selectQuantity = async (itemId: any, variationId: any, quantity: any, price: any) => {
     setLoading(true);
     // console.log(`Setting quantity: product_id: ${itemId}, quantity: ${quantity}`);
@@ -527,17 +537,57 @@ const Cart = () => {
                 ) : (
                   <div className="price-summary md:w-1/3 w-full">
                     <div className='p-3 rounded-lg border'>
-                      <h4 className='font-medium'>Coupons & Offers</h4>
-                      <div className='flex justify-between items-center text-sm'>
-                        <div className='flex items-center gap-3 mt-3'>
-                          <img className='w-6' alt='percentage' src='images/percentage.png' loading="lazy" />
-                          <div className='text-sm'>
-                            <p className='font-semibold'>Apply Coupon / Gift Card</p>
-                            <p className='text-gray-500 font-medium'>Crazy deals and other amazing offers</p>
-                          </div>
-                        </div>
-                        <Link onClick={() => setOpenCoupon(true)} className='text-blue-600 font-semibold'>View</Link>
+                      <div className='flex justify-between items-center mb-2'>
+                        <h4 className='font-medium'>Coupons & Offers</h4>
+                        {defaultCoupon.length > 1 && (
+                          <Link onClick={() => setOpenCoupon(true)} className='text-blue-600 text-xs font-semibold'>
+                            View all {defaultCoupon.length} offers
+                          </Link>
+                        )}
                       </div>
+
+                      {bestCoupon && !couponData ? (
+                        <div
+                          onClick={() => {
+                            setCouponCode(bestCoupon.coupon_code);
+                            handleApplyCoupon({ preventDefault: () => {} });
+                          }}
+                          className='cursor-pointer mt-2 border border-dashed border-orange-300 bg-orange-50 rounded-lg p-3 hover:border-orange-400 transition-colors'
+                        >
+                          <div className='flex items-center justify-between'>
+                            <div className='flex items-center gap-2'>
+                              <span className='text-[10px] bg-orange-500 text-white px-2 py-0.5 rounded font-bold uppercase tracking-wide'>Best</span>
+                              <span className='font-bold text-sm text-gray-800'>{bestCoupon.coupon_code}</span>
+                            </div>
+                            <span className='text-orange-600 text-xs font-semibold'>Tap to apply →</span>
+                          </div>
+                          <p className='text-xs text-gray-500 mt-1.5'>
+                            {bestCoupon.description ||
+                              (bestCoupon.discount_type === 'Percentage'
+                                ? `Save ${bestCoupon.discount_value}% on your order`
+                                : `Flat ₹${bestCoupon.discount_value} off`)}
+                          </p>
+                          {defaultCoupon.length > 1 && (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setOpenCoupon(true); }}
+                              className='text-blue-600 text-xs mt-2 font-medium hover:underline'
+                            >
+                              + {defaultCoupon.length - 1} more coupon{defaultCoupon.length > 2 ? 's' : ''} available
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <div className='flex justify-between items-center text-sm mt-1'>
+                          <div className='flex items-center gap-3'>
+                            <img className='w-6' alt='percentage' src='images/percentage.png' loading="lazy" />
+                            <div className='text-sm'>
+                              <p className='font-semibold'>Apply Coupon / Gift Card</p>
+                              <p className='text-gray-500 font-medium text-xs'>Crazy deals and other amazing offers</p>
+                            </div>
+                          </div>
+                          <Link onClick={() => setOpenCoupon(true)} className='text-blue-600 font-semibold text-sm'>View</Link>
+                        </div>
+                      )}
                     </div>
                     {discount > 0 && (
                       <div className="rounded-md my-4 border flex justify-between items-center relative border-green-200 bg-gradient-to-b from-green-200 to-transparent p-3">

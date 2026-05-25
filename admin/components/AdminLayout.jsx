@@ -34,7 +34,13 @@ const NAV = [
   },
   { href: "/customers", label: "Customers", icon: FiUsers },
   { href: "/coupons",   label: "Coupons",   icon: FiGift },
-  { href: "/reviews",   label: "Reviews",   icon: FiStar },
+  {
+    label: "Reviews", icon: FiStar,
+    children: [
+      { href: "/reviews",     label: "Product Reviews", icon: FiStar },
+      { href: "/gmb-reviews", label: "GMB Reviews",     icon: FiMapPin },
+    ],
+  },
   { href: "/blogs",     label: "Blogs",     icon: FiBookOpen },
   { href: "/pages",     label: "Pages",     icon: FiFileText },
 ];

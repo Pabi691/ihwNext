@@ -55,6 +55,7 @@ export default function Reviews() {
   };
 
   const filtered = reviews.filter((r) => {
+    if (!r || typeof r !== "object") return false;
     const status = getStatus(r);
     const matchTab = tab === "All" || status === tab;
     const q = search.toLowerCase();
@@ -148,7 +149,7 @@ export default function Reviews() {
           filtered.map((review) => {
             const status = getStatus(review);
             const name = review.customer_name || review.user_name || review.name || "Anonymous";
-            const initials = name.split(" ").map((n) => n[0]).join("").substring(0, 2).toUpperCase();
+            const initials = name.split(" ").filter(Boolean).map((n) => n[0]).join("").substring(0, 2).toUpperCase() || "??";
             return (
               <div key={review.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
                 <div className="flex items-start justify-between gap-4">

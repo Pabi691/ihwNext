@@ -69,13 +69,21 @@ function ReelCard({ reel }) {
       </div>
 
       {/* Product info */}
-      <Link href={reel.productUrl}>
-        <h3 className="text-gray-900 text-xs font-bold leading-tight line-clamp-2 mb-1 hover:text-[#04A9FF] transition-colors">
-          {reel.productName}
-        </h3>
-        <div className="flex items-center gap-2">
-          <span className="text-[#04A9FF] font-black text-sm">₹{reel.salePrice.toLocaleString("en-IN")}</span>
-          <span className="text-gray-400 text-xs line-through">₹{reel.price.toLocaleString("en-IN")}</span>
+      <Link href={reel.productUrl} className="flex items-start gap-2 group/info">
+        <img
+          src={reel.thumbnail}
+          alt={reel.productName}
+          className="w-10 h-10 rounded-lg object-cover flex-shrink-0 border border-gray-100"
+          onError={e => { e.currentTarget.src = "/images/noimage.jpg"; }}
+        />
+        <div className="min-w-0">
+          <h3 className="text-gray-900 text-xs font-bold leading-tight line-clamp-2 mb-1 group-hover/info:text-[#04A9FF] transition-colors">
+            {reel.productName}
+          </h3>
+          <div className="flex items-center gap-2">
+            <span className="text-[#04A9FF] font-black text-sm">₹{reel.salePrice.toLocaleString("en-IN")}</span>
+            <span className="text-gray-400 text-xs line-through">₹{reel.price.toLocaleString("en-IN")}</span>
+          </div>
         </div>
       </Link>
     </div>
