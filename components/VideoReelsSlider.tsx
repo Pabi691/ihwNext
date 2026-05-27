@@ -262,20 +262,28 @@ export default function VideoReelsSlider({
                                     </div>
 
                                     {/* Product Info */}
-                                    <div className="mt-2.5 px-0.5">
-                                        <p className="text-sm text-gray-800 font-medium truncate leading-tight">{reel.productName}</p>
-                                        <div className="flex items-center gap-2 mt-1.5">
-                                            <span className="text-sm font-bold text-gray-900">{fmt(reel.salePrice)}</span>
-                                            {reel.price !== reel.salePrice && (
-                                                <>
-                                                    <span className="text-xs text-gray-400 line-through">{fmt(reel.price)}</span>
-                                                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-full">
-                                                        {getDiscount(reel.price, reel.salePrice)}% off
-                                                    </span>
-                                                </>
-                                            )}
+                                    <Link href={reel.productUrl} className="mt-2.5 px-0.5 flex items-start gap-2 group/info">
+                                        <img
+                                            src={reel.thumbnail}
+                                            alt={reel.productName}
+                                            className="w-10 h-10 rounded-lg object-cover flex-shrink-0 border border-gray-100"
+                                            onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/images/noimage.jpg'; }}
+                                        />
+                                        <div className="min-w-0">
+                                            <p className="text-xs text-gray-800 font-medium line-clamp-2 leading-tight group-hover/info:text-[#04A9FF] transition-colors">{reel.productName}</p>
+                                            <div className="flex items-center gap-1.5 mt-1">
+                                                <span className="text-sm font-bold text-gray-900">{fmt(reel.salePrice)}</span>
+                                                {reel.price !== reel.salePrice && (
+                                                    <>
+                                                        <span className="text-xs text-gray-400 line-through">{fmt(reel.price)}</span>
+                                                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-full">
+                                                            {getDiscount(reel.price, reel.salePrice)}% off
+                                                        </span>
+                                                    </>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
+                                    </Link>
                                 </div>
                             </SwiperSlide>
                         ))}

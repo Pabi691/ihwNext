@@ -66,9 +66,9 @@ const YouAlsoLike = ({ likedProductsTag }) => {
               <Skeleton width={450} height={400} />
             ) : (
               <div className="bg-white overflow-hidden relative md:h-[450px] h-[400px] border-0 md:border rounded-sm">
-                {product.product_categories.some((category) => category.id === 3) && (
+                {product.product_categories?.length > 0 && (
                   <span className={`absolute z-10 ${themeBgColor} text-white top-0 left-0 text-[10px] p-1 rotate-text`}>
-                    {product.product_categories.find((category) => category.id === 3)?.category_name}
+                    {product.product_categories[0].category_name}
                   </span>
                 )}
 
