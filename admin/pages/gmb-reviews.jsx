@@ -226,7 +226,7 @@ export default function GmbReviews() {
     setFormError("");
     if (!importUrl.trim()) return setFormError("Please paste a review page URL.");
     const urlLower = importUrl.toLowerCase();
-    const isKnown = urlLower.includes("google.com") || urlLower.includes("maps.google") || urlLower.includes("justdial.com");
+    const isKnown = urlLower.includes("google.com") || urlLower.includes("maps.google") || urlLower.includes("goo.gl") || urlLower.includes("justdial.com");
     if (!isKnown) return setFormError("Only Google Maps and JustDial URLs are supported.");
     setImporting(true);
     try {

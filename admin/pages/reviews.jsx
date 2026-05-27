@@ -5,7 +5,7 @@ import { useAuthGuard } from "@/components/useAuthGuard";
 import AdminLayout from "@/components/AdminLayout";
 import { FiSearch, FiStar, FiCheck, FiX, FiTrash2, FiEdit2, FiPlus, FiMessageSquare } from "react-icons/fi";
 
-const TABS = ["All", "Pending", "Approved", "Rejected"];
+const TABS = ["All", "Pending", "Approved", "Rejected", "No Reviews"];
 const EMPTY_FORM = { customer_name: "", product_id: "", product_name: "", rating: 5, review_text: "", status: "pending" };
 
 /* ── helpers ── */
@@ -275,24 +275,24 @@ export default function Reviews() {
     setFormError("");
     if (!formData.customer_name.trim()) return setFormError("Customer name is required.");
     if (!formData.review_text.trim()) return setFormError("Review text is required.");
+    if (!editReview && !formData.product_id) return setFormError("Please select a product.");
     setSubmitting(true);
     try {
+      const isApproved = formData.status === "approved" ? 1 : 0;
       const payload = {
-        customer_name: formData.customer_name,
-        product_id: formData.product_id || undefined,
-        product_name: formData.product_name || undefined,
+        name: formData.customer_name,
         rating: formData.rating,
         review_text: formData.review_text,
-        status: formData.status,
+        is_approved: isApproved,
       };
       if (editReview) {
         const res = await api("put", `/update_review/${editReview.id}`, payload);
-        const updated = res.data?.review || { ...editReview, ...payload };
+        const updated = res.data?.reviewData || { ...editReview, ...payload };
         setReviews((prev) => prev.map((r) => r.id === editReview.id ? updated : r));
         showToast("Review updated");
       } else {
-        const res = await api("post", "/create_review", payload);
-        const created = res.data?.review || { ...payload, id: Date.now() };
+        const res = await api("post", `/create_review/${formData.product_id}`, payload);
+        const created = res.data?.reviewData || { ...payload, id: Date.now(), product_id: formData.product_id };
         setReviews((prev) => [created, ...prev]);
         showToast("Review added");
       }
@@ -430,7 +430,10 @@ export default function Reviews() {
       {/* Tabs */}
       <div className="flex gap-1 overflow-x-auto mb-5 bg-white rounded-xl border border-gray-100 shadow-sm p-1">
         {TABS.map((t) => {
-          const count = t === "All" ? reviews.length : reviews.filter((r) => getStatus(r) === t).length;
+          const noReviewProducts = products.filter((p) => !reviewCounts[p.id]);
+          const count = t === "All" ? reviews.length
+            : t === "No Reviews" ? noReviewProducts.length
+            : reviews.filter((r) => getStatus(r) === t).length;
           return (
             <button key={t} onClick={() => setTab(t)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
@@ -444,7 +447,54 @@ export default function Reviews() {
         })}
       </div>
 
-      {/* Review Cards */}
+      {/* No Reviews Product Grid */}
+      {tab === "No Reviews" ? (() => {
+        const noReviewProducts = products.filter((p) => !reviewCounts[p.id]);
+        const q = search.toLowerCase();
+        const visibleProducts = q
+          ? noReviewProducts.filter((p) => p.prod_name.toLowerCase().includes(q))
+          : noReviewProducts;
+        return loading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+            {[...Array(10)].map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 animate-pulse">
+                <div className="w-full aspect-square rounded-xl bg-gray-100 mb-3" />
+                <div className="h-3 bg-gray-100 rounded w-3/4 mb-2" />
+                <div className="h-7 bg-gray-100 rounded-xl" />
+              </div>
+            ))}
+          </div>
+        ) : visibleProducts.length === 0 ? (
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm py-20 text-center text-gray-400 text-sm">
+            {q ? "No matching products found" : "All products have at least one review"}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+            {visibleProducts.map((p) => (
+              <div key={p.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 flex flex-col group hover:border-[#04A9FF] hover:shadow-md transition-all">
+                <div className="w-full aspect-square rounded-xl overflow-hidden bg-gray-50 mb-3 flex items-center justify-center">
+                  {p.primary_img ? (
+                    <img src={p.primary_img} alt={p.prod_name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "flex"; }} />
+                  ) : null}
+                  <div className="w-full h-full bg-gradient-to-br from-[#04A9FF]/10 to-[#0070cc]/10 flex items-center justify-center"
+                    style={{ display: p.primary_img ? "none" : "flex" }}>
+                    <span className="text-2xl font-bold text-[#04A9FF]/30">{p.prod_name?.[0]?.toUpperCase() || "P"}</span>
+                  </div>
+                </div>
+                <p className="text-xs font-semibold text-gray-700 leading-tight line-clamp-2 mb-1 flex-1">{p.prod_name}</p>
+                <p className="text-xs text-gray-300 mb-2">No reviews yet</p>
+                <button onClick={() => openAddForm(p)}
+                  className="w-full py-1.5 bg-[#04A9FF] hover:bg-[#0070cc] text-white text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-1">
+                  <FiPlus size={12} /> Add Review
+                </button>
+              </div>
+            ))}
+          </div>
+        );
+      })() : (
+      /* Review Cards */
       <div className="space-y-3">
         {loading ? (
           [...Array(5)].map((_, i) => (
@@ -528,6 +578,7 @@ export default function Reviews() {
           })
         )}
       </div>
+      )}
     </AdminLayout>
   );
 }

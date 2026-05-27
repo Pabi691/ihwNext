@@ -7,10 +7,10 @@ import AdminLayout from "@/components/AdminLayout";
 import {
   FiArrowLeft, FiUser, FiMail, FiPhone, FiCalendar, FiMapPin,
   FiShoppingBag, FiPackage, FiClock, FiCheckCircle, FiXCircle,
-  FiAlertCircle, FiRefreshCw, FiEye,
+  FiAlertCircle, FiRefreshCw, FiEye, FiShoppingCart,
 } from "react-icons/fi";
 
-const TABS = ["Overview", "Orders", "Addresses", "Profile"];
+const TABS = ["Overview", "Orders", "Cart", "Addresses", "Profile"];
 
 const STATUS_STYLES = {
   Delivered:         { bg: "bg-green-50",  text: "text-green-700",  dot: "bg-green-400" },
@@ -249,6 +249,101 @@ function AddressesTab({ addresses, profileData }) {
   );
 }
 
+function CartTab({ customerId, api }) {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!customerId) return;
+    setLoading(true);
+    api("get", `/get_customer_cart_admin/${customerId}`)
+      .then((res) => setItems(Array.isArray(res.data?.cart_items) ? res.data.cart_items : []))
+      .catch(() => setItems([]))
+      .finally(() => setLoading(false));
+  }, [customerId, api]);
+
+  if (loading) return (
+    <div className="space-y-3">
+      {[...Array(3)].map((_, i) => (
+        <div key={i} className="bg-white rounded-2xl border border-gray-100 p-4 animate-pulse flex gap-4">
+          <div className="w-16 h-16 rounded-xl bg-gray-100 flex-shrink-0" />
+          <div className="flex-1 space-y-2 py-1">
+            <div className="h-4 bg-gray-100 rounded w-1/2" />
+            <div className="h-3 bg-gray-100 rounded w-1/4" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  if (!items.length) return (
+    <div className="bg-white rounded-2xl border border-gray-100 py-16 text-center">
+      <FiShoppingCart size={32} className="mx-auto text-gray-200 mb-3" />
+      <p className="text-gray-400 text-sm">Cart is empty</p>
+    </div>
+  );
+
+  const total = items.reduce((sum, item) => sum + (parseFloat(item.price || item.sale_price || 0) * (item.quantity || 1)), 0);
+
+  return (
+    <div className="space-y-4">
+      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+        <div className="px-5 py-4 border-b border-gray-50 flex items-center justify-between">
+          <h3 className="font-semibold text-gray-800 text-sm flex items-center gap-2">
+            <FiShoppingCart size={14} className="text-[#04A9FF]" />
+            Cart Items ({items.length})
+          </h3>
+          <span className="text-sm font-bold text-gray-800">
+            Total ≈ ₹{total.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+          </span>
+        </div>
+        <div className="divide-y divide-gray-50">
+          {items.map((item) => {
+            const price = parseFloat(item.price || item.sale_price || 0);
+            const mrp = parseFloat(item.regular_price || 0);
+            const discount = mrp > price ? Math.round(((mrp - price) / mrp) * 100) : 0;
+            return (
+              <div key={item.id} className="px-5 py-4 flex items-center gap-4">
+                <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 flex-shrink-0">
+                  {item.primary_img ? (
+                    <img src={item.primary_img} alt={item.prod_name} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <FiPackage size={20} className="text-gray-300" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-800 truncate">{item.prod_name || "Product"}</p>
+                  {item.sku && <p className="text-xs text-gray-400 mt-0.5">SKU: {item.sku}</p>}
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-sm font-bold text-gray-800">₹{price.toLocaleString("en-IN")}</span>
+                    {discount > 0 && (
+                      <>
+                        <span className="text-xs text-gray-400 line-through">₹{mrp.toLocaleString("en-IN")}</span>
+                        <span className="text-xs font-bold text-green-600">{discount}% off</span>
+                      </>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2 mt-1">
+                    {item.is_cod == 1 && <span className="text-xs px-1.5 py-0.5 bg-blue-50 text-blue-600 rounded font-medium">COD</span>}
+                    {item.is_returnable == 1 && <span className="text-xs px-1.5 py-0.5 bg-green-50 text-green-600 rounded font-medium">Returnable</span>}
+                  </div>
+                </div>
+                <div className="flex-shrink-0 text-right">
+                  <p className="text-xs text-gray-500">Qty</p>
+                  <p className="text-lg font-bold text-gray-800">{item.quantity}</p>
+                  <p className="text-xs text-gray-400">= ₹{(price * (item.quantity || 1)).toLocaleString("en-IN")}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ProfileTab({ data }) {
   const name = data?.first_name
     ? `${data.first_name} ${data.last_name || ""}`.trim()
@@ -372,6 +467,7 @@ export default function CustomerDashboardView() {
           {/* Tab content */}
           {tab === "Overview"   && <OverviewTab  data={data} />}
           {tab === "Orders"     && <OrdersTab    orders={data.orders} customerId={id} router={router} />}
+          {tab === "Cart"       && <CartTab      customerId={data?.id} api={api} />}
           {tab === "Addresses"  && <AddressesTab addresses={addresses} profileData={data} />}
           {tab === "Profile"    && <ProfileTab   data={data} />}
         </div>

@@ -6,12 +6,28 @@ import { useAuthGuard } from "@/components/useAuthGuard";
 import AdminLayout from "@/components/AdminLayout";
 import { FiArrowLeft, FiImage, FiAlertCircle, FiPlus, FiTrash2, FiEdit2, FiSave, FiX } from "react-icons/fi";
 
+const L = "text-xs text-gray-500 font-semibold uppercase tracking-wide block mb-1.5";
+const I = "w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#04A9FF] transition-colors";
+const S = "w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#04A9FF] bg-white transition-colors";
+
 function Section({ title, children }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-4">
       <h3 className="font-semibold text-gray-800 text-sm border-b border-gray-50 pb-3">{title}</h3>
       {children}
     </div>
+  );
+}
+
+function Toggle({ checked, onChange, label }) {
+  return (
+    <label className="flex items-center gap-2 cursor-pointer select-none">
+      <div onClick={() => onChange(!checked)}
+        className={`w-10 h-5 rounded-full transition-colors relative ${checked ? "bg-[#04A9FF]" : "bg-gray-200"}`}>
+        <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${checked ? "translate-x-5" : "translate-x-0.5"}`} />
+      </div>
+      <span className="text-sm text-gray-600 font-medium">{label}</span>
+    </label>
   );
 }
 
@@ -30,6 +46,8 @@ export default function EditProduct() {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [allCategories, setAllCategories] = useState([]);
   const [allBrands, setAllBrands] = useState([]);
+  const [allColors, setAllColors] = useState([]);
+  const [allSizes, setAllSizes] = useState([]);
 
   const [primaryImg, setPrimaryImg] = useState(null);
   const [primaryPreview, setPrimaryPreview] = useState(null);
@@ -37,8 +55,16 @@ export default function EditProduct() {
   const [secondaryPreview, setSecondaryPreview] = useState(null);
 
   const [variations, setVariations] = useState([]);
-  const [newVariation, setNewVariation] = useState({ size: "", color: "", regular_price: "", sale_price: "", stock_qty: "" });
-  const [addingVariation, setAddingVariation] = useState(false);
+
+  // Editable state for existing variations
+  const [sizeVarEdits, setSizeVarEdits] = useState({});
+  const [colorVarEdits, setColorVarEdits] = useState({});
+  const [savingVarId, setSavingVarId] = useState(null);
+
+  // Pending new variations to add
+  const [pendingSizes, setPendingSizes] = useState([]);
+  const [pendingColors, setPendingColors] = useState([]);
+  const [savingNewVars, setSavingNewVars] = useState(false);
 
   const [additionalImages, setAdditionalImages] = useState([]);
   const [uploadingImg, setUploadingImg] = useState(false);
@@ -49,21 +75,26 @@ export default function EditProduct() {
   const [editHighlight, setEditHighlight] = useState(null);
   const [savingHighlight, setSavingHighlight] = useState(false);
 
+  const [seo, setSeo] = useState({ meta_title: "", meta_description: "", meta_keywords: "", canonical_url: "" });
+
   const [reviews, setReviews] = useState([]);
 
   const primaryRef = useRef();
   const secondaryRef = useRef();
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+  const setSeoField = (k, v) => setSeo((s) => ({ ...s, [k]: v }));
 
   const loadProduct = useCallback(async () => {
     if (!id) return;
     setLoading(true);
     try {
-      const [prodRes, catRes, brandRes] = await Promise.all([
+      const [prodRes, catRes, brandRes, colorRes, sizeRes] = await Promise.all([
         api("get", `/get_product_id/${id}`),
         api("get", "/get_active_category"),
         api("get", "/get_active_brand"),
+        api("get", "/get_active_colors"),
+        api("get", "/get_active_sizes"),
       ]);
 
       const p = prodRes.data?.product_data;
@@ -93,15 +124,45 @@ export default function EditProduct() {
         status: String(p.status ?? "1"),
       });
 
+      const sm = p.seoMetadata || {};
+      setSeo({
+        meta_title: sm.meta_title || "",
+        meta_description: sm.meta_description || "",
+        meta_keywords: sm.meta_keywords || "",
+        canonical_url: sm.canonical_url || "",
+      });
+
       setPrimaryPreview(p.primary_img || null);
       setSecondaryPreview(p.secondary_img || null);
       setSelectedCategories((p.product_categories || []).map((c) => ({ id: c.id })));
-      setVariations(p.product_variations || []);
+
+      const vars = p.product_variations || [];
+      setVariations(vars);
+
+      // Initialize editable state for existing variations
+      const sizeEdits = {};
+      vars.filter(v => v.size_id).forEach(v => {
+        sizeEdits[v.id] = {
+          regular_price: v.regular_price || "",
+          sale_price: v.sale_price || "",
+          stock_qty: v.stock_qty || "",
+        };
+      });
+      setSizeVarEdits(sizeEdits);
+
+      const colorEdits = {};
+      vars.filter(v => v.color_id).forEach(v => {
+        colorEdits[v.id] = { color_page_link: v.color_page_link || "" };
+      });
+      setColorVarEdits(colorEdits);
+
       setAdditionalImages(p.product_image_list || []);
       setHighlights(p.product_key_highlights || []);
       setReviews(p.product_review || []);
       setAllCategories(Array.isArray(catRes.data?.category_list) ? catRes.data.category_list : []);
       setAllBrands(Array.isArray(brandRes.data?.brand_list) ? brandRes.data.brand_list : []);
+      setAllColors(Array.isArray(colorRes.data?.colors) ? colorRes.data.colors : []);
+      setAllSizes(Array.isArray(sizeRes.data?.sizes) ? sizeRes.data.sizes : []);
     } catch {
       router.push("/products");
     }
@@ -166,14 +227,16 @@ export default function EditProduct() {
       selectedCategories.forEach((cat, i) => {
         fd.append(`product_categories[${i}][id]`, cat.id);
       });
-      variations.forEach((v, i) => {
-        Object.keys(v).forEach((k) => {
-          if (v[k] !== undefined) fd.append(`product_variations[${i}][${k}]`, v[k]);
-        });
-      });
 
       const res = await api("post", `/update_product/${form.id}`, fd);
       if (res.data?.status) {
+        if (seo.meta_title) {
+          api("post", "/update_seo_metadata", {
+            entity_type: "product",
+            entity_id: form.id,
+            ...seo,
+          }).catch(() => {});
+        }
         setSuccess("Product updated successfully.");
         setPrimaryImg(null); setSecondaryImg(null);
       } else {
@@ -185,27 +248,116 @@ export default function EditProduct() {
     setSaving(false);
   };
 
-  /* Variations */
-  const addVariation = async () => {
-    if (!newVariation.size || !newVariation.color) return;
-    setAddingVariation(true);
+  /* ── Size variation helpers ── */
+  const sizeVariations = variations.filter(v => v.size_id);
+  const colorVariations = variations.filter(v => v.color_id);
+
+  const updateSizeVarEdit = (varId, field, value) =>
+    setSizeVarEdits(prev => ({ ...prev, [varId]: { ...prev[varId], [field]: value } }));
+
+  const saveSizeVar = async (varId) => {
+    setSavingVarId(varId);
     try {
-      await api("post", "/add_product_variation_size", { product_id: id, ...newVariation });
-      await loadProduct();
-      setNewVariation({ size: "", color: "", regular_price: "", sale_price: "", stock_qty: "" });
+      await api("post", `/update_product_variation/${varId}`, sizeVarEdits[varId]);
     } catch {}
-    setAddingVariation(false);
+    setSavingVarId(null);
+  };
+
+  const updateColorVarEdit = (varId, value) =>
+    setColorVarEdits(prev => ({ ...prev, [varId]: { color_page_link: value } }));
+
+  const saveColorVar = async (varId) => {
+    setSavingVarId(varId);
+    try {
+      await api("post", `/update_product_variation/${varId}`, {
+        color_page_link: colorVarEdits[varId]?.color_page_link || "",
+      });
+    } catch {}
+    setSavingVarId(null);
   };
 
   const deleteVariation = async (varId) => {
     if (!window.confirm("Delete this variation?")) return;
     try {
       await api("get", `/delete_product_variation/${varId}`);
-      setVariations((prev) => prev.filter((v) => v.id !== varId));
+      setVariations(prev => prev.filter(v => v.id !== varId));
     } catch {}
   };
 
-  /* Additional Images */
+  /* ── Pending new sizes ── */
+  const togglePendingSize = (size) => {
+    const already = variations.some(v => String(v.size_id) === String(size.id));
+    if (already) return;
+    setPendingSizes(prev => {
+      if (prev.find(p => p.size_id === size.id)) return prev.filter(p => p.size_id !== size.id);
+      return [...prev, {
+        size_id: size.id,
+        size_name: size.size_name,
+        regular_price: form?.regular_price || "",
+        sale_price: form?.sale_price || "",
+        stock_qty: form?.stock_qty || "",
+      }];
+    });
+  };
+
+  const updatePendingSize = (sizeId, field, value) =>
+    setPendingSizes(prev => prev.map(s => s.size_id === sizeId ? { ...s, [field]: value } : s));
+
+  const saveNewSizes = async () => {
+    if (!pendingSizes.length) return;
+    setSavingNewVars(true);
+    try {
+      await Promise.all(pendingSizes.map(s =>
+        api("post", "/add_product_variation_size", {
+          product_id: id,
+          size_id: s.size_id,
+          regular_price: s.regular_price,
+          sale_price: s.sale_price,
+          stock_qty: s.stock_qty,
+        })
+      ));
+      await loadProduct();
+      setPendingSizes([]);
+    } catch {}
+    setSavingNewVars(false);
+  };
+
+  /* ── Pending new colors ── */
+  const togglePendingColor = (color) => {
+    const already = colorVariations.some(v => String(v.color_id) === String(color.id));
+    if (already) return;
+    setPendingColors(prev => {
+      if (prev.find(p => p.color_id === color.id)) return prev.filter(p => p.color_id !== color.id);
+      return [...prev, {
+        color_id: color.id,
+        color_name: color.color_name,
+        color_code: color.color_code || "#cccccc",
+        product_link: "",
+      }];
+    });
+  };
+
+  const updatePendingColorLink = (colorId, value) =>
+    setPendingColors(prev => prev.map(c => c.color_id === colorId ? { ...c, product_link: value } : c));
+
+  const saveNewColors = async () => {
+    if (!pendingColors.length) return;
+    setSavingNewVars(true);
+    try {
+      await Promise.all(pendingColors.map(c =>
+        api("post", "/add_product_variation_color", {
+          product_id: id,
+          color_id: c.color_id,
+          color_page_link: c.product_link,
+        })
+      ));
+      await loadProduct();
+      setPendingColors([]);
+    } catch {}
+    setSavingNewVars(false);
+  };
+
+  /* ── Additional Images ── */
   const handleAdditionalImgUpload = async (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
@@ -226,11 +378,11 @@ export default function EditProduct() {
     if (!window.confirm("Delete this image?")) return;
     try {
       await api("post", `/delete_product_image/${id}`, { imgno });
-      setAdditionalImages((prev) => prev.filter((img) => img.image_no !== imgno));
+      setAdditionalImages(prev => prev.filter(img => img.image_no !== imgno));
     } catch {}
   };
 
-  /* Key Highlights */
+  /* ── Key Highlights ── */
   const addHighlight = async () => {
     if (!newHighlight.label || !newHighlight.value) return;
     setSavingHighlight(true);
@@ -247,7 +399,7 @@ export default function EditProduct() {
     setSavingHighlight(true);
     try {
       await api("put", `/update_key_highlights/${editHighlight.id}`, { label: editHighlight.label, value: editHighlight.value });
-      setHighlights((prev) => prev.map((h) => h.id === editHighlight.id ? editHighlight : h));
+      setHighlights(prev => prev.map(h => h.id === editHighlight.id ? editHighlight : h));
       setEditHighlight(null);
     } catch {}
     setSavingHighlight(false);
@@ -256,7 +408,7 @@ export default function EditProduct() {
   const deleteHighlight = async (hlId) => {
     try {
       await api("delete", `/delete_product_key_highlight/${hlId}`);
-      setHighlights((prev) => prev.filter((h) => h.id !== hlId));
+      setHighlights(prev => prev.filter(h => h.id !== hlId));
     } catch {}
   };
 
@@ -285,156 +437,508 @@ export default function EditProduct() {
         </div>
       </div>
 
-      <form onSubmit={handleSave} className="space-y-5 max-w-4xl">
-        {error && (
-          <div className="flex items-center gap-2 bg-red-50 border border-red-100 text-red-600 text-sm rounded-xl px-4 py-3">
-            <FiAlertCircle size={15} /> {error}
-          </div>
-        )}
-        {success && (
-          <div className="bg-green-50 border border-green-100 text-green-700 text-sm rounded-xl px-4 py-3">{success}</div>
-        )}
+      {error && (
+        <div className="flex items-center gap-2 bg-red-50 border border-red-100 text-red-600 text-sm rounded-xl px-4 py-3 mb-4">
+          <FiAlertCircle size={15} /> {error}
+        </div>
+      )}
+      {success && (
+        <div className="bg-green-50 border border-green-100 text-green-700 text-sm rounded-xl px-4 py-3 mb-4">{success}</div>
+      )}
 
-        {/* Basic Info */}
-        <Section title="Basic Information">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2">
-              <label className="text-xs text-gray-500 font-semibold uppercase tracking-wide block mb-1.5">Product Name *</label>
-              <input value={form.prod_name} onChange={(e) => set("prod_name", e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#04A9FF] transition-colors" />
-            </div>
-            <div>
-              <label className="text-xs text-gray-500 font-semibold uppercase tracking-wide block mb-1.5">SKU</label>
-              <input value={form.sku} onChange={(e) => set("sku", e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#04A9FF] transition-colors" />
-            </div>
-            <div>
-              <label className="text-xs text-gray-500 font-semibold uppercase tracking-wide block mb-1.5">Product Type</label>
-              <select value={form.prod_type} onChange={(e) => set("prod_type", e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#04A9FF] bg-white transition-colors">
-                <option value="Simple">Simple</option>
-                <option value="Variable">Variable</option>
-              </select>
-            </div>
-            <div className="col-span-2">
-              <label className="text-xs text-gray-500 font-semibold uppercase tracking-wide block mb-1.5">Description</label>
-              <textarea rows={5} value={form.prod_desc} onChange={(e) => set("prod_desc", e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#04A9FF] transition-colors resize-none" />
-            </div>
-          </div>
-        </Section>
+      <form onSubmit={handleSave}>
+        <div className="grid lg:grid-cols-12 gap-5">
+          {/* ── Left column ── */}
+          <div className="lg:col-span-7 space-y-5">
 
-        {/* Pricing & Stock */}
-        <Section title="Pricing & Stock">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {[
-              { key: "regular_price", label: "Regular Price *" },
-              { key: "sale_price", label: "Sale Price *" },
-              { key: "stock_qty", label: "Stock Qty *" },
-              { key: "min_order_qty", label: "Min Order Qty" },
-              { key: "pack_qty", label: "Pack Qty" },
-              { key: "pack_price", label: "Pack Price" },
-            ].map(({ key, label }) => (
-              <div key={key}>
-                <label className="text-xs text-gray-500 font-semibold uppercase tracking-wide block mb-1.5">{label}</label>
-                <input type="number" value={form[key]} onChange={(e) => set(key, e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#04A9FF] transition-colors" />
+            {/* Basic Info */}
+            <Section title="Basic Information">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2">
+                  <label className={L}>Product Name *</label>
+                  <input value={form.prod_name} onChange={(e) => set("prod_name", e.target.value)} className={I} />
+                </div>
+                <div>
+                  <label className={L}>SKU</label>
+                  <input value={form.sku} onChange={(e) => set("sku", e.target.value)} className={I} />
+                </div>
+                <div>
+                  <label className={L}>Product Type</label>
+                  <select value={form.prod_type} onChange={(e) => set("prod_type", e.target.value)} className={S}>
+                    <option value="Simple">Simple</option>
+                    <option value="Variable">Variable</option>
+                  </select>
+                </div>
+                <div className="col-span-2">
+                  <label className={L}>Description</label>
+                  <textarea rows={5} value={form.prod_desc} onChange={(e) => set("prod_desc", e.target.value)}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#04A9FF] transition-colors resize-none" />
+                </div>
               </div>
-            ))}
-          </div>
-        </Section>
+            </Section>
 
-        {/* Images */}
-        <Section title="Main Images">
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { label: "Primary Image", preview: primaryPreview, ref: primaryRef, setter: setPrimaryImg, previewSetter: setPrimaryPreview },
-              { label: "Secondary Image", preview: secondaryPreview, ref: secondaryRef, setter: setSecondaryImg, previewSetter: setSecondaryPreview },
-            ].map(({ label, preview, ref, setter, previewSetter }) => (
-              <div key={label}>
-                <label className="text-xs text-gray-500 font-semibold uppercase tracking-wide block mb-1.5">{label}</label>
-                <div className="flex items-center gap-3">
-                  {preview ? (
-                    <img src={preview} alt="" className="w-20 h-20 rounded-xl object-cover border border-gray-100" />
-                  ) : (
-                    <div className="w-20 h-20 rounded-xl bg-gray-100 flex items-center justify-center cursor-pointer" onClick={() => ref.current?.click()}>
-                      <FiImage size={22} className="text-gray-300" />
-                    </div>
+            {/* Pricing & Stock */}
+            <Section title="Pricing & Stock">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                {[
+                  { key: "regular_price", label: "Regular Price *" },
+                  { key: "sale_price", label: "Sale Price *" },
+                  { key: "stock_qty", label: "Stock Qty *" },
+                  { key: "min_order_qty", label: "Min Order Qty" },
+                  { key: "pack_qty", label: "Pack Qty" },
+                  { key: "pack_price", label: "Pack Price" },
+                ].map(({ key, label }) => (
+                  <div key={key}>
+                    <label className={L}>{label}</label>
+                    <input type="number" value={form[key]} onChange={(e) => set(key, e.target.value)} className={I} />
+                  </div>
+                ))}
+              </div>
+            </Section>
+
+            {/* Size Variations */}
+            <Section title="Product Variations (Sizes)">
+              {/* Existing size variations table */}
+              {sizeVariations.length > 0 && (
+                <div className="overflow-x-auto -mx-1">
+                  <table className="w-full text-sm min-w-[480px]">
+                    <thead>
+                      <tr className="border-b border-gray-100">
+                        <th className="text-left text-xs text-gray-500 pb-2 font-semibold px-1">Size</th>
+                        <th className="text-left text-xs text-gray-500 pb-2 font-semibold px-1">Regular Price</th>
+                        <th className="text-left text-xs text-gray-500 pb-2 font-semibold px-1">Sale Price</th>
+                        <th className="text-left text-xs text-gray-500 pb-2 font-semibold px-1">Stock Qty</th>
+                        <th className="pb-2 px-1"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-50">
+                      {sizeVariations.map(v => {
+                        const edit = sizeVarEdits[v.id] || {};
+                        const isSaving = savingVarId === v.id;
+                        return (
+                          <tr key={v.id}>
+                            <td className="py-2 px-1">
+                              <span className="bg-[#04A9FF] text-white text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">
+                                {v.size || v.size_name || `Size ${v.size_id}`}
+                              </span>
+                            </td>
+                            <td className="py-2 px-1">
+                              <input type="number" value={edit.regular_price ?? ""}
+                                onChange={e => updateSizeVarEdit(v.id, "regular_price", e.target.value)}
+                                className="w-24 border border-gray-200 rounded-lg px-2 py-1.5 text-xs outline-none focus:border-[#04A9FF] transition-colors" />
+                            </td>
+                            <td className="py-2 px-1">
+                              <input type="number" value={edit.sale_price ?? ""}
+                                onChange={e => updateSizeVarEdit(v.id, "sale_price", e.target.value)}
+                                className="w-24 border border-gray-200 rounded-lg px-2 py-1.5 text-xs outline-none focus:border-[#04A9FF] transition-colors" />
+                            </td>
+                            <td className="py-2 px-1">
+                              <input type="number" value={edit.stock_qty ?? ""}
+                                onChange={e => updateSizeVarEdit(v.id, "stock_qty", e.target.value)}
+                                className="w-20 border border-gray-200 rounded-lg px-2 py-1.5 text-xs outline-none focus:border-[#04A9FF] transition-colors" />
+                            </td>
+                            <td className="py-2 px-1">
+                              <div className="flex gap-1">
+                                <button type="button" onClick={() => saveSizeVar(v.id)} disabled={isSaving}
+                                  className="w-7 h-7 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 flex items-center justify-center transition-colors disabled:opacity-60">
+                                  <FiSave size={12} />
+                                </button>
+                                <button type="button" onClick={() => deleteVariation(v.id)}
+                                  className="w-7 h-7 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center transition-colors">
+                                  <FiTrash2 size={12} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {/* Size chips to add */}
+              <div>
+                <p className="text-xs text-gray-500 mb-2">Click sizes to add:</p>
+                <div className="flex flex-wrap gap-2">
+                  {allSizes.length === 0 && (
+                    <p className="text-xs text-gray-400 italic">No sizes available. Add sizes in the Sizes module first.</p>
                   )}
-                  <button type="button" onClick={() => ref.current?.click()}
-                    className="px-3 py-2 text-xs font-semibold rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
-                    {preview ? "Change" : "Upload"}
-                  </button>
-                  <input ref={ref} type="file" accept="image/*" className="hidden" onChange={handleImg(setter, previewSetter)} />
+                  {allSizes.map(size => {
+                    const already = variations.some(v => String(v.size_id) === String(size.id));
+                    const pending = pendingSizes.find(p => p.size_id === size.id);
+                    return (
+                      <button key={size.id} type="button"
+                        onClick={() => !already && togglePendingSize(size)}
+                        disabled={already}
+                        className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                          already ? "bg-gray-100 text-gray-400 border-gray-100 cursor-not-allowed" :
+                          pending ? "bg-[#04A9FF] text-white border-[#04A9FF]" :
+                          "bg-white text-gray-600 border-gray-200 hover:border-[#04A9FF]"
+                        }`}>
+                        {size.size_name}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
-            ))}
-          </div>
-        </Section>
 
-        {/* Categories */}
-        <Section title="Categories *">
-          <div className="flex flex-wrap gap-2">
-            {allCategories.map((cat) => {
-              const selected = selectedCategories.find((c) => c.id === cat.id);
-              return (
-                <button key={cat.id} type="button" onClick={() => toggleCategory(cat)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors border ${selected ? "bg-[#04A9FF] text-white border-[#04A9FF]" : "bg-white text-gray-600 border-gray-200 hover:border-[#04A9FF]"}`}>
-                  {cat.category_name}
-                </button>
-              );
-            })}
-          </div>
-        </Section>
-
-        {/* Attributes */}
-        <Section title="Attributes & Settings">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            <div>
-              <label className="text-xs text-gray-500 font-semibold uppercase tracking-wide block mb-1.5">Brand</label>
-              <select value={form.brand_id} onChange={(e) => set("brand_id", e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#04A9FF] bg-white transition-colors">
-                <option value="">Select Brand</option>
-                {allBrands.map((b) => <option key={b.id} value={b.id}>{b.brand_name}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="text-xs text-gray-500 font-semibold uppercase tracking-wide block mb-1.5">Product Quality</label>
-              <input value={form.product_quality} onChange={(e) => set("product_quality", e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#04A9FF] transition-colors" />
-            </div>
-            <div>
-              <label className="text-xs text-gray-500 font-semibold uppercase tracking-wide block mb-1.5">Product Tag</label>
-              <input value={form.product_tag} onChange={(e) => set("product_tag", e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#04A9FF] transition-colors" />
-            </div>
-            <div>
-              <label className="text-xs text-gray-500 font-semibold uppercase tracking-wide block mb-1.5">Status</label>
-              <select value={form.status} onChange={(e) => set("status", e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-[#04A9FF] bg-white transition-colors">
-                <option value="1">Active</option>
-                <option value="0">Inactive</option>
-              </select>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-5 pt-2">
-            {[
-              { key: "is_sale", label: "On Sale" },
-              { key: "is_returnable", label: "Returnable" },
-              { key: "is_cod", label: "Cash on Delivery" },
-            ].map(({ key, label }) => (
-              <label key={key} className="flex items-center gap-2 cursor-pointer select-none">
-                <div onClick={() => set(key, !form[key])}
-                  className={`w-10 h-5 rounded-full transition-colors relative ${form[key] ? "bg-[#04A9FF]" : "bg-gray-200"}`}>
-                  <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${form[key] ? "translate-x-5" : "translate-x-0.5"}`} />
+              {/* Pending sizes table */}
+              {pendingSizes.length > 0 && (
+                <div className="border border-dashed border-[#04A9FF]/40 rounded-xl p-3 bg-blue-50/30">
+                  <p className="text-xs font-semibold text-[#04A9FF] mb-2">New sizes to add — set prices:</p>
+                  <div className="overflow-x-auto -mx-1">
+                    <table className="w-full text-sm min-w-[420px]">
+                      <thead>
+                        <tr className="border-b border-gray-100">
+                          <th className="text-left text-xs text-gray-500 pb-2 font-semibold px-1">Size</th>
+                          <th className="text-left text-xs text-gray-500 pb-2 font-semibold px-1">Regular Price</th>
+                          <th className="text-left text-xs text-gray-500 pb-2 font-semibold px-1">Sale Price</th>
+                          <th className="text-left text-xs text-gray-500 pb-2 font-semibold px-1">Stock Qty</th>
+                          <th className="pb-2 px-1"></th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-50">
+                        {pendingSizes.map(s => (
+                          <tr key={s.size_id}>
+                            <td className="py-2 px-1">
+                              <span className="bg-[#04A9FF]/20 text-[#04A9FF] text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">
+                                {s.size_name}
+                              </span>
+                            </td>
+                            <td className="py-2 px-1">
+                              <input type="number" value={s.regular_price}
+                                onChange={e => updatePendingSize(s.size_id, "regular_price", e.target.value)}
+                                className="w-24 border border-gray-200 rounded-lg px-2 py-1.5 text-xs outline-none focus:border-[#04A9FF] bg-white transition-colors" />
+                            </td>
+                            <td className="py-2 px-1">
+                              <input type="number" value={s.sale_price}
+                                onChange={e => updatePendingSize(s.size_id, "sale_price", e.target.value)}
+                                className="w-24 border border-gray-200 rounded-lg px-2 py-1.5 text-xs outline-none focus:border-[#04A9FF] bg-white transition-colors" />
+                            </td>
+                            <td className="py-2 px-1">
+                              <input type="number" value={s.stock_qty}
+                                onChange={e => updatePendingSize(s.size_id, "stock_qty", e.target.value)}
+                                className="w-20 border border-gray-200 rounded-lg px-2 py-1.5 text-xs outline-none focus:border-[#04A9FF] bg-white transition-colors" />
+                            </td>
+                            <td className="py-2 px-1">
+                              <button type="button"
+                                onClick={() => setPendingSizes(prev => prev.filter(p => p.size_id !== s.size_id))}
+                                className="w-7 h-7 rounded-lg bg-red-50 text-red-400 hover:bg-red-100 flex items-center justify-center transition-colors">
+                                <FiX size={12} />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <button type="button" onClick={saveNewSizes} disabled={savingNewVars}
+                    className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 bg-[#04A9FF] text-white text-xs font-bold rounded-xl disabled:opacity-60 transition-colors">
+                    <FiPlus size={12} />
+                    {savingNewVars ? "Saving..." : `Add ${pendingSizes.length} Size${pendingSizes.length > 1 ? "s" : ""}`}
+                  </button>
                 </div>
-                <span className="text-sm text-gray-600 font-medium">{label}</span>
-              </label>
-            ))}
-          </div>
-        </Section>
+              )}
+            </Section>
 
-        <div className="flex gap-3">
+            {/* Color Variations */}
+            <Section title="Color Variations">
+              {/* Existing color variations */}
+              {colorVariations.length > 0 && (
+                <div className="space-y-2 pb-3 border-b border-gray-50">
+                  {colorVariations.map(v => {
+                    const edit = colorVarEdits[v.id] || {};
+                    const isSaving = savingVarId === v.id;
+                    const colorData = allColors.find(c => String(c.id) === String(v.color_id));
+                    const colorCode = colorData?.color_code || v.color_code || "#cccccc";
+                    return (
+                      <div key={v.id} className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 w-28 shrink-0">
+                          <div className="w-6 h-6 rounded-full border border-gray-200 shrink-0"
+                            style={{ backgroundColor: colorCode }} />
+                          <span className="text-xs font-semibold text-gray-700 truncate">
+                            {v.color || v.color_name}
+                          </span>
+                        </div>
+                        <input value={edit.color_page_link ?? ""}
+                          onChange={e => updateColorVarEdit(v.id, e.target.value)}
+                          placeholder="Product page URL for this color..."
+                          className="flex-1 border border-gray-200 rounded-lg px-3 py-1.5 text-xs outline-none focus:border-[#04A9FF] transition-colors" />
+                        <button type="button" onClick={() => saveColorVar(v.id)} disabled={isSaving}
+                          className="w-7 h-7 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 flex items-center justify-center transition-colors disabled:opacity-60 shrink-0">
+                          <FiSave size={12} />
+                        </button>
+                        <button type="button" onClick={() => deleteVariation(v.id)}
+                          className="w-7 h-7 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center transition-colors shrink-0">
+                          <FiTrash2 size={12} />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Color swatches to add */}
+              <div>
+                <p className="text-xs text-gray-500 mb-2">Click color to add a variant:</p>
+                <div className="flex flex-wrap gap-2">
+                  {allColors.length === 0 && (
+                    <p className="text-xs text-gray-400 italic">No colors available. Add colors in the Colors module first.</p>
+                  )}
+                  {allColors.map(color => {
+                    const already = colorVariations.some(v => String(v.color_id) === String(color.id));
+                    const pending = pendingColors.find(p => p.color_id === color.id);
+                    return (
+                      <button key={color.id} type="button"
+                        onClick={() => !already && togglePendingColor(color)}
+                        disabled={already}
+                        title={color.color_name}
+                        className={`relative w-8 h-8 rounded-full border-2 transition-all ${
+                          already ? "opacity-40 cursor-not-allowed border-gray-200" :
+                          pending ? "border-[#04A9FF] scale-110 ring-2 ring-[#04A9FF]/30" :
+                          "border-gray-200 hover:border-gray-400 hover:scale-105"
+                        }`}
+                        style={{ backgroundColor: color.color_code || "#cccccc" }}>
+                        {pending && (
+                          <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#04A9FF] rounded-full flex items-center justify-center">
+                            <FiPlus size={9} className="text-white" />
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Pending colors */}
+              {pendingColors.length > 0 && (
+                <div className="border border-dashed border-[#04A9FF]/40 rounded-xl p-3 bg-blue-50/30">
+                  <p className="text-xs font-semibold text-[#04A9FF] mb-2">New color variants to add — enter product links:</p>
+                  <div className="space-y-2">
+                    {pendingColors.map(c => (
+                      <div key={c.color_id} className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 w-28 shrink-0">
+                          <div className="w-6 h-6 rounded-full border border-gray-200 shrink-0"
+                            style={{ backgroundColor: c.color_code }} />
+                          <span className="text-xs font-semibold text-gray-700 truncate">{c.color_name}</span>
+                        </div>
+                        <input value={c.product_link}
+                          onChange={e => updatePendingColorLink(c.color_id, e.target.value)}
+                          placeholder="Product page URL for this color..."
+                          className="flex-1 border border-gray-200 rounded-lg px-3 py-1.5 text-xs outline-none focus:border-[#04A9FF] bg-white transition-colors" />
+                        <button type="button"
+                          onClick={() => setPendingColors(prev => prev.filter(p => p.color_id !== c.color_id))}
+                          className="w-7 h-7 rounded-lg bg-red-50 text-red-400 hover:bg-red-100 flex items-center justify-center transition-colors shrink-0">
+                          <FiX size={12} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <button type="button" onClick={saveNewColors} disabled={savingNewVars}
+                    className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 bg-[#04A9FF] text-white text-xs font-bold rounded-xl disabled:opacity-60 transition-colors">
+                    <FiPlus size={12} />
+                    {savingNewVars ? "Saving..." : `Add ${pendingColors.length} Color${pendingColors.length > 1 ? "s" : ""}`}
+                  </button>
+                </div>
+              )}
+            </Section>
+
+            {/* Key Highlights */}
+            <Section title="Key Highlights">
+              <div className="space-y-2">
+                {highlights.map((h) => (
+                  <div key={h.id} className="flex items-center gap-2">
+                    {editHighlight?.id === h.id ? (
+                      <>
+                        <input value={editHighlight.label} onChange={(e) => setEditHighlight((p) => ({ ...p, label: e.target.value }))}
+                          placeholder="Label" className={`flex-1 ${I}`} />
+                        <input value={editHighlight.value} onChange={(e) => setEditHighlight((p) => ({ ...p, value: e.target.value }))}
+                          placeholder="Value" className={`flex-1 ${I}`} />
+                        <button type="button" onClick={saveHighlight} disabled={savingHighlight}
+                          className="w-8 h-8 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 flex items-center justify-center transition-colors disabled:opacity-60">
+                          <FiSave size={13} />
+                        </button>
+                        <button type="button" onClick={() => setEditHighlight(null)}
+                          className="w-8 h-8 rounded-lg bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                          <FiX size={13} />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <span className="flex-1 text-sm font-semibold text-gray-700 bg-gray-50 rounded-xl px-3 py-2">{h.label}</span>
+                        <span className="flex-1 text-sm text-gray-600 bg-gray-50 rounded-xl px-3 py-2">{h.value}</span>
+                        <button type="button" onClick={() => setEditHighlight({ ...h })}
+                          className="w-8 h-8 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                          <FiEdit2 size={13} />
+                        </button>
+                        <button type="button" onClick={() => deleteHighlight(h.id)}
+                          className="w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center transition-colors">
+                          <FiTrash2 size={13} />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                ))}
+                <div className="flex items-center gap-2 pt-1">
+                  <input value={newHighlight.label} onChange={(e) => setNewHighlight((p) => ({ ...p, label: e.target.value }))}
+                    placeholder="Label (e.g. Length)" className={`flex-1 ${I}`} />
+                  <input value={newHighlight.value} onChange={(e) => setNewHighlight((p) => ({ ...p, value: e.target.value }))}
+                    placeholder="Value (e.g. 10 inch)" className={`flex-1 ${I}`} />
+                  <button type="button" onClick={addHighlight} disabled={savingHighlight || !newHighlight.label || !newHighlight.value}
+                    className="inline-flex items-center gap-1 px-3 py-2 bg-[#04A9FF] text-white text-xs font-bold rounded-xl disabled:opacity-60 transition-colors">
+                    <FiPlus size={13} /> Add
+                  </button>
+                </div>
+              </div>
+            </Section>
+
+            {/* SEO Details */}
+            <Section title="SEO Details">
+              <div className="space-y-3">
+                <div>
+                  <label className={L}>Meta Title</label>
+                  <input value={seo.meta_title} onChange={(e) => setSeoField("meta_title", e.target.value)}
+                    placeholder={form.prod_name} className={I} />
+                </div>
+                <div>
+                  <label className={L}>Meta Description</label>
+                  <textarea rows={3} value={seo.meta_description} onChange={(e) => setSeoField("meta_description", e.target.value)}
+                    placeholder="Brief description for search engines (150–160 chars recommended)"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#04A9FF] transition-colors resize-none" />
+                  <p className="text-xs text-gray-400 mt-1">{seo.meta_description.length} chars</p>
+                </div>
+                <div>
+                  <label className={L}>Meta Keywords</label>
+                  <input value={seo.meta_keywords} onChange={(e) => setSeoField("meta_keywords", e.target.value)}
+                    placeholder="keyword1, keyword2, keyword3" className={I} />
+                </div>
+                <div>
+                  <label className={L}>Canonical URL</label>
+                  <input value={seo.canonical_url} onChange={(e) => setSeoField("canonical_url", e.target.value)}
+                    placeholder="https://indianhairworld.com/product/..." className={I} />
+                </div>
+              </div>
+            </Section>
+
+          </div>
+
+          {/* ── Right column ── */}
+          <div className="lg:col-span-5 space-y-5">
+
+            {/* Main Images */}
+            <Section title="Main Images">
+              <div className="space-y-4">
+                {[
+                  { label: "Primary Image", preview: primaryPreview, ref: primaryRef, setter: setPrimaryImg, previewSetter: setPrimaryPreview },
+                  { label: "Secondary Image", preview: secondaryPreview, ref: secondaryRef, setter: setSecondaryImg, previewSetter: setSecondaryPreview },
+                ].map(({ label, preview, ref, setter, previewSetter }) => (
+                  <div key={label}>
+                    <label className={L}>{label}</label>
+                    <div className="flex items-center gap-3">
+                      {preview ? (
+                        <img src={preview} alt="" className="w-20 h-20 rounded-xl object-cover border border-gray-100" />
+                      ) : (
+                        <div className="w-20 h-20 rounded-xl bg-gray-100 flex items-center justify-center cursor-pointer" onClick={() => ref.current?.click()}>
+                          <FiImage size={22} className="text-gray-300" />
+                        </div>
+                      )}
+                      <button type="button" onClick={() => ref.current?.click()}
+                        className="px-3 py-2 text-xs font-semibold rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
+                        {preview ? "Change" : "Upload"}
+                      </button>
+                      <input ref={ref} type="file" accept="image/*" className="hidden" onChange={handleImg(setter, previewSetter)} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Section>
+
+            {/* Additional Images */}
+            <Section title="Additional Images">
+              <div className="flex flex-wrap gap-3">
+                {additionalImages.map((img) => (
+                  <div key={img.image_no} className="relative group">
+                    <img src={img.prod_img_url} alt="" className="w-20 h-20 rounded-xl object-cover border border-gray-100" />
+                    <button type="button" onClick={() => deleteAdditionalImage(img.image_no)}
+                      className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <FiX size={10} />
+                    </button>
+                  </div>
+                ))}
+                <button type="button" onClick={() => imgUploadRef.current?.click()} disabled={uploadingImg}
+                  className="w-20 h-20 rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-300 hover:border-[#04A9FF] hover:text-[#04A9FF] transition-colors disabled:opacity-60">
+                  {uploadingImg ? <span className="text-xs text-gray-400">...</span> : <FiPlus size={20} />}
+                </button>
+                <input ref={imgUploadRef} type="file" accept="image/*" multiple className="hidden" onChange={handleAdditionalImgUpload} />
+              </div>
+            </Section>
+
+            {/* Categories */}
+            <Section title="Categories *">
+              <div className="flex flex-wrap gap-2">
+                {allCategories.map((cat) => {
+                  const selected = selectedCategories.find((c) => c.id === cat.id);
+                  return (
+                    <button key={cat.id} type="button" onClick={() => toggleCategory(cat)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors border ${selected ? "bg-[#04A9FF] text-white border-[#04A9FF]" : "bg-white text-gray-600 border-gray-200 hover:border-[#04A9FF]"}`}>
+                      {cat.category_name}
+                    </button>
+                  );
+                })}
+              </div>
+            </Section>
+
+            {/* Attributes & Settings */}
+            <Section title="Attributes & Settings">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className={L}>Brand</label>
+                  <select value={form.brand_id} onChange={(e) => set("brand_id", e.target.value)} className={S}>
+                    <option value="">Select Brand</option>
+                    {allBrands.map((b) => <option key={b.id} value={b.id}>{b.brand_name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className={L}>Main Color</label>
+                  <select value={form.color_id} onChange={(e) => set("color_id", e.target.value)} className={S}>
+                    <option value="">Select Color</option>
+                    {allColors.map((c) => <option key={c.id} value={c.id}>{c.color_name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className={L}>Product Quality</label>
+                  <input value={form.product_quality} onChange={(e) => set("product_quality", e.target.value)} className={I} />
+                </div>
+                <div>
+                  <label className={L}>Product Tag</label>
+                  <input value={form.product_tag} onChange={(e) => set("product_tag", e.target.value)} className={I} />
+                </div>
+                <div>
+                  <label className={L}>Status</label>
+                  <select value={form.status} onChange={(e) => set("status", e.target.value)} className={S}>
+                    <option value="1">Active</option>
+                    <option value="0">Inactive</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3 pt-2 border-t border-gray-50">
+                <Toggle checked={form.is_sale} onChange={(v) => set("is_sale", v)} label={
+                  <span className="flex items-center gap-2">
+                    On Sale
+                    {form.is_sale && <span className="text-xs font-bold bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full">SALE</span>}
+                  </span>
+                } />
+                <Toggle checked={form.is_returnable} onChange={(v) => set("is_returnable", v)} label="Returnable (15 days)" />
+                <Toggle checked={form.is_cod} onChange={(v) => set("is_cod", v)} label="Cash on Delivery" />
+              </div>
+            </Section>
+
+          </div>
+        </div>
+
+        <div className="flex gap-3 mt-5">
           <button type="button" onClick={() => router.push("/products")}
             className="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors">
             Back to Products
@@ -446,137 +950,9 @@ export default function EditProduct() {
         </div>
       </form>
 
-      {/* Variations */}
-      <div className="mt-5 max-w-4xl space-y-5">
-        <Section title="Product Variations">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide font-semibold">
-                  <th className="px-4 py-2.5 text-left">Size</th>
-                  <th className="px-4 py-2.5 text-left">Color</th>
-                  <th className="px-4 py-2.5 text-left">Regular Price</th>
-                  <th className="px-4 py-2.5 text-left">Sale Price</th>
-                  <th className="px-4 py-2.5 text-left">Stock</th>
-                  <th className="px-4 py-2.5 text-left"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {variations.map((v) => (
-                  <tr key={v.id} className="hover:bg-gray-50/70">
-                    <td className="px-4 py-2.5 font-medium">{v.size || "—"}</td>
-                    <td className="px-4 py-2.5">{v.color || "—"}</td>
-                    <td className="px-4 py-2.5">₹{v.regular_price || 0}</td>
-                    <td className="px-4 py-2.5">₹{v.sale_price || 0}</td>
-                    <td className="px-4 py-2.5">{v.stock_qty || 0}</td>
-                    <td className="px-4 py-2.5">
-                      <button onClick={() => deleteVariation(v.id)}
-                        className="w-7 h-7 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center transition-colors">
-                        <FiTrash2 size={12} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-                {variations.length === 0 && (
-                  <tr><td colSpan={6} className="px-4 py-6 text-center text-gray-400 text-xs">No variations added</td></tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-6 gap-2 pt-2 border-t border-gray-50">
-            {[
-              { key: "size", placeholder: "Size" },
-              { key: "color", placeholder: "Color" },
-              { key: "regular_price", placeholder: "Reg. Price", type: "number" },
-              { key: "sale_price", placeholder: "Sale Price", type: "number" },
-              { key: "stock_qty", placeholder: "Stock", type: "number" },
-            ].map(({ key, placeholder, type }) => (
-              <input key={key} type={type || "text"} value={newVariation[key]} onChange={(e) => setNewVariation((v) => ({ ...v, [key]: e.target.value }))}
-                placeholder={placeholder}
-                className="border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#04A9FF] transition-colors" />
-            ))}
-            <button type="button" onClick={addVariation} disabled={addingVariation || !newVariation.size || !newVariation.color}
-              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-[#04A9FF] text-white text-xs font-bold rounded-xl disabled:opacity-60 transition-colors">
-              <FiPlus size={13} /> {addingVariation ? "Adding..." : "Add"}
-            </button>
-          </div>
-        </Section>
-
-        {/* Additional Images */}
-        <Section title="Additional Images">
-          <div className="flex flex-wrap gap-3">
-            {additionalImages.map((img) => (
-              <div key={img.image_no} className="relative group">
-                <img src={img.prod_img_url} alt="" className="w-20 h-20 rounded-xl object-cover border border-gray-100" />
-                <button type="button" onClick={() => deleteAdditionalImage(img.image_no)}
-                  className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <FiX size={10} />
-                </button>
-              </div>
-            ))}
-            <button type="button" onClick={() => imgUploadRef.current?.click()} disabled={uploadingImg}
-              className="w-20 h-20 rounded-xl border-2 border-dashed border-gray-200 flex items-center justify-center text-gray-300 hover:border-[#04A9FF] hover:text-[#04A9FF] transition-colors disabled:opacity-60">
-              {uploadingImg ? <span className="text-xs text-gray-400">...</span> : <FiPlus size={20} />}
-            </button>
-            <input ref={imgUploadRef} type="file" accept="image/*" multiple className="hidden" onChange={handleAdditionalImgUpload} />
-          </div>
-        </Section>
-
-        {/* Key Highlights */}
-        <Section title="Key Highlights">
-          <div className="space-y-2">
-            {highlights.map((h) => (
-              <div key={h.id} className="flex items-center gap-2">
-                {editHighlight?.id === h.id ? (
-                  <>
-                    <input value={editHighlight.label} onChange={(e) => setEditHighlight((p) => ({ ...p, label: e.target.value }))}
-                      placeholder="Label"
-                      className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#04A9FF] transition-colors" />
-                    <input value={editHighlight.value} onChange={(e) => setEditHighlight((p) => ({ ...p, value: e.target.value }))}
-                      placeholder="Value"
-                      className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#04A9FF] transition-colors" />
-                    <button type="button" onClick={saveHighlight} disabled={savingHighlight}
-                      className="w-8 h-8 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 flex items-center justify-center transition-colors disabled:opacity-60">
-                      <FiSave size={13} />
-                    </button>
-                    <button type="button" onClick={() => setEditHighlight(null)}
-                      className="w-8 h-8 rounded-lg bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center transition-colors">
-                      <FiX size={13} />
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <span className="flex-1 text-sm font-semibold text-gray-700 bg-gray-50 rounded-xl px-3 py-2">{h.label}</span>
-                    <span className="flex-1 text-sm text-gray-600 bg-gray-50 rounded-xl px-3 py-2">{h.value}</span>
-                    <button type="button" onClick={() => setEditHighlight({ ...h })}
-                      className="w-8 h-8 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center justify-center transition-colors">
-                      <FiEdit2 size={13} />
-                    </button>
-                    <button type="button" onClick={() => deleteHighlight(h.id)}
-                      className="w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center transition-colors">
-                      <FiTrash2 size={13} />
-                    </button>
-                  </>
-                )}
-              </div>
-            ))}
-            <div className="flex items-center gap-2 pt-1">
-              <input value={newHighlight.label} onChange={(e) => setNewHighlight((p) => ({ ...p, label: e.target.value }))}
-                placeholder="Label (e.g. Length)"
-                className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#04A9FF] transition-colors" />
-              <input value={newHighlight.value} onChange={(e) => setNewHighlight((p) => ({ ...p, value: e.target.value }))}
-                placeholder="Value (e.g. 10 inch)"
-                className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#04A9FF] transition-colors" />
-              <button type="button" onClick={addHighlight} disabled={savingHighlight || !newHighlight.label || !newHighlight.value}
-                className="inline-flex items-center gap-1 px-3 py-2 bg-[#04A9FF] text-white text-xs font-bold rounded-xl disabled:opacity-60 transition-colors">
-                <FiPlus size={13} /> Add
-              </button>
-            </div>
-          </div>
-        </Section>
-
-        {/* Reviews */}
-        {reviews.length > 0 && (
+      {/* Reviews */}
+      {reviews.length > 0 && (
+        <div className="mt-5">
           <Section title={`Reviews (${reviews.length})`}>
             <div className="space-y-3">
               {reviews.map((r) => (
@@ -595,8 +971,8 @@ export default function EditProduct() {
               ))}
             </div>
           </Section>
-        )}
-      </div>
+        </div>
+      )}
     </AdminLayout>
   );
 }

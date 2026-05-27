@@ -16,6 +16,8 @@ import {
 import PopularReels from './PopularReels';
 import BranchAppointmentBanner from '../branches/BranchAppointmentBanner';
 import ShopOnlineBanner from '../ShopOnlineBanner';
+import SaleProductsSection from './SaleProductsSection';
+import CartReminderSection from './CartReminderSection';
 
 /* ── Below the fold — code-split, lazy loaded ────────────────────── */
 const SingleSlider = dynamic(() => import('../SingleSlider'), {
@@ -86,6 +88,8 @@ const HomeBody = () => {
       <PopularReels />
       <BranchAppointmentBanner />
       <ShopOnlineBanner />
+      <CartReminderSection />
+      <SaleProductsSection />
 
       {/* ── Below fold (lazy + skeleton) ── */}
       <SingleSlider slug_name="get_slug_data/men-products" title="MEN'S HAIR PRODUCTS" />

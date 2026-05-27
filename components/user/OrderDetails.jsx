@@ -13,6 +13,31 @@ import DownloadInvoiceButton from '../DownloadInvoiceButton';
 
 const CANCELLABLE_STATUSES = ['New Order', 'Processing'];
 
+function StarPicker({ value, onChange }) {
+  const [hovered, setHovered] = useState(0);
+  return (
+    <div className="flex gap-1">
+      {[1, 2, 3, 4, 5].map((s) => (
+        <button
+          key={s}
+          type="button"
+          onClick={() => onChange(s)}
+          onMouseEnter={() => setHovered(s)}
+          onMouseLeave={() => setHovered(0)}
+          className="focus:outline-none"
+        >
+          <svg
+            viewBox="0 0 20 20"
+            className={`w-6 h-6 transition-colors ${s <= (hovered || value) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300 fill-gray-100'}`}
+          >
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 const OrderDetails = () => {
   const { orderId } = useParams();
   const [order, setOrder] = useState(null);
@@ -24,6 +49,38 @@ const OrderDetails = () => {
   const toggleBreakup = () => setShowBreakup(!showBreakup);
   const [cancelling, setCancelling] = useState(false);
   const [cancelError, setCancelError] = useState(null);
+
+  // per-item review state: { [product_id]: { rating, text, status: idle|submitting|done|error } }
+  const [reviews, setReviews] = useState({});
+
+  const initReview = (productId) => {
+    setReviews((prev) =>
+      prev[productId] ? prev : { ...prev, [productId]: { rating: 5, text: '', status: 'idle' } }
+    );
+  };
+
+  const setReviewField = (productId, field, value) => {
+    setReviews((prev) => ({
+      ...prev,
+      [productId]: { ...prev[productId], [field]: value },
+    }));
+  };
+
+  const submitReview = async (productId) => {
+    const rv = reviews[productId];
+    if (!rv || !rv.text.trim()) return;
+    setReviewField(productId, 'status', 'submitting');
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/submit_product_review/${productId}`,
+        { rating: rv.rating, review_text: rv.text },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setReviewField(productId, 'status', res.data?.status ? 'done' : 'error');
+    } catch {
+      setReviewField(productId, 'status', 'error');
+    }
+  };
 
   useEffect(() => {
     if (!orderId) return;
@@ -352,6 +409,100 @@ const OrderDetails = () => {
                           </div>
                         </div>
                       )}
+                    </div>
+                  )}
+
+                  {/* ── Rate your purchase (shown after delivery) ── */}
+                  {order.shipping_status === 'Delivered' && (
+                    <div className="my-6">
+                      <h3 className="text-lg font-bold text-gray-800 mb-4">Rate Your Purchase</h3>
+                      <div className="space-y-4">
+                        {order.order_items.map((item) => {
+                          const pid = item.product_id;
+                          const rv  = reviews[pid];
+
+                          if (!rv) {
+                            return (
+                              <div key={item.id} className="flex items-center justify-between border border-gray-200 rounded-xl p-4">
+                                <div className="flex items-center gap-3">
+                                  <img
+                                    src={item.product_details?.primary_img}
+                                    alt=""
+                                    className="w-12 h-12 rounded-lg object-cover border border-gray-100"
+                                  />
+                                  <p className="text-sm font-medium text-gray-800 line-clamp-2">{item.product_name}</p>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => initReview(pid)}
+                                  className="text-xs font-semibold px-4 py-2 rounded-lg bg-[#04A9FF] text-white hover:bg-[#0090e0] transition-colors flex-shrink-0 ml-3"
+                                >
+                                  Write a Review
+                                </button>
+                              </div>
+                            );
+                          }
+
+                          if (rv.status === 'done') {
+                            return (
+                              <div key={item.id} className="flex items-center gap-3 border border-green-100 bg-green-50 rounded-xl p-4">
+                                <svg viewBox="0 0 20 20" className="w-5 h-5 text-green-500 fill-green-500 flex-shrink-0">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                                <div>
+                                  <p className="text-sm font-semibold text-green-700">Review submitted for <span className="font-bold">{item.product_name}</span></p>
+                                  <p className="text-xs text-green-600">Thank you! It will appear on the product page.</p>
+                                </div>
+                              </div>
+                            );
+                          }
+
+                          return (
+                            <div key={item.id} className="border border-gray-200 rounded-xl p-4 space-y-3">
+                              <div className="flex items-center gap-3">
+                                <img
+                                  src={item.product_details?.primary_img}
+                                  alt=""
+                                  className="w-12 h-12 rounded-lg object-cover border border-gray-100 flex-shrink-0"
+                                />
+                                <p className="text-sm font-medium text-gray-800">{item.product_name}</p>
+                              </div>
+
+                              <StarPicker value={rv.rating} onChange={(v) => setReviewField(pid, 'rating', v)} />
+
+                              <textarea
+                                rows={3}
+                                value={rv.text}
+                                onChange={(e) => setReviewField(pid, 'text', e.target.value)}
+                                placeholder="Share your experience with this product…"
+                                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#04A9FF] resize-none transition-colors"
+                              />
+
+                              {rv.status === 'error' && (
+                                <p className="text-xs text-red-600">Something went wrong. Please try again.</p>
+                              )}
+
+                              <div className="flex gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => submitReview(pid)}
+                                  disabled={rv.status === 'submitting' || !rv.text.trim()}
+                                  className="px-5 py-2 bg-[#04A9FF] hover:bg-[#0090e0] text-white text-sm font-semibold rounded-lg disabled:opacity-50 transition-colors"
+                                >
+                                  {rv.status === 'submitting' ? 'Submitting…' : 'Submit Review'}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setReviews((prev) => { const n = { ...prev }; delete n[pid]; return n; })}
+                                  className="px-4 py-2 border border-gray-200 text-sm text-gray-500 rounded-lg hover:bg-gray-50 transition-colors"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   )}
 

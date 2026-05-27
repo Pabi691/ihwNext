@@ -16,6 +16,8 @@ import {
 import PopularReels from '@/components/home/PopularReels';
 import BranchAppointmentBanner from '@/components/branches/BranchAppointmentBanner';
 import ShopOnlineBanner from '@/components/ShopOnlineBanner';
+import SaleProductsSection from '@/components/home/SaleProductsSection';
+import CartReminderSection from '@/components/home/CartReminderSection';
 
 /* ── Below the fold — code-split ─────────────────────────────────── */
 const SingleSlider = dynamic(() => import('@/components/SingleSlider'), {
@@ -91,6 +93,8 @@ const MobileHomeBody = () => {
       <PopularReels />
       <BranchAppointmentBanner />
       <ShopOnlineBanner />
+      <CartReminderSection />
+      <SaleProductsSection />
 
       {/* ── Below fold (lazy + skeleton) ── */}
       <SingleSlider slug_name="get_slug_data/men-products" title="MEN'S HAIR PRODUCTS" />

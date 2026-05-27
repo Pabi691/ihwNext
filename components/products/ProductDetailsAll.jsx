@@ -502,6 +502,26 @@ function ProductDetailsAll() {
                 <div>
                   <DeliveryEstimate />
                 </div>
+
+                {/* Trust badges — returnable & COD */}
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {(product.is_returnable == 1 || product.is_returnable === "1" || product.is_returnable === true) && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-green-200 bg-green-50 text-green-700 text-xs font-semibold">
+                      ↩ 15-Day Easy Returns
+                    </span>
+                  )}
+                  {(product.is_cod == 1 || product.is_cod === "1" || product.is_cod === true) && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-blue-200 bg-blue-50 text-blue-700 text-xs font-semibold">
+                      💵 Cash on Delivery Available
+                    </span>
+                  )}
+                  {(product.is_sale == 1 || product.is_sale === "1" || product.is_sale === true) && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-red-200 bg-red-50 text-red-600 text-xs font-bold animate-pulse">
+                      🔥 On Sale
+                    </span>
+                  )}
+                </div>
+
                 <a
                   href={`https://wa.me/918910097668?text=Hi%2C%20I%20want%20to%20book%20a%20video%20call`}
                   target="_blank"
