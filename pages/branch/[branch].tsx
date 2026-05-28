@@ -41,7 +41,6 @@ const Branches = () => {
             <MainLayOut>
                 <DesktopNav />
                 <BranchHero />
-                <BranchMap data={data} compact />
                 {/* Shark Tank Images */}
                 <div className="w-full my-6 md:my-16">
                     <div className="max-w-6xl mx-auto px-4 md:px-6">
@@ -76,6 +75,7 @@ const Branches = () => {
                     </div>
                 </div>
                 <PopularReels />
+                <BranchMap data={data} compact />
                 <AchievementSlider />
                 <OurWorks />
                 <OurStoresSection />

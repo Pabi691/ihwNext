@@ -32,7 +32,7 @@ function ProductDetailsAll() {
   const [sizeChart, setSizeChart] = useState(false);
   const [keyHighlights, setKeyHighlights] = useState([]);
   const { wishlist, setWishlist, addToCart, token } = useGlobal();
-  const [likedProductsTag, setLikedProductsTag] = useState(null);
+  const [relatedCategoryId, setRelatedCategoryId] = useState(null);
   const [openSizeChart, setOpenSizeChart] = useState(false);
   // const [unAvailableSize, setUnAvailableSize] = useState(false);
   // const [selectedUnAvailableSize, setSelectedUnAvailableSize] = useState(null);
@@ -69,7 +69,7 @@ function ProductDetailsAll() {
       setColorVariations(existingProduct.color_details || []);
       setProductVariations(existingProduct.product_variations || []);
       setProductReviews(existingProduct.product_ratings || []);
-      setLikedProductsTag(existingProduct.product_tag);
+      setRelatedCategoryId(existingProduct.product_categories?.[0]?.id ?? null);
       return;
     }
     // If not in sessionStorage, fetch from API
@@ -90,7 +90,7 @@ function ProductDetailsAll() {
         setColorVariations(variationsColor);
         setProductVariations(variations);
         setProductReviews(selectedProduct?.product_ratings);
-        setLikedProductsTag(selectedProduct.product_tag);
+        setRelatedCategoryId(selectedProduct.product_categories?.[0]?.id ?? null);
         setKeyHighlights(selectedProduct.product_key_highlights);
         setProduct(selectedProduct);
         setSelectedImage(selectedProduct.primary_img);
@@ -565,7 +565,7 @@ function ProductDetailsAll() {
             )}
         </div>
         <div className='my-4 remove_nav ms-2 md:ms-0'>
-          {likedProductsTag && <YouAlsoLike likedProductsTag={likedProductsTag} />}
+          {relatedCategoryId && <YouAlsoLike categoryId={relatedCategoryId} currentProductId={product?.id} />}
         </div>
 
         <div className='my-4 remove_nav ms-2 md:ms-0'>

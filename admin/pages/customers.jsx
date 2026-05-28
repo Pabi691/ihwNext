@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useAdmin } from "@/components/AdminContext";
 import { useAuthGuard } from "@/components/useAuthGuard";
 import AdminLayout from "@/components/AdminLayout";
-import { FiSearch, FiChevronLeft, FiChevronRight, FiX, FiUser, FiPhone, FiMail, FiCalendar, FiShoppingBag, FiSend, FiArrowLeft, FiCheckCircle, FiAlertCircle, FiLayout } from "react-icons/fi";
+import { FiSearch, FiChevronLeft, FiChevronRight, FiX, FiUser, FiPhone, FiMail, FiCalendar, FiShoppingBag, FiSend, FiArrowLeft, FiCheckCircle, FiAlertCircle, FiLayout, FiEdit2 } from "react-icons/fi";
 
 const PER_PAGE = 15;
 
@@ -181,17 +181,37 @@ function CustomerPanel({ customerId, onClose, api }) {
   const [loading, setLoading] = useState(true);
   const [showEmail, setShowEmail] = useState(false);
   const [emailToast, setEmailToast] = useState(null);
+  const [note, setNote] = useState("");
+  const [noteSaving, setNoteSaving] = useState(false);
+  const [noteSaved, setNoteSaved] = useState(false);
+  const [noteError, setNoteError] = useState(false);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
       try {
         const res = await api("get", `/getCustomerById/${customerId}`);
-        setData(res.data?.customerData || res.data);
+        const customer = res.data?.customerData || res.data;
+        setData(customer);
+        setNote(customer?.admin_notes || "");
       } catch {}
       setLoading(false);
     })();
   }, [customerId, api]);
+
+  const handleSaveNote = async () => {
+    setNoteSaving(true);
+    setNoteError(false);
+    try {
+      await api("post", `/update_customer_notes/${customerId}`, { notes: note });
+      setNoteSaved(true);
+      setTimeout(() => setNoteSaved(false), 2500);
+    } catch {
+      setNoteError(true);
+      setTimeout(() => setNoteError(false), 3000);
+    }
+    setNoteSaving(false);
+  };
 
   const orders = data?.orders || [];
   const customerName = data?.first_name
@@ -375,6 +395,27 @@ function CustomerPanel({ customerId, onClose, api }) {
                   )}
                 </div>
               )}
+            </div>
+            {/* Admin Notes */}
+            <div>
+              <p className="text-xs text-gray-400 font-bold uppercase tracking-wide mb-3">
+                <FiEdit2 size={12} className="inline mr-1" />
+                Admin Notes
+              </p>
+              <textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                placeholder="Add notes about this customer — interests, offers discussed, follow-up reminders..."
+                rows={4}
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 placeholder-gray-400 resize-none focus:outline-none focus:border-[#04A9FF] focus:ring-1 focus:ring-[#04A9FF] transition-colors"
+              />
+              <button
+                onClick={handleSaveNote}
+                disabled={noteSaving}
+                className={`mt-2 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-white font-bold text-sm transition-all disabled:opacity-60 active:scale-[0.98] ${noteError ? "bg-red-500 hover:bg-red-600" : noteSaved ? "bg-emerald-500 hover:bg-emerald-600" : "bg-[#04A9FF] hover:bg-[#0070cc]"}`}
+              >
+                {noteSaving ? "Saving..." : noteError ? <><FiAlertCircle size={14} /> Failed to save</> : noteSaved ? <><FiCheckCircle size={14} /> Saved!</> : "Save Note"}
+              </button>
             </div>
           </div>
         )}

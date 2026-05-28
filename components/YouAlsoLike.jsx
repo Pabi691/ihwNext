@@ -9,31 +9,24 @@ import WishlistButton from './WishlistButton';
 import Skeleton from 'react-loading-skeleton';
 import { themeBgColor } from '../styles/typography';
 
-const YouAlsoLike = ({ likedProductsTag }) => {
+const YouAlsoLike = ({ categoryId, currentProductId }) => {
   const { token, wishlist, setWishlist, products } = useGlobal();
   const [likedProducts, setLikedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const maxSlidesPerView = 4;
 
   useEffect(() => {
-    const fetchLikedProduct = async () => {
-      if (likedProductsTag && products && products.length > 0) {
-        setLoading(true);
-        try {
-          const findProducts = products.filter(
-            (item) => item.product_tag === likedProductsTag
-          );
-          setLikedProducts(findProducts);
-        } catch (error) {
-          console.error('Error filtering liked products:', error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchLikedProduct();
-  }, [token, products, likedProductsTag]);
+    if (categoryId && products && products.length > 0) {
+      setLoading(true);
+      const findProducts = products.filter(
+        (item) =>
+          item.id !== currentProductId &&
+          item.product_categories?.some((cat) => cat.id === categoryId)
+      );
+      setLikedProducts(findProducts);
+      setLoading(false);
+    }
+  }, [products, categoryId, currentProductId]);
 
 
 
