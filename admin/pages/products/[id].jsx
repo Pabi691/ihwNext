@@ -124,7 +124,7 @@ export default function EditProduct() {
         status: String(p.status ?? "1"),
       });
 
-      const sm = p.seoMetadata || {};
+      const sm = p.seo_metadata || {};
       setSeo({
         meta_title: sm.meta_title || "",
         meta_description: sm.meta_description || "",
