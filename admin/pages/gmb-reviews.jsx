@@ -5,7 +5,7 @@ import { useAuthGuard } from "@/components/useAuthGuard";
 import AdminLayout from "@/components/AdminLayout";
 import { FiStar, FiPlus, FiTrash2, FiX, FiMapPin, FiCheck, FiLink, FiEdit2 } from "react-icons/fi";
 
-const BRANCHES = ["Salt Lake, Kolkata", "Behala, Kolkata", "Siliguri", "Bhubaneswar"];
+const BRANCHES = ["Salt Lake, Kolkata", "Lake Garden, Kolkata", "Siliguri", "Durgapur"];
 const RATINGS = [1, 2, 3, 4, 5];
 
 const EMPTY_FORM = {
@@ -156,7 +156,7 @@ export default function GmbReviews() {
   const fetchReviews = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await api("get", "/v1/get_gmb_reviews");
+      const res = await api("get", "/get_gmb_reviews");
       const data = res.data;
       const list = Array.isArray(data?.reviews) ? data.reviews : Array.isArray(data) ? data : [];
       setReviews(list);
@@ -204,12 +204,12 @@ export default function GmbReviews() {
     setSubmitting(true);
     try {
       if (editReview) {
-        const res = await api("put", `/v1/update_gmb_review/${editReview.id}`, form);
+        const res = await api("put", `/update_gmb_review/${editReview.id}`, form);
         const updated = res.data?.review || { ...editReview, ...form };
         setReviews((prev) => prev.map((r) => r.id === editReview.id ? updated : r));
         showToast("Review updated");
       } else {
-        const res = await api("post", "/v1/create_gmb_review", form);
+        const res = await api("post", "/create_gmb_review", form);
         const created = res.data?.review || { ...form, id: Date.now() };
         setReviews((prev) => [created, ...prev]);
         showToast("Review added successfully");
@@ -230,10 +230,10 @@ export default function GmbReviews() {
     if (!isKnown) return setFormError("Only Google Maps and JustDial URLs are supported.");
     setImporting(true);
     try {
-      const res = await api("post", "/v1/import_gmb_reviews_from_url", { url: importUrl, branch: importBranch });
+      const res = await api("post", "/import_gmb_reviews_from_url", { url: importUrl, branch: importBranch });
       const imported = Array.isArray(res.data?.reviews) ? res.data.reviews : [];
       if (imported.length === 0) {
-        setFormError("No reviews could be imported from this URL. Try entering reviews manually.");
+        setFormError(res.data?.message || "No reviews could be imported. Check server logs for details.");
       } else {
         setReviews((prev) => [...imported, ...prev]);
         setShowForm(false);
@@ -250,7 +250,7 @@ export default function GmbReviews() {
     if (!window.confirm("Delete this review?")) return;
     setDeleting(id);
     try {
-      await api("delete", `/v1/delete_gmb_review/${id}`);
+      await api("delete", `/delete_gmb_review/${id}`);
       setReviews((prev) => prev.filter((r) => r.id !== id));
       showToast("Review deleted");
     } catch {

@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useAdmin } from "@/components/AdminContext";
 import { useAuthGuard } from "@/components/useAuthGuard";
 import AdminLayout from "@/components/AdminLayout";
-import { FiSearch, FiChevronLeft, FiChevronRight, FiX, FiUser, FiPhone, FiMail, FiCalendar, FiShoppingBag, FiSend, FiArrowLeft, FiCheckCircle, FiAlertCircle, FiLayout, FiEdit2 } from "react-icons/fi";
+import { FiSearch, FiChevronLeft, FiChevronRight, FiX, FiUser, FiPhone, FiMail, FiCalendar, FiShoppingBag, FiSend, FiArrowLeft, FiCheckCircle, FiAlertCircle, FiLayout, FiEdit2, FiShoppingCart } from "react-icons/fi";
 
 const PER_PAGE = 15;
 
@@ -446,12 +446,23 @@ export default function Customers() {
   const [page, setPage] = useState(1);
   const [toggling, setToggling] = useState(null);
   const [viewId, setViewId] = useState(null);
+  const [cartCounts, setCartCounts] = useState({});
 
   const fetchCustomers = useCallback(async () => {
     setLoading(true);
     try {
       const res = await api("get", "/get_all_customers");
-      setCustomers(Array.isArray(res.data?.customers) ? res.data.customers : []);
+      const list = Array.isArray(res.data?.customers) ? res.data.customers : [];
+      setCustomers(list);
+      // Fetch cart counts for all customers in parallel
+      const results = await Promise.allSettled(
+        list.map((c) => api("get", `/get_customer_cart_admin/${c.id}`))
+      );
+      const counts = {};
+      results.forEach((r, i) => {
+        counts[list[i].id] = r.status === "fulfilled" ? (r.value.data?.cart_items?.length ?? 0) : 0;
+      });
+      setCartCounts(counts);
     } catch {
       setCustomers([]);
     }
@@ -532,6 +543,7 @@ export default function Customers() {
                     <th className="px-5 py-3.5 text-left">Gender</th>
                     <th className="px-5 py-3.5 text-left">Joined</th>
                     <th className="px-5 py-3.5 text-left">Status</th>
+                    <th className="px-5 py-3.5 text-left">Cart</th>
                     <th className="px-5 py-3.5 text-left">Actions</th>
                   </tr>
                 </thead>
@@ -565,6 +577,16 @@ export default function Customers() {
                             <span className={`w-1.5 h-1.5 rounded-full ${active ? "bg-green-400" : "bg-gray-400"}`} />
                             {active ? "Active" : "Inactive"}
                           </span>
+                        </td>
+                        <td className="px-5 py-3.5">
+                          {cartCounts[customer.id] > 0 ? (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-orange-50 text-orange-600">
+                              <FiShoppingCart size={11} />
+                              {cartCounts[customer.id]}
+                            </span>
+                          ) : (
+                            <span className="text-xs text-gray-300">—</span>
+                          )}
                         </td>
                         <td className="px-5 py-3.5">
                           <div className="flex items-center gap-2">
@@ -618,6 +640,11 @@ export default function Customers() {
                         </div>
                         <p className="text-xs text-gray-400 truncate">{customer.email || "—"}</p>
                         <p className="text-xs text-gray-500 mt-0.5">{customer.mobile_number || customer.phone || "—"}</p>
+                        {cartCounts[customer.id] > 0 && (
+                          <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-orange-50 text-orange-600">
+                            <FiShoppingCart size={10} /> {cartCounts[customer.id]} in cart
+                          </span>
+                        )}
                         <div className="flex items-center gap-2 mt-2">
                           <button onClick={() => setViewId(customer.id)}
                             className="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-[#04A9FF]/10 text-[#04A9FF]">

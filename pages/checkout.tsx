@@ -57,6 +57,9 @@ const Checkout = () => {
     state: '',
     zip_code: '',
   });
+  const codAllowed = !cart.some(
+    (item) => item.is_cod == 0 || item.is_cod === "0" || item.is_cod === false
+  );
   const [activeTab, setActiveTab] = useState("cod");
   const [isAddressOpen, setIsAddressOpen] = useState(false);
   const [isItemsOpen, setIsItemsOpen] = useState(false);
@@ -70,6 +73,13 @@ const Checkout = () => {
   const discount = discountParam ? Number(discountParam) : null;
   const shippingFetchedRef = useRef(false);
   const shippingInFlightRef = useRef(false);
+
+  // Switch away from COD if any cart item doesn't support it
+  useEffect(() => {
+    if (!codAllowed && activeTab === "cod") {
+      setActiveTab("razorpay");
+    }
+  }, [codAllowed]);
 
   useEffect(() => {
     const isBrowser = typeof window !== "undefined";
@@ -906,9 +916,13 @@ const Checkout = () => {
               <div className="md:flex-row gap-6 flex-col flex">
                 {/* Payment Method Tabs */}
                 <div className="w-full md:w-1/5 flex flex-col border rounded-lg">
-                  <button className={`p-3 border-b flex gap-4 items-center text-md md:text-xl ${activeTab === "cod" ? "text-black font-semibold" : "text-gray-300 font-medium"}`}
-                    onClick={() => setActiveTab("cod")}>
-                    <BiRupee className='p-2 border rounded-full text-5xl' />  Cash on Delivery
+                  <button
+                    className={`p-3 border-b flex gap-4 items-center text-md md:text-xl ${!codAllowed ? "opacity-40 cursor-not-allowed" : activeTab === "cod" ? "text-black font-semibold" : "text-gray-300 font-medium"}`}
+                    onClick={() => codAllowed && setActiveTab("cod")}
+                    title={!codAllowed ? "Cash on Delivery is not available for one or more items in your cart" : ""}
+                  >
+                    <BiRupee className='p-2 border rounded-full text-5xl' /> Cash on Delivery
+                    {!codAllowed && <span className="text-xs text-red-500 font-normal ml-1">Not available</span>}
                   </button>
                   <button className={`p-3 border-b flex gap-4 items-center text-xl ${activeTab === "razorpay" ? "text-black font-semibold" : "text-gray-300 font-medium"}`}
                     onClick={() => setActiveTab("razorpay")}>
@@ -1100,6 +1114,11 @@ const Checkout = () => {
                         <span className='text-green-600 text-sm'> -{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(savings)}</span>
                         : ''}
                     </div>
+                    {cart.some(item => item.is_returnable == 0 || item.is_returnable === "0" || item.is_returnable === false) && (
+                      <div className='text-red-600 text-xs font-semibold bg-red-50 border border-red-200 rounded-lg px-3 py-2 my-2'>
+                        ⚠ One or more items in your cart are non-returnable.
+                      </div>
+                    )}
                     <div className='text-gray-500 font-medium text-sm flex justify-between items-center'>{activeTab === 'cod' ? 'COD Fee:' : 'Delivery Fee:'} <span className='text-green-600'>{activeTab === 'cod' ? '+20' : 'Free'}</span></div>
                     <hr className='my-3' />
                     {!discount ? (

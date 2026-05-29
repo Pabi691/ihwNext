@@ -80,8 +80,8 @@ export default function CreateProduct() {
     product_quality: "",
     product_rating: "",
     is_sale: false,
-    is_returnable: false,
-    is_cod: false,
+    is_returnable: true,
+    is_cod: true,
     status: "1",
   });
 

@@ -28,7 +28,8 @@ const DownloadInvoiceButton = ({ order }) => {
     const shipping = order?.shipping_info || {};
     const items = order?.order_items || [];
     const payMethod = order?.payment_method || {};
-    const logoUrl = `${window.location.origin}/images/logo.png`;
+    const logoUrl = `${window.location.origin}/logo.png`;
+    const logoWhiteUrl = `${window.location.origin}/logo-white.png`;
 
     const itemRows = items.map((item, i) => {
       const netAmt = parseFloat(item.price || 0) * item.quantity;
@@ -159,7 +160,7 @@ const DownloadInvoiceButton = ({ order }) => {
           </div>
           <div style="text-align:right;">
             <div style="background-color:#111;display:inline-block;padding:6px 12px;border-radius:4px;margin-bottom:28px;">
-              <img src="${logoUrl}" alt="IndianHairWorld" style="height:30px;width:auto;filter:invert(1);" />
+              <img src="${logoWhiteUrl}" alt="IndianHairWorld" style="height:30px;width:auto;" />
             </div>
             <p>________________________</p>
             <p><strong>Authorized Signatory</strong></p>

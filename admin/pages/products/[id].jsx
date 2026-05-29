@@ -237,8 +237,9 @@ export default function EditProduct() {
             ...seo,
           }).catch(() => {});
         }
-        setSuccess("Product updated successfully.");
         setPrimaryImg(null); setSecondaryImg(null);
+        await loadProduct(); // re-fetch to confirm actual saved values
+        setSuccess("Product updated successfully.");
       } else {
         setError(res.data?.error_message || "Failed to update product.");
       }

@@ -12,6 +12,7 @@ import Zoom from "react-medium-image-zoom";
 import Skeleton from 'react-loading-skeleton';
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import ReviewRatingComments from '../ReviewRatingComments';
+import GmbReviewsSection from '../GmbReviewsSection';
 import axios from 'axios';
 import RecentlyViewed from '../RecentlyViewed';
 import { FaBolt } from 'react-icons/fa6';
@@ -42,6 +43,7 @@ function ProductDetailsAll() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [productReviews, setProductReviews] = useState([]);
+  const [gmbReviews, setGmbReviews] = useState([]);
   const [addSuccess, setAddSuccess] = useState(false);
   const [addedProductName, setAddedProductName] = useState("");
 
@@ -109,6 +111,12 @@ function ProductDetailsAll() {
   useEffect(() => {
     fetchProductDetails();
   }, [fetchProductDetails]);
+
+  useEffect(() => {
+    axios.get(`${apiBase}/v1/get_gmb_reviews`)
+      .then((res) => setGmbReviews(Array.isArray(res.data?.reviews) ? res.data.reviews : []))
+      .catch(() => setGmbReviews([]));
+  }, [apiBase]);
 
   const calculateRatingBreakdown = (reviews) => {
     const breakdown = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
@@ -505,9 +513,13 @@ function ProductDetailsAll() {
 
                 {/* Trust badges — returnable & COD */}
                 <div className="flex flex-wrap gap-2 mt-3">
-                  {(product.is_returnable == 1 || product.is_returnable === "1" || product.is_returnable === true) && (
+                  {(product.is_returnable == 1 || product.is_returnable === "1" || product.is_returnable === true) ? (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-green-200 bg-green-50 text-green-700 text-xs font-semibold">
                       ↩ 15-Day Easy Returns
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-red-300 bg-red-50 text-red-700 text-xs font-semibold">
+                      ⚠ Non-Returnable Item
                     </span>
                   )}
                   {(product.is_cod == 1 || product.is_cod === "1" || product.is_cod === true) && (
@@ -555,6 +567,7 @@ function ProductDetailsAll() {
                 />
                 <ProductDetailsAccordian productdetails={product.prod_desc} />
                 <img src='../images/icons.jpg' alt='icons' loading="lazy" />
+                <GmbReviewsSection reviews={gmbReviews} />
                 <ReviewRatingComments
                   reviews={productReviews}
                   ratingBreakdown={ratingBreakdown}
