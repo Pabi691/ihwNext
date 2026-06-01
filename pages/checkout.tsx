@@ -381,14 +381,17 @@ const Checkout = () => {
         return razorMethod?.id ?? nonCod?.id ?? safePaymentMethods[0]?.id ?? null;
       })(),
       shipping_address: shippingId,
-      bill_amt: Number(updatedSubtotal) - totalGST,
-      discount_amt: discount ? Number(discount) : 0, // newSubtotal + discount = updatedSubtotal
+      // bill_amt = inclusive price (matches sum of order_items.total_price the backend computes)
+      bill_amt: parseFloat(Number(updatedSubtotal).toFixed(2)),
+      discount_amt: discount ? Number(discount) : 0,
       coupon_code: couponCode,
-      net_amt: NoGstPrice,
+      net_amt: parseFloat(NoGstPrice.toFixed(2)), // base price (excl. GST)
       shipping_total: isCOD ? 20 : 0,
-      r_off: roundOff,
-      pay_amt: roundOff < 0.5 ? (isCOD ? (NoGstPrice - roundOff + 20) : (NoGstPrice - roundOff)) :
-        (isCOD ? (NoGstPrice - roundOff + 1 + 20) : (NoGstPrice - roundOff + 1)),
+      r_off: parseFloat(parseFloat(roundOff).toFixed(2)),
+      // pay_amt = inclusive price + COD fee (backend validates against bill_amt + shipping)
+      pay_amt: isCOD
+        ? parseFloat((newSubtotal + 20).toFixed(2))
+        : parseFloat(newSubtotal.toFixed(2)),
     };
 
     console.log('orderPayload', orderPayload);
@@ -434,9 +437,21 @@ const Checkout = () => {
       console.log('orderResponse', orderResponse);
       // 376d684856fe7b99af6f0e2cb10c3710c690b3aa
       if (!orderResponse.data || !orderResponse.data.order_id) {
+        const errData = orderResponse.data?.error_message;
+        let errMsg = "Your order could not be placed. Please try again.";
+        if (typeof errData === "string") {
+          errMsg = errData;
+        } else if (errData && typeof errData === "object") {
+          // Extract first error from any field
+          const firstErr = Object.values(errData).flat()[0];
+          if (firstErr) errMsg = String(firstErr);
+        } else if (orderResponse.data?.message) {
+          errMsg = orderResponse.data.message;
+        }
+        console.error("Order creation failed:", orderResponse.data);
         Swal.fire({
           title: "Order Creation Failed!",
-          text: orderResponse.data.error_message.shipping_address[0] ? orderResponse.data.error_message.shipping_address[0] : "Your order could not be placed. Please try again.",
+          text: errMsg,
           icon: "error",
           confirmButtonText: "OK",
         });
