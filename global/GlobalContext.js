@@ -376,21 +376,22 @@ export const GlobalProvider = ({ children, initialGlobalContent }) => {
   };
 
   // 💵 Cart Totals
+  // Prices are GST-inclusive. GST (18%) is extracted, not added.
   const calculateSummary = useCallback(() => {
-    // Ensure cart is an array
-    const items = Array.isArray(cart) ? cart : []; // Fallback to empty array if not an array
+    const items = Array.isArray(cart) ? cart : [];
 
-    // Calculate total amount, total MRP, and subtotal
-    const totalAmount = items.reduce((sum, item) => sum + parseFloat(item.product_variation?.sale_price ?? item.sale_price) * item.quantity, 0);
-    const totalMRP = items.reduce((sum, item) => sum + parseFloat(item.product_variation?.regular_price ?? item.regular_price) * item.quantity, 0);
-    const subtotal = totalAmount; // You could use the same calculation for subtotal as totalAmount
+    // grandTotal = sum of inclusive prices (what the customer pays for products)
+    const grandTotal = items.reduce((sum, item) => sum + parseFloat(item.product_variation?.sale_price ?? item.sale_price) * item.quantity, 0);
+    const totalMRP   = items.reduce((sum, item) => sum + parseFloat(item.product_variation?.regular_price ?? item.regular_price) * item.quantity, 0);
 
-    const CGST = subtotal * 0.09
-    const SGST = subtotal * 0.09
-    const totalGST = CGST + SGST
-    const grandTotal = subtotal + totalGST
+    // Extract GST from inclusive price: GST = price × (18/118)
+    const totalGST = grandTotal * (18 / 118);
+    const CGST     = totalGST / 2;
+    const SGST     = totalGST / 2;
+    const subtotal = grandTotal - totalGST; // base price before GST (for breakdown display)
+    const totalAmount = grandTotal;
 
-    const savings = totalAmount < totalMRP ? (totalMRP - grandTotal) : 'N/A';
+    const savings = grandTotal < totalMRP ? (totalMRP - grandTotal) : 'N/A';
 
     return { totalMRP, subtotal, savings, totalAmount, CGST, SGST, totalGST, grandTotal };
   }, [cart]);

@@ -40,7 +40,8 @@ const Checkout = () => {
   const [showVerify, setShowVerify] = useState(false);
   const [shippingValidate, setShippingValidate] = useState(false);
   // const [cartItems, setCartItems] = useState([]);
-  const { cart, token, CGST, SGST, grandTotal, totalGST, subtotal, totalMRP, setToken, mergeLocalCartWithServer } = useGlobal();
+  const { cart, setCart, token, CGST, SGST, grandTotal, totalGST, subtotal, totalMRP, setToken, mergeLocalCartWithServer } = useGlobal();
+  const [removingId, setRemovingId] = useState<number | null>(null);
   const [shippingAddresses, setShippingAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethods, setPaymentMethods] = useState([]);
@@ -291,7 +292,36 @@ const Checkout = () => {
   //   }
   // };
 
-  // console.log('cart', cart);  
+  const removeFromCart = async (cartId: number) => {
+    if (cart.length <= 1) {
+      toast.error('You must keep at least one item in your order.', { position: 'top-center' });
+      return;
+    }
+    const userToken = typeof window !== 'undefined' ? localStorage.getItem('userToken') : null;
+    setRemovingId(cartId);
+    try {
+      if (userToken) {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/delete_cart_item/${cartId}`, {
+          headers: { Authorization: `Bearer ${userToken}` },
+        });
+        if (res.data.status) {
+          setCart((prev) => prev.filter((item) => item.id !== cartId));
+          // Clear URL params so prices recalculate from the updated cart.
+          // Coupon/finalAmount from the old cart are no longer valid.
+          navigate('/checkout', { replace: true });
+        }
+      } else {
+        setCart((prev) => prev.filter((item) => item.id !== cartId));
+        navigate('/checkout', { replace: true });
+      }
+    } catch (err) {
+      toast.error('Failed to remove item. Please try again.', { position: 'top-center' });
+    } finally {
+      setRemovingId(null);
+    }
+  };
+
+  // console.log('cart', cart);
   const handleSubmit = async () => {
     setIsLoading(true);
     setLoading(true);
@@ -339,16 +369,16 @@ const Checkout = () => {
       // pay_method_id:,
       pay_method_id: (() => {
         if (safePaymentMethods.length === 0) return null;
-        const codMethod = safePaymentMethods.find((m) =>
-          (m?.name || m?.payment_method || "").toString().toLowerCase().includes("cod")
-        );
-        const razorMethod = safePaymentMethods.find((m) =>
-          (m?.name || m?.payment_method || "").toString().toLowerCase().includes("razor")
-        );
+        const label = (m) => (m?.name || m?.method_name || m?.payment_method || "").toString().toLowerCase();
+        const codMethod = safePaymentMethods.find((m) => label(m).includes("cod"));
+        const razorMethod = safePaymentMethods.find((m) => label(m).includes("razor") || label(m).includes("online"));
         if (activeTab === "cod") {
+          // prefer the COD method; fall back to whatever is available
           return codMethod?.id ?? safePaymentMethods[0]?.id ?? null;
         }
-        return razorMethod?.id ?? safePaymentMethods[0]?.id ?? null;
+        // prefer Razorpay; fall back to the first non-COD method, then any method
+        const nonCod = safePaymentMethods.find((m) => !label(m).includes("cod"));
+        return razorMethod?.id ?? nonCod?.id ?? safePaymentMethods[0]?.id ?? null;
       })(),
       shipping_address: shippingId,
       bill_amt: Number(updatedSubtotal) - totalGST,
@@ -1042,7 +1072,7 @@ const Checkout = () => {
                     {isItemsOpen && (
                       <div className="mt-2 p-4">
                         {cart.map((item, index) => (
-                          <div key={index} className="flex items-center mb-4">
+                          <div key={index} className="flex items-center mb-4 gap-3">
                             {(() => {
                               const customProduct = Array.isArray(item?.custom_products) ? item.custom_products[0] : null;
                               const customImage = customProduct?.front_img_url || customProduct?.back_img_url || null;
@@ -1054,10 +1084,9 @@ const Checkout = () => {
                                 return (
                                   <Link to={`/product/${productSlug}`}>
                                     <img
-                                      // src={compressImage(productImage, 400, 70, 'webp')}
                                       src={productImage}
                                       alt={productName}
-                                      className="w-12 h-12 object-cover rounded"
+                                      className="w-12 h-12 object-cover rounded flex-shrink-0"
                                     />
                                   </Link>
                                 );
@@ -1067,15 +1096,24 @@ const Checkout = () => {
                                 <img
                                   src={customImage}
                                   alt={productName}
-                                  className="w-12 h-12 object-cover rounded"
+                                  className="w-12 h-12 object-cover rounded flex-shrink-0"
                                 />
                               );
                             })()}
-                            {/* <img src={item.primary_img} alt={item.prod_name} loading="lazy" className="w-12 h-12 object-cover rounded" /> */}
-                            <div className="ml-4">
-                              <p className="text-sm font-medium text-gray-500">{item?.prod_name || item?.product?.prod_name || ''}</p>
+                            <div className="ml-1 flex-1 min-w-0">
+                              <p className="text-sm font-medium text-gray-500 truncate">{item?.prod_name || item?.product?.prod_name || ''}</p>
                               <p className="text-sm font-medium text-gray-500">Items: <span className="text-green-600">{item.quantity}</span></p>
                             </div>
+                            {cart.length > 1 && (
+                              <button
+                                onClick={() => removeFromCart(item.id)}
+                                disabled={removingId === item.id}
+                                className="text-red-400 hover:text-red-600 text-xs flex-shrink-0 disabled:opacity-50"
+                                title="Remove item"
+                              >
+                                {removingId === item.id ? '...' : '✕'}
+                              </button>
+                            )}
                           </div>
                         ))}
                       </div>
@@ -1084,81 +1122,87 @@ const Checkout = () => {
 
                   {/* Order Summary */}
                   <div className="mb-6 p-4 border rounded-lg">
-                    <h4 className='font-medium'>Order Summary</h4>
+                    <h4 className='font-medium mb-3'>Order Summary</h4>
+
+                    {/* Price */}
                     <div className='flex justify-between items-center mb-2'>
-                      <span className='text-gray-500 font-medium text-sm'>Total MRP :</span>
-                      <span className='text-gray-900 text-sm'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(totalMRP)}</span>
+                      <span className='text-gray-500 font-medium text-sm'>Price</span>
+                      <span className='text-sm text-gray-800'>
+                        {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(discount ? newSubtotal + discount : newSubtotal)}
+                      </span>
                     </div>
 
+                    {/* Tax — CGST+SGST inside West Bengal, IGST outside */}
+                    {(() => {
+                      const state = (shippingDetails?.state || '').toLowerCase().replace(/\s+/g, '');
+                      const isWB = state === 'westbengal' || state === 'wb';
+                      const fmt = (v) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(v);
+                      return isWB ? (
+                        <>
+                          <div className='flex justify-between items-center mb-1'>
+                            <span className='text-gray-500 font-medium text-sm'>CGST (9%)</span>
+                            <span className='text-sm text-gray-700'>{fmt(CGST)}</span>
+                          </div>
+                          <div className='flex justify-between items-center mb-2'>
+                            <span className='text-gray-500 font-medium text-sm'>SGST (9%)</span>
+                            <span className='text-sm text-gray-700'>{fmt(SGST)}</span>
+                          </div>
+                        </>
+                      ) : (
+                        <div className='flex justify-between items-center mb-2'>
+                          <span className='text-gray-500 font-medium text-sm'>IGST (18%)</span>
+                          <span className='text-sm text-gray-700'>{fmt(totalGST)}</span>
+                        </div>
+                      );
+                    })()}
+
+                    {/* Coupon discount */}
+                    {discount > 0 && (
+                      <div className='flex justify-between items-center mb-2'>
+                        <span className='text-gray-500 font-medium text-sm'>Coupon Discount</span>
+                        <span className='text-sm text-green-600'>
+                          -{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(discount)}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* COD / Delivery */}
                     <div className='flex justify-between items-center mb-2'>
-                      <span className='text-gray-500 font-medium text-sm'>Price :</span>
-                      <span className='text-base'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(subtotal)}</span>
+                      <span className='text-gray-500 font-medium text-sm'>{activeTab === 'cod' ? 'COD Fee' : 'Delivery'}</span>
+                      <span className={`text-sm font-medium ${activeTab === 'cod' ? 'text-gray-800' : 'text-green-600'}`}>
+                        {activeTab === 'cod' ? '+₹20' : 'Free'}
+                      </span>
                     </div>
 
-                    {/* <div className='flex justify-between items-center mb-2'>
-                  <span className='text-gray-500 font-medium text-sm'>Total MRP :</span>
-                  <span className='text-base'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(totalMRP)}</span>
-                </div> */}
+                    {/* Round off — only when non-zero */}
+                    {parseFloat(roundOff) !== 0 && (
+                      <div className='flex justify-between items-center mb-2'>
+                        <span className='text-gray-500 font-medium text-sm'>Round Off</span>
+                        <span className='text-sm text-gray-600'>
+                          {parseFloat(roundOff) > 0 ? '+' : ''}
+                          {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(roundOff)}
+                        </span>
+                      </div>
+                    )}
 
-                    <div className='flex justify-between items-center'>
-                      <span className='text-gray-500 font-medium text-sm'>CGST ( 9% ) :</span>
-                      <span className='text-gray-900 text-sm'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(CGST)}</span>
-                    </div>
-
-                    <div className='flex justify-between items-center'>
-                      <span className='text-gray-500 font-medium text-sm'>SGST ( 9% ) :</span>
-                      <span className='text-gray-900 text-sm'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(SGST)}</span>
-                    </div>
-                    <div className='text-gray-500 font-medium text-sm flex justify-between items-center my-3'>Bag Discount:
-                      {Number.isFinite(savings) ?
-                        <span className='text-green-600 text-sm'> -{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(savings)}</span>
-                        : ''}
-                    </div>
+                    {/* Non-returnable warning */}
                     {cart.some(item => item.is_returnable == 0 || item.is_returnable === "0" || item.is_returnable === false) && (
                       <div className='text-red-600 text-xs font-semibold bg-red-50 border border-red-200 rounded-lg px-3 py-2 my-2'>
                         ⚠ One or more items in your cart are non-returnable.
                       </div>
                     )}
-                    <div className='text-gray-500 font-medium text-sm flex justify-between items-center'>{activeTab === 'cod' ? 'COD Fee:' : 'Delivery Fee:'} <span className='text-green-600'>{activeTab === 'cod' ? '+20' : 'Free'}</span></div>
+
                     <hr className='my-3' />
-                    {!discount ? (
-                      <div className='text-gray-800 font-medium flex justify-between items-center'>Subtotal:
-                        <span className='text-green-600'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(`${activeTab === 'cod' ? (newSubtotal + 20) : newSubtotal}`)}</span>
-                      </div>
-                    ) : (
-                      <>
-                        {discount && (
-                          <div className='text-gray-500 font-medium text-sm flex justify-between items-center'>Price:
-                            <span className='text-green-600'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(newSubtotal + discount)}</span>
-                          </div>
-                        )}
-                        {discount && (
-                          <div className='text-gray-500 font-medium text-sm flex justify-between items-center'>Coupon Code Discount:
-                            <span className='text-green-600'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(discount)}</span>
-                          </div>
-                        )}
 
-                        <div className='text-gray-500 font-medium text-sm flex justify-between items-center'>Discount Price:
-                          <span className='text-green-600'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(newSubtotal)}</span>
-                        </div>
-                        {roundOff > 0 && (
-                          <div className='text-gray-500 font-medium text-sm flex justify-between items-center'>Round OFF:
-                            <span className='text-green-600'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(roundOff)}</span>
-                          </div>
+                    {/* Total */}
+                    <div className='flex justify-between items-center'>
+                      <span className='font-semibold text-gray-900'>Total</span>
+                      <span className='font-bold text-green-600 text-base'>
+                        {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(
+                          Math.round(activeTab === 'cod' ? newSubtotal + 20 : newSubtotal)
                         )}
-                        <hr className='my-3' />
-                        <div className='text-gray-800 font-medium flex justify-between items-center'>
-                          Subtotal:
-                          <span className='text-green-600'>
-                            {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(
-                              Math.round(`${activeTab === 'cod' ? (newSubtotal + 20) : newSubtotal}`) // Ensure the final value is rounded
-                            )}
-                          </span>
-                        </div>
-                      </>
-                    )
-                    }
-
+                      </span>
+                    </div>
                   </div>
                   <img src='../images/icons.jpg' alt='icons' loading="lazy" />
                 </div>

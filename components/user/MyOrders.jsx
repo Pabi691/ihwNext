@@ -44,18 +44,23 @@ const MyOrders = () => {
     if (!orderToCancel) return;
     setLoading(true);
     try {
-      // const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/order_cancel_by_customer/${orderToCancel}`, {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`,
-      //   },
-      // });
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order.id === orderToCancel ? { ...order, shipping_status: 'Order Cancelled ' } : order
-        )
-      );
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/order_cancel_by_customer/${orderToCancel}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data.status) {
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === orderToCancel ? { ...order, shipping_status: 'Order Cancelled ' } : order
+          )
+        );
+      } else {
+        alert(response.data.message || 'Could not cancel order. Please try again.');
+      }
     } catch (error) {
       console.error(error);
+      alert('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
       setShowWarning(false);
@@ -116,7 +121,7 @@ const MyOrders = () => {
                   ))}
                 </div>
                 <p className="text-sm text-gray-900">
-                  Net Amount: ₹{order.net_amt}
+                  Total Amount: ₹{parseFloat(order.pay_amt ?? order.net_amt).toFixed(2)}
                 </p>
 
                 {/* {order.shipping_status !== "Order Cancelled " && (

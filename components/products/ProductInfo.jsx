@@ -47,7 +47,7 @@ function ProductInfo({ product, reviews }) {
         )}
       </div>
 
-      <p className="text-gray-500">Exclusive of all taxes</p>
+      <p className="text-gray-500">Inclusive of all taxes</p>
     </>
   );
 }

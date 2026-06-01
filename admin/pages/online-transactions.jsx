@@ -43,6 +43,15 @@ function getPaymentMethodStr(o) {
   return "";
 }
 
+function getActualAmount(o) {
+  const pays = getOrderPayments(o);
+  const onlinePay = pays.find((p) => {
+    const m = (p.payment_method || "").toLowerCase();
+    return !m.includes("cod") && !m.includes("cash");
+  });
+  return parseFloat(onlinePay?.payment_amount || o.pay_amt || 0);
+}
+
 function getTransactionRef(o) {
   if (o.transaction_id) return o.transaction_id;
   if (o.payment_reference) return o.payment_reference;
@@ -62,13 +71,13 @@ function getPaymentStatus(o) {
       return !m.includes("cod") && !m.includes("cash");
     }) || pays[0];
     const status = (online?.payment_status || "").toLowerCase();
-    if (status === "success" || status === "paid") return "Success";
-    if (status === "failed" || status === "failure") return "Failed";
+    if (status === "success" || status === "paid" || status === "completed") return "Success";
+    if (status === "failed" || status === "failure" || status === "cancelled") return "Failed";
     return "Pending";
   }
   const s = (o.payment_status || "").toLowerCase();
-  if (s === "success" || s === "paid") return "Success";
-  if (s === "failed" || s === "failure") return "Failed";
+  if (s === "success" || s === "paid" || s === "completed") return "Success";
+  if (s === "failed" || s === "failure" || s === "cancelled") return "Failed";
   return "Pending";
 }
 
@@ -334,7 +343,7 @@ export default function OnlineTransactions() {
                           <MethodBadge method={getPaymentMethodStr(order)} />
                         </td>
                         <td className="px-5 py-3.5 text-right font-semibold text-gray-800">
-                          ₹{parseFloat(order.pay_amt || order.total_amount || order.grand_total || 0).toLocaleString("en-IN")}
+                          ₹{getActualAmount(order).toLocaleString("en-IN")}
                         </td>
                         <td className="px-5 py-3.5">
                           <PayStatusBadge status={getPaymentStatus(order)} />
@@ -382,7 +391,7 @@ export default function OnlineTransactions() {
                     {getCustomerEmail(order) && <p className="text-xs text-gray-400 truncate">{getCustomerEmail(order)}</p>}
                     <div className="flex items-center justify-between mt-2.5">
                       <span className="font-bold text-gray-800 text-sm">
-                        ₹{parseFloat(order.pay_amt || order.total_amount || order.grand_total || 0).toLocaleString("en-IN")}
+                        ₹{getActualAmount(order).toLocaleString("en-IN")}
                       </span>
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-gray-400">

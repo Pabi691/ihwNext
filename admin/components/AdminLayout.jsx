@@ -7,7 +7,7 @@ import {
   FiStar, FiBookOpen, FiMenu, FiBell, FiLogOut, FiChevronRight,
   FiX, FiTruck, FiRotateCcw, FiAward, FiDroplet, FiMaximize2,
   FiFileText, FiChevronDown, FiChevronUp, FiPlus, FiBox, FiNavigation,
-  FiMapPin, FiCreditCard, FiSettings,
+  FiMapPin, FiCreditCard, FiSettings, FiAlertCircle,
 } from "react-icons/fi";
 
 const NAV = [
@@ -21,6 +21,7 @@ const NAV = [
       { href: "/shipped-orders",         label: "Shipped Orders",       icon: FiTruck },
       { href: "/return-orders",          label: "Return Orders",        icon: FiRotateCcw },
       { href: "/online-transactions",    label: "Online Transactions",  icon: FiCreditCard },
+      { href: "/pending-refunds",        label: "Pending Refunds",      icon: FiAlertCircle },
     ],
   },
   {

@@ -49,6 +49,7 @@ const OrderDetails = () => {
   const toggleBreakup = () => setShowBreakup(!showBreakup);
   const [cancelling, setCancelling] = useState(false);
   const [cancelError, setCancelError] = useState(null);
+  const [showCancelWarning, setShowCancelWarning] = useState(false);
 
   // per-item review state: { [product_id]: { rating, text, status: idle|submitting|done|error } }
   const [reviews, setReviews] = useState({});
@@ -107,7 +108,6 @@ const OrderDetails = () => {
   }, [orderId, token]);
 
   const handleCancelOrder = async () => {
-    if (!window.confirm('Are you sure you want to cancel this order?')) return;
     setCancelling(true);
     setCancelError(null);
     try {
@@ -124,6 +124,7 @@ const OrderDetails = () => {
       setCancelError('Something went wrong. Please try again.');
     } finally {
       setCancelling(false);
+      setShowCancelWarning(false);
     }
   };
 
@@ -336,23 +337,29 @@ const OrderDetails = () => {
 
                         </div>
                         <div className="text-right">
-                          {order.order_payments?.[0]?.payment_status === "completed" ? (
-                            <p className="text-green-600 font-medium">Paid via {order.payment_method?.method_name}</p>
-                          ) : order.order_payments?.[0]?.payment_status === "failed" ? (
-                            <p className="text-red-600 font-medium flex gap-2 items-center justify-end">
-                              <span className="w-5 h-5 bg-red-100 text-red-700 flex justify-center items-center rounded-full text-xs font-bold">✕</span>
-                              Payment Failed — Order Cancelled
-                            </p>
-                          ) : order.payment_method?.method_name === "COD" ? (
-                            <p className="text-green-600 font-medium">To be paid by {order.payment_method?.method_name}</p>
-                          ) : order.payment_method?.method_name === "Razorpay" ? (
-                            <p className="text-gray-500 font-medium flex gap-3 items-center">
-                              <span className="w-6 h-6 bg-gray-300 text-gray-800 flex justify-center items-center rounded-full text-sm">✕</span>
-                              Payment failed
-                            </p>
-                          ) : (
-                            <p className="text-yellow-600 font-medium">{order.payment_method?.method_name}</p>
-                          )}
+                          {(() => {
+                            const paymentStatus = order.order_payments?.[0]?.payment_status;
+                            const rawMethod = (order.order_payments?.[0]?.payment_method || '').toLowerCase();
+                            const isOnline = rawMethod.includes('razor') || rawMethod.includes('online') || rawMethod.includes('upi') || rawMethod.includes('card');
+                            const isCodMethod = rawMethod.includes('cod');
+                            const methodLabel = isOnline ? 'Online (Razorpay)' : isCodMethod ? 'COD' : (order.payment_method?.method_name || rawMethod);
+
+                            if (paymentStatus === 'completed') {
+                              return <p className="text-green-600 font-medium">Paid via {methodLabel}</p>;
+                            }
+                            if (paymentStatus === 'failed') {
+                              return (
+                                <p className="text-red-600 font-medium flex gap-2 items-center justify-end">
+                                  <span className="w-5 h-5 bg-red-100 text-red-700 flex justify-center items-center rounded-full text-xs font-bold">✕</span>
+                                  Payment Failed — Order Cancelled
+                                </p>
+                              );
+                            }
+                            if (isCodMethod) {
+                              return <p className="text-green-600 font-medium">To be paid by COD</p>;
+                            }
+                            return <p className="text-yellow-600 font-medium">{methodLabel}</p>;
+                          })()}
 
                           <button
                             type="button"
@@ -394,17 +401,23 @@ const OrderDetails = () => {
                             <span>₹{order.gst_summary.sgst}</span>
                           </div>
 
-                          <div className="flex justify-between">
-                            <span>COD Fee</span>
-                            <span>₹{order.shipping_total.toFixed(2)}</span>
-                          </div>
+                          {parseFloat(order.shipping_total) > 0 && (
+                            <div className="flex justify-between">
+                              <span>COD Fee</span>
+                              <span>₹{order.shipping_total.toFixed(2)}</span>
+                            </div>
+                          )}
                           <div className="flex justify-between">
                             <span>Delivery Fee</span>
                             <span className="text-green-600 font-medium">FREE</span>
                           </div>
                           <hr className="my-3" />
                           <div className="flex justify-between font-semibold text-base">
-                            <span>Total to be paid</span>
+                            <span>
+                              {order.order_payments?.[0]?.payment_status === 'completed'
+                                ? 'Total Paid'
+                                : 'Total Amount'}
+                            </span>
                             <span>₹{order.pay_amt.toFixed(2)}</span>
                           </div>
                         </div>
@@ -506,14 +519,20 @@ const OrderDetails = () => {
                     </div>
                   )}
 
-                  {/* Cancel Order */}
-                  {CANCELLABLE_STATUSES.includes(order.shipping_status) && (
+                  {/* Cancel Order — only within 24 hours */}
+                  {CANCELLABLE_STATUSES.includes(order.shipping_status) && (() => {
+                    const hoursPassed = (new Date() - new Date(order.order_date)) / (1000 * 60 * 60);
+                    return hoursPassed <= 24;
+                  })() && (
                     <div className="my-4">
+                      <p className="text-xs text-gray-500 mb-2">
+                        The cancel option is available for 24 hours from order placement. Make sure to cancel within that timeframe if needed.
+                      </p>
                       {cancelError && (
                         <p className="text-red-600 text-sm mb-2">{cancelError}</p>
                       )}
                       <button
-                        onClick={handleCancelOrder}
+                        onClick={() => setShowCancelWarning(true)}
                         disabled={cancelling}
                         className="border border-red-500 text-red-600 px-6 py-2 rounded-md font-medium hover:bg-red-50 transition disabled:opacity-60"
                       >
@@ -535,6 +554,24 @@ const OrderDetails = () => {
           </div>
         </div>
       </div>
+      {showCancelWarning && (
+        <div className={`fixed inset-0 ${themeBgColor} bg-opacity-50 flex items-center justify-center z-50`}>
+          <div className="bg-white p-6 rounded-lg shadow-lg mx-4 md:mx-0 max-w-sm w-full">
+            <p className="text-xs text-gray-900">
+              It's important to keep in mind that too many cancellations can lead to an account ban,
+              so let's try to avoid that! <br /> If you ever have any questions or concerns about cancellations,
+              feel free to reach out to us for assistance through WhatsApp. <br />Your understanding and cooperation are
+              truly appreciated!
+            </p>
+            <div className="mt-4 flex justify-end gap-4">
+              <button onClick={() => setShowCancelWarning(false)} className="px-4 py-2 bg-gray-300 rounded text-xs">No</button>
+              <button onClick={handleCancelOrder} className={`px-4 py-2 ${themeBgColor} text-white rounded text-xs`} disabled={cancelling}>
+                {cancelling ? 'Cancelling...' : 'Yes, Cancel'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </SimpleLayout>
   );
 };

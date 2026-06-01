@@ -604,35 +604,44 @@ const Cart = () => {
                     )}
                     <div className='p-3 rounded-lg border mt-3'>
                       <h3 className="text-sm font-semibold mb-4">PRICE SUMMARY</h3>
-                      <p className="text-gray-900 text-sm mb-3 flex justify-between font-medium">
-                        Total MRP : <span>₹ {totalMRP.toFixed(2)}</span>
-                      </p>
+
+                      {/* Price */}
                       <div className='flex justify-between items-center mb-2'>
-                        <span className='text-gray-500 font-medium text-sm'>Price :</span>
-                        <span className='text-base'>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(subtotal)}</span>
+                        <span className='text-gray-500 font-medium text-sm'>Price</span>
+                        <span className='text-sm font-medium text-gray-800'>
+                          {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(grandTotal)}
+                        </span>
                       </div>
-                      <p className="text-gray-900 text-sm mb-3 flex justify-between font-medium">
-                        CGST ( 9% ): <span>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(CGST)}</span>
-                      </p>
-                      <p className="text-gray-900 text-sm mb-3 flex justify-between font-medium">
-                        SGST ( 9% ): <span>{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(SGST)}</span>
-                      </p>
-                      {/* <p className="text-gray-900 text-sm mb-3 flex justify-between font-medium">
-                        Total GST ( 18% ): <span>₹ {totalGST}</span>
-                      </p> */}
-                      <p className="text-gray-900 text-sm mb-3 flex justify-between font-medium">Bag Discount: <span className='text-green-400'>{Number.isFinite(savings) ? `-₹ ${savings.toFixed(2)}` : ''}</span></p>
-                      <p className="text-gray-900 text-sm mb-3 flex justify-between font-medium">Delivery Fee: <span className='text-green-400'>Free</span></p>
-                      <p className="font-medium border-dotted border-t text-black text-lg mt-2 flex justify-between my-3">Subtotal:
-                        {discount > 0 ? (
-                          <div className="text-green-400 text-right">
-                            <span className='text-gray-500 text-[11px] line-through sm:text-sm'>₹ {grandTotal.toFixed(2)}</span> ₹ {(finalAmount).toFixed(2)}
-                            {/* <span className='block text-xs text-gray-400'>Your coupon is applied (-₹ {discount.toFixed(2)})</span> */}
-                          </div>
-                        ) : (
-                          <span>₹ {grandTotal}</span>
-                        )}
-                      </p>
-                      <p className="mt-1 text-xs font-medium text-center">
+
+                      {/* Coupon discount */}
+                      {discount > 0 && (
+                        <div className='flex justify-between items-center mb-2'>
+                          <span className='text-gray-500 font-medium text-sm'>Coupon Discount</span>
+                          <span className='text-sm font-medium text-green-600'>
+                            -{new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(discount)}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Delivery */}
+                      <div className='flex justify-between items-center mb-2'>
+                        <span className='text-gray-500 font-medium text-sm'>Delivery</span>
+                        <span className='text-sm font-medium text-green-600'>Free</span>
+                      </div>
+
+                      <hr className='my-3' />
+
+                      {/* Total */}
+                      <div className='flex justify-between items-center'>
+                        <span className='font-semibold text-gray-900'>Total</span>
+                        <span className='font-bold text-gray-900 text-base'>
+                          {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(
+                            discount > 0 ? finalAmount : grandTotal
+                          )}
+                        </span>
+                      </div>
+
+                      <p className="mt-2 text-xs font-medium text-center">
                         Yayy! You get <span className='text-green-600 font-semibold'>FREE</span> delivery on this order
                       </p>
                       <button

@@ -317,7 +317,7 @@ function ProductDetailsAll() {
                   </>
                 )}
 
-                <p className='text-gray-500'>Exclusive of all taxes</p>
+                <p className='text-gray-500'>Inclusive of all taxes</p>
                 <div className='flex gap-2 mt-3'>
                   {(product.product_tag && product.product_tag !== 'null') && (
                     <span className='border px-2 py-1 bg-green-400 text-white font-medium uppercase text-[10px] md:text-xs'>

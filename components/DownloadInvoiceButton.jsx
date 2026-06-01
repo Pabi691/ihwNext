@@ -28,43 +28,64 @@ const DownloadInvoiceButton = ({ order }) => {
     const shipping = order?.shipping_info || {};
     const items = order?.order_items || [];
     const payMethod = order?.payment_method || {};
+    const rawPaymentMethod = (order?.order_payments?.[0]?.payment_method || '').toLowerCase();
+    const paymentLabel = rawPaymentMethod.includes('razor') || rawPaymentMethod.includes('online') || rawPaymentMethod.includes('upi') || rawPaymentMethod.includes('card')
+      ? 'Online (Razorpay)'
+      : rawPaymentMethod.includes('cod')
+      ? 'COD'
+      : payMethod?.method_name || rawPaymentMethod || '—';
     const logoUrl = `${window.location.origin}/logo.png`;
     const logoWhiteUrl = `${window.location.origin}/logo-white.png`;
 
+    // Intra-state (West Bengal) → CGST + SGST; Inter-state → IGST
+    const shippingState = (shipping.state || '').toLowerCase().replace(/\s+/g, '');
+    const isWB = shippingState === 'westbengal' || shippingState === 'wb';
+    const taxCols = isWB ? 8 : 7; // number of table columns
+
     const itemRows = items.map((item, i) => {
-      const netAmt = parseFloat(item.price || 0) * item.quantity;
-      const cgst = netAmt * 0.09;
-      const sgst = netAmt * 0.09;
-      const total = netAmt * 1.18;
+      // item.price is GST-inclusive; extract base price for GST breakdown
+      const inclusiveUnit = parseFloat(item.price || 0);
+      const baseUnit = inclusiveUnit / 1.18;
+      const netAmt   = baseUnit * item.quantity;
+      const tax      = netAmt * 0.18; // total 18% GST
+      const cgst     = tax / 2;
+      const sgst     = tax / 2;
+      const total    = inclusiveUnit * item.quantity;
+      const taxCell  = isWB
+        ? `<td style="border:1px solid #000;padding:4px 6px;text-align:right;">&#8377;${cgst.toFixed(2)}</td>
+           <td style="border:1px solid #000;padding:4px 6px;text-align:right;">&#8377;${sgst.toFixed(2)}</td>`
+        : `<td style="border:1px solid #000;padding:4px 6px;text-align:right;">&#8377;${tax.toFixed(2)}</td>`;
       return `
         <tr>
           <td style="border:1px solid #000;padding:4px 6px;text-align:center;">${i + 1}</td>
           <td style="border:1px solid #000;padding:4px 6px;">${item.product_name}</td>
-          <td style="border:1px solid #000;padding:4px 6px;text-align:right;">&#8377;${parseFloat(item.price || 0).toFixed(2)}</td>
+          <td style="border:1px solid #000;padding:4px 6px;text-align:right;">&#8377;${baseUnit.toFixed(2)}</td>
           <td style="border:1px solid #000;padding:4px 6px;text-align:center;">${item.quantity}</td>
           <td style="border:1px solid #000;padding:4px 6px;text-align:right;">&#8377;${netAmt.toFixed(2)}</td>
-          <td style="border:1px solid #000;padding:4px 6px;text-align:right;">&#8377;${cgst.toFixed(2)}</td>
-          <td style="border:1px solid #000;padding:4px 6px;text-align:right;">&#8377;${sgst.toFixed(2)}</td>
+          ${taxCell}
           <td style="border:1px solid #000;padding:4px 6px;text-align:right;">&#8377;${total.toFixed(2)}</td>
         </tr>`;
     }).join("");
 
     const codRow = parseFloat(order?.shipping_total) > 0 ? `
       <tr>
-        <td colspan="7" style="border:1px solid #000;padding:4px 6px;text-align:right;">COD Charge:</td>
+        <td colspan="${taxCols - 1}" style="border:1px solid #000;padding:4px 6px;text-align:right;">COD Charge:</td>
         <td style="border:1px solid #000;padding:4px 6px;text-align:right;">&#8377;${parseFloat(order.shipping_total).toFixed(2)}</td>
       </tr>` : "";
 
     const rOffRow = order?.r_off != null && parseFloat(order?.r_off) !== 0 ? `
       <tr>
-        <td colspan="7" style="border:1px solid #000;padding:4px 6px;text-align:right;">Round Off:</td>
+        <td colspan="${taxCols - 1}" style="border:1px solid #000;padding:4px 6px;text-align:right;">Round Off:</td>
         <td style="border:1px solid #000;padding:4px 6px;text-align:right;">
           ${parseFloat(order.r_off) < 0 ? "−" : "+"}&#8377;${Math.abs(parseFloat(order.r_off)).toFixed(2)}
         </td>
       </tr>` : "";
 
-    const totalCGST = (parseFloat(order?.tax_total || 0) / 2).toFixed(2);
-    const totalSGST = (parseFloat(order?.tax_total || 0) / 2).toFixed(2);
+    const totalTax = parseFloat(order?.tax_total || 0);
+    const totalTaxCell = isWB
+      ? `<td style="text-align:right;font-weight:bold;">&#8377;${(totalTax / 2).toFixed(2)}</td>
+         <td style="text-align:right;font-weight:bold;">&#8377;${(totalTax / 2).toFixed(2)}</td>`
+      : `<td style="text-align:right;font-weight:bold;">&#8377;${totalTax.toFixed(2)}</td>`;
 
     const html = `
       <html>
@@ -131,8 +152,9 @@ const DownloadInvoiceButton = ({ order }) => {
               <th style="text-align:right;">Unit Price</th>
               <th style="text-align:center;">Qty</th>
               <th style="text-align:right;">Net Amt</th>
-              <th style="text-align:right;">CGST (9%)</th>
-              <th style="text-align:right;">SGST (9%)</th>
+              ${isWB
+                ? `<th style="text-align:right;">CGST (9%)</th><th style="text-align:right;">SGST (9%)</th>`
+                : `<th style="text-align:right;">IGST (18%)</th>`}
               <th style="text-align:right;">Total</th>
             </tr>
           </thead>
@@ -141,9 +163,8 @@ const DownloadInvoiceButton = ({ order }) => {
             ${codRow}
             ${rOffRow}
             <tr>
-              <td colspan="5" style="background:#f2f2f2;font-weight:bold;">TOTAL:</td>
-              <td style="text-align:right;font-weight:bold;">&#8377;${totalCGST}</td>
-              <td style="text-align:right;font-weight:bold;">&#8377;${totalSGST}</td>
+              <td colspan="${taxCols - (isWB ? 3 : 2)}" style="background:#f2f2f2;font-weight:bold;">TOTAL:</td>
+              ${totalTaxCell}
               <td style="text-align:right;font-weight:bold;">&#8377;${parseFloat(order?.pay_amt || 0).toFixed(2)}</td>
             </tr>
           </tbody>
@@ -155,7 +176,7 @@ const DownloadInvoiceButton = ({ order }) => {
         <!-- Footer -->
         <div style="border:1px solid #000;padding:15px;display:flex;justify-content:space-between;margin-top:10px;">
           <div>
-            <p><strong>Mode of Payment:</strong> ${payMethod?.method_name || "—"}</p>
+            <p><strong>Mode of Payment:</strong> ${paymentLabel}</p>
             <p><strong>Date:</strong> ${order?.order_date ? new Date(order.order_date).toLocaleString("en-IN") : "—"}</p>
           </div>
           <div style="text-align:right;">
