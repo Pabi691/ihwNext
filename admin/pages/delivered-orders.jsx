@@ -8,7 +8,12 @@ import { FiSearch, FiPackage, FiLink, FiCopy, FiCheck, FiChevronDown, FiChevronU
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 function getStatus(o) {
-  return o.shipping_status || o.order_status?.status_description || o.status || "";
+  return o.order_status?.status_description || o.order_status_name || o.status || "";
+}
+
+function isDelivered(o) {
+  const s = getStatus(o);
+  return s === "Delivered" || s.replace(/^Order\s+/i, "") === "Delivered" || s.includes("Delivered");
 }
 
 function getCustomerName(o) {
@@ -35,10 +40,11 @@ export default function DeliveredOrders() {
     setLoading(true);
     try {
       const res = await api("get", "/get_orders");
-      const all = Array.isArray(res.data?.orders) ? res.data.orders
-                : Array.isArray(res.data)          ? res.data
+      const all = Array.isArray(res.data?.orderList) ? res.data.orderList
+                : Array.isArray(res.data?.orders)    ? res.data.orders
+                : Array.isArray(res.data)             ? res.data
                 : [];
-      setOrders(all.filter((o) => getStatus(o) === "Delivered"));
+      setOrders(all.filter(isDelivered));
     } catch { setOrders([]); }
     setLoading(false);
   }, [api]);

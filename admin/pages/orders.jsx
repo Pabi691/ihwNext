@@ -56,6 +56,14 @@ export default function Orders() {
 
   const getStatus = (o) => o.order_status?.status_description || o.order_status_name || o.status || "Pending";
 
+  const matchesTab = (o, tab) => {
+    if (tab === "All") return true;
+    const s = getStatus(o);
+    if (s === tab) return true;
+    // Handle prefixed values like "Order Cancelled" → "Cancelled", "Order Delivered" → "Delivered"
+    return s.replace(/^Order\s+/i, "") === tab || s.includes(tab);
+  };
+
   const getCustomerName = (o) => {
     if (o.customer?.first_name || o.customer?.last_name)
       return `${o.customer.first_name || ""} ${o.customer.last_name || ""}`.trim();
@@ -65,7 +73,7 @@ export default function Orders() {
   const getCustomerEmail = (o) => o.customer?.email || o.customer_email || o.email || "";
 
   const filtered = orders.filter((o) => {
-    const matchTab = tab === "All" || getStatus(o) === tab;
+    const matchTab = matchesTab(o, tab);
     const q = search.toLowerCase();
     const matchSearch = !q || String(o.id).includes(q) ||
       getCustomerName(o).toLowerCase().includes(q) ||
@@ -99,7 +107,7 @@ export default function Orders() {
 
       <div className="flex gap-1 overflow-x-auto mb-5 bg-white rounded-xl border border-gray-100 shadow-sm p-1">
         {TABS.map((t) => {
-          const count = t === "All" ? orders.length : orders.filter((o) => getStatus(o) === t).length;
+          const count = t === "All" ? orders.length : orders.filter((o) => matchesTab(o, t)).length;
           return (
             <button key={t} onClick={() => { setTab(t); setPage(1); }}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
