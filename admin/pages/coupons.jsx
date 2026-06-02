@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useAdmin } from "@/components/AdminContext";
 import { useAuthGuard } from "@/components/useAuthGuard";
 import AdminLayout from "@/components/AdminLayout";
-import { FiPlus, FiSearch, FiTrash2, FiX, FiAlertCircle } from "react-icons/fi";
+import { FiPlus, FiSearch, FiTrash2, FiX, FiAlertCircle, FiLock, FiGlobe } from "react-icons/fi";
 
 const EMPTY_FORM = {
   coupon_code: "",
@@ -15,6 +15,8 @@ const EMPTY_FORM = {
   start_date: "",
   end_date: "",
   usage_limit: "",
+  is_private: false,
+  assigned_customer_email: "",
 };
 
 function CouponModal({ coupon, onClose, onSave, saving }) {
@@ -31,6 +33,8 @@ function CouponModal({ coupon, onClose, onSave, saving }) {
           start_date: coupon.start_date ? coupon.start_date.split("T")[0] : "",
           end_date: coupon.end_date ? coupon.end_date.split("T")[0] : "",
           usage_limit: coupon.usage_limit || "",
+          is_private: !!(coupon.is_private == 1 || coupon.is_private === true),
+          assigned_customer_email: coupon.assigned_customer_email || "",
         }
       : { ...EMPTY_FORM }
   );
@@ -46,7 +50,7 @@ function CouponModal({ coupon, onClose, onSave, saving }) {
     if (!form.discount_value) return setError("Discount value is required.");
     if (!form.start_date) return setError("Start date is required.");
     if (!form.end_date) return setError("End date is required.");
-    await onSave(form);
+    await onSave(form, setError);
   };
 
   return (
@@ -172,6 +176,42 @@ function CouponModal({ coupon, onClose, onSave, saving }) {
             />
           </div>
 
+          {/* Private coupon toggle */}
+          <div className="border border-gray-100 rounded-xl p-4 bg-gray-50/50">
+            <button
+              type="button"
+              onClick={() => set("is_private", !form.is_private)}
+              className={`flex items-center justify-between w-full`}
+            >
+              <div className="flex items-center gap-2.5">
+                {form.is_private ? <FiLock size={15} className="text-purple-500" /> : <FiGlobe size={15} className="text-gray-400" />}
+                <div className="text-left">
+                  <p className="text-sm font-semibold text-gray-800">{form.is_private ? "Private Coupon" : "Public Coupon"}</p>
+                  <p className="text-xs text-gray-400">{form.is_private ? "Only the assigned customer can use this" : "Anyone can apply this coupon code"}</p>
+                </div>
+              </div>
+              <div className={`w-10 h-5 rounded-full transition-colors flex-shrink-0 ${form.is_private ? "bg-purple-500" : "bg-gray-200"}`}>
+                <div className={`w-4 h-4 bg-white rounded-full shadow mt-0.5 transition-transform ${form.is_private ? "translate-x-5" : "translate-x-0.5"}`} />
+              </div>
+            </button>
+
+            {form.is_private && (
+              <div className="mt-3 pt-3 border-t border-gray-200">
+                <label className="text-xs text-gray-500 font-semibold uppercase tracking-wide block mb-1.5">
+                  Assigned Customer Email <span className="text-gray-400 font-normal normal-case">(optional)</span>
+                </label>
+                <input
+                  type="email"
+                  value={form.assigned_customer_email}
+                  onChange={(e) => set("assigned_customer_email", e.target.value.toLowerCase())}
+                  placeholder="Leave empty to allow anyone with the code"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-purple-400 transition-colors"
+                />
+                <p className="text-xs text-gray-400 mt-1">If set, only this customer can use the coupon.</p>
+              </div>
+            )}
+          </div>
+
           <button
             type="submit"
             disabled={saving}
@@ -194,6 +234,7 @@ export default function Coupons() {
   const [modal, setModal] = useState(null);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(null);
+  const [toggling, setToggling] = useState(null);
 
   const fetchCoupons = useCallback(async () => {
     setLoading(true);
@@ -216,18 +257,38 @@ export default function Coupons() {
     return !q || (c.coupon_code || "").toLowerCase().includes(q);
   });
 
-  const handleSave = async (form) => {
+  const handleSave = async (form, setError) => {
     setSaving(true);
     try {
-      if (form.id) {
-        await api("post", `/update_coupon/${form.id}`, form);
-      } else {
-        await api("post", "/create_coupon", form);
+      const payload = {
+        ...form,
+        is_private: form.is_private ? 1 : 0,
+        assigned_customer_email: form.is_private ? (form.assigned_customer_email || "") : "",
+      };
+      const res = form.id
+        ? await api("post", `/update_coupon/${form.id}`, payload)
+        : await api("post", "/create_coupon", payload);
+      if (res?.data?.status === false) {
+        setError?.(res.data.message || "Failed to save coupon.");
+        setSaving(false);
+        return;
       }
       await fetchCoupons();
       setModal(null);
-    } catch {}
+    } catch {
+      setError?.("Something went wrong. Please try again.");
+    }
     setSaving(false);
+  };
+
+  const handleToggleStatus = async (coupon) => {
+    const newStatus = (coupon.is_active === 1 || coupon.is_active === "1" || coupon.is_active === true) ? 0 : 1;
+    setToggling(coupon.id);
+    try {
+      await api("get", `/update_coupon_status/${coupon.id}/${newStatus}`);
+      setCoupons((prev) => prev.map((c) => c.id === coupon.id ? { ...c, is_active: newStatus } : c));
+    } catch {}
+    setToggling(null);
   };
 
   const handleDelete = async (coupon) => {
@@ -282,6 +343,7 @@ export default function Coupons() {
                   <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide font-semibold">
                     <th className="px-5 py-3.5 text-left">Code</th>
                     <th className="px-5 py-3.5 text-left">Description</th>
+                    <th className="px-5 py-3.5 text-left">Type</th>
                     <th className="px-5 py-3.5 text-left">Discount</th>
                     <th className="px-5 py-3.5 text-left">Min Order</th>
                     <th className="px-5 py-3.5 text-left">Uses</th>
@@ -299,7 +361,25 @@ export default function Coupons() {
                         <td className="px-5 py-3.5">
                           <span className="font-mono font-bold text-gray-800 bg-gray-100 px-2.5 py-1 rounded-lg text-xs">{coupon.coupon_code}</span>
                         </td>
-                        <td className="px-5 py-3.5 text-gray-500 text-xs max-w-[160px] truncate">{coupon.description || "—"}</td>
+                        <td className="px-5 py-3.5 text-gray-500 text-xs max-w-[160px] truncate">
+                          {coupon.description || "—"}
+                        </td>
+                        <td className="px-5 py-3.5">
+                          {(coupon.is_private == 1 || coupon.is_private === true) ? (
+                            <div>
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-purple-50 text-purple-700">
+                                <FiLock size={10} /> Private
+                              </span>
+                              {coupon.assigned_customer_email && (
+                                <p className="text-xs text-gray-400 mt-0.5 truncate max-w-[140px]">{coupon.assigned_customer_email}</p>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-blue-50 text-blue-600">
+                              <FiGlobe size={10} /> Public
+                            </span>
+                          )}
+                        </td>
                         <td className="px-5 py-3.5 font-semibold text-[#04A9FF]">
                           {coupon.discount_type === "Percentage" || coupon.discount_type === "percentage" ? `${coupon.discount_value}%` : `₹${parseFloat(coupon.discount_value).toLocaleString("en-IN")}`}
                         </td>
@@ -311,10 +391,14 @@ export default function Coupons() {
                           ) : (<span className="text-xs text-gray-400">—</span>)}
                         </td>
                         <td className="px-5 py-3.5">
-                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold ${active ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+                          <button
+                            onClick={() => handleToggleStatus(coupon)}
+                            disabled={toggling === coupon.id}
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-colors disabled:opacity-60 ${active ? "bg-green-50 text-green-700 hover:bg-green-100" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}
+                          >
                             <span className={`w-1.5 h-1.5 rounded-full ${active ? "bg-green-400" : "bg-gray-400"}`} />
-                            {active ? "Active" : "Inactive"}
-                          </span>
+                            {toggling === coupon.id ? "..." : active ? "Active" : "Inactive"}
+                          </button>
                         </td>
                         <td className="px-5 py-3.5">
                           <div className="flex items-center gap-2">
@@ -346,10 +430,23 @@ export default function Coupons() {
                     </div>
                     {coupon.description && <p className="text-xs text-gray-500 truncate mb-1">{coupon.description}</p>}
                     <div className="flex items-center gap-2 flex-wrap mb-2">
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold ${active ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+                      <button
+                        onClick={() => handleToggleStatus(coupon)}
+                        disabled={toggling === coupon.id}
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold transition-colors disabled:opacity-60 ${active ? "bg-green-50 text-green-700 hover:bg-green-100" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}
+                      >
                         <span className={`w-1 h-1 rounded-full ${active ? "bg-green-400" : "bg-gray-400"}`} />
-                        {active ? "Active" : "Off"}
-                      </span>
+                        {toggling === coupon.id ? "..." : active ? "Active" : "Off"}
+                      </button>
+                      {(coupon.is_private == 1 || coupon.is_private === true) ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-purple-50 text-purple-700">
+                          <FiLock size={10} /> Private
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-blue-50 text-blue-600">
+                          <FiGlobe size={10} /> Public
+                        </span>
+                      )}
                       {coupon.end_date && (
                         <span className={`text-xs font-medium ${expired ? "text-red-500" : "text-gray-400"}`}>
                           {expired ? "Expired" : "Till "}{new Date(coupon.end_date).toLocaleDateString("en-IN", { day: "2-digit", month: "short" })}

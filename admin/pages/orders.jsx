@@ -143,7 +143,7 @@ export default function Orders() {
                         <p className="text-xs text-gray-400">{getCustomerEmail(order)}</p>
                       </td>
                       <td className="px-5 py-3.5 font-semibold text-gray-800">
-                        ₹{parseFloat(order.pay_amt || order.total_amount || order.grand_total || 0).toLocaleString("en-IN")}
+                        ₹{Math.round(parseFloat(order.bill_amt || 0) - parseFloat(order.discount_amt || 0) + parseFloat(order.shipping_total || 0)).toLocaleString("en-IN")}
                       </td>
                       <td className="px-5 py-3.5"><StatusBadge status={getStatus(order)} /></td>
                       <td className="px-5 py-3.5 text-gray-400 text-xs">
@@ -173,7 +173,7 @@ export default function Orders() {
                   {getCustomerEmail(order) && <p className="text-xs text-gray-400 truncate">{getCustomerEmail(order)}</p>}
                   <div className="flex items-center justify-between mt-2">
                     <span className="font-semibold text-gray-800 text-sm">
-                      ₹{parseFloat(order.pay_amt || order.total_amount || order.grand_total || 0).toLocaleString("en-IN")}
+                      ₹{Math.round(parseFloat(order.bill_amt || 0) - parseFloat(order.discount_amt || 0) + parseFloat(order.shipping_total || 0)).toLocaleString("en-IN")}
                     </span>
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-gray-400">

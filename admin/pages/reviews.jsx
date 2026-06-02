@@ -5,7 +5,8 @@ import { useAuthGuard } from "@/components/useAuthGuard";
 import AdminLayout from "@/components/AdminLayout";
 import { FiSearch, FiStar, FiCheck, FiX, FiTrash2, FiEdit2, FiPlus, FiMessageSquare } from "react-icons/fi";
 
-const TABS = ["All", "Pending", "Approved", "Rejected", "No Reviews"];
+const TABS = ["All", "Pending", "Approved", "Rejected", "Products"];
+const PRODUCT_FILTERS = ["All Products", "Reviewed Products", "No Reviews Products"];
 const EMPTY_FORM = { customer_name: "", product_id: "", product_name: "", rating: 5, review_text: "", status: "pending" };
 
 /* ── helpers ── */
@@ -157,6 +158,9 @@ export default function Reviews() {
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState(null);
+  const [productFilter, setProductFilter] = useState("All Products");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [allCategories, setAllCategories] = useState([]);
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type });
@@ -180,11 +184,19 @@ export default function Reviews() {
     } catch { setProducts([]); }
   }, [api]);
 
+  const fetchCategories = useCallback(async () => {
+    try {
+      const res = await api("get", "/get_all_categories");
+      setAllCategories(Array.isArray(res.data?.categoryList) ? res.data.categoryList : []);
+    } catch { setAllCategories([]); }
+  }, [api]);
+
   useEffect(() => {
     if (!ready) return;
     fetchReviews();
     fetchProducts();
-  }, [ready, fetchReviews, fetchProducts]);
+    fetchCategories();
+  }, [ready, fetchReviews, fetchProducts, fetchCategories]);
 
   const getStatus = (r) => {
     if (r.status === "approved" || r.status === 1 || r.is_approved === 1) return "Approved";
@@ -209,13 +221,25 @@ export default function Reviews() {
 
   const filtered = reviews.filter((r) => {
     if (!r || typeof r !== "object") return false;
-    const matchTab = tab === "All" || getStatus(r) === tab;
+    const matchTab = tab === "All" || tab === "Products" || getStatus(r) === tab;
     const q = search.toLowerCase();
     return matchTab && (!q ||
       (r.customer_name || r.user_name || r.name || "").toLowerCase().includes(q) ||
       getProductName(r).toLowerCase().includes(q) ||
       getReviewText(r).toLowerCase().includes(q));
   });
+
+  const visibleProductsForTab = (() => {
+    let list = products;
+    if (productFilter === "Reviewed Products") list = list.filter((p) => !!reviewCounts[p.id]);
+    if (productFilter === "No Reviews Products") list = list.filter((p) => !reviewCounts[p.id]);
+    if (categoryFilter) list = list.filter((p) =>
+      (p.product_categories || []).some((c) => c.category_name === categoryFilter)
+    );
+    const q = search.toLowerCase();
+    if (q) list = list.filter((p) => p.prod_name.toLowerCase().includes(q));
+    return list;
+  })();
 
   const counts = {
     total: reviews.length,
@@ -430,9 +454,8 @@ export default function Reviews() {
       {/* Tabs */}
       <div className="flex gap-1 overflow-x-auto mb-5 bg-white rounded-xl border border-gray-100 shadow-sm p-1">
         {TABS.map((t) => {
-          const noReviewProducts = products.filter((p) => !reviewCounts[p.id]);
           const count = t === "All" ? reviews.length
-            : t === "No Reviews" ? noReviewProducts.length
+            : t === "Products" ? products.length
             : reviews.filter((r) => getStatus(r) === t).length;
           return (
             <button key={t} onClick={() => setTab(t)}
@@ -447,53 +470,93 @@ export default function Reviews() {
         })}
       </div>
 
-      {/* No Reviews Product Grid */}
-      {tab === "No Reviews" ? (() => {
-        const noReviewProducts = products.filter((p) => !reviewCounts[p.id]);
-        const q = search.toLowerCase();
-        const visibleProducts = q
-          ? noReviewProducts.filter((p) => p.prod_name.toLowerCase().includes(q))
-          : noReviewProducts;
-        return loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-            {[...Array(10)].map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 animate-pulse">
-                <div className="w-full aspect-square rounded-xl bg-gray-100 mb-3" />
-                <div className="h-3 bg-gray-100 rounded w-3/4 mb-2" />
-                <div className="h-7 bg-gray-100 rounded-xl" />
-              </div>
-            ))}
-          </div>
-        ) : visibleProducts.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm py-20 text-center text-gray-400 text-sm">
-            {q ? "No matching products found" : "All products have at least one review"}
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-            {visibleProducts.map((p) => (
-              <div key={p.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 flex flex-col group hover:border-[#04A9FF] hover:shadow-md transition-all">
-                <div className="w-full aspect-square rounded-xl overflow-hidden bg-gray-50 mb-3 flex items-center justify-center">
-                  {p.primary_img ? (
-                    <img src={p.primary_img} alt={p.prod_name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "flex"; }} />
-                  ) : null}
-                  <div className="w-full h-full bg-gradient-to-br from-[#04A9FF]/10 to-[#0070cc]/10 flex items-center justify-center"
-                    style={{ display: p.primary_img ? "none" : "flex" }}>
-                    <span className="text-2xl font-bold text-[#04A9FF]/30">{p.prod_name?.[0]?.toUpperCase() || "P"}</span>
-                  </div>
-                </div>
-                <p className="text-xs font-semibold text-gray-700 leading-tight line-clamp-2 mb-1 flex-1">{p.prod_name}</p>
-                <p className="text-xs text-gray-300 mb-2">No reviews yet</p>
-                <button onClick={() => openAddForm(p)}
-                  className="w-full py-1.5 bg-[#04A9FF] hover:bg-[#0070cc] text-white text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-1">
-                  <FiPlus size={12} /> Add Review
+      {/* Products Tab */}
+      {tab === "Products" ? (
+        <>
+          {/* Sub-filters */}
+          <div className="flex gap-1 overflow-x-auto mb-3 bg-white rounded-xl border border-gray-100 shadow-sm p-1">
+            {PRODUCT_FILTERS.map((f) => {
+              const count = f === "All Products" ? products.length
+                : f === "Reviewed Products" ? products.filter((p) => !!reviewCounts[p.id]).length
+                : products.filter((p) => !reviewCounts[p.id]).length;
+              return (
+                <button key={f} onClick={() => setProductFilter(f)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+                    productFilter === f ? "bg-[#04A9FF] text-white shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}>
+                  {f}
+                  <span className={`text-xs rounded-full px-1.5 py-0.5 font-bold ${productFilter === f ? "bg-white/20 text-white" : "bg-gray-100 text-gray-500"}`}>
+                    {count}
+                  </span>
                 </button>
-              </div>
-            ))}
+              );
+            })}
           </div>
-        );
-      })() : (
+
+          {/* Category filter */}
+          {allCategories.length > 0 && (
+            <div className="flex gap-1.5 overflow-x-auto mb-4 pb-1">
+              <button onClick={() => setCategoryFilter("")}
+                className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
+                  categoryFilter === "" ? "bg-gray-800 text-white" : "bg-white border border-gray-200 text-gray-500 hover:border-gray-300"}`}>
+                All Categories
+              </button>
+              {allCategories.map((cat) => (
+                <button key={cat.id} onClick={() => setCategoryFilter(cat.category_name === categoryFilter ? "" : cat.category_name)}
+                  className={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
+                    categoryFilter === cat.category_name ? "bg-gray-800 text-white" : "bg-white border border-gray-200 text-gray-500 hover:border-gray-300"}`}>
+                  {cat.category_name}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Product grid */}
+          {loading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+              {[...Array(10)].map((_, i) => (
+                <div key={i} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 animate-pulse">
+                  <div className="w-full aspect-square rounded-xl bg-gray-100 mb-3" />
+                  <div className="h-3 bg-gray-100 rounded w-3/4 mb-2" />
+                  <div className="h-7 bg-gray-100 rounded-xl" />
+                </div>
+              ))}
+            </div>
+          ) : visibleProductsForTab.length === 0 ? (
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm py-20 text-center text-gray-400 text-sm">
+              No products found
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+              {visibleProductsForTab.map((p) => {
+                const cnt = reviewCounts[p.id] || 0;
+                return (
+                  <div key={p.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 flex flex-col group hover:border-[#04A9FF] hover:shadow-md transition-all">
+                    <div className="w-full aspect-square rounded-xl overflow-hidden bg-gray-50 mb-3 flex items-center justify-center">
+                      {p.primary_img ? (
+                        <img src={p.primary_img} alt={p.prod_name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "flex"; }} />
+                      ) : null}
+                      <div className="w-full h-full bg-gradient-to-br from-[#04A9FF]/10 to-[#0070cc]/10 flex items-center justify-center"
+                        style={{ display: p.primary_img ? "none" : "flex" }}>
+                        <span className="text-2xl font-bold text-[#04A9FF]/30">{p.prod_name?.[0]?.toUpperCase() || "P"}</span>
+                      </div>
+                    </div>
+                    <p className="text-xs font-semibold text-gray-700 leading-tight line-clamp-2 mb-1 flex-1">{p.prod_name}</p>
+                    {cnt > 0
+                      ? <p className="text-xs text-[#04A9FF] font-medium mb-2">{cnt} review{cnt !== 1 ? "s" : ""}</p>
+                      : <p className="text-xs text-gray-300 mb-2">No reviews yet</p>}
+                    <button onClick={() => openAddForm(p)}
+                      className="w-full py-1.5 bg-[#04A9FF] hover:bg-[#0070cc] text-white text-xs font-bold rounded-xl transition-colors flex items-center justify-center gap-1">
+                      <FiPlus size={12} /> Add Review
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
+      ) : (
       /* Review Cards */
       <div className="space-y-3">
         {loading ? (

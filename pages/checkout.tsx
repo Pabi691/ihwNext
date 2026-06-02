@@ -1147,29 +1147,7 @@ const Checkout = () => {
                       </span>
                     </div>
 
-                    {/* Tax — CGST+SGST inside West Bengal, IGST outside */}
-                    {(() => {
-                      const state = (shippingDetails?.state || '').toLowerCase().replace(/\s+/g, '');
-                      const isWB = state === 'westbengal' || state === 'wb';
-                      const fmt = (v) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(v);
-                      return isWB ? (
-                        <>
-                          <div className='flex justify-between items-center mb-1'>
-                            <span className='text-gray-500 font-medium text-sm'>CGST (9%)</span>
-                            <span className='text-sm text-gray-700'>{fmt(CGST)}</span>
-                          </div>
-                          <div className='flex justify-between items-center mb-2'>
-                            <span className='text-gray-500 font-medium text-sm'>SGST (9%)</span>
-                            <span className='text-sm text-gray-700'>{fmt(SGST)}</span>
-                          </div>
-                        </>
-                      ) : (
-                        <div className='flex justify-between items-center mb-2'>
-                          <span className='text-gray-500 font-medium text-sm'>IGST (18%)</span>
-                          <span className='text-sm text-gray-700'>{fmt(totalGST)}</span>
-                        </div>
-                      );
-                    })()}
+                    {/* Price is GST-inclusive — tax not shown separately */}
 
                     {/* Coupon discount */}
                     {discount > 0 && (

@@ -60,6 +60,58 @@ function toWords(num) {
   return (res.trim() || "Zero") + " Rupees Only";
 }
 
+function OrderSummaryRows({ order }) {
+  const billAmt     = parseFloat(order?.bill_amt     || 0);
+  const discountAmt = parseFloat(order?.discount_amt || 0);
+  const shippingAmt = parseFloat(order?.shipping_total || 0);
+  const taxTotal    = billAmt * (18 / 118);
+  const payableRaw  = billAmt - discountAmt + shippingAmt;
+  const payable     = Math.round(payableRaw);
+  const rOff        = payable - payableRaw;
+  return (
+    <div className="px-6 py-4 bg-gray-50/50 border-t border-gray-100 space-y-2">
+      <div className="flex justify-between text-sm text-gray-500">
+        <span>SubTotal <span className="text-xs text-gray-400">(incl. GST)</span></span>
+        <span>₹{billAmt.toFixed(2)}</span>
+      </div>
+      {taxTotal > 0 && (
+        <div className="flex justify-between text-xs text-gray-400 italic">
+          <span>Incl. CGST (9%) + SGST (9%)</span>
+          <span>₹{taxTotal.toFixed(2)}</span>
+        </div>
+      )}
+      {discountAmt > 0 && (
+        <div className="flex justify-between text-sm text-green-600">
+          <span>Discount {order?.coupon_code ? `(${order.coupon_code})` : ""}</span>
+          <span>− ₹{discountAmt.toFixed(2)}</span>
+        </div>
+      )}
+      {shippingAmt > 0 && (
+        <div className="flex justify-between text-sm text-gray-500">
+          <span>COD / Shipping</span>
+          <span>+ ₹{shippingAmt.toFixed(2)}</span>
+        </div>
+      )}
+      {Math.abs(rOff) >= 0.01 && (
+        <div className="flex justify-between text-sm text-gray-500">
+          <span>Round Off</span>
+          <span>{rOff > 0 ? "+" : "−"} ₹{Math.abs(rOff).toFixed(2)}</span>
+        </div>
+      )}
+      <div className="flex justify-between font-bold text-gray-900 text-base pt-2 border-t border-gray-200">
+        <span>Payable Amount</span>
+        <span className="text-red-600">₹{payable.toFixed(2)}</span>
+      </div>
+      {parseFloat(order?.paid_amt) > 0 && (
+        <div className="flex justify-between text-sm text-emerald-600 font-semibold">
+          <span>Paid Amount</span>
+          <span>₹{parseFloat(order.paid_amt).toFixed(2)}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function InvoiceModal({ order, onClose }) {
   const printRef = useRef();
   const customer = order?.customer || {};
@@ -397,51 +449,8 @@ export default function OrderDetails() {
                       </div>
                     ))}
                   </div>
-                  {/* Summary rows */}
-                  <div className="px-6 py-4 bg-gray-50/50 border-t border-gray-100 space-y-2">
-                    <div className="flex justify-between text-sm text-gray-500">
-                      <span>SubTotal</span>
-                      <span>₹{parseFloat(order.bill_amt || 0).toFixed(2)}</span>
-                    </div>
-                    {parseFloat(order.tax_total) > 0 && <>
-                      <div className="flex justify-between text-sm text-gray-500">
-                        <span>CGST (9%)</span>
-                        <span>+ ₹{(parseFloat(order.tax_total) / 2).toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between text-sm text-gray-500">
-                        <span>SGST (9%)</span>
-                        <span>+ ₹{(parseFloat(order.tax_total) / 2).toFixed(2)}</span>
-                      </div>
-                    </>}
-                    {parseFloat(order.discount_amt) > 0 && (
-                      <div className="flex justify-between text-sm text-green-600">
-                        <span>Discount {order.coupon_code ? `(${order.coupon_code})` : ""}</span>
-                        <span>− ₹{parseFloat(order.discount_amt).toFixed(2)}</span>
-                      </div>
-                    )}
-                    {parseFloat(order.shipping_total) > 0 && (
-                      <div className="flex justify-between text-sm text-gray-500">
-                        <span>Shipping</span>
-                        <span>+ ₹{parseFloat(order.shipping_total).toFixed(2)}</span>
-                      </div>
-                    )}
-                    {order.r_off != null && parseFloat(order.r_off) !== 0 && (
-                      <div className="flex justify-between text-sm text-gray-500">
-                        <span>Round Off</span>
-                        <span>{parseFloat(order.r_off) < 0 ? "−" : "+"} ₹{Math.abs(parseFloat(order.r_off)).toFixed(2)}</span>
-                      </div>
-                    )}
-                    <div className="flex justify-between font-bold text-gray-900 text-base pt-2 border-t border-gray-200">
-                      <span>Payable Amount</span>
-                      <span className="text-red-600">₹{parseFloat(order.pay_amt || order.net_amt || 0).toFixed(2)}</span>
-                    </div>
-                    {parseFloat(order.paid_amt) > 0 && (
-                      <div className="flex justify-between text-sm text-emerald-600 font-semibold">
-                        <span>Paid Amount</span>
-                        <span>₹{parseFloat(order.paid_amt).toFixed(2)}</span>
-                      </div>
-                    )}
-                  </div>
+                  {/* Summary rows — prices are GST-inclusive, tax shown as breakdown only */}
+                  <OrderSummaryRows order={order} />
                 </>
               )}
             </div>
