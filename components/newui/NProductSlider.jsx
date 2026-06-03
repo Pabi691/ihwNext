@@ -10,6 +10,10 @@ function ProductCard({ product }) {
   const discount = regularPrice > salePrice
     ? Math.round(((regularPrice - salePrice) / regularPrice) * 100)
     : 0;
+  const sizeVars = (product.product_variations || []).filter(v => v.size_id);
+  const outOfStock = sizeVars.length > 0
+    ? sizeVars.every(v => (v.stock_qty ?? 0) <= 0)
+    : (product.stock_qty ?? 0) <= 0;
 
   return (
     <Link
@@ -23,15 +27,22 @@ function ProductCard({ product }) {
             src={product.primary_img}
             alt={product.prod_name}
             loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${outOfStock ? 'opacity-50' : ''}`}
             onError={e => { e.currentTarget.src = "/images/noimage.jpg"; }}
           />
-          {discount > 0 && (
+          {outOfStock && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="bg-black/70 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                Out of Stock
+              </span>
+            </div>
+          )}
+          {!outOfStock && discount > 0 && (
             <span className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
               -{discount}%
             </span>
           )}
-          {product.product_tag && (
+          {!outOfStock && product.product_tag && (
             <span className="absolute top-2 right-2 bg-[#ef7f1a] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
               {product.product_tag}
             </span>

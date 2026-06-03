@@ -455,57 +455,75 @@ function ProductDetailsAll() {
                 </div>
 
                 {/* Add to Cart and Wishlist Button */}
-                <div className="flex items-center flex-wrap mt-4">
-                  <button
-                    onClick={async () => {
-                      const canProceed = await requireGuestInfo();
-                      if (!canProceed) return;
-                      if (addSuccess) {
-                        navigate('/cart');
-                      } else {
-                        handleAddToCart(product);
-                      }
-                    }}
-                    className={`text-white px-6 gap-2 py-3 m-2
-        rounded-lg flex items-center text-sm font-semibold ${addSuccess ? 'bg-[#2CA003] flex-col w-full' : `${themeBgGray} hover:${themeBgDark} ${hoverScale}`}`}
-                  >
-                    {addSuccess && addedProductName}
-                    {addSuccess && (<hr className='h-1 text-white w-full' />)}
-                    {!addSuccess && (<FaCartPlus />)}
-                    <div className='flex gap-2 items-center'>
-                      <span className={`hidden md:block ${addSuccess && 'text-black'}`}>{addSuccess ? 'Go to Bag' : 'Add to Cart'}</span>
-                      {addSuccess && (
-                        <svg width="17" height="16" viewBox="0 0 17 16" fill="none">
-                          <path d="M9.5 3L14.5 8M14.5 8L9.5 13M14.5 8H2.5" stroke="black" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
+                {(() => {
+                  const sizeVars = productVariations.filter(v => v.size_id);
+                  const productOutOfStock = sizeVars.length > 0
+                    ? sizeVars.every(v => (v.stock_qty ?? 0) <= 0)
+                    : (product.stock_qty ?? 0) <= 0;
+                  return (
+                    <>
+                      {productOutOfStock && (
+                        <div className="mt-4 flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                          <span className="text-red-500 font-bold text-sm">✕ Out of Stock</span>
+                          <span className="text-red-400 text-xs">This product is currently unavailable.</span>
+                        </div>
                       )}
-                    </div>
-                  </button>
+                      <div className="flex items-center flex-wrap mt-4">
+                        <button
+                          disabled={productOutOfStock}
+                          onClick={async () => {
+                            const canProceed = await requireGuestInfo();
+                            if (!canProceed) return;
+                            if (addSuccess) {
+                              navigate('/cart');
+                            } else {
+                              handleAddToCart(product);
+                            }
+                          }}
+                          className={`text-white px-6 gap-2 py-3 m-2
+        rounded-lg flex items-center text-sm font-semibold ${productOutOfStock ? 'bg-gray-300 cursor-not-allowed opacity-60' : addSuccess ? 'bg-[#2CA003] flex-col w-full' : `${themeBgGray} hover:${themeBgDark} ${hoverScale}`}`}
+                        >
+                          {addSuccess && addedProductName}
+                          {addSuccess && (<hr className='h-1 text-white w-full' />)}
+                          {!addSuccess && (<FaCartPlus />)}
+                          <div className='flex gap-2 items-center'>
+                            <span className={`hidden md:block ${addSuccess && 'text-black'}`}>{addSuccess ? 'Go to Bag' : 'Add to Cart'}</span>
+                            {addSuccess && (
+                              <svg width="17" height="16" viewBox="0 0 17 16" fill="none">
+                                <path d="M9.5 3L14.5 8M14.5 8L9.5 13M14.5 8H2.5" stroke="black" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            )}
+                          </div>
+                        </button>
 
-                  <button
-                    onClick={async () => {
-                      const canProceed = await requireGuestInfo();
-                      if (!canProceed) return;
-                      const success = await handleAddToCart(product);
-                      if (success) {
-                        setTimeout(() => {
-                          navigate('/checkout');
-                        }, 800);
-                      }
-                    }}
-                    className={`text-white ${themeBgColor} px-6 gap-2 py-3 m-2 rounded-lg flex items-center text-sm font-semibold ${hoverScale}`}
-                  >
-                    <FaBolt className="text-yellow-500" />
-                    <span>BUY NOW</span>
-                  </button>
-                  <WishlistButton
-                    product={product}
-                    wishlist={wishlist}
-                    setWishlist={setWishlist}
-                    token={token}
-                    content
-                  />
-                </div>
+                        <button
+                          disabled={productOutOfStock}
+                          onClick={async () => {
+                            const canProceed = await requireGuestInfo();
+                            if (!canProceed) return;
+                            const success = await handleAddToCart(product);
+                            if (success) {
+                              setTimeout(() => {
+                                navigate('/checkout');
+                              }, 800);
+                            }
+                          }}
+                          className={`text-white px-6 gap-2 py-3 m-2 rounded-lg flex items-center text-sm font-semibold ${productOutOfStock ? 'bg-gray-300 cursor-not-allowed opacity-60' : `${themeBgColor} ${hoverScale}`}`}
+                        >
+                          <FaBolt className="text-yellow-500" />
+                          <span>BUY NOW</span>
+                        </button>
+                        <WishlistButton
+                          product={product}
+                          wishlist={wishlist}
+                          setWishlist={setWishlist}
+                          token={token}
+                          content
+                        />
+                      </div>
+                    </>
+                  );
+                })()}
 
                 <div>
                   <DeliveryEstimate />

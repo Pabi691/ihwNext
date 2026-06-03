@@ -108,7 +108,7 @@ export default function EditProduct() {
         prod_desc: p.prod_desc || "",
         regular_price: p.regular_price || "",
         sale_price: p.sale_price || "",
-        stock_qty: p.stock_qty || "",
+        stock_qty: p.stock_qty ?? "",
         min_order_qty: p.min_order_qty || "",
         pack_qty: p.pack_qty || "",
         pack_price: p.pack_price || "",
@@ -143,9 +143,9 @@ export default function EditProduct() {
       const sizeEdits = {};
       vars.filter(v => v.size_id).forEach(v => {
         sizeEdits[v.id] = {
-          regular_price: v.regular_price || "",
-          sale_price: v.sale_price || "",
-          stock_qty: v.stock_qty || "",
+          regular_price: v.regular_price ?? "",
+          sale_price: v.sale_price ?? "",
+          stock_qty: v.stock_qty ?? "",
         };
       });
       setSizeVarEdits(sizeEdits);
@@ -195,7 +195,7 @@ export default function EditProduct() {
     if (!form.prod_name.trim()) return setError("Product name is required.");
     if (!form.regular_price) return setError("Regular price is required.");
     if (!form.sale_price) return setError("Sale price is required.");
-    if (!form.stock_qty) return setError("Stock quantity is required.");
+    if (form.stock_qty === "" || form.stock_qty == null) return setError("Stock quantity is required.");
     if (selectedCategories.length === 0) return setError("At least one category is required.");
 
     setSaving(true);

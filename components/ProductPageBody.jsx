@@ -447,7 +447,12 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
               </>
             )}
             <div className="flex flex-wrap gap-4">
-              {filteredProducts.map((product) => (
+              {filteredProducts.map((product) => {
+                const sizeVars = (product.product_variations || []).filter(v => v.size_id);
+                const outOfStock = sizeVars.length > 0
+                  ? sizeVars.every(v => (v.stock_qty ?? 0) <= 0)
+                  : (product.stock_qty ?? 0) <= 0;
+                return (
                 <div
                   key={product.id}
                   className="item w-[47%] h-[250px] md:w-[32%] bg-white overflow-hidden relative md:h-[500px]"
@@ -464,8 +469,15 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
                             // src={compressImage(product.primary_img, 400, 70, 'webp')}
                             src={product.primary_img}
                             alt={product.prod_name}
-                            className="w-full h-full transition-opacity duration-300 ease-in-out object-cover object-top"
+                            className={`w-full h-full transition-opacity duration-300 ease-in-out object-cover object-top ${outOfStock ? 'opacity-50' : ''}`}
                           />
+                          {outOfStock && (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <span className="bg-black/70 text-white text-[10px] md:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                                Out of Stock
+                              </span>
+                            </div>
+                          )}
                         </Link>
 
                         <div className="p-2 md:p-4 absolute bottom-0 w-full bg-white bg-opacity-90">
@@ -525,8 +537,7 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
                     )
                   }
                 </div>
-              ))}
-            </div>
+              );})}</div>
 
           </div>
         </div>
