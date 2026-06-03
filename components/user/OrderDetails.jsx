@@ -355,8 +355,12 @@ const OrderDetails = () => {
                                 </p>
                               );
                             }
+                            // COD delivered = cash was collected at door
+                            if (isCodMethod && order.shipping_status === 'Delivered') {
+                              return <p className="text-green-600 font-medium">Paid via COD</p>;
+                            }
                             if (isCodMethod) {
-                              return <p className="text-green-600 font-medium">To be paid by COD</p>;
+                              return <p className="text-yellow-600 font-medium">To be paid by COD</p>;
                             }
                             return <p className="text-yellow-600 font-medium">{methodLabel}</p>;
                           })()}
