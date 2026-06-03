@@ -7,7 +7,7 @@ import {
   FiStar, FiBookOpen, FiMenu, FiBell, FiLogOut, FiChevronRight,
   FiX, FiTruck, FiRotateCcw, FiAward, FiDroplet, FiMaximize2,
   FiFileText, FiChevronDown, FiChevronUp, FiPlus, FiBox, FiNavigation,
-  FiMapPin, FiCreditCard, FiSettings, FiAlertCircle, FiCheckCircle,
+  FiMapPin, FiCreditCard, FiSettings, FiAlertCircle, FiCheckCircle, FiBarChart2,
 } from "react-icons/fi";
 
 const NAV = [
@@ -30,6 +30,7 @@ const NAV = [
     children: [
       { href: "/products",        label: "All Products",  icon: FiPackage },
       { href: "/products/create", label: "Add Product",   icon: FiPlus },
+      { href: "/stock",           label: "Stock",         icon: FiBarChart2 },
       { href: "/categories",      label: "Categories",    icon: FiTag },
       { href: "/brands",          label: "Brands",        icon: FiAward },
       { href: "/colors",          label: "Colors",        icon: FiDroplet },

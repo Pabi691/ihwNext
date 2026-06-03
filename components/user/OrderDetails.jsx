@@ -541,9 +541,10 @@ const OrderDetails = () => {
                     </div>
                   )}
 
-                  {/* Invoice — only after payment */}
-                  {(order.order_payments?.[0]?.payment_status === 'completed' ||
-                    (order.payment_method?.method_name === 'COD' && order.shipping_status === 'Delivered')) && (
+                  {/* Invoice — only after payment, and only for orders after #1090 */}
+                  {parseInt(order.id) > 1090 &&
+                    (order.order_payments?.[0]?.payment_status === 'completed' ||
+                      (order.payment_method?.method_name === 'COD' && order.shipping_status === 'Delivered')) && (
                     <DownloadInvoiceButton order={order} />
                   )}
 
