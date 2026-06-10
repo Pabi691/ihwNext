@@ -40,7 +40,7 @@ const BranchHero = () => {
 
             {/* SEO H1 Headline */}
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 tracking-tight">
-              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#0A3D91] via-[#1E5CCB] to-[#F5D76E] bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(255,215,100,0.35)]">
                 {branchDetails.h1}
               </span>
             </h1>

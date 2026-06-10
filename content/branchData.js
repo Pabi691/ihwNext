@@ -100,8 +100,17 @@ export const branchData = {
   },
   siliguri: {
     name: "Siliguri",
-    h1: "Best Hair Patch & Non-Surgical Hair Replacement in Siliguri",
-    paragraph: "Looking for the best hair patch in Siliguri? Indian Hair World's Siliguri branch — at City Plaza, Sevoke Road — is North Bengal's first Shark Tank India featured non-surgical hair replacement center. We provide 100% natural hair patches, hair wigs, and hair replacement without surgery for men and women across Siliguri, Jalpaiguri and Darjeeling district, starting at Rs.5999. The best hair transplant alternative in Siliguri. Natural result in 60 minutes. EMI available. Call +917439436698 for a free consultation.",
+    h1: "Hair Patch, Wigs & Non-Surgical Hair Replacement in Siliguri",
+    paragraph: "Natural Human Hair Solutions for Men & Women in Siliguri. Hair Patch, Hair Wig, Hair Topper, Toupee, Hair Extensions and Non-Surgical Hair Replacement Starting from ₹5,999.",
+    paragraph2: "Looking for the best hair patch, wig, or non-surgical hair replacement in Siliguri? Indian Hair World offers premium human hair solutions for men and women dealing with hair loss, baldness, thinning hair, alopecia, or pattern baldness. Our natural-looking hair patches, wigs, toppers, toupees, and hair extensions are designed to restore your confidence instantly without surgery.",
+    highlights: [
+      "100% Human Hair",
+      "Natural Undetectable Look",
+      "Same-Day Hair Fixing",
+      "Custom Hair Systems",
+      "Affordable Hair Patch Price",
+      "Serving Siliguri & North Bengal",
+    ],
     address:
       "City Plaza, 2nd Floor, Shop No 3, Sevoke Road, Siliguri, West Bengal 734001",
     phones: ["+917439436698"],
@@ -119,11 +128,14 @@ export const branchData = {
     womenProduct: <SingleSlider slug_name="get_slug_data/women-products" title="WOMEN’S HAIR PRODUCTS" />,
     reviews: <ReviewSlider data={reviewData.siliguri} />,
     faqs: [
-      { question: "What is the cost of a hair patch in Siliguri?", answer: "Hair patches in Siliguri at Indian Hair World start from Rs.5999. We also offer easy EMI options. Prices vary based on the type of patch, coverage area and fixing method. Call +917439436698 or WhatsApp for a free price consultation." },
-      { question: "Is the hair patch result natural and undetectable?", answer: "Yes — 100%. Our hair patches use premium natural Indian human hair matched to your colour and texture. Friends and family will not be able to tell the difference. We guarantee a natural, undetectable result or we re-do it free of charge." },
-      { question: "How is hair patch different from hair transplant?", answer: "Hair transplants cost Rs.70,000+ with weeks of recovery time and surgical risk. Our non-surgical hair replacement gives the same natural result from Rs.5999 in just 60 minutes — no surgery, no scars, no downtime. It is reversible and risk-free." },
-      { question: "Where is your Siliguri branch located?", answer: "We are at City Plaza, 2nd Floor, Shop No 3, Sevoke Road, Siliguri, West Bengal 734001. Open Monday to Sunday, 11am to 7pm. No prior appointment is needed — walk in directly or call +917439436698." },
-      { question: "Can I swim or go to the gym with a hair patch?", answer: "Yes — once properly bonded, you can swim, go to the gym, run in rain, wear a helmet and do all normal activities. There are zero activity restrictions with a professionally fixed hair patch from our Siliguri branch." }
+      { question: "What is the hair patch price in Siliguri?", answer: "Hair patch prices at Indian Hair World Siliguri start from ₹5,999. The exact cost varies depending on hair quality, base material, hair density, size of the bald area, and customization requirements. We also offer easy EMI options. Book a free consultation at City Plaza, Sevoke Road, or call +917439436698 for a personalized quote." },
+      { question: "Which is the best hair patch in Siliguri?", answer: "The best hair patch is one that matches your hair texture, colour, density, lifestyle, and baldness pattern. At Indian Hair World Siliguri, our specialists assess your scalp condition and hair loss type to recommend the ideal hair patch — whether bonded, clipped, taped or woven. We use 100% natural Indian human hair for a completely undetectable result." },
+      { question: "Where can I buy human hair wigs in Siliguri?", answer: "You can buy premium human hair wigs at Indian Hair World, City Plaza, 2nd Floor, Shop No 3, Sevoke Road, Siliguri. We stock full wigs, lace wigs, medical wigs, curly hair wigs, fashion wigs, and customized wigs for both men and women. Open 7 days, 11am to 7pm. No appointment needed." },
+      { question: "Are curly hair wigs available in Siliguri?", answer: "Yes — Indian Hair World Siliguri has a full curly hair collection including curly wigs, curly hair pieces, curly toppers, and curly lace wigs. Each system is matched to your natural curl pattern, density, and length. Walk in for a free trial." },
+      { question: "What is the difference between a toupee and a hair patch?", answer: "A toupee and a hair patch are essentially the same thing — both refer to a partial hair system designed to cover a bald or thinning area on the scalp. The term 'toupee' is traditionally used for men, while 'hair patch' is the more modern, widely used term. Both are available at Indian Hair World Siliguri in 100% natural human hair." },
+      { question: "Can women use hair toppers and hair patches?", answer: "Absolutely. Hair toppers are ideal for women experiencing crown thinning, alopecia, or volume loss — they provide targeted coverage and blend with existing hair. Hair patches for women work for localized hair loss caused by hormonal changes, stress, or medical conditions. Both are available in natural human hair at our Siliguri branch." },
+      { question: "How long does a human hair wig last?", answer: "A premium human hair wig with proper care can last 1–3 years. Longevity depends on usage frequency, maintenance routine, and the fixing method used. At Indian Hair World, we provide a complete care guide and offer professional maintenance services to help extend the life of your wig or hair patch." },
+      { question: "Is non-surgical hair replacement better than a hair transplant?", answer: "For most people, non-surgical hair replacement offers significant advantages: no surgery, no scars, no recovery time, immediate results in 60 minutes, and a fraction of the cost (from ₹5,999 vs. ₹70,000+ for transplants). It is also reversible and suitable for all stages of hair loss. Hair transplants are a surgical procedure with long recovery periods and are only viable for certain hair loss patterns." },
     ],
   },
 };

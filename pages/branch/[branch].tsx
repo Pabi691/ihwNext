@@ -55,31 +55,49 @@ const Branches = () => {
                         </div>
 
                         {/* PARAGRAPH SECTION */}
-                        <div className="mt-0 md:mt-10 border-l-4 border-blue-600 pl-6">
-
-                            {/* subtle top divider */}
-                            <div className="w-12 h-[2px] bg-blue-600 mb-6"></div>
-
-                            <p className="text-gray-900 text-base md:text-lg leading-loose tracking-[0.2px]">
-                                {data.paragraph}
-                            </p>
-
-                            {data.serving_areas && (
-                                <p className="mt-4 text-sm text-gray-500 font-medium">
-                                    Serving: {data.serving_areas}
+                        {data.paragraph2 && data.highlights ? (
+                            <div className="mt-0 md:mt-10">
+                                <p className="text-[#0A3D91] font-bold text-base md:text-lg mb-4 leading-snug">
+                                    {data.paragraph}
                                 </p>
-                            )}
-
-                        </div>
+                                <p className="text-gray-700 text-base md:text-lg leading-relaxed mb-6">
+                                    {data.paragraph2}
+                                </p>
+                                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+                                    {data.highlights.map((item: string) => (
+                                        <li key={item} className="flex items-center gap-2 text-gray-800 text-sm md:text-base font-medium">
+                                            <span className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center">
+                                                <svg className="w-3 h-3 text-white" viewBox="0 0 12 10" fill="none">
+                                                    <path d="M1 5l3.5 3.5L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                            </span>
+                                            {item}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ) : (
+                            <div className="mt-0 md:mt-10 border-l-4 border-blue-600 pl-6">
+                                <div className="w-12 h-[2px] bg-blue-600 mb-6"></div>
+                                <p className="text-gray-900 text-base md:text-lg leading-loose tracking-[0.2px]">
+                                    {data.paragraph}
+                                </p>
+                                {data.serving_areas && (
+                                    <p className="mt-4 text-sm text-gray-500 font-medium">
+                                        Serving: {data.serving_areas}
+                                    </p>
+                                )}
+                            </div>
+                        )}
 
                     </div>
                 </div>
                 <PopularReels />
-                <BranchMap data={data} compact />
+                <BranchContent />
+                {/* <BranchMap data={data} compact /> */}
                 <AchievementSlider />
                 <OurWorks />
                 <OurStoresSection />
-                <BranchContent />
             </MainLayOut>
         </>
     )

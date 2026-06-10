@@ -171,10 +171,10 @@ export default function VideoReelsSlider({
         <>
             {/* ── Header ── */}
             <section className="w-full bg-gradient-to-b from-white to-gray-100 py-4 md:py-8 lg:py-16 overflow-hidden">
-                <div className="w-[98%] mx-auto">
-                    <div className="flex justify-between items-start flex-wrap gap-4 w-[98%]">
+                <div className="max-w-7xl mx-auto px-4 md:px-6">
+                    <div className="flex justify-between items-start flex-wrap gap-4 w-full">
                         <div className="text-start mb-2 relative">
-                            <h2 className="text-xl mx-6 sm:text-4xl font-bold text-gray-900 inline-block">
+                            <h2 className="text-xl sm:text-4xl font-bold text-gray-900 inline-block">
                                 {sectionTitle}{' '}
                                 <span className="outline-text font-semibold">{sectionTitleHighlight}</span>
                             </h2>
@@ -194,7 +194,7 @@ export default function VideoReelsSlider({
                 </div>
                 {/*  */}
                 {isSaltLake && (
-                    <div className="w-[86%] md:w-[94%] mx-auto text-xs md:text-base">
+                    <div className="max-w-7xl mx-auto px-4 md:px-6 text-xs md:text-base">
                         <p className='text-gray-500'>
                             Hair patch center Kolkata
                         </p>
@@ -205,7 +205,7 @@ export default function VideoReelsSlider({
 
             {/* ── Carousel ── */}
             <section className="w-full pb-10 md:pb-16 bg-gradient-to-b from-gray-100 to-white overflow-hidden">
-                <div className="relative w-[96%] max-w-[1400px] mx-auto">
+                <div className="relative max-w-7xl mx-auto px-4 md:px-6">
                     <Swiper
                         virtual
                         watchSlidesProgress

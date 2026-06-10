@@ -12,17 +12,17 @@ const BranchContent = () => {
 
     return (
         <>
-            <img src={data.banner_img} alt={`Indian Hair World ${data.name} branch - hair replacement services`} />
+            {/* <img src={data.banner_img} alt={`Indian Hair World ${data.name} branch - hair replacement services`} /> */}
+            {data.menProduct}
+            {data.womenProduct}
             {data.component}
-            <ProductCategory
+            {/* <ProductCategory
                 title={
                     <>
                         SHOP FROM <span className="text-red-500">OUR COLLECTION</span>
                     </>
                 }
-            />
-            {data.menProduct}
-            {data.womenProduct}
+            /> */}
             {data.reviews}
             <BranchMap data={data} />
             <BranchFaq faqs={data.faqs} />

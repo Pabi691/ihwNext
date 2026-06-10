@@ -179,7 +179,7 @@ function InvoiceModal({ order, onClose }) {
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "15px", gap: "20px" }}>
               <div style={{ width: "48%" }}>
                 <p><strong>Sold By:</strong></p>
-                <p>INDIANHAIRWORLD</p>
+                <p>INDIAN HAIR WORLD</p>
                 <p>EC-20, Ground Floor Back Side. Opp. CC1,</p>
                 <p>Sector-1, Salt Lake City, Kolkata, West Bengal 700064</p>
                 <p>Phone: +918961194044</p>
