@@ -67,6 +67,13 @@ const DownloadInvoiceButton = ({ order }) => {
         </tr>`;
     }).join("");
 
+    const couponLabel = order?.coupon_code ? " (" + order.coupon_code + ")" : "";
+    const couponRow = parseFloat(order?.discount_amt) > 0 ? `
+      <tr>
+        <td colspan="${taxCols - 1}" style="border:1px solid #000;padding:4px 6px;text-align:right;color:#16a34a;">Coupon Discount${couponLabel}:</td>
+        <td style="border:1px solid #000;padding:4px 6px;text-align:right;color:#16a34a;">&#8722;&#8377;${parseFloat(order.discount_amt).toFixed(2)}</td>
+      </tr>` : "";
+
     const codRow = parseFloat(order?.shipping_total) > 0 ? `
       <tr>
         <td colspan="${taxCols - 1}" style="border:1px solid #000;padding:4px 6px;text-align:right;">COD Charge:</td>
@@ -160,6 +167,7 @@ const DownloadInvoiceButton = ({ order }) => {
           </thead>
           <tbody>
             ${itemRows}
+            ${couponRow}
             ${codRow}
             ${rOffRow}
             <tr>
