@@ -240,7 +240,7 @@ const Cart = () => {
       // console.log('subtotal', subtotal);
       // console.log('response.data.minimum_order_value', response.data.data?.minimum_order_value);
       if (data.status) {
-        if (subtotal >= response.data.data?.minimum_order_value) {
+        if (grandTotal >= response.data.data?.minimum_order_value) {
           setCouponData(data.data);
           setOpenCoupon(false);
         } else {
