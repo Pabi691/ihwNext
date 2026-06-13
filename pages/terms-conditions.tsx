@@ -227,12 +227,153 @@ const TermsCondition = () => {
           </section>
           <section className="mt-8 space-y-4">
             <h2 className="text-xl font-semibold">
-              SECTION 10 – PERSONAL INFORMATION
+              SECTION 10 – PERSONAL INFORMATION & DATA COLLECTION
             </h2>
 
             <p>
-              Your submission of personal information through the store is governed by our
-              <Link to="/privacy-policy">Privacy Policy</Link>, which can be viewed here:
+              Your submission of personal information through this website is governed by our{' '}
+              <Link to="/privacy-policy" className="text-blue-600 underline">Privacy Policy</Link>.
+              By using our website, placing an order, or creating an account, you expressly
+              consent to the collection, storage, and use of your personal data as described
+              in this section.
+            </p>
+
+            <h3 className="text-base font-semibold mt-4">10.1 – What Information We Collect</h3>
+            <p>
+              When you interact with Indian Hair World — whether by registering an account,
+              placing an order, contacting us, or using features on our website — we may
+              collect the following information:
+            </p>
+
+            <p className="font-medium text-gray-700 mt-2">a) Pre-Cart &amp; AI Try-On Lead Form</p>
+            <p>
+              Before adding a product to your cart or using our AI hair patch try-on feature,
+              we display a short form to identify you as a visitor. At this step, we collect:
+            </p>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>Full name</li>
+              <li>Gender</li>
+              <li>Mobile number (10-digit Indian number)</li>
+            </ul>
+            <p>
+              This information is collected to personalise your browsing experience, allow our
+              team to follow up with relevant product recommendations, and to send you
+              promotional offers via WhatsApp or SMS. By submitting this form, you explicitly
+              consent to Indian Hair World contacting you for marketing purposes.
+            </p>
+
+            <p className="font-medium text-gray-700 mt-2">b) Account Registration &amp; Order Placement</p>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>Full name, email address, and mobile/phone number</li>
+              <li>Billing and shipping address</li>
+              <li>Order history and purchase preferences</li>
+              <li>Payment method type (we do <strong>not</strong> store full card/UPI details)</li>
+            </ul>
+
+            <p className="font-medium text-gray-700 mt-2">c) Browsing &amp; Analytics</p>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>Device type, browser, and general location (city/state level) for website analytics and improvement</li>
+            </ul>
+
+            <h3 className="text-base font-semibold mt-4">10.2 – How We Use Your Information (Marketing Purpose)</h3>
+            <p>
+              The personal information you provide is used <strong>solely for internal business
+              and marketing purposes</strong> of Indian Hair World. Specifically, we use your
+              data to:
+            </p>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>Process and fulfill your orders and send order-related notifications</li>
+              <li>Send you promotional offers, discount codes, seasonal deals, and new product announcements via WhatsApp, SMS, or email</li>
+              <li>Personalise your shopping experience and recommend relevant products</li>
+              <li>Respond to your queries, feedback, and customer support requests</li>
+              <li>Improve our website, products, and services based on usage patterns</li>
+              <li>Comply with legal and regulatory obligations as required under Indian law</li>
+            </ul>
+
+            <h3 className="text-base font-semibold mt-4">10.3 – We Do NOT Sell or Share Your Data</h3>
+            <p>
+              <strong>Indian Hair World strictly does not sell, rent, trade, lease, or otherwise
+              transfer your personal information to any third party for commercial or marketing
+              purposes.</strong> We do not share your name, phone number, email address, or any
+              other personal details with external businesses, advertisers, or data brokers.
+            </p>
+            <p>
+              We may only disclose your information in the following limited circumstances:
+            </p>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>
+                <strong>Service providers:</strong> Trusted partners who assist us in operating our
+                website and delivering orders (e.g., logistics/courier partners such as Delhivery)
+                strictly for order fulfilment purposes only. These parties are contractually
+                prohibited from using your data for any other purpose.
+              </li>
+              <li>
+                <strong>Legal requirement:</strong> When required to do so by law, court order, or
+                governmental/regulatory authority under applicable Indian law (including the
+                Information Technology Act, 2000 and its amendments).
+              </li>
+              <li>
+                <strong>Payment processing:</strong> Payment gateway providers (e.g., Razorpay)
+                who process your transactions under their own privacy and security policies.
+                We do not store your full payment credentials.
+              </li>
+            </ul>
+            <p>
+              In all cases, data shared with the above parties is limited strictly to what is
+              necessary for the specific purpose and is protected under confidentiality agreements.
+            </p>
+
+            <h3 className="text-base font-semibold mt-4">10.4 – Marketing Communications & Opt-Out</h3>
+            <p>
+              By providing your mobile number and/or email address, you consent to receiving
+              marketing and promotional communications from Indian Hair World via WhatsApp, SMS,
+              and email. These communications may include exclusive offers, product launches,
+              festive discounts, and service updates.
+            </p>
+            <p>
+              You may opt out of marketing communications at any time by:
+            </p>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>Replying "STOP" or "UNSUBSCRIBE" to any SMS or WhatsApp message you receive from us</li>
+              <li>Clicking the unsubscribe link in any promotional email</li>
+              <li>Contacting us directly at <strong>indianhairworld.services@gmail.com</strong></li>
+            </ul>
+            <p>
+              Please note that opting out of marketing communications will not affect transactional
+              messages related to your orders (e.g., order confirmations, shipping updates).
+            </p>
+
+            <h3 className="text-base font-semibold mt-4">10.5 – Data Retention</h3>
+            <p>
+              We retain your personal information for as long as your account is active, as
+              necessary to provide our services, or as required by applicable law. If you wish
+              to have your personal data deleted from our systems, you may contact us at
+              <strong> indianhairworld.services@gmail.com</strong> and we will process your
+              request within a reasonable timeframe, subject to our legal obligations to retain
+              certain records.
+            </p>
+
+            <h3 className="text-base font-semibold mt-4">10.6 – Data Security</h3>
+            <p>
+              We implement reasonable technical and organizational security measures to protect
+              your personal information from unauthorized access, disclosure, alteration, or
+              destruction. However, no method of transmission over the internet or electronic
+              storage is 100% secure. While we strive to use commercially acceptable means to
+              protect your data, we cannot guarantee absolute security.
+            </p>
+
+            <h3 className="text-base font-semibold mt-4">10.7 – Your Rights</h3>
+            <p>You have the right to:</p>
+            <ul className="list-disc pl-6 space-y-1">
+              <li>Access the personal information we hold about you</li>
+              <li>Request correction of inaccurate or incomplete data</li>
+              <li>Request deletion of your personal data (subject to legal obligations)</li>
+              <li>Withdraw consent to marketing communications at any time</li>
+              <li>Lodge a complaint with the appropriate data protection authority</li>
+            </ul>
+            <p>
+              To exercise any of these rights, please contact us at{' '}
+              <strong>indianhairworld.services@gmail.com</strong>.
             </p>
           </section>
 

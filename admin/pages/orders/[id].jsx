@@ -248,6 +248,16 @@ function InvoiceModal({ order, onClose }) {
                     </tr>
                   );
                 })}
+                {parseFloat(order?.discount_amt) > 0 && (
+                  <tr>
+                    <td colSpan={taxCols - 1} style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "right", color: "#16a34a" }}>
+                      Coupon Discount{order?.coupon_code ? ` (${order.coupon_code})` : ""}:
+                    </td>
+                    <td style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "right", color: "#16a34a" }}>
+                      −₹{parseFloat(order.discount_amt).toFixed(2)}
+                    </td>
+                  </tr>
+                )}
                 {parseFloat(order?.shipping_total) > 0 && (
                   <tr>
                     <td colSpan={taxCols - 1} style={{ border: "1px solid #000", padding: "4px 6px", textAlign: "right" }}>COD Charge:</td>

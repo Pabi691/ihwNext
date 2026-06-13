@@ -8,30 +8,35 @@ const achievements = [
     designation: 'Leading Hair Replacement Center of West Bengal 2024',
     description:
       'Indian Hair World (IHW) is thrilled to be recognized as the "Leading Hair Replacement Center of West Bengal 2024" by the prestigious Times Brand Icons!',
+    image: '/images/times_brand_icons_in_2024.jpeg',
   },
   {
     title: 'IEA 2024',
     designation: 'International Excellence Award 2024 — Best Hair Replacement Center In East Zone',
     description:
       'Indian Hair World has been recognized with the prestigious International Excellence Award 2024 for its exceptional services as the Best Hair Replacement Center in the East Zone.',
+    image: '/images/iea_award_in_2024.jpeg',
   },
   {
     title: 'GFA 2024',
     designation: 'Global Fame Award 2024 — Best Hair Replacement Center In Kolkata',
     description:
       'Indian Hair World has been honoured with the Global Fame Award 2024 for being the Best Hair Replacement Center in Kolkata, West Bengal.',
+    image: '/images/gfa_award_in_2024.jpeg',
   },
   {
     title: 'NPA 2022',
     designation: 'Nation Pride Award 2022 — Best Hair Replacement Center of West Bengal',
     description:
       'Indian Hair World received the prestigious Nation Pride Award 2022 for being the Best Hair Replacement Center in West Bengal.',
+    image: '/images/npa_award_in_2022.jpeg',
   },
   {
     title: 'BPA 2021',
     designation: 'Bengal Pride Award 2021 — Best Hair Replacement Center of Kolkata',
     description:
       'Indian Hair World was awarded the prestigious Bengal Pride Award 2021 for its top-notch professional services in Kolkata.',
+    image: null,
   },
 ];
 
@@ -62,6 +67,16 @@ const AchievementsSlider = () => {
           {achievements.map((item, index) => (
             <SwiperSlide key={index}>
               <div className="group h-full border border-gray-200 rounded-2xl overflow-hidden transition-all duration-300 hover:border-gray-900">
+                {item.image && (
+                  <div className="w-full h-48 overflow-hidden">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
                 <div className="p-6 bg-white group-hover:bg-gray-900 transition-colors duration-300 h-full flex flex-col gap-3">
                   <span className="inline-block w-fit px-3 py-1 text-xs font-bold uppercase tracking-wider bg-[#04A9FF]/10 text-[#04A9FF] rounded-full group-hover:bg-white/10 group-hover:text-white transition-colors duration-300">
                     {item.title}
