@@ -329,7 +329,11 @@ const OrderDetails = () => {
                             GST @ {order.gst_summary.gst_rate}%
                             (CGST {order.gst_summary.cgst} + SGST {order.gst_summary.sgst})
                           </p>
-
+                          {parseFloat(order.discount_amt) > 0 && (
+                            <p className="text-xs text-green-600 font-medium">
+                              Coupon {order.coupon_code ? `(${order.coupon_code})` : ''} applied: − ₹{parseFloat(order.discount_amt).toFixed(2)}
+                            </p>
+                          )}
                           <div className="flex justify-between font-semibold">
                             <span>Total (incl. GST)</span>
                             <span>₹{parseFloat(order.pay_amt).toFixed(2)}</span>
@@ -390,6 +394,18 @@ const OrderDetails = () => {
                             </div>
                           ))}
                           <hr className="my-3" />
+                          {parseFloat(order.discount_amt) > 0 && (
+                            <>
+                              <div className="flex justify-between">
+                                <span>Items Total</span>
+                                <span>₹{parseFloat(order.bill_amt).toFixed(2)}</span>
+                              </div>
+                              <div className="flex justify-between text-green-600 font-medium">
+                                <span>Coupon Discount {order.coupon_code ? `(${order.coupon_code})` : ''}</span>
+                                <span>− ₹{parseFloat(order.discount_amt).toFixed(2)}</span>
+                              </div>
+                            </>
+                          )}
                           <div className="flex justify-between">
                             <span>Total Price</span>
                             <span>₹{order.net_amt.toFixed(2)}</span>
