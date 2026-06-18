@@ -43,6 +43,7 @@ const OrderDetails = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [trackingId, setTrackingId] = useState(null);
+  const [courierName, setCourierName] = useState(null);
   const { token } = useGlobal();
   const navigate = useNavigate();
   const [showBreakup, setShowBreakup] = useState(false);
@@ -97,6 +98,7 @@ const OrderDetails = () => {
           console.log('order details:', response.data);
           setOrder(response.data.order);
           setTrackingId(response.data.order.allotment_vehicle[0]?.ref_no);
+          setCourierName(response.data.order.allotment_vehicle[0]?.delivery_vehicle?.vehicle_name || null);
         }
       } catch (error) {
         console.error('Error fetching order:', error);
@@ -212,7 +214,11 @@ const OrderDetails = () => {
                   {trackingId && (
                     <div className='flex justify-between items-center mb-4'>
                       <p className='font-medium text-xs'>Tracking no. <br /><span className='text-base font-semibold'>#{trackingId}</span></p>
-                      <img alt='delhivery-icon' className={`${themeBgColor} p-[2px] w-[100px] md:w-[150px]`} src={`${"" || ''}/images/Delhivery_logo.png`} />
+                      {courierName?.toLowerCase() === 'shiprocket' ? (
+                        <span className='bg-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-md tracking-wide'>Shiprocket</span>
+                      ) : (
+                        <img alt='delhivery-icon' className={`${themeBgColor} p-[2px] w-[100px] md:w-[150px]`} src='/images/Delhivery_logo.png' />
+                      )}
                     </div>
                   )}
 

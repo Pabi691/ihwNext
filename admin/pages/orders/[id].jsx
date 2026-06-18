@@ -639,20 +639,29 @@ export default function OrderDetails() {
               </div>
             )}
 
-            {/* Shipping Tracking (Delhivery) */}
+            {/* Shipping Tracking */}
             {allotments.length > 0 && (
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="px-5 py-4 border-b border-gray-100">
                   <h3 className="font-bold text-gray-800 text-sm">Shipping Tracking</h3>
                 </div>
                 <div className="px-5 py-4 space-y-2">
-                  {allotments.map((a, i) => (
-                    <div key={i} className="flex items-center justify-between text-sm">
-                      <a href={`https://www.delhivery.com/track-v2/package/${a.ref_no}`} target="_blank" rel="noreferrer"
-                        className="text-[#04A9FF] hover:underline font-mono">{a.ref_no}</a>
-                      <span className="text-gray-500">{a.status}</span>
-                    </div>
-                  ))}
+                  {allotments.map((a, i) => {
+                    const courierName = (a.delivery_vehicle?.vehicle_name || '').toLowerCase();
+                    const trackingUrl = courierName === 'shiprocket'
+                      ? `https://shiprocket.co/tracking/${a.ref_no}`
+                      : `https://www.delhivery.com/track-v2/package/${a.ref_no}`;
+                    return (
+                      <div key={i} className="flex items-center justify-between text-sm">
+                        <a href={trackingUrl} target="_blank" rel="noreferrer"
+                          className="text-[#04A9FF] hover:underline font-mono">{a.ref_no}</a>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-gray-400">{a.delivery_vehicle?.vehicle_name}</span>
+                          <span className="text-gray-500">{a.status}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
