@@ -21,6 +21,7 @@ export default function ProcessOrders() {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState(null);
+  const [phoneOverrides, setPhoneOverrides] = useState({});
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type });
@@ -53,11 +54,30 @@ export default function ProcessOrders() {
     return !q || String(o.id).includes(q) || name.includes(q);
   });
 
-  const toggleSelect = (id) =>
-    setSelected((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
+  const isShiprocket = vehicleList.find(v => String(v.id) === String(selectedVehicle))?.vehicle_name?.toLowerCase() === 'shiprocket';
 
-  const toggleAll = () =>
-    setSelected(selected.length === filtered.length ? [] : filtered.map((o) => o.id));
+  const toggleSelect = (id) => {
+    setSelected((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
+      if (!prev.includes(id)) {
+        const order = orders.find((o) => o.id === id);
+        setPhoneOverrides((p) => ({ ...p, [id]: order?.mobile_number || '' }));
+      }
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (selected.length === filtered.length) {
+      setSelected([]);
+    } else {
+      const ids = filtered.map((o) => o.id);
+      setSelected(ids);
+      const overrides = {};
+      filtered.forEach((o) => { overrides[o.id] = o.mobile_number || ''; });
+      setPhoneOverrides((p) => ({ ...p, ...overrides }));
+    }
+  };
 
   const handleSubmit = async () => {
     if (!selected.length) return showToast("Please select at least one order", "error");
@@ -70,11 +90,15 @@ export default function ProcessOrders() {
         const o = orders.find((x) => x.id === id);
         return { id, sl_no: o?.sl_no || (i + 1) };
       });
-      const res = await api("post", "/order_assigned_for_delivery", {
+      const payload = {
         order_list,
         delivery_vehicle_id: parseInt(selectedVehicle),
         order_status: parseInt(selectedStatus),
-      });
+      };
+      if (isShiprocket) {
+        payload.phone_overrides = phoneOverrides;
+      }
+      const res = await api("post", "/order_assigned_for_delivery", payload);
       if (res.data?.status === false) {
         showToast(res.data?.message || "Failed to assign orders", "error");
       } else {
@@ -190,6 +214,33 @@ export default function ProcessOrders() {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {/* Shiprocket phone override panel */}
+        {isShiprocket && selected.length > 0 && (
+          <div className="px-5 py-3 border-t border-orange-100 bg-orange-50/40">
+            <p className="text-xs font-semibold text-orange-700 mb-2">
+              Shiprocket requires a valid 10-digit Indian mobile number (starting with 6/7/8/9). Edit if needed:
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {selected.map((id) => {
+                const order = orders.find((o) => o.id === id);
+                return (
+                  <div key={id} className="flex items-center gap-2 bg-white border border-orange-200 rounded-xl px-3 py-2 text-sm">
+                    <span className="text-gray-500 font-medium">#{id}</span>
+                    <input
+                      type="tel"
+                      value={phoneOverrides[id] ?? order?.mobile_number ?? ''}
+                      onChange={(e) => setPhoneOverrides((p) => ({ ...p, [id]: e.target.value }))}
+                      maxLength={13}
+                      placeholder="10-digit mobile"
+                      className="w-36 border border-gray-200 rounded-lg px-2 py-1 text-sm outline-none focus:border-orange-400"
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 
