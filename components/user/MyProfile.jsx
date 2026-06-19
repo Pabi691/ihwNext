@@ -41,12 +41,12 @@ const MyProfile = () => {
 
   const handleUpdate = async () => {
     try {
-      // const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/update_customer_profile`, updatedProfile, {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`,
-      //     'Content-Type': 'application/json',
-      //   },
-      // });
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/update_customer_profile`, updatedProfile, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       setProfile(updatedProfile);
       setIsEditing(false);
     } catch (error) {
@@ -104,10 +104,12 @@ const MyProfile = () => {
           <div>
             <label className='block text-sm font-medium'>Mobile Number</label>
             <input
-              type='text'
-              value={profile.mobile_number}
+              type='tel'
+              name='mobile_number'
+              value={updatedProfile.mobile_number || ''}
+              onChange={handleChange}
               disabled={!isEditing}
-              className='w-full px-3 py-2 border bg-gray-100 rounded-lg'
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#04A9FF] ${!isEditing ? 'bg-gray-100' : ''}`}
             />
           </div>
           

@@ -185,6 +185,10 @@ function CustomerPanel({ customerId, onClose, api }) {
   const [noteSaving, setNoteSaving] = useState(false);
   const [noteSaved, setNoteSaved] = useState(false);
   const [noteError, setNoteError] = useState(false);
+  const [editingPhone, setEditingPhone] = useState(false);
+  const [phoneInput, setPhoneInput] = useState("");
+  const [phoneSaving, setPhoneSaving] = useState(false);
+  const [phoneMsg, setPhoneMsg] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -211,6 +215,21 @@ function CustomerPanel({ customerId, onClose, api }) {
       setTimeout(() => setNoteError(false), 3000);
     }
     setNoteSaving(false);
+  };
+
+  const handleSavePhone = async () => {
+    setPhoneSaving(true);
+    setPhoneMsg(null);
+    try {
+      await api("post", `/update_customer_phone/${customerId}`, { mobile_number: phoneInput });
+      setData((d) => ({ ...d, mobile_number: phoneInput }));
+      setPhoneMsg({ type: "success", text: "Phone updated!" });
+      setEditingPhone(false);
+      setTimeout(() => setPhoneMsg(null), 2500);
+    } catch {
+      setPhoneMsg({ type: "error", text: "Failed to update phone" });
+    }
+    setPhoneSaving(false);
   };
 
   const orders = data?.orders || [];
@@ -304,20 +323,61 @@ function CustomerPanel({ customerId, onClose, api }) {
                   </button>
                 )}
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3 text-sm text-gray-700">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-3 text-sm text-gray-700 flex-1 min-w-0">
                   <FiPhone size={15} className="text-[#04A9FF] flex-shrink-0" />
-                  <span>{customerPhone || "—"}</span>
+                  {editingPhone ? (
+                    <input
+                      type="tel"
+                      value={phoneInput}
+                      onChange={(e) => setPhoneInput(e.target.value)}
+                      maxLength={13}
+                      autoFocus
+                      className="flex-1 border border-[#04A9FF] rounded-lg px-2 py-1 text-sm outline-none"
+                    />
+                  ) : (
+                    <span>{customerPhone || "—"}</span>
+                  )}
                 </div>
-                {customerPhone && (
-                  <a
-                    href={`tel:${customerPhone}`}
-                    className="text-xs font-semibold text-emerald-600 hover:underline flex-shrink-0 ml-2"
-                  >
-                    Call
-                  </a>
-                )}
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  {editingPhone ? (
+                    <>
+                      <button
+                        onClick={handleSavePhone}
+                        disabled={phoneSaving}
+                        className="text-xs font-semibold text-emerald-600 hover:underline disabled:opacity-50"
+                      >
+                        {phoneSaving ? "Saving..." : "Save"}
+                      </button>
+                      <button
+                        onClick={() => setEditingPhone(false)}
+                        className="text-xs font-semibold text-gray-400 hover:underline"
+                      >
+                        Cancel
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => { setPhoneInput(customerPhone); setEditingPhone(true); }}
+                        className="text-xs font-semibold text-[#04A9FF] hover:underline"
+                      >
+                        Edit
+                      </button>
+                      {customerPhone && (
+                        <a href={`tel:${customerPhone}`} className="text-xs font-semibold text-emerald-600 hover:underline">
+                          Call
+                        </a>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
+              {phoneMsg && (
+                <p className={`text-xs font-semibold ${phoneMsg.type === "success" ? "text-emerald-600" : "text-red-500"}`}>
+                  {phoneMsg.text}
+                </p>
+              )}
               {data.alt_mob_number && (
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3 text-sm text-gray-500">
