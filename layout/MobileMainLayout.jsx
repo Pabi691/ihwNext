@@ -5,6 +5,7 @@ import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import NavTop from "../components/layoutParts/NavTop";
 import { useGlobal } from "../global/GlobalContext";
 import { themeBgColor } from "../styles/typography";
+import BottomFixedNav from "../components/mobileComponents/BottomFixedNav";
 
 /**
  * @param {{ children: any, title?: any, ProductsCount?: any, link?: string | null }} props
@@ -23,7 +24,7 @@ const MobileMainLayout = ({ children, title, ProductsCount, link = null }) => {
             <div>
                 {children}
             </div>
-            <div className="block md:hidden mb-12">
+            <div className="block md:hidden">
                 <div className={`${themeBgColor} p-4 text-white font-medium border-b flex justify-between text-base`} onClick={() => setShowMenu(!showMenu)}>
                     <span>More About Indian Hair World</span>
                     <span className="text-2xl">
@@ -41,6 +42,7 @@ const MobileMainLayout = ({ children, title, ProductsCount, link = null }) => {
                     )}
                 </div>
             </div>
+            <BottomFixedNav />
             <div className="hidden md:block">
                 <Footer
                     accessoriesCat={accessoriesCat}

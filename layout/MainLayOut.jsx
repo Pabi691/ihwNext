@@ -17,7 +17,7 @@ const MainLayOut = ({ children }) => {
       <main>{children}</main>
 
       {/* Mobile Footer */}
-      <div className="block md:hidden mb-12">
+      <div className="block md:hidden">
         <div
           className={`${themeBgColor} p-4 text-white font-medium border-b flex justify-between text-base`}
           onClick={() => setShowMenu(!showMenu)}
@@ -35,11 +35,8 @@ const MainLayOut = ({ children }) => {
             loading={loadingCategories}
           />
         }
-
-        <div className='md:hidden'>
-          <BottomFixedNav />
-        </div>
       </div>
+      <BottomFixedNav />
 
       {/* Desktop Footer */}
       <div className="hidden md:block">

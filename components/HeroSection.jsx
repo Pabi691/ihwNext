@@ -84,7 +84,7 @@ const HeroSection = () => {
                   </div>
                 </div>
                 {branchDetails ? (
-                  <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex flex-col sm:flex-row gap-4 mb-8 md:mb-0 px-4 md:px-0">
                     <GlassButton
                       href={`tel:${branchDetails.phones[0]}`}
                       icon={<FaPhone />}
@@ -105,7 +105,7 @@ const HeroSection = () => {
 
                   </div>
                 ) : (
-                  <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex flex-col sm:flex-row gap-4 mb-8 md:mb-0 px-4 md:px-0">
                     <GlassButton
                       href="tel:+917980221032"
                       icon={<FaPhone />}

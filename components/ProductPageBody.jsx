@@ -5,8 +5,8 @@ import { useGlobal } from "../global/GlobalContext";
 import API_BASE_URL from "../global/apiConfig";
 import WishlistButton from "./WishlistButton";
 import NotFound from "./common/NotFound";
-import { BiChevronRight, BiSortAZ } from "react-icons/bi";
-import { CheckIcon, SortDescIcon } from "lucide-react";
+import { BiChevronRight } from "react-icons/bi";
+import { CheckIcon, SlidersHorizontal, ArrowUpDown } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import compressImage from "../utils/compressImage";
 import { themeBgColor } from "../styles/typography";
@@ -232,10 +232,11 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
             font-medium hidden md:block">
               Filters
             </div>
-            <button onClick={() => setOpenFilter(true)}
-              className="filterTitle text-lg text-black flex items-center gap-3 justify-center py-1 border-r border-black
-              font-medium fixed bottom-0 left-0 bg-white w-1/2 text-center md:hidden z-[70] md:z-0">
-              <BiSortAZ />  Filters
+            <button
+              onClick={() => setOpenFilter(true)}
+              className="fixed bottom-[82px] left-0 bg-[#111827] text-white w-1/2 flex items-center justify-center gap-2 py-3 md:hidden z-[70] border-r border-gray-700 text-sm font-semibold tracking-wide"
+            >
+              <SlidersHorizontal className="w-4 h-4 text-[#04A9FF]" /> Filters
             </button>
             <hr />
             {openFilter && (
@@ -399,14 +400,12 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
               </div>
               {/* filter start */}
               <div className={`fixed right-0 bottom-0 md:relative mr-0 md:mr-5 ${openFilter ? 'z-0' : 'z-[60]'} md:z-10`}>
-                {/* Selected filter displayed */}
+                {/* Sort trigger */}
                 <div
-                  className="flex items-center p-1 md:p-2 border-none md:border border-gray-300 rounded-none 
-                  md:rounded-md cursor-pointer gap-2 md:relative fixed text-lg font-medium bottom-0 right-0 
-                  z-[60] bg-white w-1/2 md:w-auto"
+                  className="flex items-center justify-center gap-2 md:p-2 md:border border-gray-300 md:rounded-md cursor-pointer md:relative fixed bottom-[82px] right-0 z-[60] bg-[#111827] text-white md:bg-white md:text-gray-800 w-1/2 md:w-auto py-3 text-sm font-semibold tracking-wide"
                   onClick={() => setIsOpen(!isOpen)}
                 >
-                  <SortDescIcon />
+                  <ArrowUpDown className="w-4 h-4" />
                   <span className="whitespace-nowrap overflow-hidden text-ellipsis block max-w-[150px]">
                     {selectedLabel}
                   </span>
@@ -416,21 +415,25 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
                   <div className='fixed w-full left-0 top-0 h-screen bg-[#0000003c] z-[70] md:hidden'></div>
                 )}
 
-                {/* Popup with all sorting options */}
+                {/* Sort options popup */}
                 {isOpen && (
-                  <div className="fixed w-full bottom-0 md:bottom-auto md:absolute right-0 mt-2 bg-white 
-                  shadow-md rounded-2xl md:rounded-md border border-gray-300 p-2 md:w-48 z-[75]">
-                    <button className={`font-semibold text-xs ${themeBgColor} float-right text-white w-6 h-6 rounded-full`} onClick={() => setIsOpen(false)}>✕</button>
+                  <div className="fixed w-full bottom-[120px] md:bottom-auto md:absolute right-0 mt-2 bg-white shadow-2xl rounded-2xl md:rounded-xl border border-gray-100 overflow-hidden md:w-48 z-[75]">
+                    <div className="px-4 py-3 border-b border-gray-100 flex justify-between items-center">
+                      <span className="font-semibold text-sm text-gray-800">Sort By</span>
+                      <button className="text-xs bg-[#04A9FF] text-white w-6 h-6 rounded-full flex items-center justify-center" onClick={() => setIsOpen(false)}>✕</button>
+                    </div>
                     {sortOptions.map((option) => (
-                      <label key={option.value} className="flex items-center gap-2 cursor-pointer p-1 hover:bg-gray-100">
-                        <input
-                          type="radio"
-                          name="sort"
-                          value={option.value}
-                          checked={sortOption === option.value}
-                          onChange={handleSortChange}
-                        />
-                        {option.label}
+                      <label
+                        key={option.value}
+                        className={`flex items-center justify-between gap-2 cursor-pointer px-4 py-3 transition-colors ${
+                          sortOption === option.value
+                            ? 'bg-[#04A9FF]/10 text-[#04A9FF]'
+                            : 'hover:bg-gray-50 text-gray-700'
+                        }`}
+                      >
+                        <span className="text-sm font-medium">{option.label}</span>
+                        <input type="radio" name="sort" value={option.value} checked={sortOption === option.value} onChange={handleSortChange} className="hidden" />
+                        {sortOption === option.value && <CheckIcon className="w-4 h-4 text-[#04A9FF] flex-shrink-0" />}
                       </label>
                     ))}
                   </div>

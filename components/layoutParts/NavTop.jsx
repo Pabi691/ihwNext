@@ -254,6 +254,7 @@ const NavTop = () => {
                 <Link onClick={() => setShowMenu(false)} className='text-xs font-medium' to={'/branch/durgapur'}>- Durgapur</Link>
                 <Link onClick={() => setShowMenu(false)} className='text-xs font-medium' to={'/branch/siliguri'}>- Siliguri</Link>
                 <p className='font-semibold'>Shop In</p>
+                <Link className='text-xs font-medium' onClick={() => setShowMenu(false)} to={'/shop'}>- All Products</Link>
                 <NavMenus />
                 {userToken && (
                   <div>
