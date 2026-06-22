@@ -36,7 +36,7 @@ const achievements = [
     designation: 'Bengal Pride Award 2021 — Best Hair Replacement Center of Kolkata',
     description:
       'Indian Hair World was awarded the prestigious Bengal Pride Award 2021 for its top-notch professional services in Kolkata.',
-    image: null,
+    image: '/images/bpa2021.jpg',
   },
 ];
 
