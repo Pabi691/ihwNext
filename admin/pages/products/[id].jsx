@@ -79,6 +79,15 @@ export default function EditProduct() {
 
   const [reviews, setReviews] = useState([]);
 
+  // How to Wear state
+  const [howToWearSteps, setHowToWearSteps] = useState([]);
+  const [newStep, setNewStep] = useState({ badge_text: "", title: "", thumbnail_image: "", video_url: "" });
+  const [editStep, setEditStep] = useState(null);
+  const [savingStep, setSavingStep] = useState(false);
+  const [uploadingStepImg, setUploadingStepImg] = useState(false);
+  const stepImgRef = useRef();
+  const editStepImgRef = useRef();
+
   const primaryRef = useRef();
   const secondaryRef = useRef();
 
@@ -159,6 +168,12 @@ export default function EditProduct() {
       setAdditionalImages(p.product_image_list || []);
       setHighlights(p.product_key_highlights || []);
       setReviews(p.product_review || []);
+
+      // Load how-to-wear steps
+      try {
+        const htw = await api("get", `/get_how_to_wear/${p.id}`);
+        setHowToWearSteps(Array.isArray(htw.data?.steps) ? htw.data.steps : []);
+      } catch { setHowToWearSteps([]); }
       setAllCategories(Array.isArray(catRes.data?.category_list) ? catRes.data.category_list : []);
       setAllBrands(Array.isArray(brandRes.data?.brand_list) ? brandRes.data.brand_list : []);
       setAllColors(Array.isArray(colorRes.data?.colors) ? colorRes.data.colors : []);
@@ -410,6 +425,52 @@ export default function EditProduct() {
     try {
       await api("delete", `/delete_product_key_highlight/${hlId}`);
       setHighlights(prev => prev.filter(h => h.id !== hlId));
+    } catch {}
+  };
+
+  /* ── How to Wear helpers ── */
+  const uploadStepImage = async (file, onDone) => {
+    if (!file) return;
+    setUploadingStepImg(true);
+    try {
+      const fd = new FormData();
+      fd.append("image", file);
+      const res = await api("post", "/upload_how_to_wear_image", fd);
+      if (res.data?.url) onDone(res.data.url);
+    } catch {}
+    setUploadingStepImg(false);
+  };
+
+  const addHowToWearStep = async () => {
+    if (!newStep.badge_text.trim() || !newStep.title.trim()) return;
+    setSavingStep(true);
+    try {
+      const res = await api("post", `/add_how_to_wear/${form.id}`, newStep);
+      if (res.data?.step) {
+        setHowToWearSteps(prev => [...prev, res.data.step]);
+        setNewStep({ badge_text: "", title: "", thumbnail_image: "", video_url: "" });
+      }
+    } catch {}
+    setSavingStep(false);
+  };
+
+  const saveEditStep = async () => {
+    if (!editStep) return;
+    setSavingStep(true);
+    try {
+      const res = await api("put", `/update_how_to_wear/${editStep.id}`, editStep);
+      if (res.data?.step) {
+        setHowToWearSteps(prev => prev.map(s => s.id === editStep.id ? res.data.step : s));
+        setEditStep(null);
+      }
+    } catch {}
+    setSavingStep(false);
+  };
+
+  const deleteHowToWearStep = async (stepId) => {
+    try {
+      await api("delete", `/delete_how_to_wear/${stepId}`);
+      setHowToWearSteps(prev => prev.filter(s => s.id !== stepId));
     } catch {}
   };
 
@@ -791,6 +852,137 @@ export default function EditProduct() {
                     <FiPlus size={13} /> Add
                   </button>
                 </div>
+              </div>
+            </Section>
+
+            {/* How to Wear Steps */}
+            <Section title="How to Wear Steps">
+              {/* Hidden file inputs */}
+              <input ref={stepImgRef} type="file" accept="image/*" className="hidden"
+                onChange={(e) => uploadStepImage(e.target.files[0], (url) => setNewStep(p => ({ ...p, thumbnail_image: url })))} />
+              <input ref={editStepImgRef} type="file" accept="image/*" className="hidden"
+                onChange={(e) => uploadStepImage(e.target.files[0], (url) => setEditStep(p => ({ ...p, thumbnail_image: url })))} />
+
+              {/* Existing steps */}
+              <div className="space-y-2">
+                {howToWearSteps.map((s, i) => (
+                  <div key={s.id} className="border border-gray-100 rounded-xl p-3 bg-gray-50/50">
+                    {editStep?.id === s.id ? (
+                      <div className="space-y-2">
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className={L}>Badge Text</label>
+                            <input value={editStep.badge_text} onChange={e => setEditStep(p => ({ ...p, badge_text: e.target.value }))}
+                              placeholder="e.g. PREPARATION" className={I} />
+                          </div>
+                          <div>
+                            <label className={L}>Title</label>
+                            <input value={editStep.title} onChange={e => setEditStep(p => ({ ...p, title: e.target.value }))}
+                              placeholder="Step title" className={I} />
+                          </div>
+                        </div>
+                        <div>
+                          <label className={L}>YouTube Video URL</label>
+                          <input value={editStep.video_url || ""} onChange={e => setEditStep(p => ({ ...p, video_url: e.target.value }))}
+                            placeholder="https://youtube.com/watch?v=..." className={I} />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {editStep.thumbnail_image && (
+                            <img src={editStep.thumbnail_image} alt="" className="w-12 h-12 rounded-lg object-cover border border-gray-200" />
+                          )}
+                          <button type="button" onClick={() => editStepImgRef.current?.click()} disabled={uploadingStepImg}
+                            className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors disabled:opacity-60">
+                            {uploadingStepImg ? "Uploading..." : editStep.thumbnail_image ? "Change Image" : "Upload Image"}
+                          </button>
+                          {editStep.thumbnail_image && (
+                            <button type="button" onClick={() => setEditStep(p => ({ ...p, thumbnail_image: "" }))}
+                              className="text-xs text-red-400 hover:text-red-600">Remove</button>
+                          )}
+                        </div>
+                        <div className="flex gap-2 pt-1">
+                          <button type="button" onClick={saveEditStep} disabled={savingStep}
+                            className="inline-flex items-center gap-1 px-3 py-1.5 bg-green-500 text-white text-xs font-bold rounded-lg disabled:opacity-60">
+                            <FiSave size={12} /> {savingStep ? "Saving..." : "Save"}
+                          </button>
+                          <button type="button" onClick={() => setEditStep(null)}
+                            className="px-3 py-1.5 bg-gray-100 text-gray-600 text-xs font-semibold rounded-lg hover:bg-gray-200">
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-3">
+                        {s.thumbnail_image ? (
+                          <img src={s.thumbnail_image} alt="" className="w-12 h-12 rounded-lg object-cover border border-gray-200 shrink-0" />
+                        ) : (
+                          <div className="w-12 h-12 rounded-lg bg-gray-200 flex items-center justify-center shrink-0">
+                            <FiImage size={16} className="text-gray-400" />
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <span className="text-[10px] font-bold uppercase tracking-wide text-[#04A9FF] bg-[#04A9FF]/10 px-2 py-0.5 rounded-full">
+                            {s.badge_text}
+                          </span>
+                          <p className="text-sm font-semibold text-gray-800 mt-0.5 truncate">{s.title}</p>
+                          {s.video_url && (
+                            <p className="text-[10px] text-gray-400 truncate">{s.video_url}</p>
+                          )}
+                        </div>
+                        <div className="flex gap-1 shrink-0">
+                          <button type="button" onClick={() => setEditStep({ ...s })}
+                            className="w-7 h-7 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                            <FiEdit2 size={12} />
+                          </button>
+                          <button type="button" onClick={() => deleteHowToWearStep(s.id)}
+                            className="w-7 h-7 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 flex items-center justify-center transition-colors">
+                            <FiTrash2 size={12} />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Add new step */}
+              <div className="border border-dashed border-[#04A9FF]/40 rounded-xl p-3 bg-blue-50/30 space-y-2">
+                <p className="text-xs font-semibold text-[#04A9FF]">Add New Step</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className={L}>Badge Text *</label>
+                    <input value={newStep.badge_text} onChange={e => setNewStep(p => ({ ...p, badge_text: e.target.value }))}
+                      placeholder="e.g. PREPARATION" className={I} />
+                  </div>
+                  <div>
+                    <label className={L}>Title *</label>
+                    <input value={newStep.title} onChange={e => setNewStep(p => ({ ...p, title: e.target.value }))}
+                      placeholder="Step title" className={I} />
+                  </div>
+                </div>
+                <div>
+                  <label className={L}>YouTube Video URL</label>
+                  <input value={newStep.video_url} onChange={e => setNewStep(p => ({ ...p, video_url: e.target.value }))}
+                    placeholder="https://youtube.com/watch?v=..." className={I} />
+                </div>
+                <div className="flex items-center gap-2">
+                  {newStep.thumbnail_image && (
+                    <img src={newStep.thumbnail_image} alt="" className="w-12 h-12 rounded-lg object-cover border border-gray-200" />
+                  )}
+                  <button type="button" onClick={() => stepImgRef.current?.click()} disabled={uploadingStepImg}
+                    className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors disabled:opacity-60">
+                    {uploadingStepImg ? "Uploading..." : newStep.thumbnail_image ? "Change Image" : "Upload Thumbnail"}
+                  </button>
+                  {newStep.thumbnail_image && (
+                    <button type="button" onClick={() => setNewStep(p => ({ ...p, thumbnail_image: "" }))}
+                      className="text-xs text-red-400 hover:text-red-600">Remove</button>
+                  )}
+                </div>
+                <button type="button" onClick={addHowToWearStep}
+                  disabled={savingStep || !newStep.badge_text.trim() || !newStep.title.trim()}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#04A9FF] text-white text-xs font-bold rounded-xl disabled:opacity-60 transition-colors">
+                  <FiPlus size={12} />
+                  {savingStep ? "Adding..." : "Add Step"}
+                </button>
               </div>
             </Section>
 

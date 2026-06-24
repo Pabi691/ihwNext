@@ -13,6 +13,44 @@ import DownloadInvoiceButton from '../DownloadInvoiceButton';
 
 const CANCELLABLE_STATUSES = ['New Order', 'Processing'];
 
+async function compressToUnder1MB(file) {
+  const maxBytes = 1024 * 1024;
+  if (file.size <= maxBytes) return file;
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let { width, height } = img;
+        const MAX_DIM = 1920;
+        if (width > MAX_DIM || height > MAX_DIM) {
+          const ratio = Math.min(MAX_DIM / width, MAX_DIM / height);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        let quality = 0.85;
+        const compress = () => {
+          canvas.toBlob((blob) => {
+            if (blob.size <= maxBytes || quality <= 0.1) {
+              resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }));
+            } else {
+              quality = Math.max(0.1, quality - 0.1);
+              compress();
+            }
+          }, 'image/jpeg', quality);
+        };
+        compress();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 function StarPicker({ value, onChange }) {
   const [hovered, setHovered] = useState(0);
   return (
@@ -52,13 +90,19 @@ const OrderDetails = () => {
   const [cancelError, setCancelError] = useState(null);
   const [showCancelWarning, setShowCancelWarning] = useState(false);
 
-  // per-item review state: { [product_id]: { rating, text, status: idle|submitting|done|error } }
+  // per-item review state: { [product_id]: { rating, text, images, imageError, status } }
   const [reviews, setReviews] = useState({});
 
   const initReview = (productId) => {
-    setReviews((prev) =>
-      prev[productId] ? prev : { ...prev, [productId]: { rating: 5, text: '', status: 'idle' } }
-    );
+    setReviews((prev) => {
+      if (prev[productId]) {
+        if (!prev[productId].images) {
+          return { ...prev, [productId]: { ...prev[productId], images: [], imageError: '' } };
+        }
+        return prev;
+      }
+      return { ...prev, [productId]: { rating: 5, text: '', images: [], imageError: '', status: 'idle' } };
+    });
   };
 
   const setReviewField = (productId, field, value) => {
@@ -68,19 +112,76 @@ const OrderDetails = () => {
     }));
   };
 
+  const addImages = async (productId, files) => {
+    const fileArr = Array.from(files);
+    setReviews((prev) => {
+      const current = prev[productId] || { images: [] };
+      const slots = 2 - (current.images || []).length;
+      if (slots <= 0) return prev;
+      return { ...prev, [productId]: { ...current, compressing: true } };
+    });
+    const current = reviews[productId] || { images: [] };
+    const slots = 2 - (current.images || []).length;
+    const candidates = fileArr.slice(0, slots);
+    const compressed = await Promise.all(candidates.map((f) => compressToUnder1MB(f)));
+    setReviews((prev) => {
+      const c = prev[productId] || { images: [] };
+      return {
+        ...prev,
+        [productId]: { ...c, images: [...(c.images || []), ...compressed], imageError: '', compressing: false },
+      };
+    });
+  };
+
+  const removeImage = (productId, index) => {
+    setReviews((prev) => ({
+      ...prev,
+      [productId]: {
+        ...prev[productId],
+        images: prev[productId].images.filter((_, i) => i !== index),
+        imageError: '',
+      },
+    }));
+  };
+
   const submitReview = async (productId) => {
     const rv = reviews[productId];
     if (!rv || !rv.text.trim()) return;
     setReviewField(productId, 'status', 'submitting');
     try {
+      const formData = new FormData();
+      formData.append('rating', rv.rating);
+      formData.append('review_text', rv.text);
+      (rv.images || []).forEach((img) => formData.append('images[]', img));
+
+      // Do NOT set Content-Type manually — axios sets multipart/form-data with boundary automatically
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/v1/submit_product_review/${productId}`,
-        { rating: rv.rating, review_text: rv.text },
+        formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setReviewField(productId, 'status', res.data?.status ? 'done' : 'error');
-    } catch {
-      setReviewField(productId, 'status', 'error');
+
+      if (res.data?.status) {
+        // Clear this product from sessionStorage so the product page fetches fresh reviews
+        try {
+          const CACHE_KEY = 'recentlyViewedProducts:v3';
+          const cached = JSON.parse(sessionStorage.getItem(CACHE_KEY)) || [];
+          const slug = order?.order_items?.find((i) => i.product_id === productId)?.product_details?.slug;
+          if (slug) {
+            const updated = cached.filter((p) => p.slug !== slug);
+            sessionStorage.setItem(CACHE_KEY, JSON.stringify(updated));
+          }
+        } catch {}
+        setReviewField(productId, 'status', 'done');
+      } else {
+        setReviewField(productId, 'status', 'error');
+      }
+    } catch (err) {
+      const msg = err?.response?.data?.message || err?.response?.data?.error || 'Something went wrong. Please try again.';
+      setReviews((prev) => ({
+        ...prev,
+        [productId]: { ...prev[productId], status: 'error', errorMsg: msg },
+      }));
     }
   };
 
@@ -517,8 +618,57 @@ const OrderDetails = () => {
                                 className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#04A9FF] resize-none transition-colors"
                               />
 
+                              {/* Image upload */}
+                              <div>
+                                <input
+                                  type="file"
+                                  id={`img-upload-${pid}`}
+                                  accept="image/*"
+                                  multiple
+                                  className="hidden"
+                                  onChange={(e) => { addImages(pid, e.target.files); e.target.value = ''; }}
+                                />
+                                <div className="flex flex-wrap gap-2 items-center">
+                                  {(rv.images || []).map((img, i) => (
+                                    <div key={i} className="relative w-16 h-16 flex-shrink-0">
+                                      <img
+                                        src={URL.createObjectURL(img)}
+                                        alt=""
+                                        className="w-16 h-16 object-cover rounded-lg border border-gray-200"
+                                      />
+                                      <button
+                                        type="button"
+                                        onClick={() => removeImage(pid, i)}
+                                        className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-xs flex items-center justify-center leading-none"
+                                      >
+                                        ×
+                                      </button>
+                                    </div>
+                                  ))}
+                                  {(rv.images || []).length < 2 && (
+                                    rv.compressing ? (
+                                      <div className="w-16 h-16 border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center flex-shrink-0">
+                                        <div className="w-4 h-4 border-2 border-[#04A9FF] border-t-transparent rounded-full animate-spin" />
+                                        <span className="text-xs text-gray-400 mt-1">Processing</span>
+                                      </div>
+                                    ) : (
+                                      <label
+                                        htmlFor={`img-upload-${pid}`}
+                                        className="w-16 h-16 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#04A9FF] transition-colors flex-shrink-0"
+                                      >
+                                        <svg viewBox="0 0 20 20" className="w-5 h-5 text-gray-400" fill="currentColor">
+                                          <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                                        </svg>
+                                        <span className="text-xs text-gray-400 mt-0.5">Add photo</span>
+                                      </label>
+                                    )
+                                  )}
+                                </div>
+                                <p className="text-xs text-gray-400 mt-1">Optional · up to 2 photos</p>
+                              </div>
+
                               {rv.status === 'error' && (
-                                <p className="text-xs text-red-600">Something went wrong. Please try again.</p>
+                                <p className="text-xs text-red-600">{rv.errorMsg || 'Something went wrong. Please try again.'}</p>
                               )}
 
                               <div className="flex gap-2">

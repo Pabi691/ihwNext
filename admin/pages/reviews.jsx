@@ -311,7 +311,7 @@ export default function Reviews() {
       };
       if (editReview) {
         const res = await api("put", `/update_review/${editReview.id}`, payload);
-        const updated = res.data?.reviewData || { ...editReview, ...payload };
+        const updated = { ...editReview, ...(res.data?.reviewData || {}), ...payload };
         setReviews((prev) => prev.map((r) => r.id === editReview.id ? updated : r));
         showToast("Review updated");
       } else {
@@ -606,6 +606,22 @@ export default function Reviews() {
                       <p className="text-sm text-gray-600 mt-2 leading-relaxed">
                         {reviewText || <span className="text-gray-400 italic">No review text</span>}
                       </p>
+                      {Array.isArray(review.images) && review.images.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {review.images.map((img, i) => {
+                            const url = typeof img === "string" ? img : img.image_url;
+                            return (
+                              <a key={i} href={url} target="_blank" rel="noopener noreferrer">
+                                <img
+                                  src={url}
+                                  alt=""
+                                  className="w-16 h-16 object-cover rounded-xl border border-gray-100 shadow-sm hover:opacity-80 transition-opacity"
+                                />
+                              </a>
+                            );
+                          })}
+                        </div>
+                      )}
                       <p className="text-xs text-gray-400 mt-1.5">
                         {review.created_at
                           ? new Date(review.created_at).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })

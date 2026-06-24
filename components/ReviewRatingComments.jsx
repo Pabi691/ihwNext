@@ -79,6 +79,22 @@ const ReviewRatingComments = ({ reviews, overallRating, totalRatings, ratingBrea
                 <span className=""><AiFillSafetyCertificate /></span> Verified Buyer</div>
             </div>
             <p className="text-gray-900 text-sm">{review.review_text}</p>
+            {Array.isArray(review.images) && review.images.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {review.images.map((img, i) => {
+                  const url = typeof img === 'string' ? img : img.image_url;
+                  return (
+                    <a key={i} href={url} target="_blank" rel="noopener noreferrer">
+                      <img
+                        src={url}
+                        alt={`Review photo ${i + 1}`}
+                        className="w-20 h-20 object-cover rounded-lg border border-gray-200 hover:opacity-90 transition-opacity"
+                      />
+                    </a>
+                  );
+                })}
+              </div>
+            )}
           </div>
         ))
       ) : (

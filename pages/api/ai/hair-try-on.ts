@@ -21,6 +21,7 @@ type HairTryOnRequestBody = {
   hairlineStyle?: string;
   hairDensity?: string;
   hairStyling?: string;
+  hairColor?: string;
   viewAngle?: string;
 };
 
@@ -175,15 +176,39 @@ function inferProductType(productName: string, productTag: string, productDescri
 
 function describeCutStyle(haircutStyle: string): string {
   const map: Record<string, string> = {
-    default:         "Keep the hair style exactly as shown in the product reference image — do not alter the length or shape.",
-    short_clean:     "After applying the patch, show the hair trimmed very short (1–3 cm), neat and clean — like a fresh professional trim.",
-    crew_cut:        "After applying the patch, show a classic crew cut: short on the sides and back, slightly longer on top, very uniform.",
-    medium_natural:  "After applying the patch, show a medium-length natural style (4–6 cm), flowing naturally with the head shape.",
-    textured_layers: "After applying the patch, show a textured layered style — visible layers, natural volume, with defined texture throughout.",
-    slick_back:      "After applying the patch, style all hair swept smoothly back away from the forehead — polished, formal look.",
-    side_part:       "After applying the patch, show a classic side-parted style — hair combed neatly to one side with a visible part line.",
+    // Legacy IDs (kept for backward compatibility)
+    default:         "Keep the hair style exactly as shown in the product reference image.",
+    short_clean:     "Show hair trimmed very short (1–3 cm), neat and clean.",
+    crew_cut:        "Classic crew cut: short on sides and back, slightly longer on top, very uniform.",
+    medium_natural:  "Medium-length natural style (4–6 cm), flowing naturally with the head shape.",
+    textured_layers: "Textured layered style — visible layers, natural volume, defined texture.",
+    slick_back:      "All hair swept smoothly back from the forehead — polished, formal look.",
+    side_part:       "Classic side-parted style — combed neatly to one side with a visible part line.",
+    // New haircut styles
+    classic_crew_cut:
+      "Apply a CLASSIC CREW CUT: uniform short length all over (1–3 cm), slightly more length on top (2–3 cm). Very clean, neat, and conservative. Sides and back closely clipped and blended smoothly.",
+    mid_fade_side_part:
+      "Apply a MID FADE WITH SIDE PART: the hair fades from skin/very short at the lower sides up to medium length on top (4–6 cm). A clean, defined part line combs the top hair neatly to one side. The fade is at mid-ear level.",
+    textured_crop:
+      "Apply a TEXTURED CROP: short sides (faded or clipped), with the top cut to 3–4 cm and styled with natural texture and slight forward fringe direction. The top has visible texture and movement rather than being slick.",
+    slicked_back_undercut:
+      "Apply a SLICKED-BACK UNDERCUT: a clearly disconnected undercut on the sides (skin fade or closely clipped), with the top hair — of medium-long length — swept fully backward and slicked smooth. Formal and polished appearance.",
+    side_brushed_pompadour:
+      "Apply a SIDE-BRUSHED POMPADOUR: significant height and volume at the front, with all hair swept and brushed to one side in a classic pompadour shape. The sides are shorter, the top is voluminous and swept laterally.",
+    modern_quiff:
+      "Apply a MODERN QUIFF: substantial volume and height at the front of the head, swept upward and slightly backward. Short to medium sides. The quiff should be clearly voluminous and three-dimensional — a contemporary, stylish look.",
+    taper_fade_natural:
+      "Apply a TAPER FADE WITH NATURAL TEXTURE: a gradual taper fade on the sides (longest at the temples, fading to shorter at the nape). The top hair is kept at medium length showing its natural texture and flow — no product styling, just natural hair movement.",
+    hard_part_combover:
+      "Apply a HARD PART COMB-OVER: a razor-sharp, deeply defined part line etched precisely into the hair on one side. The longer top hair (4–6 cm) is combed over to the opposite side with clean definition. Sharp, precise, and modern.",
+    buzz_cut_minimalist:
+      "Apply a BUZZ CUT: uniformly very short hair (1–3 mm) all over the head. Clean, minimal, structured silhouette. No tapering or fading — consistent very short length from front to back and sides.",
+    curly_short:
+      "Apply SHORT CURLY HAIR: natural tight-to-medium curls cut short (5–8 cm). The curls spring close to the head with a clearly defined curl pattern — coils or loose spirals. Sides slightly tapered; the top and front show bouncy, defined, voluminous short curls. Do NOT straighten or flatten — the texture must be visibly curly throughout.",
+    curly_long:
+      "Apply LONG CURLY HAIR: natural flowing curls at medium-to-long length (14–20 cm). Curls cascade from the crown down the sides and front with full volume and a clearly visible curl pattern. The hair should look bouncy, lush, and naturally textured — loose spirals or big waves. Do NOT straighten — preserve the curl definition and length throughout.",
   };
-  return map[haircutStyle] || map["default"];
+  return map[haircutStyle] || map["classic_crew_cut"];
 }
 
 function describeHairline(hairlineStyle: string): string {
@@ -226,6 +251,19 @@ function describeViewAngle(viewAngle: string): string {
   return map[viewAngle] || map["front"];
 }
 
+function describeHairColor(hairColor: string): string {
+  const map: Record<string, string> = {
+    natural_black: "The hair color MUST be NATURAL BLACK (#0D0D0D) — deep, dark black throughout. No brown, no warm tones.",
+    dark_brown:    "The hair color MUST be DARK BROWN — very deep brown, almost black but with visible warm brown undertones.",
+    medium_brown:  "The hair color MUST be MEDIUM BROWN — a classic rich brown, clearly brown not black.",
+    light_brown:   "The hair color MUST be LIGHT BROWN — a warm, lighter shade of brown with golden undertones.",
+    blonde:        "The hair color MUST be BLONDE — a warm golden-blonde shade throughout.",
+    grey:          "The hair color MUST be GREY / SALT & PEPPER — a mix of white and grey strands, mature look.",
+    auto:          "",
+  };
+  return map[hairColor] || "";
+}
+
 function buildHairPrompt(
   productName: string,
   productTag: string,
@@ -235,6 +273,7 @@ function buildHairPrompt(
   hairlineStyle: string = "natural",
   hairDensity: string = "medium",
   hairStyling: string = "natural_flow",
+  hairColor: string = "auto",
   viewAngle: string = "front"
 ) {
   const cleanName = stripHtml(productName || "").trim();
@@ -277,6 +316,8 @@ function buildHairPrompt(
     "hair replacement": `Replace top area fully with product style.`,
   }[productType];
 
+  const hasSpecificCutStyle = haircutStyle && haircutStyle !== "default";
+
   const baseTransformationRules = isExtension
     ? `MANDATORY TRANSFORMATION RULES (EXTENSION):
 1. KEEP the person's original hair completely intact.
@@ -286,6 +327,15 @@ function buildHairPrompt(
 5. The highlighted sections should follow the natural flow/direction of the person's hair.
 6. Blend the extension edges naturally so they look clipped in, not pasted on.
 7. Result must look REAL — like the person just had clip-in extensions professionally applied.`
+    : hasSpecificCutStyle
+    ? `MANDATORY TRANSFORMATION RULES:
+1. COMPLETELY REMOVE the user's original top hair.
+2. APPLY the haircut style described in the HAIRCUT STYLE section below — this is the ONLY style guide you must follow.
+3. USE IMAGE 2 ONLY FOR: hair color/shade, texture quality, and density — NOT for shape or silhouette.
+4. The final shape, length, and structure MUST match the HAIRCUT STYLE text description — ignore the shape shown in IMAGE 2.
+5. REMOVE all visible black/dark original hair from the top area.
+6. Ensure natural blending at the edges where new hair meets the sides.
+7. Result must look REAL and professionally fitted.`
     : `MANDATORY TRANSFORMATION RULES:
 1. COMPLETELY REMOVE the user's original top hair.
 2. APPLY the EXACT hairstyle from IMAGE 2.
@@ -299,13 +349,19 @@ function buildHairPrompt(
 6. The transition into the sides/back must look natural and seamless.
 7. Result must look REAL and professionally fitted.`;
 
+  const selectedColorDesc = describeHairColor(hairColor);
   const colorRule = isExtension
     ? `CRITICAL COLOR RULE:
 - Extension color MUST match IMAGE 2 exactly (e.g. purple → clearly purple streaks in the hair)
 - Only the extension sections change color — original hair keeps its natural color`
+    : selectedColorDesc
+    ? `CRITICAL COLOR RULE — USER SELECTED COLOR (HIGHEST PRIORITY):
+⚠️ ${selectedColorDesc}
+- IGNORE the color visible in IMAGE 2 — the user has explicitly chosen a color.
+- The entire hair must render in the chosen color. No exceptions.`
     : `CRITICAL COLOR RULE:
-- If reference hair is brown → output MUST be brown
-- NEVER keep original black hair color`;
+- Match the hair color EXACTLY as shown in IMAGE 2.
+- NEVER substitute a different color — if the product is black, output must be black; if brown, output must be brown.`;
 
   const cutDesc     = describeCutStyle(haircutStyle);
   const lineDesc    = describeHairline(hairlineStyle);
@@ -315,11 +371,20 @@ function buildHairPrompt(
 
   return `You are a professional AI hair try-on system.
 
+⚠️ ABSOLUTE RULE — FACE IDENTITY LOCK:
+The person's face in the output MUST be IDENTICAL to IMAGE 1.
+- Same facial features: eyes, nose, lips, ears, jaw, chin, cheekbones — pixel-for-pixel match
+- Same skin tone and complexion — no lightening, darkening, or color shift
+- Same age appearance — do not make the person look younger or older
+- Same face shape — do not reshape, slim, or alter the face geometry
+- ONLY the hair region changes — everything below the hairline stays completely untouched
+- If you cannot keep the face identical, output nothing rather than altering the face
+
 ⚠️ HARD RULE: The output MUST show a CLEAR and OBVIOUS hairstyle transformation.
 
 IMAGE ROLES:
-- IMAGE 1 = USER FACE
-- IMAGE 2 = PRIMARY HAIR PRODUCT REFERENCE (use this for final look)
+- IMAGE 1 = USER FACE (identity source — face must not change at all)
+- IMAGE 2 = HAIR PRODUCT REFERENCE (color, texture, density only)
 - Any additional images = structure/reference only (ignore for style)
 
 PRODUCT:
@@ -333,7 +398,7 @@ FITTING:
 ${typeSpecificInstructions}
 ${userHairInstructions}
 
-HAIRCUT STYLE:
+HAIRCUT STYLE (⚠️ HIGHEST PRIORITY — follow this exactly, override IMAGE 2 shape):
 ${cutDesc}
 
 HAIRLINE STYLE:
@@ -352,9 +417,11 @@ OUTPUT:
 - ONE realistic final image showing the requested VIEW ANGLE
 - NO text, NO watermark
 - MUST look like real person wearing product
+- Face must be indistinguishable from IMAGE 1 — only the hair is different
 
 FINAL CHECK:
-The product's effect and the requested view angle must both be instantly recognizable in the output.`;
+1. Is the face 100% identical to IMAGE 1? If not, regenerate.
+2. Is the haircut style clearly visible and matching the description? If not, regenerate.`;
 }
 
 const DEFAULT_GEMINI_IMAGE_MODEL = "gemini-2.5-flash-image";
@@ -405,6 +472,27 @@ function mapProviderMessage(providerMessage: string, imageModel: string) {
     };
   }
 
+  if (
+    normalized.includes("unable to process input image") ||
+    normalized.includes("process input image") ||
+    normalized.includes("invalid image") ||
+    normalized.includes("image_url") ||
+    normalized.includes("could not process")
+  ) {
+    return {
+      status: 422,
+      message:
+        "AI could not process your photo. Tips: use a well-lit, front-facing photo with a plain background, avoid sunglasses or hats, and make sure your face is clearly visible. Then try again.",
+    };
+  }
+
+  if (normalized.includes("safety") || normalized.includes("blocked") || normalized.includes("harm")) {
+    return {
+      status: 422,
+      message: "The image was blocked by the AI safety filter. Please use a different, clearly visible face photo and try again.",
+    };
+  }
+
   return null;
 }
 
@@ -428,6 +516,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       hairlineStyle,
       hairDensity,
       hairStyling,
+      hairColor,
       viewAngle,
     } = body;
     const faceImageMimeType = body.faceImageMimeType || "image/jpeg";
@@ -495,6 +584,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 hairlineStyle || "natural",
                 hairDensity || "medium",
                 hairStyling || "natural_flow",
+                hairColor || "auto",
                 viewAngle || "front"
               ) },
           ],
@@ -522,8 +612,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const generated = extractInlineImage(payload);
     if (!generated) {
+      // Check if Gemini returned a text explanation of failure
+      const textParts: string[] = (payload?.candidates?.[0]?.content?.parts || [])
+        .filter((p: any) => typeof p.text === "string")
+        .map((p: any) => p.text as string);
+      const textContent = textParts.join(" ").toLowerCase();
+      if (
+        textContent.includes("unable") ||
+        textContent.includes("cannot") ||
+        textContent.includes("can't") ||
+        textContent.includes("process") ||
+        textContent.includes("sorry")
+      ) {
+        return res.status(422).json({
+          message:
+            "AI could not generate the preview. Tips: use a well-lit, front-facing photo with a plain background, no sunglasses or hats, and make sure your full face is visible. Then try again.",
+        });
+      }
       console.error("No image returned:", JSON.stringify(payload, null, 2));
-      return res.status(502).json({ message: "AI did not return an image." });
+      return res.status(502).json({ message: "AI did not return an image. Please try again." });
     }
 
     return res.status(200).json({

@@ -22,6 +22,8 @@ import confetti from 'canvas-confetti';
 import { hoverScale, themeBgColor, themeBgDark, themeBgGray, themeTextColor } from '../../styles/typography';
 import { useGuestCheck } from '../../global/GuestCheckContext';
 import HairPatchTryOnSection from '../ai/HairPatchTryOnSection';
+import HowToWearSlider from './HowToWearSlider';
+import { FaClone } from 'react-icons/fa';
 
 const RECENTLY_VIEWED_KEY = 'recentlyViewedProducts:v3';
 
@@ -46,6 +48,7 @@ function ProductDetailsAll() {
   const [gmbReviews, setGmbReviews] = useState([]);
   const [addSuccess, setAddSuccess] = useState(false);
   const [addedProductName, setAddedProductName] = useState("");
+  const [howToWearSteps, setHowToWearSteps] = useState([]);
 
   const navigate = useNavigate();
   const { requireGuestInfo } = useGuestCheck();
@@ -117,6 +120,13 @@ function ProductDetailsAll() {
       .then((res) => setGmbReviews(Array.isArray(res.data?.reviews) ? res.data.reviews : []))
       .catch(() => setGmbReviews([]));
   }, [apiBase]);
+
+  useEffect(() => {
+    if (!product?.id) return;
+    axios.get(`${apiBase}/v1/get_how_to_wear/${product.id}`)
+      .then((res) => setHowToWearSteps(Array.isArray(res.data?.steps) ? res.data.steps : []))
+      .catch(() => setHowToWearSteps([]));
+  }, [apiBase, product?.id]);
 
   const calculateRatingBreakdown = (reviews) => {
     const breakdown = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
@@ -206,54 +216,104 @@ function ProductDetailsAll() {
       )}
 
       <div className="single-product-page max-w-7xl mx-auto px-0 md:px-8 lg:px-0 pb-12">
-        <div className="flex flex-col sm:flex-row items-start gap-6 animate-fadeIn h-auto md:h-[700px]">
-          {(!product) ? (
-            <Skeleton height={700} width={200} />
-          ) : (
-            <div className="md:flex sm:flex-col gap-4 sm:w-1/12 w-full hidden h-[700px] overflow-scroll scrollbar-none">
-              {images.map((img, index) => (
-                <LazyLoadImage
-                  key={index}
-                  // src={compressImage(img, 200, 50, 'webp')}
-                  src={img}
-                  alt={`${product.prod_name} thumbnail ${index + 1}`}
-                  effect="blur"
-                  className={`w-24 h-28 object-cover cursor-pointer transition-transform transform ${selectedImage === img ? "scale-110" : "hover:scale-105"
-                    }`}
-                  onClick={() => setSelectedImage(img)}
-                />
-              ))}
-            </div>
-          )}
+        <div className="flex flex-col sm:flex-row items-start gap-6 animate-fadeIn">
+          {/* Desktop: thumbnail strip + main image + action buttons */}
+          <div className="hidden sm:flex flex-col sm:w-7/12">
+            <div className="flex gap-4 h-[700px]">
+              {(!product) ? (
+                <Skeleton height={700} width={200} />
+              ) : (
+                <div className="md:flex sm:flex-col gap-4 sm:w-1/6 w-full h-full overflow-scroll scrollbar-none">
+                  {images.map((img, index) => (
+                    <LazyLoadImage
+                      key={index}
+                      src={img}
+                      alt={`${product.prod_name} thumbnail ${index + 1}`}
+                      effect="blur"
+                      className={`w-24 h-28 object-cover cursor-pointer transition-transform transform ${selectedImage === img ? "scale-110" : "hover:scale-105"}`}
+                      onClick={() => setSelectedImage(img)}
+                    />
+                  ))}
+                </div>
+              )}
 
-          {/* single */}
-          {(!product) ? (
-            <div className="w-full sm:w-1/2 md:block hidden p-4 h-[700px]">
-              <Skeleton height="100%" width="100%" />
-            </div>
-          ) : (
-            <div className="w-full sm:w-1/2 md:block hidden h-[700px] overflow-hidden">
-              <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                {/* Main Image */}
-                <div>
+              {(!product) ? (
+                <div className="flex-1 p-4 h-full">
+                  <Skeleton height="100%" width="100%" />
+                </div>
+              ) : (
+                <div className="flex-1 h-full overflow-hidden">
                   <Zoom>
                     <img
                       src={selectedImage}
                       alt={product.prod_name}
-                      style={{
-                        cursor: "zoom-in",
-                        height: '700px',
-                        objectFit: 'cover'
-                      }}
+                      style={{ cursor: "zoom-in", height: '700px', objectFit: 'cover', width: '100%' }}
                     />
                   </Zoom>
                 </div>
-              </div>
+              )}
             </div>
-          )}
 
-          {/* single */}
-          {/* Mobile Slider */}
+            {/* Action buttons — below the image */}
+            <style>{`
+              @keyframes htw-shimmer {
+                0% { transform: translateX(-100%) skewX(-12deg); }
+                100% { transform: translateX(300%) skewX(-12deg); }
+              }
+              @keyframes htw-glow {
+                0%, 100% { box-shadow: 0 0 10px 2px rgba(4,169,255,0.45), 0 0 24px 4px rgba(4,169,255,0.18); }
+                50% { box-shadow: 0 0 22px 5px rgba(4,169,255,0.75), 0 0 48px 10px rgba(4,169,255,0.28); }
+              }
+              @keyframes htw-scissors {
+                0%, 100% { transform: rotate(0deg) scale(1); }
+                25% { transform: rotate(-20deg) scale(1.2); }
+                50% { transform: rotate(10deg) scale(1.1); }
+                75% { transform: rotate(-8deg) scale(1.15); }
+              }
+            `}</style>
+            <div className="flex flex-wrap gap-2 mt-3 px-1">
+              <div className="relative inline-block">
+                {/* Outer ping ring */}
+                <span className="absolute inset-0 rounded-full bg-[#04A9FF]/25 animate-ping" style={{ animationDuration: '1.8s' }} />
+                <button
+                  type="button"
+                  onClick={() => document.getElementById('hair-tryon-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                  className="relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold text-white overflow-hidden
+                    bg-gradient-to-r from-[#04A9FF] via-[#00c6ff] to-[#0070ee]
+                    hover:from-[#0070ee] hover:to-[#04A9FF] hover:scale-105
+                    transition-all duration-300"
+                  style={{ animation: 'htw-glow 2s ease-in-out infinite' }}
+                >
+                  {/* Shimmer sweep */}
+                  <span
+                    className="absolute top-0 bottom-0 w-10 bg-gradient-to-r from-transparent via-white/40 to-transparent rounded-full pointer-events-none"
+                    style={{ animation: 'htw-shimmer 2.2s ease-in-out infinite' }}
+                  />
+                  {/* Scissors icon with snip animation */}
+                  <span
+                    className="relative text-base leading-none"
+                    style={{ display: 'inline-block', animation: 'htw-scissors 3s ease-in-out infinite' }}
+                  >
+                    ✂️
+                  </span>
+                  <span className="relative">Virtual Hair Try-On</span>
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={() => document.getElementById('similar-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-gray-300 text-gray-600 text-sm font-semibold hover:border-gray-500 hover:text-gray-800 transition-all duration-200"
+              >
+                <FaClone size={14} />
+                Similar
+              </button>
+            </div>
+
+            {/* How to Wear slider */}
+            <HowToWearSlider slides={howToWearSteps} />
+          </div>
+
+          {/* Mobile Slider + action buttons */}
           <div className="block sm:hidden w-full">
             <Slider {...mobileSettings}>
               {images.map((img, index) => (
@@ -266,13 +326,31 @@ function ProductDetailsAll() {
                 </div>
               ))}
             </Slider>
+            <div className="flex flex-wrap gap-2 mt-3 px-4">
+              <button
+                type="button"
+                onClick={() => document.getElementById('hair-tryon-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-[#04A9FF] text-[#04A9FF] text-sm font-semibold hover:bg-[#04A9FF] hover:text-white transition-all duration-200"
+              >
+                <span>✂️</span>
+                Virtual Hair Try-On
+              </button>
+              <button
+                type="button"
+                onClick={() => document.getElementById('similar-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-gray-300 text-gray-600 text-sm font-semibold hover:border-gray-500 hover:text-gray-800 transition-all duration-200"
+              >
+                <FaClone size={14} />
+                Similar
+              </button>
+            </div>
           </div>
           {/* Product Information */}
           {
             (!product) ? (
               <Skeleton height={30} width={200} />
             ) : (
-              <div className="w-full sm:w-1/2 flex flex-col h-auto md:h-[750px] md:overflow-y-scroll overflow-scroll scrollbar-none px-4 md:px-0">
+              <div className={`w-full sm:w-1/2 flex flex-col h-auto ${howToWearSteps.length > 0 ? 'md:h-[1050px]' : 'md:h-[850px]'} md:overflow-y-scroll overflow-scroll scrollbar-none px-4 md:px-0`}>
                 <div className='flex items-center justify-between'>
                   <div>
                     <h2 className=" text-black font-semibold text-sm md:text-lg uppercase">{product.prod_name}</h2>
@@ -560,6 +638,7 @@ function ProductDetailsAll() {
                 >
                   📹 Get Perfect Fit – Book Video Call
                 </a>
+
                 {/* Product Highlights */}
                 {keyHighlights.length > 0 ? (
                   <div className="mt-6">
@@ -576,13 +655,15 @@ function ProductDetailsAll() {
                     </div>
                   </div>
                 ) : null}
-                <HairPatchTryOnSection
-                  productImage={selectedImage || product.primary_img}
-                  productImages={[selectedImage || product.primary_img, ...images].filter(Boolean)}
-                  productName={product.prod_name}
-                  productTag={product.product_tag}
-                  productDescription={product.prod_desc}
-                />
+                <div id="hair-tryon-section">
+                  <HairPatchTryOnSection
+                    productImage={selectedImage || product.primary_img}
+                    productImages={[selectedImage || product.primary_img, ...images].filter(Boolean)}
+                    productName={product.prod_name}
+                    productTag={product.product_tag}
+                    productDescription={product.prod_desc}
+                  />
+                </div>
                 <ProductDetailsAccordian productdetails={product.prod_desc} />
                 <img src='../images/icons.jpg' alt='icons' loading="lazy" />
                 <GmbReviewsSection reviews={gmbReviews} />
@@ -595,7 +676,7 @@ function ProductDetailsAll() {
               </div>
             )}
         </div>
-        <div className='my-4 remove_nav ms-2 md:ms-0'>
+        <div id="similar-section" className='my-4 remove_nav ms-2 md:ms-0'>
           {relatedCategoryId && <YouAlsoLike categoryId={relatedCategoryId} currentProductId={product?.id} />}
         </div>
 

@@ -40,9 +40,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
 
     if (req.method && !["GET", "HEAD"].includes(req.method)) {
-      requestInit.body = req as any;
-      // Only set duplex when we actually stream a request body.
-      (requestInit as any).duplex = "half";
+      // Buffer body into memory so binary multipart/form-data (file uploads)
+      // are forwarded correctly. Streaming `req` directly as a Node.js stream
+      // can corrupt binary content when using native fetch.
+      const chunks: Buffer[] = [];
+      for await (const chunk of req) {
+        chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+      }
+      requestInit.body = Buffer.concat(chunks);
     }
 
     const upstream = await fetch(targetUrl, requestInit);
