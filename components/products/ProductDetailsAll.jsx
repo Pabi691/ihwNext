@@ -255,50 +255,7 @@ function ProductDetailsAll() {
             </div>
 
             {/* Action buttons — below the image */}
-            <style>{`
-              @keyframes htw-shimmer {
-                0% { transform: translateX(-100%) skewX(-12deg); }
-                100% { transform: translateX(300%) skewX(-12deg); }
-              }
-              @keyframes htw-glow {
-                0%, 100% { box-shadow: 0 0 10px 2px rgba(4,169,255,0.45), 0 0 24px 4px rgba(4,169,255,0.18); }
-                50% { box-shadow: 0 0 22px 5px rgba(4,169,255,0.75), 0 0 48px 10px rgba(4,169,255,0.28); }
-              }
-              @keyframes htw-scissors {
-                0%, 100% { transform: rotate(0deg) scale(1); }
-                25% { transform: rotate(-20deg) scale(1.2); }
-                50% { transform: rotate(10deg) scale(1.1); }
-                75% { transform: rotate(-8deg) scale(1.15); }
-              }
-            `}</style>
             <div className="flex flex-wrap gap-2 mt-3 px-1">
-              <div className="relative inline-block">
-                {/* Outer ping ring */}
-                <span className="absolute inset-0 rounded-full bg-[#04A9FF]/25 animate-ping" style={{ animationDuration: '1.8s' }} />
-                <button
-                  type="button"
-                  onClick={() => document.getElementById('hair-tryon-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                  className="relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold text-white overflow-hidden
-                    bg-gradient-to-r from-[#04A9FF] via-[#00c6ff] to-[#0070ee]
-                    hover:from-[#0070ee] hover:to-[#04A9FF] hover:scale-105
-                    transition-all duration-300"
-                  style={{ animation: 'htw-glow 2s ease-in-out infinite' }}
-                >
-                  {/* Shimmer sweep */}
-                  <span
-                    className="absolute top-0 bottom-0 w-10 bg-gradient-to-r from-transparent via-white/40 to-transparent rounded-full pointer-events-none"
-                    style={{ animation: 'htw-shimmer 2.2s ease-in-out infinite' }}
-                  />
-                  {/* Scissors icon with snip animation */}
-                  <span
-                    className="relative text-base leading-none"
-                    style={{ display: 'inline-block', animation: 'htw-scissors 3s ease-in-out infinite' }}
-                  >
-                    ✂️
-                  </span>
-                  <span className="relative">Virtual Hair Try-On</span>
-                </button>
-              </div>
               <button
                 type="button"
                 onClick={() => document.getElementById('similar-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
@@ -327,14 +284,6 @@ function ProductDetailsAll() {
               ))}
             </Slider>
             <div className="flex flex-wrap gap-2 mt-3 px-4">
-              <button
-                type="button"
-                onClick={() => document.getElementById('hair-tryon-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-[#04A9FF] text-[#04A9FF] text-sm font-semibold hover:bg-[#04A9FF] hover:text-white transition-all duration-200"
-              >
-                <span>✂️</span>
-                Virtual Hair Try-On
-              </button>
               <button
                 type="button"
                 onClick={() => document.getElementById('similar-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
@@ -396,6 +345,51 @@ function ProductDetailsAll() {
                 )}
 
                 <p className='text-gray-500'>Inclusive of all taxes</p>
+
+                <style>{`
+                  @keyframes htw-shimmer {
+                    0% { transform: translateX(-100%) skewX(-12deg); }
+                    100% { transform: translateX(300%) skewX(-12deg); }
+                  }
+                  @keyframes htw-glow {
+                    0%, 100% { box-shadow: 0 0 10px 2px rgba(4,169,255,0.45), 0 0 24px 4px rgba(4,169,255,0.18); }
+                    50% { box-shadow: 0 0 22px 5px rgba(4,169,255,0.75), 0 0 48px 10px rgba(4,169,255,0.28); }
+                  }
+                  @keyframes htw-scissors {
+                    0%, 100% { transform: rotate(0deg) scale(1); }
+                    25% { transform: rotate(-20deg) scale(1.2); }
+                    50% { transform: rotate(10deg) scale(1.1); }
+                    75% { transform: rotate(-8deg) scale(1.15); }
+                  }
+                `}</style>
+                <div className="relative inline-block mt-3">
+                  {/* Outer ping ring */}
+                  <span className="absolute inset-0 rounded-full bg-[#04A9FF]/25 animate-ping" style={{ animationDuration: '1.8s' }} />
+                  <button
+                    type="button"
+                    onClick={() => document.getElementById('hair-tryon-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                    className="relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold text-white overflow-hidden
+                      bg-gradient-to-r from-[#04A9FF] via-[#00c6ff] to-[#0070ee]
+                      hover:from-[#0070ee] hover:to-[#04A9FF] hover:scale-105
+                      transition-all duration-300"
+                    style={{ animation: 'htw-glow 2s ease-in-out infinite' }}
+                  >
+                    {/* Shimmer sweep */}
+                    <span
+                      className="absolute top-0 bottom-0 w-10 bg-gradient-to-r from-transparent via-white/40 to-transparent rounded-full pointer-events-none"
+                      style={{ animation: 'htw-shimmer 2.2s ease-in-out infinite' }}
+                    />
+                    {/* Scissors icon with snip animation */}
+                    <span
+                      className="relative text-base leading-none"
+                      style={{ display: 'inline-block', animation: 'htw-scissors 3s ease-in-out infinite' }}
+                    >
+                      ✂️
+                    </span>
+                    <span className="relative">Virtual Hair Try-On</span>
+                  </button>
+                </div>
+
                 <div className='flex gap-2 mt-3'>
                   {(product.product_tag && product.product_tag !== 'null') && (
                     <span className='border px-2 py-1 bg-green-400 text-white font-medium uppercase text-[10px] md:text-xs'>

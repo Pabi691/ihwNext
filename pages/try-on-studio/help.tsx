@@ -202,14 +202,14 @@ const HELP_CSS = `
   .tos-help .mock-body { padding: 16px; }
 
   .tos-help .mock-login { background: #0b1220; padding: 28px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-  .tos-help .mock-login .badge { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg,#04A9FF,#0070cc); }
+  .tos-help .mock-login .badge { height: 26px; width: auto; object-fit: contain; }
   .tos-help .mock-login h4 { color: #fff; font-size: 14px; }
   .tos-help .mock-login .field-mock { width: 100%; max-width: 220px; height: 30px; border-radius: 8px; background: #1b2740; border: 1px solid #2c3a58; }
   .tos-help .mock-login .btn-mock { width: 100%; max-width: 220px; height: 32px; border-radius: 8px; background: linear-gradient(90deg,#04A9FF,#0070cc); margin-top: 4px; }
 
   .tos-help .mock-topbar { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--surface); }
   .tos-help .mock-topbar .left { display: flex; align-items: center; gap: 8px; }
-  .tos-help .mock-topbar .icon { font-size: 16px; }
+  .tos-help .mock-topbar .icon { height: 18px; width: auto; object-fit: contain; }
   .tos-help .mock-topbar .title { font-family: var(--font-display); font-size: 12.5px; font-weight: 700; }
   .tos-help .mock-topbar .badge2 { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-deep); }
   .tos-help .mock-topbar .signout { font-size: 10.5px; color: var(--critical); border: 1px solid var(--critical); border-radius: 7px; padding: 4px 8px; }
@@ -403,7 +403,7 @@ export default function TryOnHelp() {
                   <div className="mock-label">Sign-in screen</div>
                   <div className="mock-frame">
                     <div className="mock-login">
-                      <div className="badge" />
+                      <img className="badge" src="/logo-white.png" alt="" />
                       <h4>Try-On Studio</h4>
                       <div className="field-mock" />
                       <div className="field-mock" />
@@ -506,7 +506,7 @@ export default function TryOnHelp() {
               <div className="mock-frame">
                 <div className="mock-topbar">
                   <div className="left">
-                    <span className="icon">✂️</span>
+                    <img className="icon" src="/logo.png" alt="" />
                     <div>
                       <div className="title">Virtual Try-On Studio</div>
                       <div className="badge2">Admin — No Limits</div>

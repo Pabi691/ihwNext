@@ -159,6 +159,16 @@ const NavTop = () => {
             >
               <span>Women</span>
             </Link>
+            <Link
+              to="/shop?tryon=1"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl
+        bg-gradient-to-r from-[#04A9FF] to-[#0070cc] text-white font-semibold text-xs
+        shadow-md shadow-[#04A9FF]/30 relative overflow-hidden"
+            >
+              <span className="absolute inset-0 rounded-xl bg-white/25 animate-ping" style={{ animationDuration: '2.2s' }} />
+              <span className="relative">✂️</span>
+              <span className="relative whitespace-nowrap">Try It On</span>
+            </Link>
           </div>
 
           {/* Search Bar */}
@@ -255,6 +265,7 @@ const NavTop = () => {
                 <Link onClick={() => setShowMenu(false)} className='text-xs font-medium' to={'/branch/siliguri'}>- Siliguri</Link>
                 <p className='font-semibold'>Shop In</p>
                 <Link className='text-xs font-medium' onClick={() => setShowMenu(false)} to={'/shop'}>- All Products</Link>
+                <Link className='text-xs font-medium text-[#04A9FF]' onClick={() => setShowMenu(false)} to={'/shop?tryon=1'}>- ✂️ Virtual Hair Try-On</Link>
                 <NavMenus />
                 {userToken && (
                   <div>

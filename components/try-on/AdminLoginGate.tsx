@@ -46,9 +46,7 @@ export default function AdminLoginGate({ onSuccess }: { onSuccess: () => void })
 
       <div className="relative w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#04A9FF] to-[#0070cc] rounded-2xl shadow-2xl shadow-[#04A9FF]/30 mb-4">
-            <span className="text-white text-2xl">✂️</span>
-          </div>
+          <img src="/logo-white.png" alt="Indian Hair World" className="h-14 w-auto object-contain mx-auto mb-4" />
           <h1 className="text-white text-2xl font-bold">Try-On Studio</h1>
           <p className="text-slate-500 text-sm mt-1">Admin access only</p>
         </div>

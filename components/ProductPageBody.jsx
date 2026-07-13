@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Link, useNavigate } from "@/components/compat/router";
+import { Link, useNavigate, useParams } from "@/components/compat/router";
 // import axios from "axios";
 import { useGlobal } from "../global/GlobalContext";
 import API_BASE_URL from "../global/apiConfig";
@@ -11,9 +11,13 @@ import Skeleton from "react-loading-skeleton";
 import compressImage from "../utils/compressImage";
 import { themeBgColor } from "../styles/typography";
 
+const TRY_ON_RE = /(patch|wig|toupee|topper|hair system|hair replacement|frontal|closure)/i;
+
 function ProductPageBody({ categorySlug, ProductsCount = null, products, catagoryProducts }) {
 
   const { token, wishlist, setWishlist } = useGlobal();
+  const { tryon } = useParams();
+  const tryOnOnly = tryon === '1';
   // const [products, setProducts] = useState([]);
   // const [catagoryProducts, setCatagoryProducts] = useState([]);
   const [sortOption, setSortOption] = useState("popularity");
@@ -60,7 +64,13 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
           const matchesCategory =
             !filters.category.length || // No filter applied → show all
             product.product_categories?.some((v) => filters.category.includes(v.category_name));
-          return matchesSize && matchesBrand && matchesColor && matchesCategory;
+
+          const matchesTryOn =
+            !tryOnOnly ||
+            product.product_categories?.some((v) => TRY_ON_RE.test(v.category_name || "")) ||
+            TRY_ON_RE.test(product.prod_name || "");
+
+          return matchesSize && matchesBrand && matchesColor && matchesCategory && matchesTryOn;
         });
       }
 
@@ -69,7 +79,7 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
     }, 0);
 
     return () => clearTimeout(timer);
-  }, [filters, products, catagoryProducts]);
+  }, [filters, products, catagoryProducts, tryOnOnly]);
 
   const filterColor = useCallback(async () => {
 
@@ -191,7 +201,9 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
 
   const formattedCategory = categorySlug
     ? catagoryProducts.category_data?.category_name
-    : "All Products";
+    : tryOnOnly
+      ? "Virtual Try-On Ready"
+      : "All Products";
 
   const toggleFilter = (filterType, value) => {
     setFilters((prevFilters) => {
@@ -222,7 +234,20 @@ function ProductPageBody({ categorySlug, ProductsCount = null, products, catagor
         {/* Breadcrumb */}
         <div className="breadcrumb mb-5 text-gray-500 md:flex items-center gap-4 hidden">
           <Link className="text-sm" to="/">Home</Link> <BiChevronRight />  <span className="uppercase text-sm">{formattedCategory}</span>
+          {tryOnOnly && (
+            <Link to="/shop" className="text-xs text-[#04A9FF] underline hover:text-[#0070cc] normal-case">
+              Clear filter — view all products
+            </Link>
+          )}
         </div>
+        {tryOnOnly && (
+          <div className="mb-5 flex items-center gap-2 bg-[#04A9FF]/5 border border-[#04A9FF]/20 rounded-xl px-4 py-3">
+            <span className="text-lg">✂️</span>
+            <p className="text-sm text-gray-700">
+              Showing products you can preview with <span className="font-semibold">Virtual Hair Try-On</span> — open any product below to see it on your own photo.
+            </p>
+          </div>
+        )}
         {/* <img src={filteredProducts.brand_details?.brand_name} /> */}
         <div className="flex justify-between flex-col md:flex-row">
           {/* Filter Sidebar */}

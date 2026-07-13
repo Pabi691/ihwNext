@@ -191,7 +191,7 @@ export default function TryOnStudio() {
         <div className="sticky top-0 z-40 bg-white border-b border-gray-100 shadow-sm">
           <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <span className="text-xl">✂️</span>
+              <img src="/logo.png" alt="Indian Hair World" className="h-7 w-auto object-contain" />
               <div>
                 <h1 className="text-sm font-bold text-gray-900">Virtual Try-On Studio</h1>
                 <span className="text-[10px] font-bold uppercase tracking-widest text-[#04A9FF]">Admin — No Limits</span>
