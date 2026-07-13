@@ -362,8 +362,8 @@ function ProductDetailsAll() {
                         100% { transform: translateX(300%) skewX(-12deg); }
                       }
                       @keyframes htw-glow {
-                        0%, 100% { box-shadow: 0 0 10px 2px rgba(4,169,255,0.45), 0 0 24px 4px rgba(4,169,255,0.18); }
-                        50% { box-shadow: 0 0 22px 5px rgba(4,169,255,0.75), 0 0 48px 10px rgba(4,169,255,0.28); }
+                        0%, 100% { box-shadow: 0 0 8px 1px rgba(4,169,255,0.45), 0 0 14px 2px rgba(4,169,255,0.18); }
+                        50% { box-shadow: 0 0 14px 3px rgba(4,169,255,0.75), 0 0 24px 5px rgba(4,169,255,0.28); }
                       }
                       @keyframes htw-scissors {
                         0%, 100% { transform: rotate(0deg) scale(1); }
@@ -373,15 +373,13 @@ function ProductDetailsAll() {
                       }
                     `}</style>
                     <div className="relative inline-block mt-3">
-                      {/* Outer ping ring */}
-                      <span className="absolute inset-0 rounded-full bg-[#04A9FF]/25 animate-ping" style={{ animationDuration: '1.8s' }} />
                       <button
                         type="button"
                         onClick={() => document.getElementById('hair-tryon-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
                         className="relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold text-white overflow-hidden
                           bg-gradient-to-r from-[#04A9FF] via-[#00c6ff] to-[#0070ee]
-                          hover:from-[#0070ee] hover:to-[#04A9FF] hover:scale-105
-                          transition-all duration-300"
+                          hover:from-[#0070ee] hover:to-[#04A9FF]
+                          transition-colors duration-300"
                         style={{ animation: 'htw-glow 2s ease-in-out infinite' }}
                       >
                         {/* Shimmer sweep */}

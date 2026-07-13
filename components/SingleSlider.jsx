@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import { Link } from '@/components/compat/router';
+import { ChevronLeft, ChevronRight, Scissors } from 'lucide-react';
 import 'swiper/swiper-bundle.css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -38,6 +39,8 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const apiBase = `${process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com"}/api`;
+  const prevRef = useRef(null);
+  const nextRef = useRef(null);
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
@@ -155,8 +158,13 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
         )}
       </div>
 
+      <div className="relative">
       <Swiper
-        navigation
+        navigation={{ prevEl: prevRef.current, nextEl: nextRef.current }}
+        onBeforeInit={(swiper) => {
+          swiper.params.navigation.prevEl = prevRef.current;
+          swiper.params.navigation.nextEl = nextRef.current;
+        }}
         loop={false}
         breakpoints={{
           360: { slidesPerView: 2.1 },
@@ -194,21 +202,22 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
             return (
             <SwiperSlide key={product.id}>
               <div className="bg-white overflow-hidden border border-gray-100 rounded-xl h-full flex flex-col">
-                <Link to={`/product/${product.slug}`} className="relative block aspect-[4/5] bg-gray-50 shrink-0">
+                <Link to={`/product/${product.slug}`} className="relative block h-48 sm:h-56 md:h-60 bg-gray-50 shrink-0">
                   {product.product_tag && product.product_tag !== 'null' && (
                     <span className={`absolute z-10 top-2 left-2 ${themeBgColor} text-white text-[9px] font-semibold uppercase px-2 py-1 rounded-md`}>
                       {product.product_tag}
                     </span>
                   )}
                   {tryOnEligible && (
-                    <span className="absolute z-10 top-2 right-2 bg-[#04A9FF] text-white text-[9px] font-semibold px-2 py-1 rounded-full flex items-center gap-1">
-                      <span aria-hidden="true">✂️</span> Try-On
+                    <span className="absolute z-10 top-2 right-2 bg-[#04A9FF] text-white text-[9px] font-bold uppercase tracking-wide px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                      <Scissors size={10} strokeWidth={2.5} />
+                      Try-On
                     </span>
                   )}
                   <img
                     src={product.primary_img}
                     alt={productName}
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-cover object-top"
                     loading="lazy"
                     onError={handleProductImageError}
                   />
@@ -263,27 +272,25 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
           })
         )}
       </Swiper>
-    </div>
 
-    <style jsx>{`
-      .mySwiper :global(.swiper-button-next),
-      .mySwiper :global(.swiper-button-prev) {
-        width: 32px;
-        height: 32px;
-        background: white;
-        border-radius: 9999px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        color: #111827;
-      }
-      .mySwiper :global(.swiper-button-next::after),
-      .mySwiper :global(.swiper-button-prev::after) {
-        font-size: 12px;
-        font-weight: 700;
-      }
-      .mySwiper :global(.swiper-button-disabled) {
-        opacity: 0.35;
-      }
-    `}</style>
+      <button
+        ref={prevRef}
+        type="button"
+        aria-label="Previous"
+        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-100 text-gray-700 hover:text-[#04A9FF] hover:border-[#04A9FF]/40 transition-colors [&.swiper-button-disabled]:opacity-0 [&.swiper-button-disabled]:pointer-events-none"
+      >
+        <ChevronLeft size={16} strokeWidth={2.5} />
+      </button>
+      <button
+        ref={nextRef}
+        type="button"
+        aria-label="Next"
+        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-100 text-gray-700 hover:text-[#04A9FF] hover:border-[#04A9FF]/40 transition-colors [&.swiper-button-disabled]:opacity-0 [&.swiper-button-disabled]:pointer-events-none"
+      >
+        <ChevronRight size={16} strokeWidth={2.5} />
+      </button>
+      </div>
+    </div>
     </section>
   );
 };
