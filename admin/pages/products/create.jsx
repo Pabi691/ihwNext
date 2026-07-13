@@ -5,6 +5,7 @@ import { useAdmin } from "@/components/AdminContext";
 import { useAuthGuard } from "@/components/useAuthGuard";
 import AdminLayout from "@/components/AdminLayout";
 import { FiArrowLeft, FiImage, FiAlertCircle, FiPlus, FiTrash2, FiX } from "react-icons/fi";
+import { PRODUCT_TAG_SUGGESTIONS } from "@/utils/productTagSuggestions";
 
 function Section({ title, children }) {
   return (
@@ -601,7 +602,10 @@ export default function CreateProduct() {
                 <div>
                   <Label>Product Tag</Label>
                   <input value={form.product_tag} onChange={(e) => set("product_tag", e.target.value)}
-                    placeholder="e.g. bestseller" className={INPUT} />
+                    placeholder="Select a suggestion or type your own" className={INPUT} list="product-tag-suggestions" />
+                  <datalist id="product-tag-suggestions">
+                    {PRODUCT_TAG_SUGGESTIONS.map((t) => <option key={t} value={t} />)}
+                  </datalist>
                 </div>
                 <div className="col-span-2">
                   <Label>Status</Label>

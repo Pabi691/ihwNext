@@ -5,6 +5,7 @@ import { useAdmin } from "@/components/AdminContext";
 import { useAuthGuard } from "@/components/useAuthGuard";
 import AdminLayout from "@/components/AdminLayout";
 import { FiArrowLeft, FiImage, FiAlertCircle, FiPlus, FiTrash2, FiEdit2, FiSave, FiX } from "react-icons/fi";
+import { PRODUCT_TAG_SUGGESTIONS } from "@/utils/productTagSuggestions";
 
 const L = "text-xs text-gray-500 font-semibold uppercase tracking-wide block mb-1.5";
 const I = "w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#04A9FF] transition-colors";
@@ -1105,7 +1106,11 @@ export default function EditProduct() {
                 </div>
                 <div>
                   <label className={L}>Product Tag</label>
-                  <input value={form.product_tag} onChange={(e) => set("product_tag", e.target.value)} className={I} />
+                  <input value={form.product_tag} onChange={(e) => set("product_tag", e.target.value)} className={I}
+                    list="product-tag-suggestions" placeholder="Select a suggestion or type your own" />
+                  <datalist id="product-tag-suggestions">
+                    {PRODUCT_TAG_SUGGESTIONS.map((t) => <option key={t} value={t} />)}
+                  </datalist>
                 </div>
                 <div>
                   <label className={L}>Status</label>

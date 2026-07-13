@@ -8,8 +8,12 @@ const SESSION_KEY = "ihw_tryon_admin";
 const API_BASE    = process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com";
 
 const TRY_ON_RE = /(patch|wig|toupee|topper|hair system|hair replacement|extension|frontal|closure)/i;
+const TRY_ON_CATEGORY_RE = /(hair patch|hair wig|hair topper|toupee|hair system|hair replacement|frontal|closure)/i;
 
-function detectTag(name: string): string {
+function detectTag(name: string, productTag?: string): string {
+  const cleanTag = (productTag || "").trim();
+  if (cleanTag && cleanTag.toLowerCase() !== "null") return cleanTag;
+
   const n = name.toLowerCase();
   if (n.includes("wig"))       return "wig";
   if (n.includes("patch"))     return "hair patch";
@@ -121,6 +125,8 @@ type Product = {
   image?: string;
   thumbnail?: string;
   description?: string;
+  product_tag?: string;
+  product_categories?: { id: number; category_name: string }[];
   product_image_list?: { prod_img_url: string }[];
 };
 
@@ -142,6 +148,10 @@ function ProductPicker({ token, onSelect }: { token: string; onSelect: (p: Produ
         const data = await res.json();
         if (data.status && data.products) {
           const compatible = (data.products as Product[]).filter((p) => {
+            const cats = p.product_categories || [];
+            if (cats.length > 0) {
+              return cats.some((c) => TRY_ON_CATEGORY_RE.test(c.category_name || ""));
+            }
             const n = p.prod_name || p.name || "";
             return TRY_ON_RE.test(n);
           });
@@ -233,7 +243,7 @@ export default function TryOnStudio() {
     setProductImageUrl(img);
     setProductImages(imgs);
     setProductName(name);
-    setProductTag(detectTag(name));
+    setProductTag(detectTag(name, p.product_tag));
     setProductDesc(p.description || "");
   };
 
