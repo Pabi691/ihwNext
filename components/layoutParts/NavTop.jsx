@@ -162,12 +162,11 @@ const NavTop = () => {
             <Link
               to="/shop?tryon=1"
               className="flex-1 flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl
-        bg-gradient-to-r from-[#04A9FF] to-[#0070cc] text-white font-semibold text-xs
-        shadow-md shadow-[#04A9FF]/30 relative overflow-hidden"
+        bg-[#062033] text-[#04A9FF] font-semibold text-xs
+        shadow-md"
             >
-              <span className="absolute inset-0 rounded-xl bg-white/25 animate-ping" style={{ animationDuration: '2.2s' }} />
-              <span className="relative">✂️</span>
-              <span className="relative whitespace-nowrap">Try It On</span>
+              <span>✂️</span>
+              <span className="whitespace-nowrap">Try It On</span>
             </Link>
           </div>
 

@@ -12,6 +12,7 @@ import axios from 'axios';
 import Skeleton from 'react-loading-skeleton';
 import { cacheManager } from '../utils/cacheManager'; // ✅ Import cacheManager
 import { themeBgColor } from '../styles/typography';
+import { isTryOnEligible } from '../utils/tryOnEligibility';
 
 const normalizeProductImageUrl = (url = '') => {
   if (!url || typeof url !== 'string') return url;
@@ -177,30 +178,45 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
         ) : (
           products.map((product) => {
             const productName = normalizeProductName(product.prod_name);
+            const regularPrice = parseFloat(product.regular_price || 0);
+            const salePrice = parseFloat(product.sale_price || 0);
+            const hasDiscount = regularPrice > salePrice && salePrice > 0;
+            const discountPct = hasDiscount
+              ? Math.round(((regularPrice - salePrice) / regularPrice) * 100)
+              : 0;
+            const tryOnEligible = isTryOnEligible({
+              categories: product.product_categories,
+              tag: product.product_tag,
+              name: product.prod_name,
+              description: product.prod_desc,
+            });
 
             return (
             <SwiperSlide key={product.id}>
-              <div className="bg-white overflow-hidden relative md:h-[330px] h-[300px] border-none md:border rounded-sm">
-                {product.product_tag && product.product_tag !== 'null' && (
-                  <span className={`absolute z-10 ${themeBgColor} text-white top-0 left-0 text-[8px] sm:text-[10px] p-1 rotate-text`}>
-                    {product.product_tag}
-                  </span>
-                )}
-
-                <Link to={`/product/${product.slug}`}>
+              <div className="bg-white overflow-hidden border border-gray-100 rounded-xl h-full flex flex-col">
+                <Link to={`/product/${product.slug}`} className="relative block aspect-[4/5] bg-gray-50 shrink-0">
+                  {product.product_tag && product.product_tag !== 'null' && (
+                    <span className={`absolute z-10 top-2 left-2 ${themeBgColor} text-white text-[9px] font-semibold uppercase px-2 py-1 rounded-md`}>
+                      {product.product_tag}
+                    </span>
+                  )}
+                  {tryOnEligible && (
+                    <span className="absolute z-10 top-2 right-2 bg-[#04A9FF] text-white text-[9px] font-semibold px-2 py-1 rounded-full flex items-center gap-1">
+                      <span aria-hidden="true">✂️</span> Try-On
+                    </span>
+                  )}
                   <img
-                    // src={compressImage(product.primary_img, 300)}
                     src={product.primary_img}
                     alt={productName}
-                    className="w-full rounded-xl absolute top-0 left-0"
+                    className="w-full h-full object-contain"
                     loading="lazy"
                     onError={handleProductImageError}
                   />
                 </Link>
 
-                <div className="p-1 md:p-4 absolute bottom-0 w-full bg-white">
-                  <div className="flex align-middle justify-between">
-                    <h4 className="text-xs sm:text-sm font-semibold text-gray-900">
+                <div className="p-2.5 sm:p-3 flex flex-col flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <h4 className="text-xs sm:text-sm font-semibold text-gray-900 truncate">
                       {product.brand_details?.brand_name}
                     </h4>
                     <WishlistButton
@@ -213,44 +229,33 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
                   </div>
                   <Link
                     to={`/product/${product.slug}`}
-                    className="text-gray-900 truncate max-w-fit text-nowrap text-xs block my-1"
+                    className="text-gray-500 text-xs truncate block mt-1"
                     title={productName}
                   >
                     {productName}
                   </Link>
-                  <div className="flex gap-[1px] sm:gap-2 items-end my-1">
-                    <p className="text-black text-[10px] sm:text-sm font-semibold md:font-bold flex gap-[2px]">
-                      <span>₹</span>
-                      <span>{product.sale_price}</span>
-                    </p>
-                    <p className="text-gray-500 text-[11px] line-through sm:text-xs flex gap-[1px]">
-                      <span>₹</span>
-                      <span>{product.regular_price}</span>
-                    </p>
-                    <p className="text_highlight font-semibold md:text-[9px] text-[10px] text-green-600 ">
-                      <span>
-                        {(
-                          ((product.regular_price - product.sale_price) /
-                            product.regular_price) *
-                          100
-                        ).toFixed(2)}
-                        %
-                      </span>{' '}
-                      OFF
-                    </p>
-                  </div>
-                  <div className="flex gap-2 mt-3">
-                    {(product.product_tag && product.product_tag !== 'null') && (
-                      <span className="border px-2 py-1 bg-green-400 text-white font-medium uppercase text-[10px] md:text-xs">
-                        {product.product_tag}
+                  <div className="flex items-baseline gap-1.5 flex-wrap mt-1.5">
+                    <span className="text-gray-900 text-xs sm:text-sm font-bold">
+                      ₹{salePrice.toLocaleString('en-IN')}
+                    </span>
+                    {hasDiscount && (
+                      <span className="text-gray-400 text-[11px] line-through">
+                        ₹{regularPrice.toLocaleString('en-IN')}
                       </span>
                     )}
-                    {(product.product_quality && product.product_quality !== 'null') && (
-                      <span className="border px-2 py-1 bg-gray-400 text-white font-medium uppercase text-[10px] md:text-xs">
+                    {hasDiscount && (
+                      <span className="text-green-600 font-semibold text-[10px]">
+                        {discountPct}% OFF
+                      </span>
+                    )}
+                  </div>
+                  {(product.product_quality && product.product_quality !== 'null') && (
+                    <div className="mt-2">
+                      <span className="border px-2 py-0.5 bg-gray-400 text-white font-medium uppercase text-[9px] rounded-md">
                         {product.product_quality}
                       </span>
-                    )}
-                  </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </SwiperSlide>
@@ -259,6 +264,26 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
         )}
       </Swiper>
     </div>
+
+    <style jsx>{`
+      .mySwiper :global(.swiper-button-next),
+      .mySwiper :global(.swiper-button-prev) {
+        width: 32px;
+        height: 32px;
+        background: white;
+        border-radius: 9999px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        color: #111827;
+      }
+      .mySwiper :global(.swiper-button-next::after),
+      .mySwiper :global(.swiper-button-prev::after) {
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .mySwiper :global(.swiper-button-disabled) {
+        opacity: 0.35;
+      }
+    `}</style>
     </section>
   );
 };

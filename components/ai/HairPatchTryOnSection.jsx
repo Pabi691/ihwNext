@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useGuestCheck } from "../../global/GuestCheckContext";
+import { isTryOnEligible } from "../../utils/tryOnEligibility";
 
 const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
 const MAX_SINGLE_USES = 4;
@@ -29,10 +30,6 @@ function incrementStoredCount(key) {
   const count = getStoredCount(key) + 1;
   localStorage.setItem(key, JSON.stringify({ count, ts: Date.now() }));
   return count;
-}
-function isTryOnSupported(tag, name, desc) {
-  const txt = `${tag || ""} ${name || ""} ${desc || ""}`.toLowerCase();
-  return /(patch|wig|hair patch|hair wig|toupee|topper|hair system|hair replacement|extension|frontal|closure)/.test(txt);
 }
 
 /* ── constants ── */
@@ -291,6 +288,7 @@ function HairPatchTryOnSection({
   productName = "",
   productTag = "",
   productDescription = "",
+  productCategories = [],
   isAdmin = false,
 }) {
   const { requireGuestInfo } = useGuestCheck();
@@ -333,8 +331,13 @@ function HairPatchTryOnSection({
   const resultRef = useRef(null);
 
   const supported = useMemo(
-    () => isAdmin || isTryOnSupported(productTag, productName, productDescription),
-    [isAdmin, productTag, productName, productDescription]
+    () => isAdmin || isTryOnEligible({
+      categories: productCategories,
+      tag: productTag,
+      name: productName,
+      description: productDescription,
+    }),
+    [isAdmin, productCategories, productTag, productName, productDescription]
   );
 
   const canSubmit = useMemo(() => Boolean(faceFile && productImage), [faceFile, productImage]);
