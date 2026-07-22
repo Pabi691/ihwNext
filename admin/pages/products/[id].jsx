@@ -378,17 +378,66 @@ export default function EditProduct() {
   const handleAdditionalImgUpload = async (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
+    setError("");
+
+    // Backend stores additional images as image_1..image_6 slots on the
+    // product itself (there is no dedicated upload endpoint), so find the
+    // free slot numbers and save them through the same /update_product call
+    // used for the rest of the form.
+    const usedSlots = new Set(additionalImages.map((img) => img.image_no));
+    const freeSlots = [];
+    for (let i = 1; i <= 6 && freeSlots.length < files.length; i++) {
+      if (!usedSlots.has(i)) freeSlots.push(i);
+    }
+    if (freeSlots.length === 0) {
+      setError("Maximum of 6 additional images reached.");
+      e.target.value = "";
+      return;
+    }
+
     setUploadingImg(true);
     try {
-      for (const file of files) {
-        const fd = new FormData();
-        fd.append("product_id", id);
-        fd.append("product_image", file);
-        await api("post", `/upload_product_image/${id}`, fd);
+      const fd = new FormData();
+      fd.append("id", form.id);
+      fd.append("prod_type", form.prod_type);
+      fd.append("prod_name", form.prod_name);
+      fd.append("sku", form.sku || "");
+      fd.append("prod_desc", form.prod_desc || "");
+      fd.append("regular_price", form.regular_price);
+      fd.append("sale_price", form.sale_price);
+      fd.append("stock_qty", form.stock_qty);
+      fd.append("min_order_qty", form.min_order_qty || "1");
+      fd.append("pack_qty", form.pack_qty || "");
+      fd.append("pack_price", form.pack_price || "");
+      fd.append("brand_id", form.brand_id || "");
+      fd.append("color_id", form.color_id || "");
+      fd.append("size_chart_id", form.size_chart_id || "");
+      fd.append("product_tag", form.product_tag || "");
+      fd.append("product_quality", form.product_quality || "");
+      fd.append("product_rating", form.product_rating || "");
+      fd.append("is_sale", form.is_sale ? "1" : "0");
+      fd.append("is_returnable", form.is_returnable ? "1" : "0");
+      fd.append("is_cod", form.is_cod ? "1" : "0");
+      fd.append("status", form.status);
+      selectedCategories.forEach((cat, i) => {
+        fd.append(`product_categories[${i}][id]`, cat.id);
+      });
+      files.slice(0, freeSlots.length).forEach((file, i) => {
+        fd.append(`image_${freeSlots[i]}`, file);
+      });
+
+      const res = await api("post", `/update_product/${id}`, fd);
+      if (!res.data?.status) {
+        setError(res.data?.error_message || "Failed to upload image.");
+      } else if (files.length > freeSlots.length) {
+        setError(`Only ${freeSlots.length} image(s) uploaded — max 6 additional images reached.`);
       }
       await loadProduct();
-    } catch {}
+    } catch {
+      setError("Failed to upload image.");
+    }
     setUploadingImg(false);
+    e.target.value = "";
   };
 
   const deleteAdditionalImage = async (imgno) => {
