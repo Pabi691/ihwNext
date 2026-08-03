@@ -23,4 +23,10 @@ export const BRANCHES = [
     phone: "917439436698",
     whatsapp: "917439436698",
   },
+  {
+    id: "sodepur",
+    name: "Sodepur",
+    phone: "918910097668",
+    whatsapp: "918910097668",
+  },
 ];

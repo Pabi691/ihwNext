@@ -10,6 +10,7 @@ export const AdminProvider = ({ children }) => {
   const [adminToken, setAdminToken] = useState(null);
   const [adminUser, setAdminUser]   = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [newLeadsCount, setNewLeadsCount] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem("ihw_admin_token");
@@ -61,8 +62,29 @@ export const AdminProvider = ({ children }) => {
     return axios[method](url, body, { headers });
   }, [adminToken]);
 
+  const setNewLeadsCountFromCustomers = useCallback((list) => {
+    const count = (Array.isArray(list) ? list : []).filter(
+      (c) => (!c.lead_status || c.lead_status === "new") && !c.admin_viewed_at
+    ).length;
+    setNewLeadsCount(count);
+  }, []);
+
+  const refreshNewLeadsCount = useCallback(async () => {
+    try {
+      const res = await api("get", "/get_all_customers");
+      const list = Array.isArray(res.data?.customers) ? res.data.customers : [];
+      setNewLeadsCountFromCustomers(list);
+    } catch {}
+  }, [api, setNewLeadsCountFromCustomers]);
+
+  useEffect(() => {
+    if (!adminToken) return;
+    refreshNewLeadsCount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [adminToken]);
+
   return (
-    <AdminContext.Provider value={{ adminToken, adminUser, authLoading, login, logout, api }}>
+    <AdminContext.Provider value={{ adminToken, adminUser, authLoading, login, logout, api, newLeadsCount, refreshNewLeadsCount, setNewLeadsCountFromCustomers }}>
       {children}
     </AdminContext.Provider>
   );

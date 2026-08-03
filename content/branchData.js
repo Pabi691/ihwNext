@@ -3,6 +3,7 @@ import LakeGarden from "../components/branches/LakeGarden";
 import ReviewSlider from "../components/branches/ReviewSlider";
 import SaltLake from "../components/branches/SaltLake";
 import Siliguri from "../components/branches/Siliguri";
+import Sodepur from "../components/branches/Sodepur";
 import SingleSlider from "../components/SingleSlider";
 import reviewData from "./reviewsData";
 
@@ -134,6 +135,43 @@ export const branchData = {
       { question: "Are curly hair wigs available in Siliguri?", answer: "Yes — Indian Hair World Siliguri has a full curly hair collection including curly wigs, curly hair pieces, curly toppers, and curly lace wigs. Each system is matched to your natural curl pattern, density, and length. Walk in for a free trial." },
       { question: "What is the difference between a toupee and a hair patch?", answer: "A toupee and a hair patch are essentially the same thing — both refer to a partial hair system designed to cover a bald or thinning area on the scalp. The term 'toupee' is traditionally used for men, while 'hair patch' is the more modern, widely used term. Both are available at Indian Hair World Siliguri in 100% natural human hair." },
       { question: "Can women use hair toppers and hair patches?", answer: "Absolutely. Hair toppers are ideal for women experiencing crown thinning, alopecia, or volume loss — they provide targeted coverage and blend with existing hair. Hair patches for women work for localized hair loss caused by hormonal changes, stress, or medical conditions. Both are available in natural human hair at our Siliguri branch." },
+      { question: "How long does a human hair wig last?", answer: "A premium human hair wig with proper care can last 1–3 years. Longevity depends on usage frequency, maintenance routine, and the fixing method used. At Indian Hair World, we provide a complete care guide and offer professional maintenance services to help extend the life of your wig or hair patch." },
+      { question: "Is non-surgical hair replacement better than a hair transplant?", answer: "For most people, non-surgical hair replacement offers significant advantages: no surgery, no scars, no recovery time, immediate results in 60 minutes, and a fraction of the cost (from ₹5,999 vs. ₹70,000+ for transplants). It is also reversible and suitable for all stages of hair loss. Hair transplants are a surgical procedure with long recovery periods and are only viable for certain hair loss patterns." },
+    ],
+  },
+  sodepur: {
+    name: "Sodepur",
+    h1: "Hair Patch, Wigs & Non-Surgical Hair Replacement in Sodepur",
+    paragraph: "Natural Human Hair Solutions for Men & Women in Sodepur. Hair Patch, Hair Wig, Hair Topper, Toupee, Hair Extensions and Non-Surgical Hair Replacement Starting from ₹5,999.",
+    paragraph2: "Looking for the best hair patch, wig, or non-surgical hair replacement in Sodepur? Indian Hair World offers premium human hair solutions for men and women dealing with hair loss, baldness, thinning hair, alopecia, or pattern baldness. Our natural-looking hair patches, wigs, toppers, toupees, and hair extensions are designed to restore your confidence instantly without surgery.",
+    highlights: [
+      "100% Human Hair",
+      "Natural Undetectable Look",
+      "Same-Day Hair Fixing",
+      "Custom Hair Systems",
+      "Affordable Hair Patch Price",
+      "Serving Sodepur & North 24 Parganas",
+    ],
+    address:
+      "Shesher Kabita Apartment, 83, RN Avenue, PO Pansila, PS Khardah, North 24 Parganas, West Bengal",
+    phones: ["+918910097668"],
+    whatsapp: "+918910097668",
+    landmark: "RN Avenue, Pansila, Khardah",
+    opening_hours: "Monday to Sunday — 11:00 AM to 7:00 PM",
+    serving_areas: "Sodepur, Khardah, Titagarh, Barrackpore, and North 24 Parganas",
+    mapUrl:
+      "https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d230.02632623302517!2d88.38546705689687!3d22.712580108649373!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjLCsDQyJzQ1LjQiTiA4OMKwMjMnMDcuNyJF!5e0!3m2!1sen!2sin!4v1785754100584!5m2!1sen!2sin",
+    page_title: "Non Surgical Hair Replacement in Sodepur – Natural Looking Hair Patch, Extensions & Topper",
+    component: <Sodepur />,
+    menProduct: <SingleSlider slug_name="get_slug_data/men-products" title="MEN’S HAIR PRODUCTS" />,
+    womenProduct: <SingleSlider slug_name="get_slug_data/women-products" title="WOMEN’S HAIR PRODUCTS" />,
+    faqs: [
+      { question: "What is the hair patch price in Sodepur?", answer: "Hair patch prices at Indian Hair World Sodepur start from ₹5,999. The exact cost varies depending on hair quality, base material, hair density, size of the bald area, and customization requirements. We also offer easy EMI options. Book a free consultation at RN Avenue, Pansila, Khardah, or call +918910097668 for a personalized quote." },
+      { question: "Which is the best hair patch in Sodepur?", answer: "The best hair patch is one that matches your hair texture, colour, density, lifestyle, and baldness pattern. At Indian Hair World Sodepur, our specialists assess your scalp condition and hair loss type to recommend the ideal hair patch — whether bonded, clipped, taped or woven. We use 100% natural Indian human hair for a completely undetectable result." },
+      { question: "Where can I buy human hair wigs in Sodepur?", answer: "You can buy premium human hair wigs at Indian Hair World, Shesher Kabita Apartment, 83, RN Avenue, Pansila, Khardah. We stock full wigs, lace wigs, medical wigs, curly hair wigs, fashion wigs, and customized wigs for both men and women. Open 7 days, 11am to 7pm. No appointment needed." },
+      { question: "Are curly hair wigs available in Sodepur?", answer: "Yes — Indian Hair World Sodepur has a full curly hair collection including curly wigs, curly hair pieces, curly toppers, and curly lace wigs. Each system is matched to your natural curl pattern, density, and length. Walk in for a free trial." },
+      { question: "What is the difference between a toupee and a hair patch?", answer: "A toupee and a hair patch are essentially the same thing — both refer to a partial hair system designed to cover a bald or thinning area on the scalp. The term 'toupee' is traditionally used for men, while 'hair patch' is the more modern, widely used term. Both are available at Indian Hair World Sodepur in 100% natural human hair." },
+      { question: "Can women use hair toppers and hair patches?", answer: "Absolutely. Hair toppers are ideal for women experiencing crown thinning, alopecia, or volume loss — they provide targeted coverage and blend with existing hair. Hair patches for women work for localized hair loss caused by hormonal changes, stress, or medical conditions. Both are available in natural human hair at our Sodepur branch." },
       { question: "How long does a human hair wig last?", answer: "A premium human hair wig with proper care can last 1–3 years. Longevity depends on usage frequency, maintenance routine, and the fixing method used. At Indian Hair World, we provide a complete care guide and offer professional maintenance services to help extend the life of your wig or hair patch." },
       { question: "Is non-surgical hair replacement better than a hair transplant?", answer: "For most people, non-surgical hair replacement offers significant advantages: no surgery, no scars, no recovery time, immediate results in 60 minutes, and a fraction of the cost (from ₹5,999 vs. ₹70,000+ for transplants). It is also reversible and suitable for all stages of hair loss. Hair transplants are a surgical procedure with long recovery periods and are only viable for certain hair loss patterns." },
     ],

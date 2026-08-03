@@ -99,7 +99,7 @@ function NavGroup({ item, onClose }) {
 export default function AdminLayout({ children, title = "Dashboard" }) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const { adminUser, logout } = useAdmin();
+  const { adminUser, logout, newLeadsCount } = useAdmin();
 
   const isActive = ({ href, exact }) =>
     exact ? router.pathname === href : router.pathname.startsWith(href);
@@ -152,6 +152,11 @@ export default function AdminLayout({ children, title = "Dashboard" }) {
                     : "text-slate-400 hover:bg-slate-800/80 hover:text-white"}`}>
                 <Icon size={17} className={active ? "text-white" : "text-slate-500 group-hover:text-white transition-colors"} />
                 <span className="flex-1">{item.label}</span>
+                {item.href === "/customers" && newLeadsCount > 0 && (
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none ${active ? "bg-white text-[#04A9FF]" : "bg-blue-500 text-white"}`}>
+                    {newLeadsCount > 99 ? "99+" : newLeadsCount}
+                  </span>
+                )}
                 {active && <FiChevronRight size={13} className="opacity-60" />}
               </Link>
             );

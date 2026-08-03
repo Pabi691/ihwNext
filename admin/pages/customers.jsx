@@ -9,6 +9,22 @@ import { FiSearch, FiChevronLeft, FiChevronRight, FiX, FiUser, FiPhone, FiMail, 
 
 const PER_PAGE = 15;
 
+const LEAD_STATUSES = [
+  { value: "new", label: "New Lead", badge: "bg-blue-50 text-blue-700" },
+  { value: "contacted", label: "Contacted", badge: "bg-amber-50 text-amber-700" },
+  { value: "interested", label: "Interested", badge: "bg-purple-50 text-purple-700" },
+  { value: "negotiation", label: "Negotiation", badge: "bg-indigo-50 text-indigo-700" },
+  { value: "converted", label: "Converted", badge: "bg-green-50 text-green-700" },
+  { value: "lost", label: "Lost", badge: "bg-red-50 text-red-700" },
+];
+
+const getLeadStatus = (customer) =>
+  LEAD_STATUSES.find((s) => s.value === customer.lead_status) || LEAD_STATUSES[0];
+
+const hasNotes = (customer) => !!(customer.admin_notes && customer.admin_notes.trim());
+
+const isNewLead = (customer) => !customer.lead_status || customer.lead_status === "new";
+
 const EMAIL_TEMPLATES = [
   { label: "Custom Message", subject: "", body: "" },
   {
@@ -498,15 +514,29 @@ function CustomerPanel({ customerId, onClose, api }) {
 
 export default function Customers() {
   const { ready } = useAuthGuard();
-  const { api } = useAdmin();
+  const { api, setNewLeadsCountFromCustomers } = useAdmin();
   const router = useRouter();
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [toggling, setToggling] = useState(null);
+  const [updatingLead, setUpdatingLead] = useState(null);
   const [viewId, setViewId] = useState(null);
   const [cartCounts, setCartCounts] = useState({});
+
+  const handleMarkViewed = async (customer) => {
+    if (customer.admin_viewed_at) return;
+    const viewedAt = new Date().toISOString();
+    setCustomers((prev) => {
+      const next = prev.map((c) => c.id === customer.id ? { ...c, admin_viewed_at: viewedAt } : c);
+      setNewLeadsCountFromCustomers(next);
+      return next;
+    });
+    try {
+      await api("post", `/mark_customer_viewed/${customer.id}`);
+    } catch {}
+  };
 
   const fetchCustomers = useCallback(async () => {
     setLoading(true);
@@ -514,6 +544,7 @@ export default function Customers() {
       const res = await api("get", "/get_all_customers");
       const list = Array.isArray(res.data?.customers) ? res.data.customers : [];
       setCustomers(list);
+      setNewLeadsCountFromCustomers(list);
       // Fetch cart counts for all customers in parallel
       const results = await Promise.allSettled(
         list.map((c) => api("get", `/get_customer_cart_admin/${c.id}`))
@@ -560,6 +591,19 @@ export default function Customers() {
 
   const isActive = (c) => c.is_active === 1 || c.is_active === "1" || c.is_active === true || c.status === 1 || c.status === "active";
 
+  const updateLeadStatus = async (customer, newStatus) => {
+    setUpdatingLead(customer.id);
+    try {
+      await api("post", `/update_customer_lead_status/${customer.id}`, { lead_status: newStatus });
+      setCustomers((prev) => {
+        const next = prev.map((c) => c.id === customer.id ? { ...c, lead_status: newStatus } : c);
+        setNewLeadsCountFromCustomers(next);
+        return next;
+      });
+    } catch {}
+    setUpdatingLead(null);
+  };
+
   const initials = (c) => {
     const name = `${c.first_name || c.name || ""} ${c.last_name || ""}`.trim();
     return name.split(" ").map((n) => n[0]).join("").substring(0, 2).toUpperCase() || "?";
@@ -602,7 +646,7 @@ export default function Customers() {
                     <th className="px-5 py-3.5 text-left">Phone</th>
                     <th className="px-5 py-3.5 text-left">Gender</th>
                     <th className="px-5 py-3.5 text-left">Joined</th>
-                    <th className="px-5 py-3.5 text-left">Status</th>
+                    <th className="px-5 py-3.5 text-left">Lead Status</th>
                     <th className="px-5 py-3.5 text-left">Cart</th>
                     <th className="px-5 py-3.5 text-left">Actions</th>
                   </tr>
@@ -610,17 +654,23 @@ export default function Customers() {
                 <tbody className="divide-y divide-gray-50">
                   {paginated.map((customer) => {
                     const active = isActive(customer);
+                    const noted = hasNotes(customer);
+                    const newLead = isNewLead(customer) && !customer.admin_viewed_at;
                     return (
-                      <tr key={customer.id} className="hover:bg-gray-50/70 transition-colors">
+                      <tr key={customer.id} className={`transition-colors ${noted ? "bg-amber-50/60 hover:bg-amber-50/90" : newLead ? "bg-blue-50/40 hover:bg-blue-50/70" : "hover:bg-gray-50/70"}`}>
                         <td className="px-5 py-3.5">
                           <div className="flex items-center gap-3">
                             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#04A9FF] to-[#0070cc] flex items-center justify-center flex-shrink-0">
                               <span className="text-white text-xs font-bold">{initials(customer)}</span>
                             </div>
                             <div>
-                              <p className="font-medium text-gray-800">
-                                {customer.first_name ? `${customer.first_name} ${customer.last_name || ""}` : customer.name || "—"}
-                              </p>
+                              <div className="flex items-center gap-1.5">
+                                {newLead && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0" title="New lead — not yet actioned" />}
+                                <p className={newLead ? "font-bold text-gray-900" : "font-medium text-gray-800"}>
+                                  {customer.first_name ? `${customer.first_name} ${customer.last_name || ""}` : customer.name || "—"}
+                                </p>
+                                {noted && <FiEdit2 size={11} className="text-amber-500 flex-shrink-0" title="Has admin notes" />}
+                              </div>
                               <p className="text-xs text-gray-400">{customer.email || "—"}</p>
                             </div>
                           </div>
@@ -633,10 +683,16 @@ export default function Customers() {
                             : "—"}
                         </td>
                         <td className="px-5 py-3.5">
-                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold ${active ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"}`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${active ? "bg-green-400" : "bg-gray-400"}`} />
-                            {active ? "Active" : "Inactive"}
-                          </span>
+                          <select
+                            value={customer.lead_status || "new"}
+                            onChange={(e) => updateLeadStatus(customer, e.target.value)}
+                            disabled={updatingLead === customer.id}
+                            className={`text-xs font-semibold pl-2.5 pr-6 py-1.5 rounded-lg border-0 outline-none cursor-pointer disabled:opacity-60 ${getLeadStatus(customer).badge}`}
+                          >
+                            {LEAD_STATUSES.map((s) => (
+                              <option key={s.value} value={s.value}>{s.label}</option>
+                            ))}
+                          </select>
                         </td>
                         <td className="px-5 py-3.5">
                           {cartCounts[customer.id] > 0 ? (
@@ -650,12 +706,12 @@ export default function Customers() {
                         </td>
                         <td className="px-5 py-3.5">
                           <div className="flex items-center gap-2">
-                            <button onClick={() => setViewId(customer.id)}
+                            <button onClick={() => { setViewId(customer.id); handleMarkViewed(customer); }}
                               className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-[#04A9FF]/10 text-[#04A9FF] hover:bg-[#04A9FF]/20 transition-colors">
                               View
                             </button>
                             <button
-                              onClick={() => router.push(`/customer-view/${customer.id}`)}
+                              onClick={() => { handleMarkViewed(customer); router.push(`/customer-view/${customer.id}`); }}
                               className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-violet-50 text-violet-600 hover:bg-violet-100 transition-colors"
                             >
                               <FiLayout size={12} /> Dashboard
@@ -682,23 +738,38 @@ export default function Customers() {
             <div className="lg:hidden divide-y divide-gray-50">
               {paginated.map((customer) => {
                 const active = isActive(customer);
+                const noted = hasNotes(customer);
+                const newLead = isNewLead(customer) && !customer.admin_viewed_at;
                 return (
-                  <div key={customer.id} className="px-4 py-3.5">
+                  <div key={customer.id} className={`px-4 py-3.5 ${noted ? "bg-amber-50/60" : newLead ? "bg-blue-50/40" : ""}`}>
                     <div className="flex items-start gap-3">
                       <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#04A9FF] to-[#0070cc] flex items-center justify-center flex-shrink-0">
                         <span className="text-white text-xs font-bold">{initials(customer)}</span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <p className="font-medium text-gray-800 text-sm truncate">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {newLead && <span className="w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0" title="New lead — not yet actioned" />}
+                          <p className={`text-sm truncate ${newLead ? "font-bold text-gray-900" : "font-medium text-gray-800"}`}>
                             {customer.first_name ? `${customer.first_name} ${customer.last_name || ""}` : customer.name || "—"}
                           </p>
+                          {noted && <FiEdit2 size={11} className="text-amber-500 flex-shrink-0" title="Has admin notes" />}
                           <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold flex-shrink-0 ${active ? "bg-green-50 text-green-700" : "bg-gray-100 text-gray-500"}`}>
                             <span className={`w-1 h-1 rounded-full ${active ? "bg-green-400" : "bg-gray-400"}`} />
                             {active ? "Active" : "Off"}
                           </span>
                         </div>
                         <p className="text-xs text-gray-400 truncate">{customer.email || "—"}</p>
+                        <select
+                          value={customer.lead_status || "new"}
+                          onChange={(e) => updateLeadStatus(customer, e.target.value)}
+                          disabled={updatingLead === customer.id}
+                          onClick={(e) => e.stopPropagation()}
+                          className={`mt-1 text-xs font-semibold pl-2 pr-5 py-0.5 rounded-md border-0 outline-none disabled:opacity-60 ${getLeadStatus(customer).badge}`}
+                        >
+                          {LEAD_STATUSES.map((s) => (
+                            <option key={s.value} value={s.value}>{s.label}</option>
+                          ))}
+                        </select>
                         <p className="text-xs text-gray-500 mt-0.5">{customer.mobile_number || customer.phone || "—"}</p>
                         {cartCounts[customer.id] > 0 && (
                           <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-orange-50 text-orange-600">
@@ -706,12 +777,12 @@ export default function Customers() {
                           </span>
                         )}
                         <div className="flex items-center gap-2 mt-2">
-                          <button onClick={() => setViewId(customer.id)}
+                          <button onClick={() => { setViewId(customer.id); handleMarkViewed(customer); }}
                             className="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-[#04A9FF]/10 text-[#04A9FF]">
                             View
                           </button>
                           <button
-                            onClick={() => router.push(`/customer-view/${customer.id}`)}
+                            onClick={() => { handleMarkViewed(customer); router.push(`/customer-view/${customer.id}`); }}
                             className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-violet-50 text-violet-600"
                           >
                             <FiLayout size={11} /> Dashboard
