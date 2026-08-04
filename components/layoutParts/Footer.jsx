@@ -32,7 +32,9 @@ const Footer = () => {
           <div className="grid gap-2 md:grid-cols-2 text-sm text-gray-200">
             {Object.entries(branchData).map(([slug, branch]) => (
               <div key={slug} className="space-y-1">
-                <p className="font-semibold mb-1 text-lg">{branch.name}</p>
+                <Link to={`/branch/${slug}`} className="font-semibold mb-1 text-lg block hover:text-[#04A9FF] hover:underline">
+                  {branch.name}
+                </Link>
                 <p className="font-medium mb-1 text-gray-300">Address: {branch.address}</p>
                 {/* Address */}
                 {/* {branch.address.split(",").map((line, idx) => (

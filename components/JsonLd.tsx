@@ -14,6 +14,7 @@ type LocalBusinessProps = {
   url: string;
   image?: string;
   geo?: { lat: number; lng: number };
+  sameAs?: string[];
 };
 
 type ServiceProps = {
@@ -115,6 +116,9 @@ const JsonLd = ({ organization, localBusiness, service, breadcrumbs }: JsonLdPro
         latitude: localBusiness.geo.lat,
         longitude: localBusiness.geo.lng,
       };
+    }
+    if (localBusiness.sameAs && localBusiness.sameAs.length > 0) {
+      lb.sameAs = localBusiness.sameAs;
     }
     schemas.push(lb);
   }

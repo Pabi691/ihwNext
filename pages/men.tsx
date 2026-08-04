@@ -21,7 +21,6 @@ import { fetchPageSeo } from "@/utils/serverSeo";
 import JsonLd from "@/components/JsonLd";
 // import Image from "next/image";
 import OurWorks from "@/components/home/OurWorks";
-import FindUsNearYou from "@/components/FindUsNearYou";
 
 const Men = () => {
     return (
@@ -77,8 +76,7 @@ const Men = () => {
             <ReviewPopup />
             <ScrollingBanner />
             {/* <MensHairProductsSection /> */}
-            {/* <OurStoresSection /> */}
-            <FindUsNearYou />
+            <OurStoresSection />
             <AchievementSlider />
             <CelebritySection />
             <OurWorks />

@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
 
 const achievements = [
   {
@@ -41,6 +40,8 @@ const achievements = [
 ];
 
 const AchievementsSlider = () => {
+  const swiperRef = useRef(null);
+
   return (
     <section className="py-16 md:py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 md:px-6">
@@ -54,44 +55,61 @@ const AchievementsSlider = () => {
           </h2>
         </div>
 
-        <Swiper
-          modules={[Navigation]}
-          navigation
-          spaceBetween={24}
-          breakpoints={{
-            0: { slidesPerView: 1 },
-            768: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 },
-          }}
-        >
-          {achievements.map((item, index) => (
-            <SwiperSlide key={index}>
-              <div className="group h-full border border-gray-200 rounded-2xl overflow-hidden transition-all duration-300 hover:border-gray-900">
-                {item.image && (
-                  <div className="w-full h-48 overflow-hidden">
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
-                    />
+        <div className="relative">
+          <Swiper
+            onSwiper={(s) => (swiperRef.current = s)}
+            spaceBetween={24}
+            breakpoints={{
+              0: { slidesPerView: 1 },
+              768: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
+            }}
+            className="!pb-2"
+          >
+            {achievements.map((item, index) => (
+              <SwiperSlide key={index}>
+                <div className="group h-full border border-gray-200 rounded-2xl overflow-hidden transition-all duration-300 hover:border-gray-900">
+                  {item.image && (
+                    <div className="w-full h-48 overflow-hidden">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
+                  <div className="p-6 bg-white group-hover:bg-gray-900 transition-colors duration-300 h-full flex flex-col gap-3">
+                    <span className="inline-block w-fit px-3 py-1 text-xs font-bold uppercase tracking-wider bg-[#04A9FF]/10 text-[#04A9FF] rounded-full group-hover:bg-white/10 group-hover:text-white transition-colors duration-300">
+                      {item.title}
+                    </span>
+                    <h3 className="text-base font-bold text-gray-900 group-hover:text-white leading-snug transition-colors duration-300">
+                      {item.designation}
+                    </h3>
+                    <p className="text-sm text-gray-500 group-hover:text-gray-300 leading-relaxed transition-colors duration-300">
+                      {item.description}
+                    </p>
                   </div>
-                )}
-                <div className="p-6 bg-white group-hover:bg-gray-900 transition-colors duration-300 h-full flex flex-col gap-3">
-                  <span className="inline-block w-fit px-3 py-1 text-xs font-bold uppercase tracking-wider bg-[#04A9FF]/10 text-[#04A9FF] rounded-full group-hover:bg-white/10 group-hover:text-white transition-colors duration-300">
-                    {item.title}
-                  </span>
-                  <h3 className="text-base font-bold text-gray-900 group-hover:text-white leading-snug transition-colors duration-300">
-                    {item.designation}
-                  </h3>
-                  <p className="text-sm text-gray-500 group-hover:text-gray-300 leading-relaxed transition-colors duration-300">
-                    {item.description}
-                  </p>
                 </div>
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+
+          <button
+            onClick={() => swiperRef.current?.slidePrev()}
+            className="absolute top-[35%] -translate-y-1/2 -left-1 md:-left-4 z-10 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white shadow-lg flex items-center justify-center text-gray-900 hover:bg-gray-50 transition-all"
+            aria-label="Previous"
+          >
+            <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5"><path d="M15 19l-7-7 7-7" /></svg>
+          </button>
+          <button
+            onClick={() => swiperRef.current?.slideNext()}
+            className="absolute top-[35%] -translate-y-1/2 -right-1 md:-right-4 z-10 w-9 h-9 md:w-10 md:h-10 rounded-full bg-white shadow-lg flex items-center justify-center text-gray-900 hover:bg-gray-50 transition-all"
+            aria-label="Next"
+          >
+            <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5"><path d="M9 5l7 7-7 7" /></svg>
+          </button>
+        </div>
 
       </div>
     </section>

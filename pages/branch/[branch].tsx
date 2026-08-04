@@ -31,6 +31,7 @@ const Branches = () => {
                     telephone: data.phones[0],
                     url: `${SITE}/branch/${branch}`,
                     image: data.image ? `${SITE}${data.image}` : undefined,
+                    sameAs: data.gmbUrl ? [data.gmbUrl] : undefined,
                 } : undefined}
                 breadcrumbs={[
                     { name: "Home", url: SITE },

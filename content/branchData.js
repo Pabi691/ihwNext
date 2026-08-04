@@ -153,14 +153,15 @@ export const branchData = {
       "Serving Sodepur & North 24 Parganas",
     ],
     address:
-      "Shesher Kabita Apartment, 83, RN Avenue, PO Pansila, PS Khardah, North 24 Parganas, West Bengal",
+      "Shesher Kabita Apartment, 83, RN Avenue, Sodepur Rd, Pansila, Khardaha, Kolkata, West Bengal 700112",
     phones: ["+918910097668"],
     whatsapp: "+918910097668",
     landmark: "RN Avenue, Pansila, Khardah",
     opening_hours: "Monday to Sunday — 11:00 AM to 7:00 PM",
     serving_areas: "Sodepur, Khardah, Titagarh, Barrackpore, and North 24 Parganas",
     mapUrl:
-      "https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d230.02632623302517!2d88.38546705689687!3d22.712580108649373!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjLCsDQyJzQ1LjQiTiA4OMKwMjMnMDcuNyJF!5e0!3m2!1sen!2sin!4v1785754100584!5m2!1sen!2sin",
+      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3680.4207198653226!2d88.3854684!3d22.712598699999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f89b04dab5b9e5%3A0x139f519c883e6ee2!2sIndian%20Hair%20World%20Sodepur!5e0!3m2!1sen!2sin!4v1785831935261!5m2!1sen!2sin",
+    gmbUrl: "https://g.page/r/CeJuPoicUZ8TEBM/",
     page_title: "Non Surgical Hair Replacement in Sodepur – Natural Looking Hair Patch, Extensions & Topper",
     component: <Sodepur />,
     menProduct: <SingleSlider slug_name="get_slug_data/men-products" title="MEN’S HAIR PRODUCTS" />,

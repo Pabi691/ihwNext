@@ -12,14 +12,26 @@ const BranchMap = ({ data, compact = false }) => {
             <MapPin className="text-[#ef7f1a] w-5 h-5 flex-shrink-0" />
             <p className="text-gray-800 text-sm font-medium">{data.address}{data.landmark ? ` — ${data.landmark}` : ''}</p>
           </div>
-          <a
-            href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(data.address)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-[#ef7f1a] hover:bg-orange-600 text-white text-sm font-semibold px-5 py-2.5 rounded-full shadow transition whitespace-nowrap"
-          >
-            <Navigation2 className="w-4 h-4" /> Get Directions
-          </a>
+          <div className="flex items-center gap-3">
+            {data.gmbUrl && (
+              <a
+                href={data.gmbUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 border border-[#ef7f1a] text-[#ef7f1a] hover:bg-orange-50 text-sm font-semibold px-5 py-2.5 rounded-full transition whitespace-nowrap"
+              >
+                View on Google
+              </a>
+            )}
+            <a
+              href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(data.address)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 bg-[#ef7f1a] hover:bg-orange-600 text-white text-sm font-semibold px-5 py-2.5 rounded-full shadow transition whitespace-nowrap"
+            >
+              <Navigation2 className="w-4 h-4" /> Get Directions
+            </a>
+          </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 md:px-10 mt-4 h-[280px] rounded-2xl overflow-hidden shadow-md border border-gray-200">
           <iframe
@@ -63,14 +75,26 @@ const BranchMap = ({ data, compact = false }) => {
                       <Navigation2 className="w-3 h-3" /> Landmark: {data.landmark}
                     </p>
                   )}
-                  <a
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(data.address)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 mt-3 bg-[#ef7f1a] hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-full shadow transition"
-                  >
-                    <Navigation2 className="w-4 h-4" /> Get Directions
-                  </a>
+                  <div className="flex flex-wrap items-center gap-3 mt-3">
+                    <a
+                      href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(data.address)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 bg-[#ef7f1a] hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-full shadow transition"
+                    >
+                      <Navigation2 className="w-4 h-4" /> Get Directions
+                    </a>
+                    {data.gmbUrl && (
+                      <a
+                        href={data.gmbUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 border border-[#ef7f1a] text-[#ef7f1a] hover:bg-orange-50 text-sm font-semibold px-4 py-2 rounded-full transition"
+                      >
+                        View on Google
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
 

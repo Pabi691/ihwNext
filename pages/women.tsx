@@ -19,7 +19,6 @@ import { toAbsoluteUrlIfPresent } from "@/utils/seo";
 import { fetchPageSeo } from "@/utils/serverSeo";
 import JsonLd from "@/components/JsonLd";
 import OurWorks from "@/components/home/OurWorks";
-import FindUsNearYou from "@/components/FindUsNearYou";
 
 const Women = () => {
     return (
@@ -81,8 +80,7 @@ const Women = () => {
             <SingleSlider slug_name="get_slug_data/hair-bangs" title="HAIR BANGS" />
             <ReviewPopup />
             <ScrollingBanner />
-            {/* <OurStoresSection /> */}
-            <FindUsNearYou />
+            <OurStoresSection />
             <AchievementSlider />
             <CelebritySection />
             <OurWorks />
