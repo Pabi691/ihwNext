@@ -1,0 +1,31 @@
+# Functional/backend paths that always need Pabi691's review.
+# Note: this repo is private on a plan where GitHub branch protection
+# ("Require review from Code Owners") isn't available, so this file
+# auto-requests review on PRs but does not block merging without it.
+# Review every PR touching these paths manually before merging.
+backend/ @Pabi691
+pages/api/ @Pabi691
+api/ @Pabi691
+lib/ @Pabi691
+services/ @Pabi691
+global/ @Pabi691
+hooks/ @Pabi691
+config/ @Pabi691
+admin/ @Pabi691
+scripts/ @Pabi691
+package.json @Pabi691
+package-lock.json @Pabi691
+next.config.js @Pabi691
+next.config.mjs @Pabi691
+.env* @Pabi691
+middleware.ts @Pabi691
+middleware.js @Pabi691
+pages/cart.tsx @Pabi691
+pages/checkout.tsx @Pabi691
+pages/wishlist.tsx @Pabi691
+components/products/AddToCartActions.jsx @Pabi691
+components/WishlistContext.jsx @Pabi691
+components/WishlistButton.jsx @Pabi691
+components/CartButton.jsx @Pabi691
+components/cart/CartItem.tsx @Pabi691
+global/GuestCheckContext.jsx @Pabi691
