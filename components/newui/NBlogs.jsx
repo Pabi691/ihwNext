@@ -22,11 +22,11 @@ function BlogCard({ blog }) {
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-[#04A9FF]/10 to-[#0f1a2c]/5 flex items-center justify-center">
-              <span className="text-5xl font-black text-[#04A9FF]/20">IHW</span>
+            <div className="w-full h-full bg-gradient-to-br from-[var(--rb-primary)]/10 to-[var(--rb-dark)]/5 flex items-center justify-center">
+              <span className="text-5xl font-black text-[var(--rb-primary)]/20">IHW</span>
             </div>
           )}
-          <span className="absolute top-3 left-3 bg-[#04A9FF] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+          <span className="absolute top-3 left-3 bg-[var(--rb-primary)] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
             {tag}
           </span>
           {blog.read_time && (
@@ -38,7 +38,7 @@ function BlogCard({ blog }) {
 
         {/* Body */}
         <div className="flex-1 flex flex-col p-5">
-          <h3 className="font-bold text-gray-900 text-sm leading-snug line-clamp-2 group-hover:text-[#04A9FF] transition-colors mb-2">
+          <h3 className="font-bold text-gray-900 text-sm leading-snug line-clamp-2 group-hover:text-[var(--rb-primary)] transition-colors mb-2">
             {blog.title}
           </h3>
           <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 flex-1 mb-4">
@@ -46,7 +46,7 @@ function BlogCard({ blog }) {
           </p>
           <div className="flex items-center justify-between pt-3 border-t border-gray-100">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#04A9FF] to-[#0070cc] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[var(--rb-primary)] to-[var(--rb-primary-hover)] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                 {(blog.author || "I").charAt(0).toUpperCase()}
               </div>
               <div>
@@ -54,7 +54,7 @@ function BlogCard({ blog }) {
                 {date && <p className="text-gray-400 text-[10px]">{date}</p>}
               </div>
             </div>
-            <span className="text-[#04A9FF] text-xs font-bold group-hover:gap-2 flex items-center gap-1 transition-all">
+            <span className="text-[var(--rb-primary)] text-xs font-bold group-hover:gap-2 flex items-center gap-1 transition-all">
               Read <FaArrowRight className="w-2.5 h-2.5" />
             </span>
           </div>
@@ -90,17 +90,17 @@ export default function NBlogs() {
   }, []);
 
   return (
-    <section className="py-16 md:py-24 bg-gray-50">
+    <section className="py-10 md:py-16 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6 md:mb-10">
           <div>
-            <span className="text-[#04A9FF] text-xs font-bold uppercase tracking-widest">Insights</span>
+            <span className="text-[var(--rb-primary)] text-xs font-bold uppercase tracking-widest">Insights</span>
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 mt-1">
-              Hair Care <span className="text-[#04A9FF]">Tips &amp; Articles</span>
+              Hair Care <span className="text-[var(--rb-primary)]">Tips &amp; Articles</span>
             </h2>
           </div>
-          <Link href="/blog" className="inline-flex items-center gap-2 text-[#04A9FF] font-bold text-sm hover:gap-3 transition-all">
+          <Link href="/blog" className="inline-flex items-center gap-2 text-[var(--rb-primary)] font-bold text-sm hover:gap-3 transition-all">
             View All Articles <FaArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>

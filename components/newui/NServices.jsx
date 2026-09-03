@@ -11,13 +11,13 @@ const services = [
 
 export default function NServices() {
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section className="py-8 md:py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <span className="text-[#04A9FF] text-xs font-bold uppercase tracking-widest">What We Offer</span>
+        <div className="text-center mb-8">
+          <span className="text-[var(--rb-primary)] text-xs font-bold uppercase tracking-widest">What We Offer</span>
           <h2 className="text-3xl md:text-4xl font-black text-gray-900 mt-1">
-            Our Popular <span className="text-[#04A9FF]">Services</span>
+            Our Popular <span className="text-[var(--rb-primary)]">Services</span>
           </h2>
           <p className="text-gray-500 text-sm mt-3 max-w-lg mx-auto">
             From hair patches to full wigs — we have a complete solution for every hair concern.
@@ -40,13 +40,13 @@ export default function NServices() {
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   onError={e => { e.currentTarget.src = "/images/noimage.jpg"; }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0f1a2c]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--rb-dark)]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
               {/* Content */}
               <div className="p-5">
-                <h3 className="text-gray-900 font-bold text-base mb-2 group-hover:text-[#04A9FF] transition-colors">{s.service_name}</h3>
+                <h3 className="text-gray-900 font-bold text-base mb-2 group-hover:text-[var(--rb-primary)] transition-colors">{s.service_name}</h3>
                 <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-3">{s.description}</p>
-                <span className="inline-flex items-center gap-1.5 text-[#04A9FF] text-xs font-bold group-hover:gap-2.5 transition-all">
+                <span className="inline-flex items-center gap-1.5 text-[var(--rb-primary)] text-xs font-bold group-hover:gap-2.5 transition-all">
                   Learn More <FaArrowRight className="w-3 h-3" />
                 </span>
               </div>

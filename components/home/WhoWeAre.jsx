@@ -15,11 +15,11 @@ const WhoWeAre = () => {
         {/* Header row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center mb-12 md:mb-16">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#04A9FF] mb-3">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[var(--site-primary)] mb-3">
               Our Team
             </p>
             <h2 className="text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-gray-900">
-              Who <span className="text-[#04A9FF]">We Are</span>
+              Who <span className="text-[var(--site-primary)]">We Are</span>
             </h2>
           </div>
           <p className="text-base text-gray-600 leading-relaxed">
@@ -44,7 +44,7 @@ const WhoWeAre = () => {
               <h3 className="text-sm md:text-base font-bold text-gray-900 uppercase tracking-wide">
                 {member.name}
               </h3>
-              <p className="text-xs md:text-sm text-[#04A9FF] font-semibold mt-1">
+              <p className="text-xs md:text-sm text-[var(--site-primary)] font-semibold mt-1">
                 {member.role}
               </p>
             </div>

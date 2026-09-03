@@ -12,7 +12,7 @@ const benefits = [
 
 export default function NNonSurgical() {
   return (
-    <section className="py-16 md:py-24 bg-gray-50">
+    <section className="py-8 md:py-12 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center">
 
@@ -31,16 +31,16 @@ export default function NNonSurgical() {
               />
             </div>
             {/* Accent element */}
-            <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-[#04A9FF]/10 rounded-full -z-10" />
-            <div className="absolute -top-4 -left-4 w-16 h-16 bg-[#ef7f1a]/10 rounded-full -z-10" />
+            <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-[var(--rb-primary)]/10 rounded-full -z-10" />
+            <div className="absolute -top-4 -left-4 w-16 h-16 bg-[var(--rb-accent)]/10 rounded-full -z-10" />
           </div>
 
           {/* Content */}
           <div className="space-y-6">
-            <span className="text-[#04A9FF] text-xs font-bold uppercase tracking-widest">Our Services</span>
+            <span className="text-[var(--rb-primary)] text-xs font-bold uppercase tracking-widest">Our Services</span>
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight">
               Non-Surgical Hair<br />
-              <span className="text-[#04A9FF]">Replacement Services</span>
+              <span className="text-[var(--rb-primary)]">Replacement Services</span>
             </h2>
             <p className="text-gray-600 text-base leading-relaxed">
               Established in 2015, Indian Hair World started its journey with the aim of putting smiles on people's faces suffering from baldness. Our founder,{" "}
@@ -51,7 +51,7 @@ export default function NNonSurgical() {
             <ul className="space-y-3">
               {benefits.map((b, i) => (
                 <li key={i} className="flex items-center gap-3 text-gray-700 text-sm">
-                  <FaCircleCheck className="w-4 h-4 text-[#04A9FF] flex-shrink-0" />
+                  <FaCircleCheck className="w-4 h-4 text-[var(--rb-primary)] flex-shrink-0" />
                   {b}
                 </li>
               ))}
@@ -59,7 +59,7 @@ export default function NNonSurgical() {
 
             <a
               href="tel:+917980221032"
-              className="inline-flex items-center gap-2.5 bg-[#04A9FF] hover:bg-[#0090dd] text-white font-bold px-7 py-4 rounded-2xl text-sm transition-all hover:-translate-y-0.5 shadow-lg shadow-[#04A9FF]/20"
+              className="inline-flex items-center gap-2.5 bg-[var(--rb-primary)] hover:bg-[var(--rb-primary-hover)] text-white font-bold px-7 py-4 rounded-2xl text-sm transition-all hover:-translate-y-0.5 shadow-lg shadow-[var(--rb-primary)]/20"
             >
               <FaPhone className="w-4 h-4" /> Call for Free Consultation
             </a>

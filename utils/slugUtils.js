@@ -1,5 +1,14 @@
 import { STATIC_ROUTE_SEO_CANDIDATES } from "@/utils/seoStaticRoutes";
 
+// "Krishna Janmashtami" -> "krishna-janmashtami" — used to key the
+// /theme-preview/[slug] route to a saved festival-theme-library entry's name.
+export const slugifyName = (s) =>
+    String(s || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+
 export const getSlugFromPath = (pathname) => {
     if (!pathname || pathname === "/") return "home";
 

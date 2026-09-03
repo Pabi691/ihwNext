@@ -6,7 +6,7 @@ const ShopOnlineBanner = () => {
 
           {/* TEXT */}
           <div className="w-full md:w-1/2 text-gray-900">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[#04A9FF] mb-3">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[var(--site-primary)] mb-3">
               Shop Online
             </p>
             <h2 className="text-3xl md:text-5xl font-extrabold leading-tight mb-3 dancing-text">

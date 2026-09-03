@@ -100,11 +100,21 @@ const MobileHomeBody = () => {
       <SingleSlider slug_name="get_slug_data/men-products" title="MEN'S HAIR PRODUCTS" />
       <SingleSlider slug_name="get_slug_data/women-products" title="WOMEN'S HAIR PRODUCTS" />
       <OurCollections title="Womens Collections" limit={2} viewMoreHref="/women" />
+      <OurCollections
+        title="Mens Collections"
+        eyebrow="For Him"
+        limit={2}
+        viewMoreHref="/men"
+        items={[
+          { name: "FULL HEAD WIG", slug: "men", image: "/images/mens-full-head-wig-premium-quality-brown.webp" },
+          { name: "HAIR PATCH", slug: "men", image: "/images/unique-gold-hair-patch-black-5.webp" },
+        ]}
+      />
       <WelcomeSection />
       <ProductCategory
         title={
           <>
-            SHOP FROM <span className="text-[#04A9FF]">OUR COLLECTION</span>
+            SHOP FROM <span className="text-[var(--site-primary)]">OUR COLLECTION</span>
           </>
         }
       />

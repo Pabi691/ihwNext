@@ -183,7 +183,7 @@ export default function VideoReelsSlider({
                             <Link href={viewMoreLink} className="inline-flex items-center text-black group transition-all duration-300">
                                 <span className="relative text-base overflow-hidden">
                                     <span className="relative z-10">Shop Now</span>
-                                    <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[#04a9ff] scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100" />
+                                    <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[var(--site-primary)] scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100" />
                                 </span>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="ml-2 w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
                                     <path d="M5 12h14M12 5l7 7-7 7" />
@@ -270,7 +270,7 @@ export default function VideoReelsSlider({
                                             onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/images/noimage.jpg'; }}
                                         />
                                         <div className="min-w-0">
-                                            <p className="text-xs text-gray-800 font-medium line-clamp-2 leading-tight group-hover/info:text-[#04A9FF] transition-colors">{reel.productName}</p>
+                                            <p className="text-xs text-gray-800 font-medium line-clamp-2 leading-tight group-hover/info:text-[var(--site-primary)] transition-colors">{reel.productName}</p>
                                             <div className="flex items-center gap-1.5 mt-1">
                                                 <span className="text-sm font-bold text-gray-900">{fmt(reel.salePrice)}</span>
                                                 {reel.price !== reel.salePrice && (
@@ -419,7 +419,7 @@ export default function VideoReelsSlider({
                                                             )}
                                                         </div>
                                                     </div>
-                                                    <Link href={reel.productUrl} className="bg-[#04a9ff] text-white text-xs font-bold px-4 py-2.5 rounded-lg hover:bg-[#0390dd] transition whitespace-nowrap shadow-md flex-shrink-0">
+                                                    <Link href={reel.productUrl} className="bg-[var(--site-primary)] text-white text-xs font-bold px-4 py-2.5 rounded-lg hover:bg-[#0390dd] transition whitespace-nowrap shadow-md flex-shrink-0">
                                                         SHOP NOW
                                                     </Link>
                                                 </div>

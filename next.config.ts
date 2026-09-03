@@ -25,6 +25,19 @@ const nextConfig: NextConfig = {
     ];
   },
 
+  async headers() {
+    return [
+      {
+        // The CRM theme-preview routes are internal-only. Keep them out of
+        // every search index no matter which deployment serves them.
+        source: "/theme-preview/:path*",
+        headers: [
+          { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive, noimageindex" },
+        ],
+      },
+    ];
+  },
+
   async redirects() {
     return [
       {

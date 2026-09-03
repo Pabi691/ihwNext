@@ -2,10 +2,76 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Raksha Bandhan campaign theme (used by components/newui/* + pages/test-home.jsx only) ──
+   Change any value here to re-theme the whole /test-home preview from one place. */
+:root {
+  --rb-primary: #7a1420;        /* deep maroon — buttons, headings, primary accents */
+  --rb-primary-hover: #8f1826;  /* maroon hover/active state */
+  --rb-primary-mid: #6b0f16;    /* mid maroon — gradient stop */
+  --rb-primary-mid2: #5c0f16;   /* mid maroon — gradient stop */
+  --rb-dark: #4a0a10;           /* darkest maroon — dark section backgrounds */
+  --rb-accent: #d9932e;         /* warm orange-gold — badges, stat icons, highlights */
+  --rb-accent-light: #f0c96b;   /* light gold — small text, icons on dark bg */
+  --rb-accent-lighter: #f5d98a; /* lightest gold — gradient text top stop */
+  --rb-cream: #fdf3e4;          /* section background */
+  --rb-cream-border: #f0e4cf;   /* card border on cream background */
+}
+
+/* ── Live-site theme tokens ──────────────────────────────────────────────
+   Defaults below are the exact hardcoded values they replace, so the site
+   is visually unchanged. components/newui/FestivalThemeContext.jsx injects a
+   late <style> that overrides these (mapped from the active festival palette)
+   when a festival theme is active, and removes it on deactivate — a clean revert. */
+:root {
+  --site-primary: #04A9FF;        /* brand blue — eyebrows, accents, links, badges, CTAs */
+  --site-primary-hover: #0070cc;  /* brand blue, darker — button hover */
+  --site-accent: #ef7f1a;         /* orange — hero badge, price block, award icons, hamburger */
+
+  --site-hero-from: #0A3D91;      /* HeroSection H1 gradient stop 1 */
+  --site-hero-via: #1E5CCB;       /* HeroSection H1 gradient stop 2 */
+  --site-hero-to: #F5D76E;        /* HeroSection H1 gradient stop 3 */
+
+  --site-promo-from: #1B3A57;     /* TopBar promo strip gradient start */
+  --site-promo-to: #00A859;       /* TopBar promo strip gradient end */
+
+  --site-dark: #0f1a2c;           /* WelcomeSection / HomeSkeleton dark section bg */
+  --site-light: #f8fafc;          /* BlogSection / HomeSkeleton light section bg */
+
+  --site-cta-from: #2563eb;       /* GlassButton primary gradient (blue-600) */
+  --site-cta-to: #4f46e5;         /* GlassButton primary gradient (indigo-600) */
+
+  --site-nav-bg: #111827;         /* mobile BottomFixedNav bar background */
+
+  /* space-separated channel triplets — for the `/opacity` call-sites where
+     Tailwind's `bg-[var(--x)]/5` would emit invalid `rgb(#hex / .05)` */
+  --site-primary-rgb: 4 169 255;
+  --site-accent-rgb: 239 127 26;
+  --site-dark-rgb: 15 26 44;
+}
+
+/* Swiper pagination bullets on the RB campaign hero banner */
+.rb-hero-swiper .swiper-pagination-bullet {
+  background: white;
+  opacity: 0.6;
+}
+.rb-hero-swiper .swiper-pagination-bullet-active {
+  background: var(--rb-accent-light);
+  opacity: 1;
+}
+
 @layer utilities {
   .dancing-text {
     font-family: 'Dancing Script', cursive;
-    color: #04a9ff;
+    color: var(--site-primary);
+  }
+
+  /* Hide the scrollbar on horizontal card scrollers (still scrollable). */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }
 

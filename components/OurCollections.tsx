@@ -4,7 +4,8 @@ import { FiArrowRight } from "react-icons/fi";
 
 type CollectionVideo = {
   name: string;
-  src: string;
+  src?: string;    // autoplay video
+  image?: string;  // still image (used instead of a video)
   slug: string;
 };
 
@@ -25,13 +26,18 @@ const OurCollections = ({
   title,
   limit,
   viewMoreHref,
+  items,
+  eyebrow = "Our Collection",
 }: {
   title: string;
   limit?: number;
   viewMoreHref?: string;
+  items?: CollectionVideo[];
+  eyebrow?: string;
 }) => {
+  const source = items && items.length ? items : collectionVideos;
   const displayVideos =
-    typeof limit === "number" ? collectionVideos.slice(0, limit) : collectionVideos;
+    typeof limit === "number" ? source.slice(0, limit) : source;
   const isFeatured = typeof limit === "number";
 
   if (isFeatured) {
@@ -39,8 +45,8 @@ const OurCollections = ({
       <section className="w-full bg-gray-950 py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-8 md:mb-12">
-            <p className="text-[#04A9FF] text-xs font-semibold uppercase tracking-[0.2em] mb-3">
-              Our Collection
+            <p className="text-[var(--site-primary)] text-xs font-semibold uppercase tracking-[0.2em] mb-3">
+              {eyebrow}
             </p>
             <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">
               {title}
@@ -59,15 +65,24 @@ const OurCollections = ({
                 aria-label={toTitle(item.name)}
               >
                 <div className="relative aspect-[3/5] md:aspect-[2/3] overflow-hidden">
-                  <video
-                    src={encodeURI(item.src)}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="metadata"
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
+                  {item.image ? (
+                    <img
+                      src={item.image}
+                      alt={toTitle(item.name)}
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  ) : (
+                    <video
+                      src={encodeURI(item.src as string)}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="metadata"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                   <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-4 md:p-7">
@@ -77,7 +92,7 @@ const OurCollections = ({
                     <p className="text-white text-base md:text-2xl font-bold leading-tight">
                       {toTitle(item.name)}
                     </p>
-                    <span className="mt-2 md:mt-3 inline-flex items-center gap-1.5 text-white/70 text-xs md:text-sm font-medium group-hover:text-[#04A9FF] transition-colors duration-300">
+                    <span className="mt-2 md:mt-3 inline-flex items-center gap-1.5 text-white/70 text-xs md:text-sm font-medium group-hover:text-[var(--site-primary)] transition-colors duration-300">
                       Shop Now{" "}
                       <FiArrowRight
                         size={13}
@@ -121,15 +136,24 @@ const OurCollections = ({
               aria-label={toTitle(item.name)}
             >
               <div className="relative aspect-[3/4] overflow-hidden rounded-none bg-gray-100">
-                <video
-                  src={encodeURI(item.src)}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+                {item.image ? (
+                  <img
+                    src={item.image}
+                    alt={toTitle(item.name)}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <video
+                    src={encodeURI(item.src as string)}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                )}
                 <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/20 via-transparent to-transparent" />
               </div>
               <p className="mt-3 mb-3 text-center text-sm md:text-base text-gray-900">

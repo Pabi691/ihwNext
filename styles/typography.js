@@ -9,16 +9,16 @@ export const sectionPara =
   "text-base text-gray-600 leading-relaxed";
 
 export const themeTextColor =
-  "text-[#04A9FF]";
+  "text-[var(--site-primary)]";
 
 export const themeBgColor =
-  "bg-[#04A9FF]";
+  "bg-[var(--site-primary)]";
 
 export const themeTextHoverColor =
-  "hover:text-[#04A9FF]";
+  "hover:text-[var(--site-primary)]";
 
 export const themeBgHoverColor =
-  "hover:text-[#04A9FF]";
+  "hover:text-[var(--site-primary)]";
 
   export const themeTextGray =
   "text-gray-500";
