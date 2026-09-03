@@ -113,7 +113,7 @@ const NavTop = () => {
           {/* Mobile Menu Button */}
           <div className='md:hidden px-2 flex gap-3'>
             <button className="text-white text-lg" onClick={() => setShowMenu(!showMenu)}>
-              <svg className='text-[var(--site-accent)]' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="var(--site-accent)" viewBox="0 0 20 20" stroke="none" style={{ height: '20px', width: '20px' }}><g stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" clipPath="url(#icon_hamburger_svg__a)"><path d="M2.917 10.046h10.231M2.917 3.75h14.166M2.917 16.343h14.166"></path></g><defs><clipPath id="icon_hamburger_svg__a"><path fill="#fff" d="M0 0h20v20H0z"></path></clipPath></defs></svg>
+              <svg className='text-[#ef7f1a]' xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="#ef7f1a" viewBox="0 0 20 20" stroke="none" style={{ height: '20px', width: '20px' }}><g stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" clipPath="url(#icon_hamburger_svg__a)"><path d="M2.917 10.046h10.231M2.917 3.75h14.166M2.917 16.343h14.166"></path></g><defs><clipPath id="icon_hamburger_svg__a"><path fill="#fff" d="M0 0h20v20H0z"></path></clipPath></defs></svg>
             </button>
             <span
               className="text-gray-300 ml-0 md:ml-4 text-lg w-[100px] md:w-[165px] md:h-[25px] overflow-hidden"
@@ -162,7 +162,7 @@ const NavTop = () => {
             <Link
               to="/shop?tryon=1"
               className="flex-1 flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl
-        bg-[#062033] text-[var(--site-primary)] font-semibold text-xs
+        bg-[#062033] text-[#04A9FF] font-semibold text-xs
         shadow-md"
             >
               <span>✂️</span>
@@ -222,7 +222,7 @@ const NavTop = () => {
       {/* Mobile Menu Items */}
       <div className="mobile_menu md:hidden">
         {showMenu && (
-          <div className={`bg-[rgb(var(--site-primary-rgb)_/_0.6)] absolute top-0 left-0 z-[100] w-full h-screen`}>
+          <div className={`${themeBgColor}/60 absolute top-0 left-0 z-[100] w-full h-screen`}>
             <div className="menu_items relative overflow-y-scroll scrollbar-none">
               <button onClick={() => setShowMenu(false)} className='absolute right-2 top-3'>✕</button>
               <div className="flex gap-3 flex-col">
@@ -264,7 +264,7 @@ const NavTop = () => {
                 <Link onClick={() => setShowMenu(false)} className='text-xs font-medium' to={'/branch/siliguri'}>- Siliguri</Link>
                 <p className='font-semibold'>Shop In</p>
                 <Link className='text-xs font-medium' onClick={() => setShowMenu(false)} to={'/shop'}>- All Products</Link>
-                <Link className='text-xs font-medium text-[var(--site-primary)]' onClick={() => setShowMenu(false)} to={'/shop?tryon=1'}>- ✂️ Virtual Hair Try-On</Link>
+                <Link className='text-xs font-medium text-[#04A9FF]' onClick={() => setShowMenu(false)} to={'/shop?tryon=1'}>- ✂️ Virtual Hair Try-On</Link>
                 <NavMenus />
                 {userToken && (
                   <div>

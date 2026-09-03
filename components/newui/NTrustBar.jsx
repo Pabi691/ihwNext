@@ -4,10 +4,10 @@ import { FaStar, FaAward, FaTrophy, FaThumbsUp, FaFire } from "react-icons/fa6";
 const badges = [
   { icon: <img src="/images/sharkDesk.jpeg" alt="Shark Tank" className="h-6 w-auto object-contain" />, text: "As Seen on Shark Tank India" },
   { icon: <FaStar className="text-yellow-400 w-4 h-4 flex-shrink-0" />, text: "Trusted by 10,000+ Customers" },
-  { icon: <FaAward className="text-[var(--rb-accent)] w-4 h-4 flex-shrink-0" />, text: "Times Brand Icons 2024" },
-  { icon: <FaTrophy className="text-[var(--rb-accent)] w-4 h-4 flex-shrink-0" />, text: "International Excellence Award 2024" },
-  { icon: <FaTrophy className="text-[var(--rb-primary)] w-4 h-4 flex-shrink-0" />, text: "Global Fame Award 2024" },
-  { icon: <FaThumbsUp className="text-[var(--rb-primary)] w-4 h-4 flex-shrink-0" />, text: "Nation Pride Award 2022" },
+  { icon: <FaAward className="text-[#ef7f1a] w-4 h-4 flex-shrink-0" />, text: "Times Brand Icons 2024" },
+  { icon: <FaTrophy className="text-[#ef7f1a] w-4 h-4 flex-shrink-0" />, text: "International Excellence Award 2024" },
+  { icon: <FaTrophy className="text-[#04A9FF] w-4 h-4 flex-shrink-0" />, text: "Global Fame Award 2024" },
+  { icon: <FaThumbsUp className="text-[#04A9FF] w-4 h-4 flex-shrink-0" />, text: "Nation Pride Award 2022" },
   { icon: <FaThumbsUp className="text-emerald-500 w-4 h-4 flex-shrink-0" />, text: "Bengal Pride Award 2021" },
   { icon: <FaFire className="text-red-400 w-4 h-4 flex-shrink-0" />, text: "No Surgery. No Side Effects." },
 ];

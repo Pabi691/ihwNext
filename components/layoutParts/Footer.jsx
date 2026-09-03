@@ -24,7 +24,7 @@ const Footer = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 py-10 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Branches Section */}
         <div className='lg:col-span-2'>
-          <p className="text-[var(--site-primary)] font-bold mb-4 text-base uppercase">
+          <p className="text-[#04A9FF] font-bold mb-4 text-base uppercase">
             Branches
           </p>
 
@@ -32,7 +32,7 @@ const Footer = () => {
           <div className="grid gap-2 md:grid-cols-2 text-sm text-gray-200">
             {Object.entries(branchData).map(([slug, branch]) => (
               <div key={slug} className="space-y-1">
-                <Link to={`/branch/${slug}`} className="font-semibold mb-1 text-lg block hover:text-[var(--site-primary)] hover:underline">
+                <Link to={`/branch/${slug}`} className="font-semibold mb-1 text-lg block hover:text-[#04A9FF] hover:underline">
                   {branch.name}
                 </Link>
                 <p className="font-medium mb-1 text-gray-300">Address: {branch.address}</p>
@@ -60,7 +60,7 @@ const Footer = () => {
         </div>
         {/* Company Section */}
         <div className=''>
-          <p className="text-[var(--site-primary)] font-bold mb-3 text-base uppercase">Company</p>
+          <p className="text-[#04A9FF] font-bold mb-3 text-base uppercase">Company</p>
           <ul className='flex flex-wrap gap-2 md:block'>
             {links.map((item, index) => (
               <li key={index} className="mb-2">
@@ -73,7 +73,7 @@ const Footer = () => {
         </div>
         {/* Customer Service Section */}
         <div>
-          <p className="text-[var(--site-primary)] font-bold mb-3 text-base uppercase">Customer Service</p>
+          <p className="text-[#04A9FF] font-bold mb-3 text-base uppercase">Customer Service</p>
           <ul className='flex flex-wrap gap-2 md:block'>
             {links.map(
               (item, index) => (
@@ -92,7 +92,7 @@ const Footer = () => {
 
         {/* Social Media Section */}
         <div className='ml-0 md:ml-[-25px]'>
-          <p className="text-[var(--site-primary)] font-bold mb-3 text-base uppercase">Connect With Us</p>
+          <p className="text-[#04A9FF] font-bold mb-3 text-base uppercase">Connect With Us</p>
           <ul className="flex space-x-6 items-center">
             <li className="flex items-center space-x-2">
               <Link
@@ -145,7 +145,7 @@ const Footer = () => {
               </Link>
             </li>
           </ul>
-          <p className="text-[var(--site-primary)] font-bold mb-3 text-base uppercase mt-4">Opening Hours</p>
+          <p className="text-[#04A9FF] font-bold mb-3 text-base uppercase mt-4">Opening Hours</p>
           <p className='text-sm'>Monday to Sunday: 11Am - 7Pm</p>
         </div>
 
@@ -156,10 +156,10 @@ const Footer = () => {
 
         <div className='flex-col flex justify-center text-sm md:justify-between items-center md:flex-row'>
           <div>
-            Copyright © {new Date().getFullYear()} <span className='text-[var(--site-primary)]'>Indian Hair World</span>
+            Copyright © {new Date().getFullYear()} <span className='text-[#04A9FF]'>Indian Hair World</span>
           </div>
           <div>
-            Designed & developed by <Link className='text-[var(--site-primary)]' target='_blank' to='https://kyleinfotech.co.in/'>Kyle Infotech</Link>
+            Designed & developed by <Link className='text-[#04A9FF]' target='_blank' to='https://kyleinfotech.co.in/'>Kyle Infotech</Link>
           </div>
         </div>
       </div>

@@ -9,14 +9,14 @@ const team = [
 
 export default function NTeam() {
   return (
-    <section className="py-8 md:py-12 bg-white">
+    <section className="py-16 md:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         {/* Header */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-end mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-end mb-14">
           <div>
-            <span className="text-[var(--rb-primary)] text-xs font-bold uppercase tracking-widest">Leadership</span>
+            <span className="text-[#04A9FF] text-xs font-bold uppercase tracking-widest">Leadership</span>
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 mt-1">
-              Who <span className="text-[var(--rb-primary)]">We Are</span>
+              Who <span className="text-[#04A9FF]">We Are</span>
             </h2>
           </div>
           <p className="text-gray-500 text-sm leading-relaxed">
@@ -37,12 +37,12 @@ export default function NTeam() {
                   onError={e => { e.currentTarget.src = "/images/noimage.jpg"; }}
                 />
                 {/* Hover overlay */}
-                <div className="absolute inset-0 bg-[var(--rb-primary)]/80 flex items-end p-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute inset-0 bg-[#04A9FF]/80 flex items-end p-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <p className="text-white text-xs font-medium leading-relaxed">{member.note}</p>
                 </div>
               </div>
               <h3 className="text-gray-900 font-black text-sm uppercase tracking-wide">{member.name}</h3>
-              <p className="text-[var(--rb-primary)] text-xs font-semibold mt-1">{member.role}</p>
+              <p className="text-[#04A9FF] text-xs font-semibold mt-1">{member.role}</p>
             </div>
           ))}
         </div>

@@ -14,11 +14,11 @@ export default function CartReminderSection() {
   }, 0);
 
   return (
-    <section className="py-8 md:py-10 bg-gradient-to-r from-[rgb(var(--site-primary-rgb)_/_0.05)] to-blue-50 border-y border-blue-100">
+    <section className="py-8 md:py-10 bg-gradient-to-r from-[#04A9FF]/5 to-blue-50 border-y border-blue-100">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
           <div>
-            <p className="text-xs font-semibold text-[var(--site-primary)] uppercase tracking-widest mb-0.5">
+            <p className="text-xs font-semibold text-[#04A9FF] uppercase tracking-widest mb-0.5">
               Your Cart
             </p>
             <h2 className="text-lg md:text-xl font-bold text-gray-900">
@@ -32,7 +32,7 @@ export default function CartReminderSection() {
           </div>
           <Link
             href="/cart"
-            className="flex-shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--site-primary)] hover:bg-[var(--site-primary-hover)] text-white text-sm font-bold rounded-xl transition-colors shadow-sm"
+            className="flex-shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-[#04A9FF] hover:bg-[#0070cc] text-white text-sm font-bold rounded-xl transition-colors shadow-sm"
           >
             Complete Purchase →
           </Link>
@@ -49,7 +49,7 @@ export default function CartReminderSection() {
               <Link
                 key={item.id || i}
                 href={item.slug ? `/product/${item.slug}` : "/cart"}
-                className="flex-shrink-0 w-36 sm:w-44 bg-white rounded-2xl border border-blue-100 shadow-sm hover:shadow-md hover:border-[var(--site-primary)] transition-all group overflow-hidden"
+                className="flex-shrink-0 w-36 sm:w-44 bg-white rounded-2xl border border-blue-100 shadow-sm hover:shadow-md hover:border-[#04A9FF] transition-all group overflow-hidden"
               >
                 <div className="relative aspect-square overflow-hidden bg-gray-50">
                   {item.primary_img ? (
@@ -59,14 +59,14 @@ export default function CartReminderSection() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-[rgb(var(--site-primary-rgb)_/_0.1)]">
-                      <span className="text-3xl font-bold text-[rgb(var(--site-primary-rgb)_/_0.2)]">
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-[#04A9FF]/10">
+                      <span className="text-3xl font-bold text-[#04A9FF]/20">
                         {(item.prod_name || "P")[0].toUpperCase()}
                       </span>
                     </div>
                   )}
                   {item.quantity > 1 && (
-                    <span className="absolute top-1.5 right-1.5 bg-[var(--site-primary)] text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                    <span className="absolute top-1.5 right-1.5 bg-[#04A9FF] text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
                       {item.quantity}
                     </span>
                   )}
@@ -81,7 +81,7 @@ export default function CartReminderSection() {
                     {item.prod_name || "Product"}
                   </p>
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-xs font-bold text-[var(--site-primary)]">
+                    <span className="text-xs font-bold text-[#04A9FF]">
                       ₹{price.toLocaleString("en-IN")}
                     </span>
                     {disc > 0 && (

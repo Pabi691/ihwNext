@@ -6,14 +6,6 @@
   z-index: 9999;
 }
 
-/* On mobile the call action lives in the bottom nav (raised centre button),
-   so the floating button is hidden to avoid a duplicate that overlaps it. */
-@media (max-width: 767px) {
-  .floating-contact {
-    display: none;
-  }
-}
-
 .floating-btn.main {
   width: 56px;
   height: 56px;

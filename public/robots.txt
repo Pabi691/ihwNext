@@ -1,5 +1,4 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow: /theme-preview/
-Disallow: /theme-preview
+Disallow:
 Sitemap: https://www.indianhairworld.com/sitemap.xml

@@ -1,87 +1,83 @@
 import { branchData } from "../../content/branchData";
-import { FaPhone, FaWhatsapp, FaLocationDot } from "react-icons/fa6";
-
-const branches = Object.values(branchData);
+import { strokedHeading } from "../../styles/typography";
 
 const BranchAppointmentBanner = () => {
   return (
-    <section className="w-full py-12 md:py-16 bg-[var(--site-light)]">
-      <div className="max-w-7xl mx-auto px-4 md:px-8">
-        {/* Heading */}
-        <div className="text-center mb-8 md:mb-12">
-          <p className="text-[var(--site-primary)] text-xs font-bold uppercase tracking-[0.2em] mb-2">
-            Visit Us
-          </p>
-          <h2 className="text-3xl md:text-4xl font-black text-[var(--site-dark)]">
-            Book an <span className="text-[var(--site-primary)]">Appointment</span>
-          </h2>
-          <p className="text-gray-500 text-sm mt-3 max-w-lg mx-auto">
-            Walk into any of our {branches.length} branches for a free consultation — no prior appointment needed.
-          </p>
-        </div>
+    <section className="w-full relative mt-10">
 
-        {/* Branch cards */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5">
-          {branches.map((b, i) => {
-            const phone = (b.phones?.[0] || "").replace(/\s+/g, "");
-            const wa = (b.whatsapp || "").replace(/\D/g, "");
-            return (
-              <div
-                key={i}
-                className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-              >
-                {/* Image / fallback */}
-                <div className="relative h-32 md:h-36 overflow-hidden bg-gradient-to-br from-[var(--site-primary)] to-[var(--site-dark)]">
-                  {b.image ? (
-                    <img
-                      src={b.image}
-                      alt={b.name}
-                      loading="lazy"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      onError={(e) => { e.currentTarget.style.display = "none"; }}
-                    />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-white/85 gap-1">
-                      <FaLocationDot className="w-7 h-7" />
-                      <span className="text-[11px] font-semibold uppercase tracking-wider">{b.name.split(",")[0]}</span>
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
-                </div>
+      {/* ================= DESKTOP VIEW ================= */}
+      <div className="hidden min-[1300px]:block relative w-full h-[300px]">
+        <h4 className={`${strokedHeading} z-10 relative text-right`}>Book an <span>appointment</span></h4>
+        {/* Background Banner */}
+        <div
+          className="absolute inset-0 bg-no-repeat bg-top bg-contain"
+          style={{
+            backgroundImage:
+              "url(/images/banner.jpeg)",
+          }}
+        />
 
-                {/* Body */}
-                <div className="flex-1 flex flex-col p-3 md:p-4">
-                  <h3 className="text-[var(--site-dark)] font-bold text-sm leading-tight">{b.name}</h3>
-                  {b.landmark && (
-                    <p className="text-gray-400 text-[11px] mt-0.5 line-clamp-1">{b.landmark}</p>
-                  )}
-                  <p className="mt-2 text-[var(--site-primary)] font-black text-sm tracking-tight">
-                    {b.phones?.[0]}
-                  </p>
+        {/* Cards Overlay */}
+        <div className="absolute left-[31%] top-20 flex z-10">
+          {Object.values(branchData).map((branch, index) => (
+            <div
+              key={index}
+              className="bg-white min-w-[250px] min-h-[160px] mr-[-30px]"
+              style={{
+                clipPath: "polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%)",
+              }}
+            >
+              <img
+                src={branch.image}
+                alt={branch.name}
+                className="w-full h-[80px] object-cover"
+              />
 
-                  <div className="mt-auto flex items-center gap-2 pt-3">
-                    <a
-                      href={`tel:${phone}`}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 bg-[var(--site-primary)] hover:bg-[var(--site-primary-hover)] text-white text-xs font-bold py-2 rounded-lg transition-colors"
-                    >
-                      <FaPhone className="w-3 h-3" /> Call Now
-                    </a>
-                    {wa && (
-                      <a
-                        href={`https://wa.me/${wa}?text=${encodeURIComponent(`Hi Indian Hair World, I'd like to book an appointment at ${b.name}.`)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`WhatsApp ${b.name}`}
-                        className="w-8 h-8 flex-shrink-0 inline-flex items-center justify-center bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg transition-colors"
-                      >
-                        <FaWhatsapp className="w-3.5 h-3.5" />
-                      </a>
-                    )}
-                  </div>
-                </div>
+              <div className="bg-[#04A9FF] h-[30px] flex items-center px-10 text-white font-bold">
+                📞 {branch.name}
               </div>
-            );
-          })}
+
+              <a
+                href={`tel:${branch.phones[0].replace(/\s+/g, "")}`}
+                className="block text-black font-bold text-lg px-10 py-2"
+              >
+                {branch.phones[0]}
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ================= MOBILE / TABLET VIEW ================= */}
+      <div className="block min-[1300px]:hidden max-w-7xl mx-auto px-4 mt-[-40px]">
+        <h3 className="text-center text-2xl font-bold mb-6">
+          Book An <span className="stroke-text">Appointment</span>
+        </h3>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+          {Object.values(branchData).map((branch, index) => (
+            <div
+              key={index}
+              className="bg-white shadow-lg hover:-translate-y-1 transition rounded-md overflow-hidden"
+            >
+              <img
+                src={branch.image}
+                alt={branch.name}
+                className="w-full h-[160px] object-cover"
+              />
+
+              <div className="bg-[#04A9FF] text-white font-bold px-3 py-2">
+                {branch.name}
+              </div>
+
+              <a
+                href={`tel:${branch.phones[0].replace(/\s+/g, "")}`}
+                className="block px-3 py-3 font-semibold text-lg text-black hover:text-[#04A9FF]"
+              >
+                {branch.phones[0]}
+              </a>
+            </div>
+          ))}
         </div>
       </div>
     </section>

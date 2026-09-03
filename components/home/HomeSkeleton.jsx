@@ -49,7 +49,7 @@ export function CollectionSkeleton() {
 /* ─── WelcomeSection (dark bg, text + image) ─────────────────────── */
 export function WelcomeSkeleton() {
   return (
-    <section className="bg-[var(--site-dark)] py-16 md:py-20">
+    <section className="bg-[#0f1a2c] py-16 md:py-20">
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
         <div className="space-y-4">
           <DarkPulse className="h-8 w-3/4" />
@@ -126,7 +126,7 @@ export function AchievementsSkeleton() {
 /* ─── BlogSection ────────────────────────────────────────────────── */
 export function BlogSkeleton() {
   return (
-    <section className="py-16 md:py-20 bg-[var(--site-light)]">
+    <section className="py-16 md:py-20 bg-[#f8fafc]">
       <div className="max-w-7xl mx-auto px-4">
         <Pulse className="h-7 w-40 mx-auto mb-8" />
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">

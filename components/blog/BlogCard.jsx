@@ -32,15 +32,15 @@ export default function BlogCard({ blog, featured = false }) {
             <img src={imgSrc} alt={blog.title} loading="lazy"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-[rgb(var(--site-primary-rgb)_/_0.2)] to-[var(--site-dark)]" />
+            <div className="absolute inset-0 bg-gradient-to-br from-[#04A9FF]/20 to-[#0f1a2c]" />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-            <span className="inline-block px-3 py-1 rounded-full bg-[var(--site-primary)] text-white text-xs font-bold uppercase tracking-wider mb-3">
+            <span className="inline-block px-3 py-1 rounded-full bg-[#04A9FF] text-white text-xs font-bold uppercase tracking-wider mb-3">
               {firstTag}
             </span>
-            <h2 className="text-white text-xl md:text-2xl font-extrabold leading-tight mb-2 line-clamp-2 group-hover:text-[var(--site-primary)] transition-colors">
+            <h2 className="text-white text-xl md:text-2xl font-extrabold leading-tight mb-2 line-clamp-2 group-hover:text-[#04A9FF] transition-colors">
               {blog.title}
             </h2>
             <p className="text-white/70 text-sm line-clamp-2 mb-4 hidden md:block">{blog.short_description}</p>
@@ -66,19 +66,19 @@ export default function BlogCard({ blog, featured = false }) {
             <img src={imgSrc} alt={blog.title} loading="lazy"
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-[rgb(var(--site-primary-rgb)_/_0.1)] to-[rgb(var(--site-dark-rgb)_/_0.05)] flex items-center justify-center">
-              <span className="text-5xl font-black text-[rgb(var(--site-primary-rgb)_/_0.2)]">IHW</span>
+            <div className="w-full h-full bg-gradient-to-br from-[#04A9FF]/10 to-[#0f1a2c]/5 flex items-center justify-center">
+              <span className="text-5xl font-black text-[#04A9FF]/20">IHW</span>
             </div>
           )}
           {/* Tag badge */}
-          <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-[var(--site-primary)] text-white text-[11px] font-bold uppercase tracking-wide">
+          <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-[#04A9FF] text-white text-[11px] font-bold uppercase tracking-wide">
             {firstTag}
           </span>
         </div>
 
         {/* Body */}
         <div className="flex-1 flex flex-col p-5">
-          <h3 className="font-bold text-gray-900 text-base leading-snug line-clamp-2 group-hover:text-[var(--site-primary)] transition-colors mb-2">
+          <h3 className="font-bold text-gray-900 text-base leading-snug line-clamp-2 group-hover:text-[#04A9FF] transition-colors mb-2">
             {blog.title}
           </h3>
           <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 flex-1 mb-4">
@@ -88,7 +88,7 @@ export default function BlogCard({ blog, featured = false }) {
           {/* Footer */}
           <div className="flex items-center justify-between pt-3 border-t border-gray-100">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[var(--site-primary)] to-[var(--site-primary-hover)] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#04A9FF] to-[#0070cc] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                 {(blog.author || "A")[0].toUpperCase()}
               </div>
               <div>

@@ -150,7 +150,7 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
         </h2>
         {cat_slug_name && (
           <Link
-            className="text-xs font-semibold text-[var(--site-primary)] hover:underline"
+            className="text-xs font-semibold text-[#04A9FF] hover:underline"
             to={`/${cat_slug_name}`}
           >
             Explore All →
@@ -209,7 +209,7 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
                     </span>
                   )}
                   {tryOnEligible && (
-                    <span className="absolute z-10 top-2 right-2 bg-[var(--site-primary)] text-white text-[9px] font-bold uppercase tracking-wide px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                    <span className="absolute z-10 top-2 right-2 bg-[#04A9FF] text-white text-[9px] font-bold uppercase tracking-wide px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
                       <Scissors size={10} strokeWidth={2.5} />
                       Try-On
                     </span>
@@ -277,7 +277,7 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
         ref={prevRef}
         type="button"
         aria-label="Previous"
-        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-100 text-gray-700 hover:text-[var(--site-primary)] hover:border-[rgb(var(--site-primary-rgb)_/_0.4)] transition-colors [&.swiper-button-disabled]:opacity-0 [&.swiper-button-disabled]:pointer-events-none"
+        className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-100 text-gray-700 hover:text-[#04A9FF] hover:border-[#04A9FF]/40 transition-colors [&.swiper-button-disabled]:opacity-0 [&.swiper-button-disabled]:pointer-events-none"
       >
         <ChevronLeft size={16} strokeWidth={2.5} />
       </button>
@@ -285,7 +285,7 @@ const SingleSlider = ({ slug_name, price_filter, title, discountPercentage, cat_
         ref={nextRef}
         type="button"
         aria-label="Next"
-        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-100 text-gray-700 hover:text-[var(--site-primary)] hover:border-[rgb(var(--site-primary-rgb)_/_0.4)] transition-colors [&.swiper-button-disabled]:opacity-0 [&.swiper-button-disabled]:pointer-events-none"
+        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-md border border-gray-100 text-gray-700 hover:text-[#04A9FF] hover:border-[#04A9FF]/40 transition-colors [&.swiper-button-disabled]:opacity-0 [&.swiper-button-disabled]:pointer-events-none"
       >
         <ChevronRight size={16} strokeWidth={2.5} />
       </button>
