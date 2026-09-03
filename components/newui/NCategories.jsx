@@ -21,17 +21,17 @@ export default function NCategories() {
   useEffect(() => { fetch(); }, [fetch]);
 
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section className="py-8 md:py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
           <div>
-            <span className="text-[#04A9FF] text-xs font-bold uppercase tracking-widest">Collections</span>
+            <span className="text-[var(--rb-primary)] text-xs font-bold uppercase tracking-widest">Collections</span>
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 mt-1">
-              Shop From <span className="text-[#04A9FF]">Our Collection</span>
+              Shop From <span className="text-[var(--rb-primary)]">Our Collection</span>
             </h2>
           </div>
-          <Link href="/shop" className="inline-flex items-center gap-2 text-[#04A9FF] font-bold text-sm hover:gap-3 transition-all">
+          <Link href="/shop" className="inline-flex items-center gap-2 text-[var(--rb-primary)] font-bold text-sm hover:gap-3 transition-all">
             Browse All <FaArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -75,7 +75,7 @@ export default function NCategories() {
                         </p>
                       )}
                     </div>
-                    <div className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:bg-[#04A9FF] group-hover:border-[#04A9FF] transition-all duration-300">
+                    <div className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:bg-[var(--rb-primary)] group-hover:border-[var(--rb-primary)] transition-all duration-300">
                       <FaArrowRight className="w-3.5 h-3.5 text-white group-hover:translate-x-0.5 transition-transform" />
                     </div>
                   </div>

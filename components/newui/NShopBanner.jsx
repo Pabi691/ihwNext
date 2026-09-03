@@ -4,12 +4,12 @@ import { FaArrowRight } from "react-icons/fa6";
 
 export default function NShopBanner() {
   return (
-    <section className="py-16 md:py-20 bg-gray-50">
+    <section className="py-8 md:py-12 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="text-center mb-10">
-          <span className="text-[#04A9FF] text-xs font-bold uppercase tracking-widest">Shop Online</span>
+          <span className="text-[var(--rb-primary)] text-xs font-bold uppercase tracking-widest">Shop Online</span>
           <h2 className="text-3xl md:text-4xl font-black text-gray-900 mt-1">
-            Your Hair, Your <span className="text-[#04A9FF]">Style</span>
+            Your Hair, Your <span className="text-[var(--rb-primary)]">Style</span>
           </h2>
           <p className="text-gray-500 text-sm mt-2">Shop our full range of hair products delivered to your doorstep.</p>
         </div>
@@ -28,7 +28,7 @@ export default function NShopBanner() {
                 <p className="text-white/70 text-xs font-semibold uppercase tracking-widest mb-1">For Her</p>
                 <h3 className="text-white text-2xl font-black leading-tight">Women's<br />Hair Products</h3>
               </div>
-              <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:bg-[#04A9FF] group-hover:border-[#04A9FF] transition-all duration-300">
+              <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:bg-[var(--rb-primary)] group-hover:border-[var(--rb-primary)] transition-all duration-300">
                 <FaArrowRight className="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform" />
               </div>
             </div>
@@ -47,7 +47,7 @@ export default function NShopBanner() {
                 <p className="text-white/70 text-xs font-semibold uppercase tracking-widest mb-1">For Him</p>
                 <h3 className="text-white text-2xl font-black leading-tight">Men's<br />Hair Products</h3>
               </div>
-              <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:bg-[#04A9FF] group-hover:border-[#04A9FF] transition-all duration-300">
+              <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:bg-[var(--rb-primary)] group-hover:border-[var(--rb-primary)] transition-all duration-300">
                 <FaArrowRight className="w-4 h-4 text-white group-hover:translate-x-0.5 transition-transform" />
               </div>
             </div>

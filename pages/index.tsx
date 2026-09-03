@@ -8,9 +8,25 @@ import { DesktopNav, MobileNav } from "../components/Navigation";
 import TopBar from "../components/home/TopBar";
 import { toAbsoluteUrlIfPresent } from "@/utils/seo";
 import { fetchPageSeo } from "@/utils/serverSeo";
+import { ENV } from "@/config/env";
 import JsonLd from "@/components/JsonLd";
+import NewUIPreview from "@/components/newui/NewUIPreview";
 
-const Home = () => {
+const Home = ({ festivalTheme }: { festivalTheme?: any }) => {
+
+  // When a festival theme is active, the homepage becomes the redesigned
+  // festival homepage (festival hero + N* sections). The global
+  // FestivalThemeProvider in _app.tsx is seeded with this same `festivalTheme`
+  // (via pageProps) so the theme is applied synchronously — no first-paint flash.
+  // No active theme => the normal homepage below, unchanged.
+  if (festivalTheme) {
+    return (
+      <>
+        <JsonLd organization />
+        <NewUIPreview />
+      </>
+    );
+  }
 
   return (
     <>
@@ -51,8 +67,24 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const pathname = "/";
   const seo = await fetchPageSeo(pathname, "home");
 
+  // Decide the homepage variant server-side (avoids a layout flash).
+  let festivalTheme: any = null;
+  try {
+    const res = await fetch(`${ENV.API_URL}/api/v1/get_public_settings`, {
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+    } as any);
+    const json = await res.json();
+    const raw = json?.settings?.festival_theme;
+    const ft = typeof raw === "string" ? JSON.parse(raw || "{}") : raw;
+    if (ft && ft.active) festivalTheme = ft;
+  } catch {
+    festivalTheme = null;
+  }
+
   return {
     props: {
+      festivalTheme,
       seo: {
         ...seo,
         canonicalUrl: toAbsoluteUrlIfPresent(seo.canonicalUrl),

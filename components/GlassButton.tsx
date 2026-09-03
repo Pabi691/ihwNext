@@ -27,7 +27,7 @@ const GlassButton: React.FC<GlassButtonProps> = ({
   const styles = {
     primary: `
       text-white
-      bg-gradient-to-br from-blue-600 to-indigo-600
+      bg-gradient-to-br from-[var(--site-cta-from)] to-[var(--site-cta-to)]
       border-white/20
       shadow-[0_10px_30px_-5px_rgba(37,99,235,0.6)]
       hover:shadow-[0_20px_50px_-10px_rgba(37,99,235,0.9)]
@@ -58,7 +58,7 @@ const GlassButton: React.FC<GlassButtonProps> = ({
       <span
         className={`
           absolute inset-0 rounded-2xl blur-xl opacity-40
-          ${variant === "primary" ? "bg-blue-400/30" : "bg-green-400/30"}
+          ${variant === "primary" ? "bg-[rgb(var(--site-primary-rgb)_/_0.3)]" : "bg-green-400/30"}
           group-hover:opacity-70 transition duration-500
         `}
       />
