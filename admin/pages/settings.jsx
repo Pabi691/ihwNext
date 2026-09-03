@@ -216,68 +216,28 @@ function b64toBlob(b64, mime) {
 
 // Downscale + re-encode a blob to a JPEG File under the backend's 2 MB
 // /api/images cap. AI-generated PNGs routinely come back 2-4 MB. Returns null
-// only if it cannot be made to fit at all.
+// if it's still too big at the lowest quality step.
 const MAX_UPLOAD_BYTES = 2 * 1024 * 1024;
-const ACCEPTED_UPLOAD_TYPE = /^image\/(jpeg|png|webp)$/;
-const uploadExt = (t) => (t === "image/webp" ? "webp" : t === "image/png" ? "png" : "jpg");
-
-async function decodeBlob(blob) {
-  if (typeof createImageBitmap === "function") {
-    try {
-      return await createImageBitmap(blob);
-    } catch {
-      /* fall through to <img> decode */
-    }
-  }
-  return await new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(blob);
-    const img = new Image();
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      resolve(img);
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error("image decode failed"));
-    };
-    img.src = url;
-  });
-}
-
 async function compressUnder2MB(blob, baseName) {
-  const passthrough = () =>
-    blob.size <= MAX_UPLOAD_BYTES && ACCEPTED_UPLOAD_TYPE.test(blob.type)
-      ? new File([blob], `${baseName}.${uploadExt(blob.type)}`, { type: blob.type })
-      : null;
-
-  // Already small enough and an accepted type — no re-encode needed.
-  const asIs = passthrough();
-  if (asIs) return asIs;
-
-  try {
-    const bmp = await decodeBlob(blob);
-    const srcW = bmp.width || bmp.naturalWidth || 1280;
-    const srcH = bmp.height || bmp.naturalHeight || 1280;
-    const scale = Math.min(1, 1280 / srcW);
-    const w = Math.max(1, Math.round(srcW * scale));
-    const h = Math.max(1, Math.round(srcH * scale));
-    const canvas = document.createElement("canvas");
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) throw new Error("canvas 2d context unavailable");
-    ctx.drawImage(bmp, 0, 0, w, h);
-    if (typeof bmp.close === "function") bmp.close();
-    for (const q of [0.85, 0.75, 0.65, 0.55]) {
-      const out = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", q));
-      if (out && out.size <= MAX_UPLOAD_BYTES) {
-        return new File([out], `${baseName}.jpg`, { type: "image/jpeg" });
-      }
-    }
-  } catch {
-    /* re-encode unavailable — fall back to raw passthrough if it already fits */
+  if (blob.size <= MAX_UPLOAD_BYTES && (blob.type === "image/jpeg" || blob.type === "image/webp")) {
+    return new File([blob], `${baseName}.${blob.type === "image/webp" ? "webp" : "jpg"}`, { type: blob.type });
   }
-  return passthrough();
+  const bmp = await createImageBitmap(blob);
+  const scale = Math.min(1, 1280 / bmp.width);
+  const w = Math.max(1, Math.round(bmp.width * scale));
+  const h = Math.max(1, Math.round(bmp.height * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  canvas.getContext("2d").drawImage(bmp, 0, 0, w, h);
+  if (typeof bmp.close === "function") bmp.close();
+  for (const q of [0.85, 0.75, 0.65, 0.55]) {
+    const out = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", q));
+    if (out && out.size <= MAX_UPLOAD_BYTES) {
+      return new File([out], `${baseName}.jpg`, { type: "image/jpeg" });
+    }
+  }
+  return null;
 }
 
 // ---- saved theme library -------------------------------------------------
@@ -478,26 +438,12 @@ function FadeSlider({ images, palette, interval = 2200 }) {
 }
 
 // Live preview — iframes the real storefront (/theme-preview/live) and pushes
-// the in-editor theme to it over postMessage. Scrollable, full page. Phone or
-// desktop: the frame is rendered at a real logical width so the storefront's
-// responsive breakpoints apply, then scaled down to fit this column.
+// the in-editor theme to it over postMessage. Scrollable, full page, phone-sized.
 const PREVIEW_SITE = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-
-// `box` = rendered width in the CRM column (phone) / the wider popped-out panel
-// (desktop). The right column is 340px, so desktop shifts left over the editor.
-const PREVIEW_COLUMN = 340;
-const PREVIEW_FRAMES = {
-  phone:   { w: 390,  h: 780,  box: 320 },
-  desktop: { w: 1280, h: 1440, box: 560 },
-};
 
 function FestivalPreview({ fest }) {
   const iframeRef = useRef(null);
   const [ready, setReady] = useState(false);
-  const [view, setView] = useState("phone");
-
-  const frame = PREVIEW_FRAMES[view];
-  const scale = frame.box / frame.w;
 
   // iframe announces itself
   useEffect(() => {
@@ -511,70 +457,22 @@ function FestivalPreview({ fest }) {
     if (!ready || !iframeRef.current) return;
     const t = setTimeout(() => {
       iframeRef.current?.contentWindow?.postMessage(
-        { type: "ihw-festival-theme", theme: festivalToSettings(fest), view },
+        { type: "ihw-festival-theme", theme: festivalToSettings(fest) },
         "*"
       );
     }, 250);
     return () => clearTimeout(t);
-  }, [fest, ready, view]);
-
-  const switchView = (v) => {
-    if (v === view) return;
-    setReady(false);      // new iframe load will re-announce, re-pushing the theme
-    setView(v);
-  };
-
-  const popLeft = view === "desktop" ? Math.max(0, frame.box - PREVIEW_COLUMN) : 0;
+  }, [fest, ready]);
 
   return (
-    <div
-      style={{
-        width: frame.box,
-        marginLeft: -popLeft,
-        position: "relative",
-        zIndex: popLeft ? 20 : "auto",
-      }}
-    >
-      <div className="flex justify-center gap-1 mb-2">
-        {["phone", "desktop"].map((k) => (
-          <button
-            key={k}
-            type="button"
-            onClick={() => switchView(k)}
-            className={`px-3 py-1 text-[11px] font-semibold rounded-full border capitalize transition-colors ${
-              view === k
-                ? "bg-gray-900 text-white border-gray-900"
-                : "bg-white text-gray-500 border-gray-200 hover:border-gray-400"
-            }`}
-          >
-            {k}
-          </button>
-        ))}
-      </div>
-
-      <div
-        className={`bg-gray-900 shadow-xl overflow-hidden ${
-          view === "phone"
-            ? "rounded-[30px] border-[3px] border-gray-900 pb-3"
-            : "rounded-xl border border-gray-300"
-        }`}
-      >
-        <div style={{ width: frame.box, height: frame.h * scale, overflow: "hidden" }}>
-          <iframe
-            key={view}
-            ref={iframeRef}
-            src={`${PREVIEW_SITE}/theme-preview/live?view=${view}`}
-            title="Live storefront preview"
-            style={{
-              width: frame.w,
-              height: frame.h,
-              border: 0,
-              background: "#fff",
-              transform: `scale(${scale})`,
-              transformOrigin: "top left",
-            }}
-          />
-        </div>
+    <div className="w-[320px]">
+      <div className="rounded-[30px] border-[3px] border-gray-900 bg-gray-900 shadow-xl overflow-hidden pb-3">
+        <iframe
+          ref={iframeRef}
+          src={`${PREVIEW_SITE}/theme-preview/live`}
+          title="Live storefront preview"
+          className="block w-full h-[600px] bg-white rounded-b-xl"
+        />
       </div>
       <p className="text-[11px] text-gray-400 text-center mt-2">
         Live storefront · scroll inside · updates as you edit
@@ -859,26 +757,13 @@ export default function Settings() {
 
       setGenStep(`Uploading ${imgs.length} image${imgs.length > 1 ? "s" : ""} to CDN…`);
       const urls = [];
-      const failures = [];
       for (let i = 0; i < imgs.length; i++) {
-        try {
-          const u = await uploadImage(imgs[i], data.name || name, i);
-          if (u) urls.push(u);
-          else failures.push(`#${i + 1}: upload returned no URL`);
-        } catch (err) {
-          const detail =
-            err?.response?.data?.errors?.image?.[0] ||
-            err?.response?.data?.message ||
-            err?.response?.data?.error ||
-            (err?.response?.status ? `HTTP ${err.response.status}` : "") ||
-            err?.message ||
-            "unknown error";
-          failures.push(`#${i + 1}: ${detail}`);
-        }
+        try { const u = await uploadImage(imgs[i], data.name || name, i); if (u) urls.push(u); }
+        catch { /* keep going, report at the end */ }
       }
       setFest((f) => ({ ...f, heroImages: urls }));
       if (urls.length < imgs.length) {
-        setGenError(`${urls.length}/${imgs.length} images uploaded. ${failures.join(" · ")}. Regenerate or add URLs manually.`);
+        setGenError(`${urls.length}/${imgs.length} images uploaded — the rest failed to upload even after compression. Regenerate or add URLs manually.`);
       }
     } catch (e) {
       setGenError(e.message || "Something went wrong.");
