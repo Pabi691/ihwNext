@@ -63,6 +63,28 @@ const Home = ({ festivalTheme }: { festivalTheme?: any }) => {
   )
 }
 
+// Cache get_public_settings across requests so the homepage doesn't hit the
+// backend on every render (bots + traffic were flooding it and tripping the
+// host WAF). One process-wide fetch per minute is plenty for a theme flag.
+let publicSettingsCache: { at: number; data: any } | null = null;
+const PUBLIC_SETTINGS_TTL_MS = 60 * 1000;
+
+async function getPublicSettings(): Promise<any> {
+  if (publicSettingsCache && Date.now() - publicSettingsCache.at < PUBLIC_SETTINGS_TTL_MS) {
+    return publicSettingsCache.data;
+  }
+  const res = await fetch(`${ENV.API_URL}/api/v1/get_public_settings`, {
+    headers: {
+      Accept: "application/json",
+      "User-Agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+    },
+  } as any);
+  const json = await res.json();
+  publicSettingsCache = { at: Date.now(), data: json };
+  return json;
+}
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const pathname = "/";
   const seo = await fetchPageSeo(pathname, "home");
@@ -70,11 +92,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   // Decide the homepage variant server-side (avoids a layout flash).
   let festivalTheme: any = null;
   try {
-    const res = await fetch(`${ENV.API_URL}/api/v1/get_public_settings`, {
-      headers: { Accept: "application/json" },
-      cache: "no-store",
-    } as any);
-    const json = await res.json();
+    const json = await getPublicSettings();
     const raw = json?.settings?.festival_theme;
     const ft = typeof raw === "string" ? JSON.parse(raw || "{}") : raw;
     if (ft && ft.active) festivalTheme = ft;

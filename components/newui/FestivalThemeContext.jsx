@@ -162,6 +162,44 @@ function parseFestivalTheme(raw) {
 
 const FestivalThemeContext = createContext({ theme: DEFAULT_THEME, loading: true });
 
+// The provider sits in _app.tsx, so without this it re-fetches get_public_settings
+// on every client-side navigation. Cache the raw value briefly and share one
+// in-flight request across all mounts.
+const PUBLIC_SETTINGS_TTL_MS = 60 * 1000;
+const PUBLIC_SETTINGS_CACHE_KEY = "ihw:get_public_settings:v1";
+let inFlightPublicSettings = null;
+
+async function fetchPublicSettingsRaw() {
+  // 1. fresh value stashed this session?
+  try {
+    const cached = JSON.parse(sessionStorage.getItem(PUBLIC_SETTINGS_CACHE_KEY) || "null");
+    if (cached && Date.now() - cached.at < PUBLIC_SETTINGS_TTL_MS) return cached.raw;
+  } catch {
+    /* ignore */
+  }
+  // 2. a request already going out? ride it.
+  if (inFlightPublicSettings) return inFlightPublicSettings;
+
+  inFlightPublicSettings = (async () => {
+    try {
+      const res = await fetch(`${ENV.API_URL}/api/v1/get_public_settings`, {
+        headers: { Accept: "application/json" },
+      });
+      const json = await res.json();
+      const raw = json?.settings?.[SETTINGS_KEY];
+      try {
+        sessionStorage.setItem(PUBLIC_SETTINGS_CACHE_KEY, JSON.stringify({ at: Date.now(), raw }));
+      } catch {
+        /* ignore quota */
+      }
+      return raw;
+    } finally {
+      inFlightPublicSettings = null;
+    }
+  })();
+  return inFlightPublicSettings;
+}
+
 export function FestivalThemeProvider({ children, forcedTheme = null }) {
   // forcedTheme (used by the theme-preview routes): render a specific saved
   // theme, always active, and skip the network read. Additive — no forcedTheme
@@ -179,11 +217,7 @@ export function FestivalThemeProvider({ children, forcedTheme = null }) {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch(`${ENV.API_URL}/api/v1/get_public_settings`, {
-          headers: { Accept: "application/json" },
-        });
-        const json = await res.json();
-        const raw = json?.settings?.[SETTINGS_KEY];
+        const raw = await fetchPublicSettingsRaw();
         if (!cancelled) setTheme(parseFestivalTheme(raw));
       } catch {
         if (!cancelled) setTheme(DEFAULT_THEME);
