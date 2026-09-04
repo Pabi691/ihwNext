@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Head from "next/head";
 import { useAdmin } from "@/components/AdminContext";
 import { useAuthGuard } from "@/components/useAuthGuard";
@@ -437,45 +437,157 @@ function FadeSlider({ images, palette, interval = 2200 }) {
   );
 }
 
-// Live preview — iframes the real storefront (/theme-preview/live) and pushes
-// the in-editor theme to it over postMessage. Scrollable, full page, phone-sized.
-const PREVIEW_SITE = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+// Live preview — a self-contained mockup of the festival homepage, rendered
+// straight from the editor state. No iframe, no network calls, no links: it is
+// purely "here is what the page will look like". Empty fields render nothing —
+// there are deliberately no fallback/default strings.
+function PreviewBar({ w = "100%", h = 8, c = "rgba(0,0,0,0.10)" }) {
+  return <span style={{ display: "block", width: w, height: h, borderRadius: 4, background: c }} />;
+}
 
 function FestivalPreview({ fest }) {
-  const iframeRef = useRef(null);
-  const [ready, setReady] = useState(false);
-
-  // iframe announces itself
-  useEffect(() => {
-    const onMsg = (e) => { if (e?.data?.type === "ihw-preview-ready") setReady(true); };
-    window.addEventListener("message", onMsg);
-    return () => window.removeEventListener("message", onMsg);
-  }, []);
-
-  // push the current editor theme (debounced), exactly as it would be saved
-  useEffect(() => {
-    if (!ready || !iframeRef.current) return;
-    const t = setTimeout(() => {
-      iframeRef.current?.contentWindow?.postMessage(
-        { type: "ihw-festival-theme", theme: festivalToSettings(fest) },
-        "*"
-      );
-    }, 250);
-    return () => clearTimeout(t);
-  }, [fest, ready]);
+  const p = { ...DEFAULT_PALETTE, ...(fest.palette || {}) };
+  const hero = fest.hero || {};
+  const promo = fest.promo || {};
+  const nav = fest.bottomNav || {};
+  const titleLines = [hero.line1, hero.line2].map((s) => (s || "").trim()).filter(Boolean);
+  const images = (fest.heroImages || []).filter(Boolean).slice(0, 3);
+  const rangoli = (fest.rangoli || []).filter((r) => r && r.url);
+  const saleBg = (fest.saleSection?.bg || "").trim();
 
   return (
     <div className="w-[320px]">
-      <div className="rounded-[30px] border-[3px] border-gray-900 bg-gray-900 shadow-xl overflow-hidden pb-3">
-        <iframe
-          ref={iframeRef}
-          src={`${PREVIEW_SITE}/theme-preview/live`}
-          title="Live storefront preview"
-          className="block w-full h-[600px] bg-white rounded-b-xl"
-        />
+      <div className="rounded-[30px] border-[3px] border-gray-900 bg-gray-900 shadow-xl overflow-hidden">
+        <div
+          className="h-[600px] overflow-y-auto bg-white rounded-b-[26px]"
+          style={{ scrollbarWidth: "none" }}
+        >
+          {/* promo strip — only when there is copy for it */}
+          {(promo.label || promo.subtitle) && (
+            <div
+              className="px-3 py-1.5 text-center"
+              style={{ background: `linear-gradient(90deg, ${p["--rb-primary-mid2"]}, ${p["--rb-primary"]})` }}
+            >
+              {promo.label && (
+                <div className="text-[10px] font-bold tracking-wide" style={{ color: p["--rb-accent-lighter"] }}>
+                  {promo.label}
+                </div>
+              )}
+              {promo.subtitle && <div className="text-[9px] text-white/80">{promo.subtitle}</div>}
+            </div>
+          )}
+
+          {/* header chrome */}
+          <div className="flex items-center justify-between px-3 py-2.5" style={{ background: p["--rb-dark"] }}>
+            <span className="text-white font-black text-sm tracking-tight">IHW</span>
+            <div className="flex gap-1.5">
+              {[0, 1, 2].map((i) => (
+                <span key={i} className="w-4 h-4 rounded-full" style={{ background: "rgba(255,255,255,0.25)" }} />
+              ))}
+            </div>
+          </div>
+
+          {/* hero */}
+          <div
+            className="relative px-4 pt-5 pb-6 overflow-hidden"
+            style={{
+              background: `linear-gradient(165deg, ${p["--rb-primary-mid2"]}, ${p["--rb-primary-mid"]} 55%, ${p["--rb-accent-lighter"]})`,
+            }}
+          >
+            {rangoli.map((r, i) => (
+              <img key={i} src={r.url} alt="" aria-hidden className="select-none" style={rangoliBoxStyle(r)} />
+            ))}
+            <div className="relative">
+              {hero.eyebrow && (
+                <p className="text-[11px] font-medium mb-1" style={{ color: p["--rb-accent-light"] }}>
+                  {hero.eyebrow}
+                </p>
+              )}
+              {titleLines.map((line, i) => (
+                <h1
+                  key={i}
+                  className="text-2xl font-black leading-[1.12]"
+                  style={{ color: i === 0 ? "#ffffff" : p["--rb-accent-lighter"] }}
+                >
+                  {line}
+                </h1>
+              ))}
+              {hero.tagline && <p className="text-white text-[12px] font-medium mt-2">{hero.tagline}</p>}
+              {hero.trustedBy && (
+                <div
+                  className="inline-flex flex-col mt-3 px-2.5 py-1.5 rounded-lg"
+                  style={{ background: "rgba(0,0,0,0.25)" }}
+                >
+                  <span className="text-[8px] tracking-widest" style={{ color: p["--rb-accent-light"] }}>
+                    TRUSTED BY
+                  </span>
+                  <span className="text-white text-[11px] font-black">{hero.trustedBy}</span>
+                </div>
+              )}
+              <FadeSlider images={images} palette={p} />
+            </div>
+          </div>
+
+          {/* sale offers band */}
+          <div className="px-4 py-4" style={{ background: saleBg || p["--rb-cream"] }}>
+            <div className="flex gap-2">
+              {[0, 1].map((i) => (
+                <div
+                  key={i}
+                  className="flex-1 rounded-xl p-2 bg-white"
+                  style={{ border: `1px solid ${p["--rb-cream-border"]}` }}
+                >
+                  <div className="w-full h-14 rounded-lg mb-2" style={{ background: p["--rb-cream-border"] }} />
+                  <PreviewBar w="80%" />
+                  <span className="block h-1" />
+                  <PreviewBar w="50%" h={6} />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* generic content bands — shows the page shape, not real data */}
+          <div className="px-4 py-4 space-y-2 bg-white">
+            <PreviewBar w="55%" h={10} c={p["--rb-primary"]} />
+            <PreviewBar w="92%" />
+            <PreviewBar w="74%" />
+          </div>
+          <div className="px-4 py-5" style={{ background: p["--rb-cream"] }}>
+            <PreviewBar w="45%" h={10} c={p["--rb-primary"]} />
+            <div className="flex gap-2 mt-2">
+              {[0, 1, 2].map((i) => (
+                <div key={i} className="flex-1 h-16 rounded-lg" style={{ background: p["--rb-cream-border"] }} />
+              ))}
+            </div>
+          </div>
+
+          {/* bottom nav */}
+          <div className="sticky bottom-0 pt-2">
+            <div
+              className="relative mx-2 mb-2 rounded-2xl overflow-hidden"
+              style={{ background: nav.bg || p["--rb-dark"] }}
+            >
+              {nav.bgImage && (
+                <img src={nav.bgImage} alt="" className="absolute inset-0 w-full h-full object-cover" />
+              )}
+              <div className="relative flex justify-around items-center py-2">
+                {BOTTOM_NAV_LABELS.map((lbl, i) => (
+                  <div key={lbl} className="flex flex-col items-center gap-0.5">
+                    {nav.icons?.[i] ? (
+                      <img src={nav.icons[i]} alt="" className="w-4 h-4 object-contain" />
+                    ) : (
+                      <span className="w-4 h-4 rounded" style={{ background: "rgba(255,255,255,0.35)" }} />
+                    )}
+                    <span className="text-[8px] text-white/80">{lbl}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <p className="text-[11px] text-gray-400 text-center mt-2">
-        Live storefront · scroll inside · updates as you edit
+        UI mockup · updates as you edit · not connected to the live site
       </p>
     </div>
   );
