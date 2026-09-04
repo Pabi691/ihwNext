@@ -43,7 +43,8 @@ const COLOR_OPTIONS = [
 // The descriptions match real usage in the storefront components — the point is
 // that nobody should have to guess which swatch changes which pixel.
 const PALETTE_FIELDS = [
-  ["--rb-primary",        "Main colour",       "TEXT — section headings and the highlighted word (e.g. “Book an Appointment”). Also fills the main buttons. The most-used colour: keep it readable on white."],
+  ["--rb-heading",        "Heading text",      "TEXT only — section headings and the highlighted word (e.g. the word “Appointment” in “Book an Appointment”). Pick this for readability; it never paints a background."],
+  ["--rb-primary",        "Main fill",         "BACKGROUND only — button fills, the promo strip and coloured bars. Changing this never moves any text colour."],
   ["--rb-primary-hover",  "Button hover",      "BACKGROUND — fill of a button while it is pressed or hovered. Usually a touch lighter than Main colour."],
   ["--rb-primary-mid",    "Gradient · middle", "BACKGROUND only — a middle stop of the hero gradient. Never used for text."],
   ["--rb-primary-mid2",   "Gradient · top",    "BACKGROUND only — the darkest stop, at the top of the hero gradient. White text sits over it."],
@@ -56,6 +57,7 @@ const PALETTE_FIELDS = [
 ];
 
 const DEFAULT_PALETTE = {
+  "--rb-heading": "#7a1420",
   "--rb-primary": "#7a1420",
   "--rb-primary-hover": "#8f1826",
   "--rb-primary-mid": "#6b0f16",
@@ -147,7 +149,15 @@ function festivalFromSettings(raw) {
     active: !!d.active,
     mode: d.mode === "ai" ? "ai" : "custom",
     name: d.name || "",
-    palette: { ...DEFAULT_PALETTE, ...(d.palette || {}) },
+    palette: (() => {
+      const merged = { ...DEFAULT_PALETTE, ...(d.palette || {}) };
+      // Themes saved before "Heading text" existed only carry --rb-primary;
+      // inherit from it so loading one does not silently recolour headings.
+      if (!d.palette?.["--rb-heading"] && d.palette?.["--rb-primary"]) {
+        merged["--rb-heading"] = d.palette["--rb-primary"];
+      }
+      return merged;
+    })(),
     hero: {
       eyebrow: d.hero?.eyebrow || "",
       line1: lines[0] || "",
@@ -551,12 +561,12 @@ function FestivalPreview({ fest }) {
 
           {/* generic content bands — shows the page shape, not real data */}
           <div className="px-4 py-4 space-y-2 bg-white">
-            <PreviewBar w="55%" h={10} c={p["--rb-primary"]} />
+            <PreviewBar w="55%" h={10} c={p["--rb-heading"]} />
             <PreviewBar w="92%" />
             <PreviewBar w="74%" />
           </div>
           <div className="px-4 py-5" style={{ background: p["--rb-cream"] }}>
-            <PreviewBar w="45%" h={10} c={p["--rb-primary"]} />
+            <PreviewBar w="45%" h={10} c={p["--rb-heading"]} />
             <div className="flex gap-2 mt-2">
               {[0, 1, 2].map((i) => (
                 <div key={i} className="flex-1 h-16 rounded-lg" style={{ background: p["--rb-cream-border"] }} />

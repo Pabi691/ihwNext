@@ -16,16 +16,16 @@ const WelcomeSection = () => {
           </div>
 
           <div className="text-white space-y-5">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[var(--site-primary)]">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[var(--site-heading)]">
               About Us
             </p>
             <h2 className="text-3xl md:text-4xl font-extrabold uppercase tracking-tight leading-tight">
               Welcome to <br />
-              <span className="text-[var(--site-primary)]">Indian Hair World</span>
+              <span className="text-[var(--site-heading)]">Indian Hair World</span>
             </h2>
             <p className="text-base text-white/80 leading-relaxed">
               Are you looking for the best{" "}
-              <span className="text-[var(--site-primary)] font-semibold">
+              <span className="text-[var(--site-heading)] font-semibold">
                 hair patch and hair wig in Kolkata?
               </span>{" "}
               Look no further than Indian Hair World, where we offer top-quality
@@ -37,7 +37,7 @@ const WelcomeSection = () => {
               Don't settle for anything less than the best. Contact us today at{" "}
               <a
                 href="tel:+917980221032"
-                className="text-[var(--site-primary)] font-semibold hover:underline"
+                className="text-[var(--site-heading)] font-semibold hover:underline"
               >
                 +91-7980221032
               </a>{" "}

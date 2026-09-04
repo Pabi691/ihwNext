@@ -184,7 +184,7 @@ export default function NHero() {
             <div className="flex items-center justify-between gap-4 p-4 bg-transparent border-2 border-[var(--rb-cream-border)] rounded-2xl w-full max-w-sm mb-5">
               <div>
                 <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Starting At</p>
-                <p className="text-3xl font-black text-[var(--rb-primary)]">₹5,999<span className="text-base font-bold">/-</span></p>
+                <p className="text-3xl font-black text-[var(--rb-heading)]">₹5,999<span className="text-base font-bold">/-</span></p>
               </div>
               <div className="w-px h-12 bg-gray-200" />
               <div className="flex flex-col items-center">
@@ -230,7 +230,7 @@ export default function NHero() {
                   i > 0 ? "border-l border-[var(--rb-cream-border)] pl-5 sm:pl-8" : ""
                 }`}
               >
-                <Icon className="w-7 h-7 sm:w-8 sm:h-8 text-[var(--rb-primary)]" strokeWidth={2} />
+                <Icon className="w-7 h-7 sm:w-8 sm:h-8 text-[var(--rb-heading)]" strokeWidth={2} />
                 <p className="text-[10px] sm:text-xs font-black text-gray-900 leading-tight">{value}</p>
                 <p className="text-[9px] sm:text-[10px] text-gray-600">{label}</p>
               </div>
@@ -286,7 +286,7 @@ export default function NHero() {
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Icon className="w-6 h-6 text-[var(--rb-primary)] flex-shrink-0" strokeWidth={2} />
+                  <Icon className="w-6 h-6 text-[var(--rb-heading)] flex-shrink-0" strokeWidth={2} />
                   <div className="min-w-0">
                     <p className="text-gray-900 font-bold text-xs md:text-sm leading-tight">{title}</p>
                     <p className="text-gray-400 text-[10px] md:text-xs mt-0.5">{subtitle}</p>
@@ -361,7 +361,7 @@ export default function NHero() {
         <div className="flex items-center justify-between gap-3 bg-white rounded-2xl px-4 py-3 -mt-9 relative z-10 mx-3 shadow-lg border border-[var(--rb-cream-border)]">
           <div>
             <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Starting At</p>
-            <p className="text-2xl font-black text-[var(--rb-primary)]">Rs. 5,999<span className="text-sm font-bold">/-</span></p>
+            <p className="text-2xl font-black text-[var(--rb-heading)]">Rs. 5,999<span className="text-sm font-bold">/-</span></p>
           </div>
           <div className="w-px h-12 bg-gray-100" />
           <div className="flex flex-col items-center">
@@ -393,7 +393,7 @@ export default function NHero() {
           {STATS.map(({ icon: Icon, value, label }, i) => (
             <div key={i} className="flex flex-col items-center text-center gap-1">
               <span className="w-9 h-9 rounded-full bg-[var(--rb-primary)]/10 flex items-center justify-center">
-                <Icon className="w-4 h-4 text-[var(--rb-primary)]" strokeWidth={2} />
+                <Icon className="w-4 h-4 text-[var(--rb-heading)]" strokeWidth={2} />
               </span>
               <p className="text-[10px] font-black text-gray-900 leading-tight">{value}</p>
               <p className="text-[9px] text-gray-500">{label}</p>

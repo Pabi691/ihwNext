@@ -26,12 +26,12 @@ export default function NCategories() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
           <div>
-            <span className="text-[var(--rb-primary)] text-xs font-bold uppercase tracking-widest">Collections</span>
+            <span className="text-[var(--rb-heading)] text-xs font-bold uppercase tracking-widest">Collections</span>
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 mt-1">
-              Shop From <span className="text-[var(--rb-primary)]">Our Collection</span>
+              Shop From <span className="text-[var(--rb-heading)]">Our Collection</span>
             </h2>
           </div>
-          <Link href="/shop" className="inline-flex items-center gap-2 text-[var(--rb-primary)] font-bold text-sm hover:gap-3 transition-all">
+          <Link href="/shop" className="inline-flex items-center gap-2 text-[var(--rb-heading)] font-bold text-sm hover:gap-3 transition-all">
             Browse All <FaArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>

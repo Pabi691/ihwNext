@@ -18,7 +18,7 @@ export default function CartReminderSection() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
           <div>
-            <p className="text-xs font-semibold text-[var(--site-primary)] uppercase tracking-widest mb-0.5">
+            <p className="text-xs font-semibold text-[var(--site-heading)] uppercase tracking-widest mb-0.5">
               Your Cart
             </p>
             <h2 className="text-lg md:text-xl font-bold text-gray-900">
@@ -81,7 +81,7 @@ export default function CartReminderSection() {
                     {item.prod_name || "Product"}
                   </p>
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-xs font-bold text-[var(--site-primary)]">
+                    <span className="text-xs font-bold text-[var(--site-heading)]">
                       ₹{price.toLocaleString("en-IN")}
                     </span>
                     {disc > 0 && (

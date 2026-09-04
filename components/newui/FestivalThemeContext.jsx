@@ -85,6 +85,7 @@ function normalizeRangoli(data) {
 
 const PALETTE_KEYS = [
   "--rb-primary",
+  "--rb-heading",
   "--rb-primary-hover",
   "--rb-primary-mid",
   "--rb-primary-mid2",
@@ -110,6 +111,9 @@ function normalizePalette(input) {
     const v = typeof input[k] === "string" ? input[k].trim().toLowerCase() : "";
     if (HEX.test(v)) out[k] = v;
   }
+  // Themes saved before --rb-heading existed only carry --rb-primary; keep them
+  // rendering exactly as they did by deriving the heading colour from it.
+  if (!out["--rb-heading"] && out["--rb-primary"]) out["--rb-heading"] = out["--rb-primary"];
   return Object.keys(out).length ? out : null;
 }
 
@@ -251,6 +255,7 @@ export function FestivalThemeProvider({ children, forcedTheme = null }) {
     // newui preview. Removed together with rbVars on deactivate — clean revert.
     const siteVars = [
       `--site-primary:${p["--rb-primary"]}`,
+      `--site-heading:${p["--rb-heading"] || p["--rb-primary"]}`,
       `--site-primary-hover:${p["--rb-primary-hover"]}`,
       `--site-accent:${p["--rb-accent"]}`,
       `--site-hero-from:${p["--rb-primary-mid2"]}`,

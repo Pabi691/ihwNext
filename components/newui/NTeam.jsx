@@ -14,9 +14,9 @@ export default function NTeam() {
         {/* Header */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-end mb-8">
           <div>
-            <span className="text-[var(--rb-primary)] text-xs font-bold uppercase tracking-widest">Leadership</span>
+            <span className="text-[var(--rb-heading)] text-xs font-bold uppercase tracking-widest">Leadership</span>
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 mt-1">
-              Who <span className="text-[var(--rb-primary)]">We Are</span>
+              Who <span className="text-[var(--rb-heading)]">We Are</span>
             </h2>
           </div>
           <p className="text-gray-500 text-sm leading-relaxed">
@@ -42,7 +42,7 @@ export default function NTeam() {
                 </div>
               </div>
               <h3 className="text-gray-900 font-black text-sm uppercase tracking-wide">{member.name}</h3>
-              <p className="text-[var(--rb-primary)] text-xs font-semibold mt-1">{member.role}</p>
+              <p className="text-[var(--rb-heading)] text-xs font-semibold mt-1">{member.role}</p>
             </div>
           ))}
         </div>

@@ -48,7 +48,7 @@ export default function NSaleOffers() {
               <FaFire className="w-3 h-3 text-[var(--rb-accent-light)]" /> SALE
             </span>
             <h2 className="text-lg md:text-3xl font-black text-[var(--rb-dark)] leading-tight truncate">
-              Special <span className="text-[var(--rb-primary)]">Sale Offers</span>
+              Special <span className="text-[var(--rb-heading)]">Sale Offers</span>
             </h2>
           </div>
           <div className="flex items-center gap-3 flex-shrink-0">
@@ -56,21 +56,21 @@ export default function NSaleOffers() {
               <button
                 onClick={() => sw?.slidePrev()}
                 aria-label="Scroll left"
-                className="w-9 h-9 rounded-full border border-[var(--rb-cream-border)] bg-white text-gray-500 flex items-center justify-center hover:border-[var(--rb-primary)] hover:text-[var(--rb-primary)] transition-colors"
+                className="w-9 h-9 rounded-full border border-[var(--rb-cream-border)] bg-white text-gray-500 flex items-center justify-center hover:border-[var(--rb-primary)] hover:text-[var(--rb-heading)] transition-colors"
               >
                 <FaArrowLeft className="w-3 h-3" />
               </button>
               <button
                 onClick={() => sw?.slideNext()}
                 aria-label="Scroll right"
-                className="w-9 h-9 rounded-full border border-[var(--rb-cream-border)] bg-white text-gray-500 flex items-center justify-center hover:border-[var(--rb-primary)] hover:text-[var(--rb-primary)] transition-colors"
+                className="w-9 h-9 rounded-full border border-[var(--rb-cream-border)] bg-white text-gray-500 flex items-center justify-center hover:border-[var(--rb-primary)] hover:text-[var(--rb-heading)] transition-colors"
               >
                 <FaArrowRight className="w-3 h-3" />
               </button>
             </div>
             <Link
               href="/shop?sale=1"
-              className="inline-flex items-center gap-1 text-xs md:text-sm font-bold text-[var(--rb-primary)] whitespace-nowrap hover:gap-2 transition-all"
+              className="inline-flex items-center gap-1 text-xs md:text-sm font-bold text-[var(--rb-heading)] whitespace-nowrap hover:gap-2 transition-all"
             >
               View All <FaArrowRight className="w-3 h-3" />
             </Link>
@@ -134,7 +134,7 @@ export default function NSaleOffers() {
                           {p.prod_name}
                         </p>
                         <div className="flex items-baseline gap-1.5 flex-wrap">
-                          <span className="text-[13px] md:text-sm font-black text-[var(--rb-primary)]">
+                          <span className="text-[13px] md:text-sm font-black text-[var(--rb-heading)]">
                             ₹{parseFloat(p.sale_price).toLocaleString("en-IN")}
                           </span>
                           {disc > 0 && (

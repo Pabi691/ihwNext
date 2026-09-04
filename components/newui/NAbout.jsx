@@ -36,17 +36,17 @@ export default function NAbout() {
 
           {/* Content */}
           <div className="text-white space-y-6">
-            <span className="text-[var(--rb-primary)] text-xs font-bold uppercase tracking-widest">About Us</span>
+            <span className="text-[var(--rb-heading)] text-xs font-bold uppercase tracking-widest">About Us</span>
             <h2 className="text-3xl md:text-5xl font-black leading-tight">
               Welcome to<br />
-              <span className="text-[var(--rb-primary)]">Indian Hair World</span>
+              <span className="text-[var(--rb-heading)]">Indian Hair World</span>
             </h2>
             <p className="text-gray-400 text-base leading-relaxed">
               Are you looking for the best <strong className="text-white">hair patch and hair wig in Kolkata</strong>? Look no further than Indian Hair World, where we offer top-quality non-surgical hair replacement services. Our experienced team uses only the finest Indian hair to create natural-looking hair patches and wigs that enhance your appearance.
             </p>
             <p className="text-gray-400 text-base leading-relaxed">
               Don't settle for anything less than the best. Contact us today at{" "}
-              <a href="tel:+917980221032" className="text-[var(--rb-primary)] font-semibold hover:underline">
+              <a href="tel:+917980221032" className="text-[var(--rb-heading)] font-semibold hover:underline">
                 +91-7980221032
               </a>{" "}
               to learn more. Our friendly staff will be happy to assist you with a personalised consultation.
@@ -56,7 +56,7 @@ export default function NAbout() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-white/10">
               {stats.map((s, i) => (
                 <div key={i} className="text-center">
-                  <p className="text-2xl md:text-3xl font-black text-[var(--rb-primary)]">{s.value}</p>
+                  <p className="text-2xl md:text-3xl font-black text-[var(--rb-heading)]">{s.value}</p>
                   <p className="text-gray-400 text-xs mt-1">{s.label}</p>
                 </div>
               ))}

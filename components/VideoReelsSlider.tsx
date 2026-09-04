@@ -270,7 +270,7 @@ export default function VideoReelsSlider({
                                             onError={(e) => { (e.currentTarget as HTMLImageElement).src = '/images/noimage.jpg'; }}
                                         />
                                         <div className="min-w-0">
-                                            <p className="text-xs text-gray-800 font-medium line-clamp-2 leading-tight group-hover/info:text-[var(--site-primary)] transition-colors">{reel.productName}</p>
+                                            <p className="text-xs text-gray-800 font-medium line-clamp-2 leading-tight group-hover/info:text-[var(--site-heading)] transition-colors">{reel.productName}</p>
                                             <div className="flex items-center gap-1.5 mt-1">
                                                 <span className="text-sm font-bold text-gray-900">{fmt(reel.salePrice)}</span>
                                                 {reel.price !== reel.salePrice && (

@@ -40,7 +40,7 @@ export default function BlogCard({ blog, featured = false }) {
             <span className="inline-block px-3 py-1 rounded-full bg-[var(--site-primary)] text-white text-xs font-bold uppercase tracking-wider mb-3">
               {firstTag}
             </span>
-            <h2 className="text-white text-xl md:text-2xl font-extrabold leading-tight mb-2 line-clamp-2 group-hover:text-[var(--site-primary)] transition-colors">
+            <h2 className="text-white text-xl md:text-2xl font-extrabold leading-tight mb-2 line-clamp-2 group-hover:text-[var(--site-heading)] transition-colors">
               {blog.title}
             </h2>
             <p className="text-white/70 text-sm line-clamp-2 mb-4 hidden md:block">{blog.short_description}</p>
@@ -78,7 +78,7 @@ export default function BlogCard({ blog, featured = false }) {
 
         {/* Body */}
         <div className="flex-1 flex flex-col p-5">
-          <h3 className="font-bold text-gray-900 text-base leading-snug line-clamp-2 group-hover:text-[var(--site-primary)] transition-colors mb-2">
+          <h3 className="font-bold text-gray-900 text-base leading-snug line-clamp-2 group-hover:text-[var(--site-heading)] transition-colors mb-2">
             {blog.title}
           </h3>
           <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 flex-1 mb-4">

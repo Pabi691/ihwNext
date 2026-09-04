@@ -23,7 +23,7 @@ function BlogCard({ blog }) {
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-[var(--rb-primary)]/10 to-[var(--rb-dark)]/5 flex items-center justify-center">
-              <span className="text-5xl font-black text-[var(--rb-primary)]/20">IHW</span>
+              <span className="text-5xl font-black text-[var(--rb-heading)]/20">IHW</span>
             </div>
           )}
           <span className="absolute top-3 left-3 bg-[var(--rb-primary)] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wide">
@@ -38,7 +38,7 @@ function BlogCard({ blog }) {
 
         {/* Body */}
         <div className="flex-1 flex flex-col p-5">
-          <h3 className="font-bold text-gray-900 text-sm leading-snug line-clamp-2 group-hover:text-[var(--rb-primary)] transition-colors mb-2">
+          <h3 className="font-bold text-gray-900 text-sm leading-snug line-clamp-2 group-hover:text-[var(--rb-heading)] transition-colors mb-2">
             {blog.title}
           </h3>
           <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 flex-1 mb-4">
@@ -54,7 +54,7 @@ function BlogCard({ blog }) {
                 {date && <p className="text-gray-400 text-[10px]">{date}</p>}
               </div>
             </div>
-            <span className="text-[var(--rb-primary)] text-xs font-bold group-hover:gap-2 flex items-center gap-1 transition-all">
+            <span className="text-[var(--rb-heading)] text-xs font-bold group-hover:gap-2 flex items-center gap-1 transition-all">
               Read <FaArrowRight className="w-2.5 h-2.5" />
             </span>
           </div>
@@ -95,12 +95,12 @@ export default function NBlogs() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6 md:mb-10">
           <div>
-            <span className="text-[var(--rb-primary)] text-xs font-bold uppercase tracking-widest">Insights</span>
+            <span className="text-[var(--rb-heading)] text-xs font-bold uppercase tracking-widest">Insights</span>
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 mt-1">
-              Hair Care <span className="text-[var(--rb-primary)]">Tips &amp; Articles</span>
+              Hair Care <span className="text-[var(--rb-heading)]">Tips &amp; Articles</span>
             </h2>
           </div>
-          <Link href="/blog" className="inline-flex items-center gap-2 text-[var(--rb-primary)] font-bold text-sm hover:gap-3 transition-all">
+          <Link href="/blog" className="inline-flex items-center gap-2 text-[var(--rb-heading)] font-bold text-sm hover:gap-3 transition-all">
             View All Articles <FaArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>

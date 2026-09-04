@@ -22,11 +22,11 @@ const OurWorks = () => {
       <div className="max-w-7xl mx-auto px-4 md:px-6">
 
         <div className="text-center mb-10 md:mb-14">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[var(--site-primary)] mb-3">
+          <p className="text-xs font-semibold uppercase tracking-widest text-[var(--site-heading)] mb-3">
             Before &amp; After
           </p>
           <h2 className="text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-gray-900">
-            Remarkable <span className="text-[var(--site-primary)]">Transformations</span>
+            Remarkable <span className="text-[var(--site-heading)]">Transformations</span>
           </h2>
           <p className="mt-4 text-base text-gray-500 leading-relaxed max-w-xl mx-auto">
             Non-surgical hair patch results at Indian Hair World. Natural look achieved in 60 minutes — starting from ₹5,999.

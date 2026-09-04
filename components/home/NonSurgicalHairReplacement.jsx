@@ -22,12 +22,12 @@ const NonSurgicalHairReplacement = () => {
           </div>
 
           <div className="space-y-5">
-            <p className="text-xs font-semibold uppercase tracking-widest text-[var(--site-primary)]">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[var(--site-heading)]">
               Our Services
             </p>
             <h2 className="text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-gray-900 leading-tight">
               Non-Surgical Hair <br />
-              <span className="text-[var(--site-primary)]">Replacement Services</span>
+              <span className="text-[var(--site-heading)]">Replacement Services</span>
             </h2>
             <p className="text-base text-gray-600 leading-relaxed">
               Established in 2015, Indian Hair World started its journey with the

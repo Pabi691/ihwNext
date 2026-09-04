@@ -62,7 +62,7 @@ function ProductCard({ product }) {
         {/* Info */}
         <div className="p-3">
           {product.brand_name && (
-            <p className="text-[var(--rb-primary)] text-[10px] font-bold uppercase tracking-wider mb-0.5">{product.brand_name}</p>
+            <p className="text-[var(--rb-heading)] text-[10px] font-bold uppercase tracking-wider mb-0.5">{product.brand_name}</p>
           )}
           <h3 className="text-gray-900 text-xs font-bold leading-tight line-clamp-2 mb-2">{product.prod_name}</h3>
           <div className="flex items-center justify-between">
@@ -122,10 +122,10 @@ export default function NProductSlider({ slugName, title, subtitle, accentWord }
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
           <div>
-            {subtitle && <span className="text-[var(--rb-primary)] text-xs font-bold uppercase tracking-widest">{subtitle}</span>}
+            {subtitle && <span className="text-[var(--rb-heading)] text-xs font-bold uppercase tracking-widest">{subtitle}</span>}
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 mt-1">
               {accentWord ? (
-                <>{titleParts[0]}<span className="text-[var(--rb-primary)]">{accentWord}</span>{titleParts[1]}</>
+                <>{titleParts[0]}<span className="text-[var(--rb-heading)]">{accentWord}</span>{titleParts[1]}</>
               ) : title}
             </h2>
           </div>
@@ -134,19 +134,19 @@ export default function NProductSlider({ slugName, title, subtitle, accentWord }
               <button
                 onClick={() => scrollByCards(-1)}
                 aria-label="Scroll left"
-                className="w-9 h-9 rounded-full border border-gray-200 bg-white text-gray-500 flex items-center justify-center hover:border-[var(--rb-primary)] hover:text-[var(--rb-primary)] transition-colors"
+                className="w-9 h-9 rounded-full border border-gray-200 bg-white text-gray-500 flex items-center justify-center hover:border-[var(--rb-primary)] hover:text-[var(--rb-heading)] transition-colors"
               >
                 <FaArrowLeft className="w-3 h-3" />
               </button>
               <button
                 onClick={() => scrollByCards(1)}
                 aria-label="Scroll right"
-                className="w-9 h-9 rounded-full border border-gray-200 bg-white text-gray-500 flex items-center justify-center hover:border-[var(--rb-primary)] hover:text-[var(--rb-primary)] transition-colors"
+                className="w-9 h-9 rounded-full border border-gray-200 bg-white text-gray-500 flex items-center justify-center hover:border-[var(--rb-primary)] hover:text-[var(--rb-heading)] transition-colors"
               >
                 <FaArrowRight className="w-3 h-3" />
               </button>
             </div>
-            <Link href="/shop" className="inline-flex items-center gap-2 text-[var(--rb-primary)] font-bold text-sm hover:gap-3 transition-all">
+            <Link href="/shop" className="inline-flex items-center gap-2 text-[var(--rb-heading)] font-bold text-sm hover:gap-3 transition-all">
               Shop All <FaArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>

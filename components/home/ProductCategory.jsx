@@ -65,7 +65,7 @@ function ProductCategory({ title }) {
 
         {/* Header */}
         <div className="text-center mb-10 md:mb-14">
-          <p className="text-xs font-semibold uppercase tracking-widest text-[var(--site-primary)] mb-3">
+          <p className="text-xs font-semibold uppercase tracking-widest text-[var(--site-heading)] mb-3">
             Our Collections
           </p>
           <h2 className="text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-gray-900">

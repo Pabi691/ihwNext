@@ -40,7 +40,7 @@ function MobileDrawer({ open, onClose }) {
                   <div className="pb-2">
                     {item.children.map((c) => (
                       <Link key={c.path} href={c.path} onClick={onClose}
-                        className="block pl-8 pr-5 py-2.5 text-sm text-gray-600 hover:text-[var(--rb-primary)]">
+                        className="block pl-8 pr-5 py-2.5 text-sm text-gray-600 hover:text-[var(--rb-heading)]">
                         {c.label}
                       </Link>
                     ))}
@@ -49,12 +49,12 @@ function MobileDrawer({ open, onClose }) {
               </div>
             ) : (
               <Link key={item.path} href={item.path} onClick={onClose}
-                className="block px-5 py-3.5 text-sm font-semibold text-gray-800 hover:text-[var(--rb-primary)] border-b border-gray-50">
+                className="block px-5 py-3.5 text-sm font-semibold text-gray-800 hover:text-[var(--rb-heading)] border-b border-gray-50">
                 {item.label}
               </Link>
             )
           )}
-          <a href="tel:+918910097668" className="block px-5 py-3.5 text-sm font-bold text-[var(--rb-primary)]">
+          <a href="tel:+918910097668" className="block px-5 py-3.5 text-sm font-bold text-[var(--rb-heading)]">
             📞 +91 89100 97668
           </a>
         </nav>
@@ -133,7 +133,7 @@ export default function RBHeaderNav() {
             className="flex-1 bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none"
           />
           <button type="submit" aria-label="Search" className="flex-shrink-0">
-            <FaMagnifyingGlass className="w-4 h-4 text-gray-400 hover:text-[var(--rb-primary)] transition-colors" />
+            <FaMagnifyingGlass className="w-4 h-4 text-gray-400 hover:text-[var(--rb-heading)] transition-colors" />
           </button>
         </form>
 
@@ -142,21 +142,21 @@ export default function RBHeaderNav() {
             href="tel:+918910097668"
             className="hidden lg:flex items-center gap-2.5 flex-shrink-0 border-r border-gray-200 pr-5"
           >
-            <span className="w-9 h-9 rounded-full border border-[var(--rb-primary)]/30 flex items-center justify-center text-[var(--rb-primary)]">
+            <span className="w-9 h-9 rounded-full border border-[var(--rb-primary)]/30 flex items-center justify-center text-[var(--rb-heading)]">
               <FaPhone className="w-3.5 h-3.5" />
             </span>
             <span className="leading-tight">
               <span className="block text-[10px] text-gray-400 font-semibold">Book Free Consultation</span>
-              <span className="block text-sm font-black text-[var(--rb-primary)]">+91 89100 97668</span>
+              <span className="block text-sm font-black text-[var(--rb-heading)]">+91 89100 97668</span>
             </span>
           </a>
 
-          <Link href="/login" className="hidden sm:flex flex-col items-center gap-1 text-gray-600 hover:text-[var(--rb-primary)] transition-colors">
+          <Link href="/login" className="hidden sm:flex flex-col items-center gap-1 text-gray-600 hover:text-[var(--rb-heading)] transition-colors">
             <FaUser className="w-4 h-4" />
             <span className="text-[10px] font-semibold whitespace-nowrap">Login / Signup</span>
           </Link>
 
-          <Link href="/wishlist" aria-label="Wishlist" className="relative flex flex-col items-center gap-1 text-gray-600 hover:text-[var(--rb-primary)] transition-colors border-l border-gray-200 pl-4 md:pl-5">
+          <Link href="/wishlist" aria-label="Wishlist" className="relative flex flex-col items-center gap-1 text-gray-600 hover:text-[var(--rb-heading)] transition-colors border-l border-gray-200 pl-4 md:pl-5">
             <FaHeart className="w-4 h-4" />
             {wishlistLength > 0 && (
               <span className="absolute -top-1.5 -right-2 w-4 h-4 rounded-full bg-[var(--rb-primary)] text-white text-[9px] font-bold flex items-center justify-center">
@@ -166,7 +166,7 @@ export default function RBHeaderNav() {
             <span className="hidden md:block text-[10px] font-semibold">Wishlist</span>
           </Link>
 
-          <Link href="/cart" aria-label="Cart" className="relative flex flex-col items-center gap-1 text-[var(--rb-primary)] hover:text-[var(--rb-primary-hover)] transition-colors border-l border-gray-200 pl-4 md:pl-5">
+          <Link href="/cart" aria-label="Cart" className="relative flex flex-col items-center gap-1 text-[var(--rb-heading)] hover:text-[var(--rb-primary-hover)] transition-colors border-l border-gray-200 pl-4 md:pl-5">
             <FaCartShopping className="w-4 h-4" />
             {cartLength > 0 && (
               <span className="absolute -top-1.5 -right-2 w-4 h-4 rounded-full bg-[var(--rb-primary)] text-white text-[9px] font-bold flex items-center justify-center">
@@ -197,7 +197,7 @@ export default function RBHeaderNav() {
                         <Link
                           key={child.path}
                           href={child.path}
-                          className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-[var(--rb-cream)] hover:text-[var(--rb-primary)] transition-colors"
+                          className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-[var(--rb-cream)] hover:text-[var(--rb-heading)] transition-colors"
                         >
                           {child.label}
                         </Link>

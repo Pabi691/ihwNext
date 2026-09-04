@@ -107,13 +107,13 @@ export default function NTrendingVideos() {
           className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10"
         >
           <div>
-            <span className="text-[var(--rb-primary)] text-xs font-bold uppercase tracking-widest">Social Proof</span>
+            <span className="text-[var(--rb-heading)] text-xs font-bold uppercase tracking-widest">Social Proof</span>
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 mt-1">
-              Trending <span className="text-[var(--rb-primary)]">Videos</span>
+              Trending <span className="text-[var(--rb-heading)]">Videos</span>
             </h2>
             <p className="text-gray-500 text-sm mt-2">Real results, real people. Hover to pause · tap to watch.</p>
           </div>
-          <Link href="/shop" className="inline-flex items-center gap-2 text-[var(--rb-primary)] font-bold text-sm hover:gap-3 transition-all">
+          <Link href="/shop" className="inline-flex items-center gap-2 text-[var(--rb-heading)] font-bold text-sm hover:gap-3 transition-all">
             View All Products <FaArrowRight className="w-3.5 h-3.5" />
           </Link>
         </motion.div>

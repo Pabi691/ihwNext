@@ -114,7 +114,7 @@ const MobileHomeBody = () => {
       <ProductCategory
         title={
           <>
-            SHOP FROM <span className="text-[var(--site-primary)]">OUR COLLECTION</span>
+            SHOP FROM <span className="text-[var(--site-heading)]">OUR COLLECTION</span>
           </>
         }
       />

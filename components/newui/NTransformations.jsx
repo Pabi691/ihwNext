@@ -16,13 +16,13 @@ export default function NTransformations() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
           <div>
-            <span className="text-[var(--rb-primary)] text-xs font-bold uppercase tracking-widest">Before &amp; After</span>
+            <span className="text-[var(--rb-heading)] text-xs font-bold uppercase tracking-widest">Before &amp; After</span>
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 mt-1">
-              Remarkable <span className="text-[var(--rb-primary)]">Transformations</span>
+              Remarkable <span className="text-[var(--rb-heading)]">Transformations</span>
             </h2>
             <p className="text-gray-500 text-sm mt-2 max-w-md">Real results from real clients. See what's possible.</p>
           </div>
-          <Link href="/services" className="inline-flex items-center gap-2 text-[var(--rb-primary)] font-bold text-sm hover:gap-3 transition-all">
+          <Link href="/services" className="inline-flex items-center gap-2 text-[var(--rb-heading)] font-bold text-sm hover:gap-3 transition-all">
             View All Works <FaArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>

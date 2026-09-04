@@ -9,11 +9,11 @@ const BranchAppointmentBanner = () => {
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         {/* Heading */}
         <div className="text-center mb-8 md:mb-12">
-          <p className="text-[var(--site-primary)] text-xs font-bold uppercase tracking-[0.2em] mb-2">
+          <p className="text-[var(--site-heading)] text-xs font-bold uppercase tracking-[0.2em] mb-2">
             Visit Us
           </p>
           <h2 className="text-3xl md:text-4xl font-black text-[var(--site-dark)]">
-            Book an <span className="text-[var(--site-primary)]">Appointment</span>
+            Book an <span className="text-[var(--site-heading)]">Appointment</span>
           </h2>
           <p className="text-gray-500 text-sm mt-3 max-w-lg mx-auto">
             Walk into any of our {branches.length} branches for a free consultation — no prior appointment needed.
@@ -55,7 +55,7 @@ const BranchAppointmentBanner = () => {
                   {b.landmark && (
                     <p className="text-gray-400 text-[11px] mt-0.5 line-clamp-1">{b.landmark}</p>
                   )}
-                  <p className="mt-2 text-[var(--site-primary)] font-black text-sm tracking-tight">
+                  <p className="mt-2 text-[var(--site-heading)] font-black text-sm tracking-tight">
                     {b.phones?.[0]}
                   </p>
 

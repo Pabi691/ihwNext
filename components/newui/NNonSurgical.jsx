@@ -37,10 +37,10 @@ export default function NNonSurgical() {
 
           {/* Content */}
           <div className="space-y-6">
-            <span className="text-[var(--rb-primary)] text-xs font-bold uppercase tracking-widest">Our Services</span>
+            <span className="text-[var(--rb-heading)] text-xs font-bold uppercase tracking-widest">Our Services</span>
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 leading-tight">
               Non-Surgical Hair<br />
-              <span className="text-[var(--rb-primary)]">Replacement Services</span>
+              <span className="text-[var(--rb-heading)]">Replacement Services</span>
             </h2>
             <p className="text-gray-600 text-base leading-relaxed">
               Established in 2015, Indian Hair World started its journey with the aim of putting smiles on people's faces suffering from baldness. Our founder,{" "}
@@ -51,7 +51,7 @@ export default function NNonSurgical() {
             <ul className="space-y-3">
               {benefits.map((b, i) => (
                 <li key={i} className="flex items-center gap-3 text-gray-700 text-sm">
-                  <FaCircleCheck className="w-4 h-4 text-[var(--rb-primary)] flex-shrink-0" />
+                  <FaCircleCheck className="w-4 h-4 text-[var(--rb-heading)] flex-shrink-0" />
                   {b}
                 </li>
               ))}

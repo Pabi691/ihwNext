@@ -16,7 +16,7 @@ export default function RBQuickTrustStrip() {
           {ITEMS.map(({ icon: Icon, title, subtitle }, i) => (
             <div key={i} className="flex items-center gap-3">
               <span className="w-9 h-9 rounded-lg bg-[var(--rb-primary)]/10 flex items-center justify-center flex-shrink-0">
-                <Icon className="w-4 h-4 text-[var(--rb-primary)]" />
+                <Icon className="w-4 h-4 text-[var(--rb-heading)]" />
               </span>
               <div className="min-w-0">
                 <p className="text-gray-900 font-bold text-xs md:text-sm leading-tight">{title}</p>

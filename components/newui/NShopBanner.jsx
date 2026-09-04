@@ -7,9 +7,9 @@ export default function NShopBanner() {
     <section className="py-8 md:py-12 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="text-center mb-10">
-          <span className="text-[var(--rb-primary)] text-xs font-bold uppercase tracking-widest">Shop Online</span>
+          <span className="text-[var(--rb-heading)] text-xs font-bold uppercase tracking-widest">Shop Online</span>
           <h2 className="text-3xl md:text-4xl font-black text-gray-900 mt-1">
-            Your Hair, Your <span className="text-[var(--rb-primary)]">Style</span>
+            Your Hair, Your <span className="text-[var(--rb-heading)]">Style</span>
           </h2>
           <p className="text-gray-500 text-sm mt-2">Shop our full range of hair products delivered to your doorstep.</p>
         </div>

@@ -27,7 +27,7 @@ export default function RBHero() {
         {/* LEFT — content */}
         <div className="relative z-10 text-center lg:text-left">
           <p className="text-gray-500 text-xl md:text-2xl font-medium mb-1">Celebrate</p>
-          <h1 className="text-5xl md:text-6xl font-black leading-[1.05] text-[var(--rb-primary)]">Raksha</h1>
+          <h1 className="text-5xl md:text-6xl font-black leading-[1.05] text-[var(--rb-heading)]">Raksha</h1>
           <h1 className="text-5xl md:text-6xl font-black leading-[1.05] text-gray-900 mb-5">Bandhan</h1>
           <p className="text-gray-600 text-base md:text-lg max-w-md mx-auto lg:mx-0 mb-6">
             Instant confidence, instant style — premium hair patches &amp; non-surgical replacement, tailored just for you.
@@ -38,7 +38,7 @@ export default function RBHero() {
             {FEATURES.map(({ icon: Icon, label }) => (
               <span key={label} className="inline-flex items-center gap-2 text-gray-600 text-sm font-medium">
                 <span className="w-7 h-7 rounded-full bg-[var(--rb-primary)]/10 flex items-center justify-center">
-                  <Icon className="w-3.5 h-3.5 text-[var(--rb-primary)]" />
+                  <Icon className="w-3.5 h-3.5 text-[var(--rb-heading)]" />
                 </span>
                 {label}
               </span>

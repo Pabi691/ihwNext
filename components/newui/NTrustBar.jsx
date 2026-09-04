@@ -6,8 +6,8 @@ const badges = [
   { icon: <FaStar className="text-yellow-400 w-4 h-4 flex-shrink-0" />, text: "Trusted by 10,000+ Customers" },
   { icon: <FaAward className="text-[var(--rb-accent)] w-4 h-4 flex-shrink-0" />, text: "Times Brand Icons 2024" },
   { icon: <FaTrophy className="text-[var(--rb-accent)] w-4 h-4 flex-shrink-0" />, text: "International Excellence Award 2024" },
-  { icon: <FaTrophy className="text-[var(--rb-primary)] w-4 h-4 flex-shrink-0" />, text: "Global Fame Award 2024" },
-  { icon: <FaThumbsUp className="text-[var(--rb-primary)] w-4 h-4 flex-shrink-0" />, text: "Nation Pride Award 2022" },
+  { icon: <FaTrophy className="text-[var(--rb-heading)] w-4 h-4 flex-shrink-0" />, text: "Global Fame Award 2024" },
+  { icon: <FaThumbsUp className="text-[var(--rb-heading)] w-4 h-4 flex-shrink-0" />, text: "Nation Pride Award 2022" },
   { icon: <FaThumbsUp className="text-emerald-500 w-4 h-4 flex-shrink-0" />, text: "Bengal Pride Award 2021" },
   { icon: <FaFire className="text-red-400 w-4 h-4 flex-shrink-0" />, text: "No Surgery. No Side Effects." },
 ];

@@ -162,7 +162,7 @@ const NavTop = () => {
             <Link
               to="/shop?tryon=1"
               className="flex-1 flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl
-        bg-[#062033] text-[var(--site-primary)] font-semibold text-xs
+        bg-[#062033] text-[var(--site-heading)] font-semibold text-xs
         shadow-md"
             >
               <span>✂️</span>
@@ -264,7 +264,7 @@ const NavTop = () => {
                 <Link onClick={() => setShowMenu(false)} className='text-xs font-medium' to={'/branch/siliguri'}>- Siliguri</Link>
                 <p className='font-semibold'>Shop In</p>
                 <Link className='text-xs font-medium' onClick={() => setShowMenu(false)} to={'/shop'}>- All Products</Link>
-                <Link className='text-xs font-medium text-[var(--site-primary)]' onClick={() => setShowMenu(false)} to={'/shop?tryon=1'}>- ✂️ Virtual Hair Try-On</Link>
+                <Link className='text-xs font-medium text-[var(--site-heading)]' onClick={() => setShowMenu(false)} to={'/shop?tryon=1'}>- ✂️ Virtual Hair Try-On</Link>
                 <NavMenus />
                 {userToken && (
                   <div>

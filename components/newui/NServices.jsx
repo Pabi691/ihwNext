@@ -15,9 +15,9 @@ export default function NServices() {
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <span className="text-[var(--rb-primary)] text-xs font-bold uppercase tracking-widest">What We Offer</span>
+          <span className="text-[var(--rb-heading)] text-xs font-bold uppercase tracking-widest">What We Offer</span>
           <h2 className="text-3xl md:text-4xl font-black text-gray-900 mt-1">
-            Our Popular <span className="text-[var(--rb-primary)]">Services</span>
+            Our Popular <span className="text-[var(--rb-heading)]">Services</span>
           </h2>
           <p className="text-gray-500 text-sm mt-3 max-w-lg mx-auto">
             From hair patches to full wigs — we have a complete solution for every hair concern.
@@ -44,9 +44,9 @@ export default function NServices() {
               </div>
               {/* Content */}
               <div className="p-5">
-                <h3 className="text-gray-900 font-bold text-base mb-2 group-hover:text-[var(--rb-primary)] transition-colors">{s.service_name}</h3>
+                <h3 className="text-gray-900 font-bold text-base mb-2 group-hover:text-[var(--rb-heading)] transition-colors">{s.service_name}</h3>
                 <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-3">{s.description}</p>
-                <span className="inline-flex items-center gap-1.5 text-[var(--rb-primary)] text-xs font-bold group-hover:gap-2.5 transition-all">
+                <span className="inline-flex items-center gap-1.5 text-[var(--rb-heading)] text-xs font-bold group-hover:gap-2.5 transition-all">
                   Learn More <FaArrowRight className="w-3 h-3" />
                 </span>
               </div>

@@ -5,7 +5,8 @@
 /* ── Raksha Bandhan campaign theme (used by components/newui/* + pages/test-home.jsx only) ──
    Change any value here to re-theme the whole /test-home preview from one place. */
 :root {
-  --rb-primary: #7a1420;        /* deep maroon — buttons, headings, primary accents */
+  --rb-primary: #7a1420;        /* deep maroon — button/section FILLS */
+  --rb-heading: #7a1420;        /* heading + highlighted-word TEXT (split from --rb-primary) */
   --rb-primary-hover: #8f1826;  /* maroon hover/active state */
   --rb-primary-mid: #6b0f16;    /* mid maroon — gradient stop */
   --rb-primary-mid2: #5c0f16;   /* mid maroon — gradient stop */
@@ -23,7 +24,8 @@
    late <style> that overrides these (mapped from the active festival palette)
    when a festival theme is active, and removes it on deactivate — a clean revert. */
 :root {
-  --site-primary: #04A9FF;        /* brand blue — eyebrows, accents, links, badges, CTAs */
+  --site-primary: #04A9FF;        /* brand blue — FILLS: badges, CTAs, bars */
+  --site-heading: #04A9FF;        /* heading + highlighted-word TEXT (split from --site-primary) */
   --site-primary-hover: #0070cc;  /* brand blue, darker — button hover */
   --site-accent: #ef7f1a;         /* orange — hero badge, price block, award icons, hamburger */
 
