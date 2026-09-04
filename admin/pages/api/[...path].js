@@ -22,16 +22,23 @@ export default async function handler(req, res) {
   const apiBase = isCdnImages ? CDN_API_BASE : LOCAL_API_BASE;
   const targetUrl = `${apiBase}/${pathParts.join("/")}${query || ""}`;
 
+  // Only swap in the production upload token when one is actually configured
+  // (that's the local-dev case, where the local session token is not valid
+  // against the live backend). On the deployed CRM the admin's own session
+  // token already belongs to this backend, so pass it straight through —
+  // stripping it there left the request unauthenticated and Laravel 401'd.
+  const swapAuth = isCdnImages && !!CDN_UPLOAD_TOKEN;
+
   const headers = {};
   Object.entries(req.headers).forEach(([key, value]) => {
     if (!value) return;
     const lower = key.toLowerCase();
     if (lower === "host") return;
     if (lower === "origin") return;
-    if (isCdnImages && lower === "authorization") return; // replaced below
+    if (swapAuth && lower === "authorization") return; // replaced below
     headers[key] = Array.isArray(value) ? value.join(",") : value;
   });
-  if (isCdnImages && CDN_UPLOAD_TOKEN) {
+  if (swapAuth) {
     headers["authorization"] = `Bearer ${CDN_UPLOAD_TOKEN}`;
   }
 
