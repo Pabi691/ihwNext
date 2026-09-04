@@ -39,17 +39,20 @@ const COLOR_OPTIONS = [
 
 // --- Festival theme --------------------------------------------------------
 
+// [cssVar, label, where it actually shows up]
+// The descriptions match real usage in the storefront components — the point is
+// that nobody should have to guess which swatch changes which pixel.
 const PALETTE_FIELDS = [
-  ["--rb-primary",         "Primary"],
-  ["--rb-primary-hover",   "Primary hover"],
-  ["--rb-primary-mid",     "Primary mid"],
-  ["--rb-primary-mid2",    "Primary mid 2"],
-  ["--rb-dark",            "Dark"],
-  ["--rb-accent",          "Accent"],
-  ["--rb-accent-light",    "Accent light"],
-  ["--rb-accent-lighter",  "Accent lighter"],
-  ["--rb-cream",           "Section bg"],
-  ["--rb-cream-border",    "Card border"],
+  ["--rb-primary",        "Main colour",       "TEXT — section headings and the highlighted word (e.g. “Book an Appointment”). Also fills the main buttons. The most-used colour: keep it readable on white."],
+  ["--rb-primary-hover",  "Button hover",      "BACKGROUND — fill of a button while it is pressed or hovered. Usually a touch lighter than Main colour."],
+  ["--rb-primary-mid",    "Gradient · middle", "BACKGROUND only — a middle stop of the hero gradient. Never used for text."],
+  ["--rb-primary-mid2",   "Gradient · top",    "BACKGROUND only — the darkest stop, at the top of the hero gradient. White text sits over it."],
+  ["--rb-dark",           "Dark background",   "BACKGROUND — dark sections and the mobile bottom nav bar. White text sits on this, so keep it dark."],
+  ["--rb-accent",         "Accent",            "Badges, icons and slider dots. The secondary highlight, used as both text and small fills."],
+  ["--rb-accent-light",   "Text on dark",      "TEXT — small labels shown on top of dark backgrounds (e.g. “TRUSTED BY”). Must be light enough to read there."],
+  ["--rb-accent-lighter", "Gradient text end", "TEXT — the end colour of the gradient hero title. The lightest tint of the accent."],
+  ["--rb-cream",          "Light background",  "BACKGROUND — the light, near-white section panels. Dark text sits on this, so keep it very light."],
+  ["--rb-cream-border",   "Card border",       "BORDER — thin outlines around cards and boxes. Slightly darker than Light background."],
 ];
 
 const DEFAULT_PALETTE = {
@@ -1094,15 +1097,20 @@ export default function Settings() {
                   {/* Palette */}
                   <div>
                     <label className={L}>Colour palette</label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      {PALETTE_FIELDS.map(([key, lbl]) => (
-                        <div key={key} className="flex items-center gap-2">
+                    <p className="text-[11px] text-gray-400 -mt-1 mb-2.5">
+                      Each swatch says exactly where it appears. <b>TEXT</b> colours must stay readable on
+                      whatever they sit on; <b>BACKGROUND</b> colours are never used for words.
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      {PALETTE_FIELDS.map(([key, lbl, help]) => (
+                        <div key={key} className="flex items-start gap-2.5 rounded-xl border border-gray-100 bg-gray-50/60 p-2.5">
                           <input type="color" value={p[key]} onChange={(e) => setFestPalette(key, e.target.value)}
-                            className="w-8 h-8 rounded border border-gray-200 shrink-0" />
-                          <div className="min-w-0">
-                            <p className="text-[10px] text-gray-500 leading-tight">{lbl}</p>
+                            className="w-9 h-9 rounded-lg border border-gray-200 shrink-0 mt-0.5 cursor-pointer" />
+                          <div className="min-w-0 flex-1">
+                            <p className="text-[11px] font-semibold text-gray-700 leading-tight">{lbl}</p>
                             <input value={p[key]} onChange={(e) => setFestPalette(key, e.target.value)}
-                              className="w-full text-xs border border-gray-200 rounded px-1.5 py-1 outline-none focus:border-[#04A9FF]" />
+                              className="w-full text-xs font-mono border border-gray-200 rounded px-1.5 py-1 mt-1 outline-none focus:border-[#04A9FF]" />
+                            <p className="text-[10px] text-gray-400 leading-snug mt-1.5">{help}</p>
                           </div>
                         </div>
                       ))}
