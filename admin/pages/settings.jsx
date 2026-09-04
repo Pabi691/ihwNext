@@ -109,6 +109,8 @@ const EMPTY_FESTIVAL = {
   palette: { ...DEFAULT_PALETTE },
   hero: { eyebrow: "", line1: "", line2: "", tagline: "", trustedBy: "" },
   promo: { label: "", subtitle: "" },
+  heroMedia: "images", // "images" | "video" — what fills the hero slot
+  heroVideo: "",       // video URL, used when heroMedia === "video"
   heroImages: [],
   rangoli: [], // up to 3 { url, position, size, rotation, opacity } — overrides the built-in motif
   bottomNav: { bg: "", bgImage: "", icons: ["", "", "", ""] }, // mobile bottom-nav overrides
@@ -169,6 +171,8 @@ function festivalFromSettings(raw) {
       label: d.promo?.label || "",
       subtitle: d.promo?.subtitle || "",
     },
+    heroMedia: d.heroMedia === "video" ? "video" : "images",
+    heroVideo: typeof d.heroVideo === "string" ? d.heroVideo : "",
     heroImages: images.slice(0, 3),
     rangoli: normalizeRangoli(d),
     bottomNav: normalizeBottomNav(d),
@@ -203,6 +207,8 @@ function festivalToSettings(f) {
       trustedBy: f.hero.trustedBy.trim(),
     },
     promo: { label: f.promo.label.trim(), subtitle: f.promo.subtitle.trim() },
+    heroMedia: f.heroMedia === "video" ? "video" : "images",
+    heroVideo: (f.heroVideo || "").trim(),
     heroImages: images,
     heroImageUrl: images[0] || "", // back-compat for anything still reading the single key
     rangoli: (f.rangoli || [])
@@ -411,7 +417,7 @@ function RangoliLayer({ rangoli, color }) {
 }
 
 // Crossfade cycler — one image fades out, the next fades in ("vanish" style).
-function FadeSlider({ images, palette, interval = 2200 }) {
+function FadeSlider({ images, palette, interval = 2200, bleed = false }) {
   const [idx, setIdx] = useState(0);
   useEffect(() => {
     setIdx(0);
@@ -422,7 +428,7 @@ function FadeSlider({ images, palette, interval = 2200 }) {
 
   if (!images || images.length === 0) {
     return (
-      <div className="relative w-full h-40 rounded-xl mt-3 overflow-hidden"
+      <div className={`relative w-full h-40 overflow-hidden ${bleed ? "" : "rounded-xl mt-3"}`}
         style={{ background: `linear-gradient(160deg, ${palette["--rb-primary-mid"]}, ${palette["--rb-dark"]})` }}>
         <span className="absolute inset-0 flex items-center justify-center text-white/40 text-[11px]">
           images appear here after Generate / upload
@@ -432,7 +438,7 @@ function FadeSlider({ images, palette, interval = 2200 }) {
   }
 
   return (
-    <div className="relative w-full h-40 rounded-xl mt-3 overflow-hidden bg-black/20">
+    <div className={`relative w-full h-40 overflow-hidden bg-black/20 ${bleed ? "" : "rounded-xl mt-3"}`}>
       {images.map((src, i) => (
         <img key={src + i} src={src} alt="" draggable={false}
           className="absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-700"
@@ -465,6 +471,7 @@ function FestivalPreview({ fest }) {
   const nav = fest.bottomNav || {};
   const titleLines = [hero.line1, hero.line2].map((s) => (s || "").trim()).filter(Boolean);
   const images = (fest.heroImages || []).filter(Boolean).slice(0, 3);
+  const heroVideo = fest.heroMedia === "video" ? (fest.heroVideo || "").trim() : "";
   const rangoli = (fest.rangoli || []).filter((r) => r && r.url);
   const saleBg = (fest.saleSection?.bg || "").trim();
 
@@ -500,9 +507,9 @@ function FestivalPreview({ fest }) {
             </div>
           </div>
 
-          {/* hero */}
+          {/* hero — media runs flush to the nav (no padding), copy sits below */}
           <div
-            className="relative px-4 pt-5 pb-6 overflow-hidden"
+            className="relative overflow-hidden"
             style={{
               background: `linear-gradient(165deg, ${p["--rb-primary-mid2"]}, ${p["--rb-primary-mid"]} 55%, ${p["--rb-accent-lighter"]})`,
             }}
@@ -510,7 +517,22 @@ function FestivalPreview({ fest }) {
             {rangoli.map((r, i) => (
               <img key={i} src={r.url} alt="" aria-hidden className="select-none" style={rangoliBoxStyle(r)} />
             ))}
-            <div className="relative">
+            {heroVideo ? (
+              <video
+                key={heroVideo}
+                src={heroVideo}
+                className="relative block w-full h-auto"
+                muted
+                loop
+                autoPlay
+                playsInline
+              />
+            ) : (
+              <div className="relative">
+                <FadeSlider images={images} palette={p} bleed />
+              </div>
+            )}
+            <div className="relative px-4 pt-4 pb-6">
               {hero.eyebrow && (
                 <p className="text-[11px] font-medium mb-1" style={{ color: p["--rb-accent-light"] }}>
                   {hero.eyebrow}
@@ -537,7 +559,6 @@ function FestivalPreview({ fest }) {
                   <span className="text-white text-[11px] font-black">{hero.trustedBy}</span>
                 </div>
               )}
-              <FadeSlider images={images} palette={p} />
             </div>
           </div>
 
@@ -1139,11 +1160,11 @@ export default function Settings() {
                     </div>
                     <div>
                       <label className={L}>Title line 1</label>
-                      <input value={fest.hero.line1} onChange={(e) => setFestHero("line1", e.target.value)} className={I} maxLength={20} />
+                      <input value={fest.hero.line1} onChange={(e) => setFestHero("line1", e.target.value)} className={I} maxLength={60} />
                     </div>
                     <div>
                       <label className={L}>Title line 2 (optional)</label>
-                      <input value={fest.hero.line2} onChange={(e) => setFestHero("line2", e.target.value)} className={I} maxLength={20} />
+                      <input value={fest.hero.line2} onChange={(e) => setFestHero("line2", e.target.value)} className={I} maxLength={60} />
                     </div>
                     <div className="col-span-2">
                       <label className={L}>Hero tagline</label>
@@ -1163,9 +1184,56 @@ export default function Settings() {
                     </div>
                   </div>
 
-                  {/* Hero images (up to 3, cross-fade on storefront) */}
+                  {/* Hero media — either up to 3 cross-fading images, or one video */}
                   <div>
-                    <label className={L}><span className="flex items-center gap-1"><FiImage size={11} /> Hero images — up to 3, cross-fade</span></label>
+                    <label className={L}><span className="flex items-center gap-1"><FiImage size={11} /> Hero media</span></label>
+
+                    <div className="flex items-center gap-1 mb-3">
+                      {[["images", "3 images (cross-fade)"], ["video", "One video"]].map(([mode, lbl]) => (
+                        <button
+                          key={mode}
+                          type="button"
+                          onClick={() => setFest((f) => ({ ...f, heroMedia: mode }))}
+                          className={`px-3 py-1.5 text-xs font-bold rounded-lg border transition-colors ${
+                            fest.heroMedia === mode
+                              ? "bg-[#04A9FF] border-[#04A9FF] text-white"
+                              : "bg-white border-gray-200 text-gray-600 hover:border-gray-400"
+                          }`}
+                        >
+                          {lbl}
+                        </button>
+                      ))}
+                    </div>
+
+                    {fest.heroMedia === "video" ? (
+                      <div className="space-y-1.5">
+                        <input
+                          value={fest.heroVideo || ""}
+                          onChange={(e) => setFest((f) => ({ ...f, heroVideo: e.target.value }))}
+                          placeholder="https://cdn.indianhairworld.com/page-images/festival-hero.mp4"
+                          className={I}
+                        />
+                        <p className="text-[11px] text-gray-400 leading-snug">
+                          Paste a direct .mp4 URL. The video plays muted on a loop and runs
+                          edge to edge — no padding or rounded corners — so it meets the nav
+                          with no seam. Upload the file to the CDN via hPanel → File Manager
+                          (<span className="font-mono">public_html/cdn.indianhairworld.com/page-images/</span>),
+                          then paste its URL here.
+                        </p>
+                        {fest.heroVideo?.trim() && (
+                          <video
+                            key={fest.heroVideo}
+                            src={fest.heroVideo}
+                            className="w-full rounded-lg border border-gray-200 mt-1"
+                            muted
+                            loop
+                            autoPlay
+                            playsInline
+                          />
+                        )}
+                      </div>
+                    ) : (
+                    <>
 
                     <div className="flex flex-wrap items-center gap-2 mb-2">
                       <label className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg border transition-colors cursor-pointer ${
@@ -1216,6 +1284,8 @@ export default function Settings() {
                       ))}
                     </div>
                     <p className="text-xs text-gray-400 mt-1">Blank slots are ignored. With one image it just shows still; with 2–3 they cross-fade.</p>
+                    </>
+                    )}
                   </div>
 
                   {/* Rangoli / decoration images (up to 3, positioned) */}

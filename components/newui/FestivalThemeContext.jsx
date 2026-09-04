@@ -43,6 +43,8 @@ export const DEFAULT_THEME = {
     label: "RAKSHA BANDHAN – 28 AUG, FRIDAY",
     subtitle: "Celebrate the bond with love & care.",
   },
+  heroMedia: "images",     // "images" | "video" — what fills the hero slot
+  heroVideo: "",           // video URL, used when heroMedia === "video"
   backgroundImage: null,   // null => NHero uses /images/bannerIhw.png
   backgroundImages: [],    // 0..3 CDN URLs — cross-fade in the mobile hero
   rangoli: [],             // 0..3 { url, position, size, rotation, opacity } — [] => drawn SVG motif
@@ -104,6 +106,34 @@ function hexToRgbTriplet(hex) {
   return `${(n >> 16) & 255} ${(n >> 8) & 255} ${n & 255}`;
 }
 
+// ":root{...}" for one palette. Also drives the live-site --site-* tokens from
+// the same values so an active theme re-skins the whole storefront, not just
+// the newui components.
+function buildPaletteCss(p) {
+  if (!p) return "";
+  const rbVars = Object.entries(p).map(([k, v]) => `${k}:${v}`).join(";");
+  const siteVars = [
+    `--site-primary:${p["--rb-primary"]}`,
+    `--site-heading:${p["--rb-heading"] || p["--rb-primary"]}`,
+    `--site-primary-hover:${p["--rb-primary-hover"]}`,
+    `--site-accent:${p["--rb-accent"]}`,
+    `--site-hero-from:${p["--rb-primary-mid2"]}`,
+    `--site-hero-via:${p["--rb-primary-mid"]}`,
+    `--site-hero-to:${p["--rb-accent-lighter"]}`,
+    `--site-promo-from:${p["--rb-primary-mid2"]}`,
+    `--site-promo-to:${p["--rb-primary"]}`,
+    `--site-dark:${p["--rb-dark"]}`,
+    `--site-light:${p["--rb-cream"]}`,
+    `--site-cta-from:${p["--rb-primary"]}`,
+    `--site-cta-to:${p["--rb-primary-hover"]}`,
+    `--site-nav-bg:${p["--rb-dark"]}`,
+    `--site-primary-rgb:${hexToRgbTriplet(p["--rb-primary"])}`,
+    `--site-accent-rgb:${hexToRgbTriplet(p["--rb-accent"])}`,
+    `--site-dark-rgb:${hexToRgbTriplet(p["--rb-dark"])}`,
+  ].join(";");
+  return `:root{${rbVars};${siteVars}}`;
+}
+
 function normalizePalette(input) {
   if (!input || typeof input !== "object") return null;
   const out = {};
@@ -153,6 +183,8 @@ function parseFestivalTheme(raw) {
       label: String(data.promo?.label || "").trim(),
       subtitle: String(data.promo?.subtitle || "").trim(),
     },
+    heroMedia: data.heroMedia === "video" ? "video" : "images",
+    heroVideo: typeof data.heroVideo === "string" ? data.heroVideo.trim() : "",
     backgroundImage: images[0] || null,
     backgroundImages: images,
     rangoli: normalizeRangoli(data),
@@ -234,60 +266,19 @@ export function FestivalThemeProvider({ children, forcedTheme = null }) {
     };
   }, [forcedTheme]);
 
-  // Keep a <style> tag in <head> in sync with the active palette.
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    let el = document.getElementById(STYLE_EL_ID);
-
-    if (!theme.palette) {
-      if (el) el.remove();
-      return;
-    }
-    if (!el) {
-      el = document.createElement("style");
-      el.id = STYLE_EL_ID;
-      document.head.appendChild(el);
-    }
-    const p = theme.palette;
-    const rbVars = Object.entries(p).map(([k, v]) => `${k}:${v}`).join(";");
-    // Also drive the live-site --site-* tokens (index.css) from the same palette,
-    // so an active festival theme re-skins the real storefront, not just the
-    // newui preview. Removed together with rbVars on deactivate — clean revert.
-    const siteVars = [
-      `--site-primary:${p["--rb-primary"]}`,
-      `--site-heading:${p["--rb-heading"] || p["--rb-primary"]}`,
-      `--site-primary-hover:${p["--rb-primary-hover"]}`,
-      `--site-accent:${p["--rb-accent"]}`,
-      `--site-hero-from:${p["--rb-primary-mid2"]}`,
-      `--site-hero-via:${p["--rb-primary-mid"]}`,
-      `--site-hero-to:${p["--rb-accent-lighter"]}`,
-      `--site-promo-from:${p["--rb-primary-mid2"]}`,
-      `--site-promo-to:${p["--rb-primary"]}`,
-      `--site-dark:${p["--rb-dark"]}`,
-      `--site-light:${p["--rb-cream"]}`,
-      `--site-cta-from:${p["--rb-primary"]}`,
-      `--site-cta-to:${p["--rb-primary-hover"]}`,
-      `--site-nav-bg:${p["--rb-dark"]}`,
-      `--site-primary-rgb:${hexToRgbTriplet(p["--rb-primary"])}`,
-      `--site-accent-rgb:${hexToRgbTriplet(p["--rb-accent"])}`,
-      `--site-dark-rgb:${hexToRgbTriplet(p["--rb-dark"])}`,
-    ].join(";");
-    el.textContent = `:root{${rbVars};${siteVars}}`;
-  }, [theme.palette]);
-
-  // Clean up the style tag if the provider unmounts.
-  useEffect(() => {
-    return () => {
-      const el =
-        typeof document !== "undefined" && document.getElementById(STYLE_EL_ID);
-      if (el) el.remove();
-    };
-  }, []);
-
+  const paletteCss = useMemo(() => buildPaletteCss(theme.palette), [theme.palette]);
   const value = useMemo(() => ({ theme, loading }), [theme, loading]);
 
   return (
     <FestivalThemeContext.Provider value={value}>
+      {/* Rendered into the markup rather than appended to <head> in an effect:
+          an effect only runs after hydration, so the first paint used the
+          index.css defaults and the real palette snapped in a moment later —
+          a visible flash of the wrong (maroon) theme. As JSX this ships with
+          the SSR HTML whenever the page supplies the theme up front. */}
+      {paletteCss ? (
+        <style id={STYLE_EL_ID} dangerouslySetInnerHTML={{ __html: paletteCss }} />
+      ) : null}
       {children}
     </FestivalThemeContext.Provider>
   );

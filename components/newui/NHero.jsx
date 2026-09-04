@@ -135,6 +135,9 @@ export default function NHero() {
     ? bannerImages.map((b) => b.image_path)
     : festivalImages;
 
+  // A video replaces the slider entirely when the theme supplies one.
+  const heroVideo = theme.active && theme.heroMedia === "video" ? theme.heroVideo || "" : "";
+
   // Same choice for the desktop swiper, normalised to { src, alt }.
   const desktopSlides = festivalArtActive
     ? festivalSlides.map((src) => ({ src, alt: theme.name || "Festival banner" }))
@@ -242,7 +245,18 @@ export default function NHero() {
             (not a full-bleed edge-to-edge image) */}
         <div className="hidden lg:flex items-center justify-center py-6 xl:py-10 pl-6 xl:pl-10">
           <div className="relative w-full h-[420px] xl:h-[460px] rounded-3xl overflow-hidden shadow-2xl bg-white">
-            {desktopSlides.length > 0 ? (
+            {heroVideo ? (
+              <video
+                key={heroVideo}
+                src={heroVideo}
+                className="w-full h-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+              />
+            ) : desktopSlides.length > 0 ? (
               <Swiper
                 modules={[Autoplay, EffectFade, Pagination]}
                 effect="fade"
@@ -302,24 +316,35 @@ export default function NHero() {
       <div className="lg:hidden">
         <div className="relative overflow-hidden bg-gradient-to-br from-[var(--rb-primary-mid2)] via-[var(--rb-primary-mid)] to-[var(--rb-dark)]">
 
-          {/* top: banner image slider — inset, rounded, explicit height */}
-          <div className="px-4 pt-4">
-            <div className="relative h-[44vh] min-h-[240px] max-h-[400px] w-full rounded-2xl overflow-hidden shadow-lg ring-1 ring-white/10">
-              <FestivalFadeImages
-                images={mobileBanners}
-                alt={[hero.eyebrow, hero.titleLines.join(" ")].filter(Boolean).join(" ") || "Indian Hair World"}
-                fill
+          {/* top: hero media — video or image slider. Both run full-bleed: no
+              side/top padding, no rounding, no ring, so the media meets the nav
+              with no seam. */}
+          {heroVideo ? (
+            <div className="relative w-full overflow-hidden bg-[var(--rb-dark)]">
+              <video
+                key={heroVideo}
+                src={heroVideo}
+                className="block w-full h-auto"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
               />
             </div>
-          </div>
+          ) : (
+            <div>
+              <div className="relative h-[10vh] min-h-[120px] max-h-[200px] w-full overflow-hidden">
+                <FestivalFadeImages
+                  images={mobileBanners}
+                  alt={[hero.eyebrow, hero.titleLines.join(" ")].filter(Boolean).join(" ") || "Indian Hair World"}
+                  fill
+                />
+              </div>
+            </div>
+          )}
 
           {theme.active && <RangoliLayer items={theme.rangoli} />}
-
-          {/* EMI badge — top corner of the slider */}
-          <div className="absolute top-6 left-6 z-20 flex items-center gap-1.5 bg-white rounded-lg px-2.5 py-1.5 shadow">
-            <span className="text-[8px] font-bold text-gray-500 leading-tight">No Cost EMI<br />Available</span>
-            <img src="/images/bajaj.png" alt="Bajaj Finserv" className="h-4 object-contain" />
-          </div>
 
           {/* bottom: content on the gradient — each line only if the CRM field is set */}
           <div className="relative z-10 p-6 pb-8">
