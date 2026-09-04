@@ -8,7 +8,7 @@ import { DesktopNav, MobileNav } from "../components/Navigation";
 import TopBar from "../components/home/TopBar";
 import { toAbsoluteUrlIfPresent } from "@/utils/seo";
 import { fetchPageSeo } from "@/utils/serverSeo";
-import { ENV } from "@/config/env";
+import { backendFetchJson } from "@/utils/backendFetch";
 import JsonLd from "@/components/JsonLd";
 import NewUIPreview from "@/components/newui/NewUIPreview";
 
@@ -73,14 +73,7 @@ async function getPublicSettings(): Promise<any> {
   if (publicSettingsCache && Date.now() - publicSettingsCache.at < PUBLIC_SETTINGS_TTL_MS) {
     return publicSettingsCache.data;
   }
-  const res = await fetch(`${ENV.API_URL}/api/v1/get_public_settings`, {
-    headers: {
-      Accept: "application/json",
-      "User-Agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
-    },
-  } as any);
-  const json = await res.json();
+  const json = await backendFetchJson("/api/v1/get_public_settings");
   publicSettingsCache = { at: Date.now(), data: json };
   return json;
 }
