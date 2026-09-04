@@ -118,10 +118,27 @@ export default function NHero() {
   const festivalImages = theme.backgroundImages?.length
     ? theme.backgroundImages
     : [theme.backgroundImage || "/images/bannerIhw.png"];
-  // top banner strip on the mobile hero: real marketing banners, else the festival images
-  const mobileBanners = bannerImages.length
+  // A live festival theme ships its own hero art, and that wins over the
+  // standing marketing banners — otherwise activating a theme would leave the
+  // old Shark Tank banners on the festival homepage. With no theme art we fall
+  // back to the marketing banners, then to the built-in default.
+  const festivalSlides = theme.backgroundImages?.length
+    ? theme.backgroundImages
+    : theme.backgroundImage
+    ? [theme.backgroundImage]
+    : [];
+  const festivalArtActive = theme.active && festivalSlides.length > 0;
+
+  const mobileBanners = festivalArtActive
+    ? festivalSlides
+    : bannerImages.length
     ? bannerImages.map((b) => b.image_path)
     : festivalImages;
+
+  // Same choice for the desktop swiper, normalised to { src, alt }.
+  const desktopSlides = festivalArtActive
+    ? festivalSlides.map((src) => ({ src, alt: theme.name || "Festival banner" }))
+    : bannerImages.map((b) => ({ src: b.image_path, alt: b.name || "Hair Replacement Banner" }));
 
   const fetchBanners = useCallback(async () => {
     try {
@@ -133,7 +150,7 @@ export default function NHero() {
 
   useEffect(() => { fetchBanners(); }, [fetchBanners]);
 
-  const canLoop = bannerImages.length > 1;
+  const canLoop = desktopSlides.length > 1;
 
   return (
     <section className="relative w-full flex flex-col overflow-hidden bg-[var(--rb-cream)]">
@@ -225,7 +242,7 @@ export default function NHero() {
             (not a full-bleed edge-to-edge image) */}
         <div className="hidden lg:flex items-center justify-center py-6 xl:py-10 pl-6 xl:pl-10">
           <div className="relative w-full h-[420px] xl:h-[460px] rounded-3xl overflow-hidden shadow-2xl bg-white">
-            {bannerImages.length > 0 ? (
+            {desktopSlides.length > 0 ? (
               <Swiper
                 modules={[Autoplay, EffectFade, Pagination]}
                 effect="fade"
@@ -236,12 +253,12 @@ export default function NHero() {
                 slidesPerView={1}
                 className="h-full w-full rb-hero-swiper"
               >
-                {bannerImages.map((img, i) => (
+                {desktopSlides.map((img, i) => (
                   <SwiperSlide key={i}>
                     <div className="w-full h-full">
                       <img
-                        src={img.image_path}
-                        alt={img.name || "Hair Replacement Banner"}
+                        src={img.src}
+                        alt={img.alt}
                         className="w-full h-full object-cover"
                       />
                     </div>
