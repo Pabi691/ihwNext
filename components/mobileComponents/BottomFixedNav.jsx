@@ -56,41 +56,33 @@ const BottomFixedNav = () => {
                       <FaPhone className='w-6 h-6' />
                     </button>
                   )}
+                  {/* Icon only — the label is carried by aria-label so the
+                      control stays accessible without visible text. */}
                   <Link
                     to={to}
                     aria-label={label}
-                    className='flex flex-col items-center justify-center flex-1 gap-1 transition-all duration-200'
+                    title={label}
+                    className='flex flex-col items-center justify-center flex-1 transition-all duration-200'
                   >
-                    <div
-                      className={`relative flex items-center justify-center w-12 h-7 transition-all duration-200 ${
-                        isActive ? 'scale-110' : ''
-                      }`}
-                    >
+                    <div className='relative flex items-center justify-center w-[40px] h-[38px]'>
                       {customIcon ? (
                         <img
                           src={customIcon}
-                          alt={label}
-                          className={`object-contain transition-all duration-200 ${
-                            isActive ? 'w-[22px] h-[22px]' : 'w-[19px] h-[19px] opacity-80'
+                          alt=''
+                          aria-hidden='true'
+                          className={`w-[35px] h-[35px] object-contain transition-all duration-200 ${
+                            isActive ? '' : 'opacity-70'
                           }`}
                         />
                       ) : (
                         <Icon
-                          className={`transition-all duration-200 ${
-                            isActive
-                              ? 'text-white w-[22px] h-[22px] text-[22px]'
-                              : 'text-gray-300 w-[19px] h-[19px] text-[19px]'
+                          aria-hidden='true'
+                          className={`w-[35px] h-[35px] text-[35px] transition-all duration-200 ${
+                            isActive ? 'text-white' : 'text-gray-300'
                           }`}
                         />
                       )}
                     </div>
-                    <span
-                      className={`text-[10px] font-medium leading-none transition-colors duration-200 ${
-                        isActive ? 'text-white' : 'text-gray-300'
-                      }`}
-                    >
-                      {label}
-                    </span>
                   </Link>
                 </React.Fragment>
               );
@@ -99,7 +91,7 @@ const BottomFixedNav = () => {
         </div>
       </div>
       {/* Spacer so page content doesn't hide behind the fixed nav */}
-      <div className='block md:hidden h-[76px]' />
+      <div className='block md:hidden h-[64px]' />
 
       {/* Branch picker — same as the floating contact button: call / WhatsApp any branch */}
       {contactOpen && (
