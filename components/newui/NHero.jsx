@@ -138,6 +138,11 @@ export default function NHero() {
   // A video replaces the slider entirely when the theme supplies one.
   const heroVideo = theme.active && theme.heroMedia === "video" ? theme.heroVideo || "" : "";
 
+  // The standing marketing banners on their own, for the card under the strip.
+  const defaultBanners = bannerImages.length
+    ? bannerImages.map((b) => b.image_path)
+    : ["/images/banner_top.jpg"];
+
   // Same choice for the desktop swiper, normalised to { src, alt }.
   const desktopSlides = festivalArtActive
     ? festivalSlides.map((src) => ({ src, alt: theme.name || "Festival banner" }))
@@ -243,7 +248,7 @@ export default function NHero() {
 
         {/* RIGHT — banner swiper, contained in a padded rounded card
             (not a full-bleed edge-to-edge image) */}
-        <div className="hidden lg:flex items-center justify-center py-6 xl:py-10 pl-6 xl:pl-10">
+        <div className="hidden lg:flex flex-col justify-center gap-4 py-6 xl:py-10 pl-6 xl:pl-10">
           {/* Desktop media box. A live festival theme uses a short 190px strip;
               with no theme active the original tall card is kept, so the default
               (non-festival) hero is untouched. Mobile has its own height below. */}
@@ -292,6 +297,16 @@ export default function NHero() {
               </div>
             )}
           </div>
+
+          {/* With a theme live the festival art takes the strip above, so the
+              standing marketing banner sits underneath rather than being
+              replaced. Heights are picked so the pair still totals roughly the
+              420/460px the single card used to occupy. */}
+          {theme.active && (
+            <div className="relative w-full h-[220px] xl:h-[250px] rounded-3xl overflow-hidden shadow-2xl bg-white">
+              <FestivalFadeImages images={defaultBanners} alt="Indian Hair World" fill />
+            </div>
+          )}
         </div>
       </div>
 
