@@ -106,20 +106,27 @@ export default function RBHeaderNav() {
 
       {/* Row 1 — logo, search, contact, account icons */}
       <div className="hidden lg:flex max-w-7xl mx-auto px-4 md:px-8 h-20 items-center gap-6">
-        <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+        <Link href="/" className="flex items-center flex-shrink-0" aria-label="Indian Hair World — home">
           <img
             src="/images/IHW LOGO.png"
             alt="Indian Hair World"
             className="h-9 md:h-10 w-auto object-contain"
             onError={e => { e.currentTarget.style.display = "none"; }}
           />
-          <div className="leading-none">
-            <p className="font-black text-gray-900 text-lg md:text-xl tracking-tight">IHW</p>
-            <p className="text-[8px] md:text-[9px] font-semibold text-gray-400 tracking-widest uppercase -mt-0.5">
-              Indian Hair World
-            </p>
-          </div>
         </Link>
+
+        {/* Men / Women shortcuts, in place of the old wordmark beside the logo */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {[["Men", "/men"], ["Women", "/women"]].map(([label, href]) => (
+            <Link
+              key={href}
+              href={href}
+              className="px-4 py-1.5 rounded-full text-xs font-bold border border-[var(--rb-primary)]/25 text-[var(--rb-heading)] hover:bg-[var(--rb-primary)] hover:text-white hover:border-[var(--rb-primary)] transition-colors"
+            >
+              {label}
+            </Link>
+          ))}
+        </div>
 
         <form
           onSubmit={submitSearch}

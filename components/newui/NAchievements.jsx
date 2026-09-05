@@ -6,7 +6,7 @@ const achievements = [
   { badge: "IEA 2024", title: "International Excellence Award 2024", subtitle: "Best Hair Replacement Center In East Zone", description: "Indian Hair World has been recognized with the prestigious International Excellence Award 2024 for exceptional services as the Best Hair Replacement Center in the East Zone.", image: "/images/iea_award_in_2024.jpeg" },
   { badge: "GFA 2024", title: "Global Fame Award 2024", subtitle: "Best Hair Replacement Center In Kolkata", description: "Indian Hair World has been honoured with the Global Fame Award 2024 for being the Best Hair Replacement Center in Kolkata, West Bengal.", image: "/images/gfa_award_in_2024.jpeg" },
   { badge: "NPA 2022", title: "Nation Pride Award 2022", subtitle: "Best Hair Replacement Center of West Bengal", description: "Indian Hair World received the prestigious Nation Pride Award 2022 for being the Best Hair Replacement Center in West Bengal.", image: "/images/npa_award_in_2022.jpeg" },
-  { badge: "BPA 2021", title: "Bengal Pride Award 2021", subtitle: "Best Hair Replacement Center of Kolkata", description: "Indian Hair World was awarded the prestigious Bengal Pride Award 2021 for its top-notch professional services in Kolkata.", image: null },
+  { badge: "BPA 2021", title: "Bengal Pride Award 2021", subtitle: "Best Hair Replacement Center of Kolkata", description: "Indian Hair World was awarded the prestigious Bengal Pride Award 2021 for its top-notch professional services in Kolkata.", image: "/images/Awards_3.jpg" },
 ];
 
 export default function NAchievements() {

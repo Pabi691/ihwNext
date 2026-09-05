@@ -56,11 +56,11 @@ export default function NewUIPreview() {
 
         <PopularReels />
 
+        <NShopBanner />
+
         <NSaleOffers />
 
         <NBookAppointment />
-
-        <NShopBanner />
 
         <NWomensCollections />
 

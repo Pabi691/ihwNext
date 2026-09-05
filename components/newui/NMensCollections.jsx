@@ -4,8 +4,8 @@ import { FaArrowRight } from "react-icons/fa6";
 
 // Only two men's collections — wig and patch — image-based.
 const collections = [
-  { name: "Full Head Wig", image: "/images/mens-full-head-wig-premium-quality-brown.webp", link: "/men" },
-  { name: "Hair Patch", image: "/images/unique-gold-hair-patch-black-5.webp", link: "/men" },
+  { name: "Full Head Wig", image: "/images/wig.jpeg", link: "/men" },
+  { name: "Hair Patch", image: "/images/patch.jpeg", link: "/men" },
 ];
 
 function CollectionCard({ item }) {
