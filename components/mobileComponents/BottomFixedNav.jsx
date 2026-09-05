@@ -35,7 +35,7 @@ const BottomFixedNav = () => {
     <>
       <div className='block md:hidden'>
         <div
-          className='ihw-bottom-nav fixed bottom-0 z-50 w-full backdrop-blur-xl border-t border-white/10 shadow-[0_-8px_30px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.12)]'
+          className='ihw-bottom-nav fixed bottom-3 left-3 right-3 z-50 rounded-[35px] backdrop-blur-xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.12)]'
           style={barStyle}
         >
           <div className='flex items-end justify-around px-3 py-2.5'>
@@ -91,7 +91,7 @@ const BottomFixedNav = () => {
         </div>
       </div>
       {/* Spacer so page content doesn't hide behind the fixed nav */}
-      <div className='block md:hidden h-[64px]' />
+      <div className='block md:hidden h-[82px]' />
 
       {/* Branch picker — same as the floating contact button: call / WhatsApp any branch */}
       {contactOpen && (

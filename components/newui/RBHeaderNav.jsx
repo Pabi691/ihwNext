@@ -80,27 +80,58 @@ export default function RBHeaderNav() {
     <header className="w-full bg-white">
       <MobileDrawer open={menuOpen} onClose={() => setMenuOpen(false)} />
 
-      {/* Mobile-only header — desktop rows below are untouched */}
-      <div className="lg:hidden flex items-center justify-between gap-3 px-4 py-3 bg-[var(--rb-primary)]">
-        <Link href="/" className="flex-shrink-0" aria-label="Indian Hair World — home">
-          <img
-            src="/images/IHW LOGO.png"
-            alt="Indian Hair World"
-            className="h-7 w-auto object-contain brightness-0 invert"
-            onError={e => { e.currentTarget.style.display = "none"; }}
-          />
-        </Link>
-
-        <div className="flex items-center gap-1">
-          <Link href="/search" aria-label="Search" className="w-9 h-9 rounded-full flex items-center justify-center text-white">
-            <FaMagnifyingGlass className="w-4 h-4" />
+      {/* Mobile-only header — desktop rows below are untouched.
+          Same 12px gutter / pill language as the bottom nav and hero media, so
+          the three read as one system. Previously the three controls were styled
+          differently (one bordered, two bare), which is what made it look flat. */}
+      <div className="lg:hidden bg-[var(--rb-primary)] px-3 py-3">
+        <div className="flex items-center justify-between gap-3">
+          <Link href="/" className="flex-shrink-0" aria-label="Indian Hair World — home">
+            <img
+              src="/images/IHW LOGO.png"
+              alt="Indian Hair World"
+              className="h-7 w-auto object-contain brightness-0 invert"
+              onError={e => { e.currentTarget.style.display = "none"; }}
+            />
           </Link>
-          <a href="tel:+918910097668" aria-label="Call us" className="w-9 h-9 rounded-full border border-white/40 flex items-center justify-center text-white">
-            <FaPhone className="w-3.5 h-3.5" />
-          </a>
-          <button onClick={() => setMenuOpen(true)} aria-label="Open menu" className="w-9 h-9 rounded-full flex items-center justify-center text-white">
-            <FaBars className="w-4 h-4" />
-          </button>
+
+          <div className="flex items-center gap-2">
+            <Link
+              href="/search"
+              aria-label="Search"
+              className="w-10 h-10 rounded-full flex items-center justify-center text-white bg-white/10 border border-white/15 backdrop-blur-sm transition-colors active:bg-white/20"
+            >
+              <FaMagnifyingGlass className="w-4 h-4" />
+            </Link>
+            {/* calling is the primary action, so it gets the accent fill */}
+            <a
+              href="tel:+918910097668"
+              aria-label="Call us"
+              className="w-10 h-10 rounded-full flex items-center justify-center text-white bg-[var(--rb-accent)] shadow-lg shadow-black/25 transition-transform active:scale-95"
+            >
+              <FaPhone className="w-4 h-4" />
+            </a>
+            <button
+              onClick={() => setMenuOpen(true)}
+              aria-label="Open menu"
+              className="w-10 h-10 rounded-full flex items-center justify-center text-white bg-white/10 border border-white/15 backdrop-blur-sm transition-colors active:bg-white/20"
+            >
+              <FaBars className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Men / Women shortcuts — the two journeys that matter most on a phone */}
+        <div className="grid grid-cols-2 gap-2 mt-3">
+          {[["Men", "/men"], ["Women", "/women"]].map(([label, href]) => (
+            <Link
+              key={href}
+              href={href}
+              className="h-10 rounded-full flex items-center justify-center text-sm font-bold tracking-wide text-white bg-white/10 border border-white/15 backdrop-blur-sm transition-colors active:bg-white/20"
+            >
+              {label}
+            </Link>
+          ))}
         </div>
       </div>
 

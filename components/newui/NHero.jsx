@@ -338,9 +338,9 @@ export default function NHero() {
       <div className="lg:hidden">
         <div className="relative overflow-hidden bg-gradient-to-br from-[var(--rb-primary-mid2)] via-[var(--rb-primary-mid)] to-[var(--rb-dark)]">
 
-          {/* top: hero media — video or image slider. Both run full-bleed: no
-              side/top padding, no rounding, no ring, so the media meets the nav
-              with no seam. */}
+          {/* top: hero media. Images sit inset with the same 12px gap and 35px
+              radius as the bottom nav, so the two read as one system. A video
+              still runs full-bleed — no padding, no rounding — as intended. */}
           {heroVideo ? (
             <div className="relative w-full overflow-hidden bg-[var(--rb-dark)]">
               <video
@@ -355,8 +355,8 @@ export default function NHero() {
               />
             </div>
           ) : (
-            <div>
-              <div className="relative h-[10vh] min-h-[120px] max-h-[200px] w-full overflow-hidden">
+            <div className="px-3 pt-3">
+              <div className="relative h-[10vh] min-h-[120px] max-h-[200px] w-full rounded-[35px] overflow-hidden">
                 <FestivalFadeImages
                   images={mobileBanners}
                   alt={[hero.eyebrow, hero.titleLines.join(" ")].filter(Boolean).join(" ") || "Indian Hair World"}
