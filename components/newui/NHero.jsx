@@ -244,7 +244,14 @@ export default function NHero() {
         {/* RIGHT — banner swiper, contained in a padded rounded card
             (not a full-bleed edge-to-edge image) */}
         <div className="hidden lg:flex items-center justify-center py-6 xl:py-10 pl-6 xl:pl-10">
-          <div className="relative w-full h-[420px] xl:h-[460px] rounded-3xl overflow-hidden shadow-2xl bg-white">
+          {/* Desktop media box. A live festival theme uses a short 190px strip;
+              with no theme active the original tall card is kept, so the default
+              (non-festival) hero is untouched. Mobile has its own height below. */}
+          <div
+            className={`relative w-full rounded-3xl overflow-hidden shadow-2xl bg-white ${
+              theme.active ? "h-[190px]" : "h-[420px] xl:h-[460px]"
+            }`}
+          >
             {heroVideo ? (
               <video
                 key={heroVideo}
