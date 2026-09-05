@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useAdmin } from "@/components/AdminContext";
 import { useAuthGuard } from "@/components/useAuthGuard";
 import AdminLayout from "@/components/AdminLayout";
-import { FiSave, FiTag, FiAlertCircle, FiZap, FiImage, FiTrash2, FiBookmark, FiFolder, FiUploadCloud, FiGrid, FiChevronDown } from "react-icons/fi";
+import { FiSave, FiTag, FiAlertCircle, FiZap, FiImage, FiTrash2, FiBookmark, FiFolder, FiUploadCloud, FiGrid, FiChevronDown, FiPlus } from "react-icons/fi";
 
 function Section({ title, icon: Icon, children, collapsible = false, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -709,6 +709,29 @@ export default function Settings() {
     setGenError(""); setSuccess(`Loaded “${entry.name}”. Tick Active + Save Settings to make it live.`);
   };
 
+  // Empty the editor so a theme can be built from scratch. Without this the only
+  // way to start a new one was to hand-clear every field of whatever was loaded.
+  // Fresh nested objects/arrays so nothing is shared with EMPTY_FESTIVAL.
+  const startNewTheme = () => {
+    if (
+      (fest.name.trim() || fest.heroImages.filter(Boolean).length) &&
+      !window.confirm("Clear the editor and start a new theme?\n\nAnything not saved to the library will be lost. The live storefront is not affected until you Save Settings.")
+    ) return;
+    setFest({
+      ...EMPTY_FESTIVAL,
+      mode: fest.mode, // stay in whichever mode they were working in
+      palette: { ...DEFAULT_PALETTE },
+      hero: { ...EMPTY_FESTIVAL.hero },
+      promo: { ...EMPTY_FESTIVAL.promo },
+      heroImages: [],
+      rangoli: [],
+      bottomNav: { ...EMPTY_FESTIVAL.bottomNav, icons: ["", "", "", ""] },
+      saleSection: { ...EMPTY_FESTIVAL.saleSection },
+    });
+    setError(""); setGenError("");
+    setSuccess("Blank theme — give it a name, build it, then “Save current to library”.");
+  };
+
   const deleteFromLibrary = async (entry) => {
     if (libBusy || !window.confirm(`Delete “${entry.name}” from the library?`)) return;
     setLibBusy(entry.id); setError(""); setSuccess("");
@@ -1072,10 +1095,16 @@ export default function Settings() {
                       <span className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 uppercase tracking-wide">
                         <FiFolder size={12} /> Saved themes
                       </span>
-                      <button type="button" onClick={saveToLibrary} disabled={!fest.name.trim() || !!libBusy}
-                        className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:border-[#04A9FF] hover:text-[#04A9FF] transition-colors disabled:opacity-50">
-                        <FiBookmark size={12} /> {libBusy === "save" ? "Saving…" : "Save current to library"}
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button type="button" onClick={startNewTheme} disabled={!!libBusy}
+                          className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:border-[#04A9FF] hover:text-[#04A9FF] transition-colors disabled:opacity-50">
+                          <FiPlus size={13} /> New theme
+                        </button>
+                        <button type="button" onClick={saveToLibrary} disabled={!fest.name.trim() || !!libBusy}
+                          className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-gray-700 hover:border-[#04A9FF] hover:text-[#04A9FF] transition-colors disabled:opacity-50">
+                          <FiBookmark size={12} /> {libBusy === "save" ? "Saving…" : fest.name.trim() && library.some((e) => e.name.trim().toLowerCase() === fest.name.trim().toLowerCase()) ? "Update in library" : "Save to library"}
+                        </button>
+                      </div>
                     </div>
                     {library.length === 0 ? (
                       <p className="text-xs text-gray-400">No saved themes yet. Build one, then “Save current to library”.</p>
@@ -1101,7 +1130,8 @@ export default function Settings() {
                       </div>
                     )}
                     <p className="text-[11px] text-gray-400 mt-2">
-                      Loading a theme fills the editor. Tick <b>Theme active on storefront</b> + <b>Save Settings</b> to make it live.
+                      <b>New theme</b> empties the editor to start from scratch. Clicking a saved name loads it back in.
+                      <b> Save to library</b> keeps a copy (same name = overwrite). Only <b>Theme active on storefront</b> + <b>Save Settings</b> changes the live site.
                     </p>
                   </div>
 
