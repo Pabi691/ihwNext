@@ -62,16 +62,16 @@ export default function NewUIPreview() {
 
         <NBookAppointment />
 
-        <NWomensCollections />
-
-        <NMensCollections />
-
         <NProductSlider
           slugName="get_slug_data/men-products"
           title="Men's Hair Products"
           subtitle="For Him"
           accentWord="Hair Products"
         />
+
+        <NMensCollections />
+
+        <NWomensCollections />
 
         <NProductSlider
           slugName="get_slug_data/women-products"
