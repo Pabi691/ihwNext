@@ -2,7 +2,7 @@ import React from "react";
 import Head from "next/head";
 import Link from "next/link";
 import type { GetServerSideProps } from "next";
-import { ENV } from "@/config/env";
+import { backendFetchJson } from "@/utils/backendFetch";
 import { slugifyName } from "@/utils/slugUtils";
 
 type Item = { name: string; slug: string; active: boolean; palette: Record<string, string> | null };
@@ -64,11 +64,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   let library: any[] = [];
   let active: any = null;
   try {
-    const res = await fetch(`${ENV.API_URL}/api/v1/get_public_settings`, {
-      headers: { Accept: "application/json" },
-      cache: "no-store",
-    } as any);
-    const json = await res.json();
+    const json = await backendFetchJson("/api/v1/get_public_settings");
     const rawLib = json?.settings?.festival_theme_library;
     const parsed = typeof rawLib === "string" ? JSON.parse(rawLib || "[]") : rawLib;
     if (Array.isArray(parsed)) library = parsed;
