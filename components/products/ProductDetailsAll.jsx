@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import { Link, useNavigate, useParams } from '@/components/compat/router';
 import { FaCartPlus } from 'react-icons/fa';
@@ -29,6 +29,13 @@ import { isTryOnEligible } from '../../utils/tryOnEligibility';
 const RECENTLY_VIEWED_KEY = 'recentlyViewedProducts:v3';
 
 function ProductDetailsAll() {
+  // The product page renders this component twice — once inside a `hidden
+  // md:block` desktop wrapper, once inside a `md:hidden` mobile one — so both
+  // copies are in the DOM and #hair-tryon-section is duplicated.
+  // getElementById returns the first (desktop) match, which is display:none on
+  // mobile, and scrollIntoView on a hidden element does nothing. A ref resolves
+  // to this instance's own section, so each breakpoint scrolls to its own copy.
+  const tryOnSectionRef = useRef(null);
   const { slug } = useParams();
   const apiBase = `${process.env.NEXT_PUBLIC_API_URL || "https://server.indianhairworld.com"}/api`;
   const [product, setProduct] = useState(null);
@@ -375,7 +382,7 @@ function ProductDetailsAll() {
                     <div className="relative inline-block mt-3">
                       <button
                         type="button"
-                        onClick={() => document.getElementById('hair-tryon-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                        onClick={() => tryOnSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
                         className="relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold text-white overflow-hidden
                           bg-gradient-to-r from-[#04A9FF] via-[#00c6ff] to-[#0070ee]
                           hover:from-[#0070ee] hover:to-[#04A9FF]
@@ -660,7 +667,7 @@ function ProductDetailsAll() {
                   </div>
                 ) : null}
                 {tryOnEligible && (
-                  <div id="hair-tryon-section">
+                  <div id="hair-tryon-section" ref={tryOnSectionRef}>
                     <HairPatchTryOnSection
                       productImage={selectedImage || product.primary_img}
                       productImages={[selectedImage || product.primary_img, ...images].filter(Boolean)}
