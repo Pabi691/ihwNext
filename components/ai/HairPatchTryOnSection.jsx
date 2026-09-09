@@ -564,10 +564,10 @@ function HairPatchTryOnSection({
               </div>
               <div className="flex flex-col gap-2 flex-1">
                 <p className="text-xs text-[#04A9FF] font-semibold">✓ Photo ready</p>
-                <label htmlFor="try-on-face-upload"
+                <label
                   className="cursor-pointer text-center text-xs border border-gray-300 rounded-lg px-3 py-1.5 text-gray-600 hover:bg-gray-50 transition-colors">
                   Change Photo
-                  <input id="try-on-face-upload" type="file" accept="image/png,image/jpeg,image/webp" onChange={handleFileChange} className="hidden" />
+                  <input type="file" accept="image/png,image/jpeg,image/webp" onChange={handleFileChange} className="hidden" />
                 </label>
                 <button type="button" onClick={startCamera}
                   className="text-xs border border-gray-300 rounded-lg px-3 py-1.5 text-gray-600 hover:bg-gray-50 transition-colors">
@@ -578,11 +578,11 @@ function HairPatchTryOnSection({
           ) : (
             <>
               <div className="flex gap-2">
-                <label htmlFor="try-on-face-upload"
+                <label
                   className="flex-1 flex flex-col items-center justify-center gap-1 cursor-pointer border border-dashed border-gray-300 rounded-xl py-4 text-gray-500 hover:bg-gray-50 hover:border-[#04A9FF]/40 transition-colors">
                   <span className="text-2xl">🖼️</span>
                   <span className="text-xs font-medium">Upload Photo</span>
-                  <input id="try-on-face-upload" type="file" accept="image/png,image/jpeg,image/webp" onChange={handleFileChange} className="hidden" />
+                  <input type="file" accept="image/png,image/jpeg,image/webp" onChange={handleFileChange} className="hidden" />
                 </label>
                 <button type="button" onClick={startCamera}
                   className="flex-1 flex flex-col items-center justify-center gap-1 border border-dashed border-gray-300 rounded-xl py-4 text-gray-500 hover:bg-gray-50 hover:border-[#04A9FF]/40 transition-colors">
