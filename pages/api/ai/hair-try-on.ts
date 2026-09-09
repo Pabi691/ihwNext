@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { fetchOwnHostBuffer } from "@/utils/backendFetch";
 
 export const config = {
   api: {
@@ -24,10 +25,6 @@ type HairTryOnRequestBody = {
   hairColor?: string;
   viewAngle?: string;
 };
-
-function toBase64(buffer: ArrayBuffer) {
-  return Buffer.from(buffer).toString("base64");
-}
 
 function getApiKey() {
   const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
@@ -60,29 +57,19 @@ function resolveImageUrl(url: string, req: NextApiRequest) {
 
 async function fetchImageAsBase64(url: string, req: NextApiRequest) {
   const resolvedUrl = resolveImageUrl(url, req);
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 8000);
 
-  let response: Response;
-
+  // Product images live on cdn.indianhairworld.com, which sits on the same box
+  // behind the same edge as this app — and that edge refuses requests coming
+  // from the box itself. A plain fetch here therefore failed in production
+  // ("Could not fetch product image.") while succeeding from anywhere else, so
+  // try-on died before it ever reached Gemini. fetchOwnHostBuffer routes our own
+  // hosts over loopback; everything else still goes out normally.
   try {
-    response = await fetch(resolvedUrl, {
-      cache: "no-store",
-      signal: controller.signal,
-    });
+    const { mimeType, buffer } = await fetchOwnHostBuffer(resolvedUrl);
+    return { mimeType, imageBytes: buffer.toString("base64") };
   } catch (err) {
-    throw new Error("Failed to fetch product image.");
-  } finally {
-    clearTimeout(timeout);
-  }
-
-  if (!response.ok) {
     throw new Error("Could not fetch product image.");
   }
-  const rawType = response.headers.get("content-type") || "";
-  const contentType = rawType.startsWith("image/") ? rawType : "image/jpeg";
-  const arrayBuffer = await response.arrayBuffer();
-  return { mimeType: contentType, imageBytes: toBase64(arrayBuffer) };
 }
 
 function prioritizeReferenceImages(urls: string[]) {

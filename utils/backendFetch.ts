@@ -73,3 +73,76 @@ export async function backendFetchJson(
 
   return JSON.parse(raw);
 }
+
+/**
+ * Fetch binary content (an image) from one of our own hosts.
+ *
+ * cdn./server./www.indianhairworld.com all live on the same Hostinger box behind
+ * the same edge, which refuses requests originating from that box — so a plain
+ * fetch of a product image from an API route fails in production while working
+ * from anywhere else. Same fix as backendFetchJson: when API_BACKEND_RESOLVE is
+ * set and the URL is one of our hosts, connect to that IP and keep SNI, Host and
+ * certificate validation on the real hostname.
+ *
+ * Any other host, or no API_BACKEND_RESOLVE (e.g. local dev), falls through to a
+ * normal fetch, so behaviour off the server is unchanged.
+ */
+const OWN_HOST = /(^|\.)indianhairworld\.com$/i;
+
+export async function fetchOwnHostBuffer(
+  rawUrl: string
+): Promise<{ mimeType: string; buffer: Buffer }> {
+  const u = new URL(rawUrl);
+  const resolveIp = (process.env.API_BACKEND_RESOLVE || "").trim();
+  const headers: Record<string, string> = {
+    Accept: "image/*,*/*",
+    "User-Agent": BROWSER_UA,
+  };
+
+  if (!resolveIp || !OWN_HOST.test(u.hostname)) {
+    const res = await fetch(rawUrl, { cache: "no-store", headers } as any);
+    if (!res.ok) throw new Error(`image responded ${res.status}`);
+    const type = res.headers.get("content-type") || "";
+    return {
+      mimeType: type.startsWith("image/") ? type : "image/jpeg",
+      buffer: Buffer.from(await res.arrayBuffer()),
+    };
+  }
+
+  const isHttps = u.protocol === "https:";
+  const reqFn = isHttps ? httpsRequest : httpRequest;
+  const port = Number(u.port) || (isHttps ? 443 : 80);
+
+  return new Promise((resolve, reject) => {
+    const r = reqFn(
+      {
+        host: resolveIp,
+        port,
+        method: "GET",
+        path: u.pathname + u.search,
+        headers: { ...headers, host: u.hostname, "accept-encoding": "identity" },
+        servername: isHttps ? u.hostname : undefined,
+        timeout: 15000,
+      },
+      (resp) => {
+        const status = resp.statusCode || 0;
+        if (status < 200 || status >= 300) {
+          resp.resume();
+          return reject(new Error(`image responded ${status}`));
+        }
+        const chunks: Buffer[] = [];
+        resp.on("data", (c: Buffer) => chunks.push(c));
+        resp.on("end", () => {
+          const type = String(resp.headers["content-type"] || "");
+          resolve({
+            mimeType: type.startsWith("image/") ? type : "image/jpeg",
+            buffer: Buffer.concat(chunks),
+          });
+        });
+      }
+    );
+    r.on("error", reject);
+    r.on("timeout", () => r.destroy(new Error("image request timed out")));
+    r.end();
+  });
+}
