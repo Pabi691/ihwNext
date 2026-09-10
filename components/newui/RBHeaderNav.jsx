@@ -10,7 +10,7 @@ import { desktopNavItems } from "@/content/navItems";
 // pulled from react-icons so the pair is visually matched at 18px — the icon
 // set has no equivalent female bust.
 const IconMan = (props) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
     strokeLinecap="round" strokeLinejoin="round" aria-hidden {...props}>
     <circle cx="12" cy="8" r="3.6" />
     <path d="M4.8 20c0-3.7 3.2-6.2 7.2-6.2s7.2 2.5 7.2 6.2" />
@@ -18,7 +18,7 @@ const IconMan = (props) => (
 );
 
 const IconWoman = (props) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
     strokeLinecap="round" strokeLinejoin="round" aria-hidden {...props}>
     <circle cx="12" cy="8" r="3.6" />
     <path d="M7.6 7.2C8.4 4.6 10 3.4 12 3.4s3.6 1.2 4.4 3.8" />
@@ -95,6 +95,7 @@ export default function RBHeaderNav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [q, setQ] = useState("");
   const router = useRouter();
+  const currentPath = router.asPath.split("?")[0];
 
   const submitSearch = (e) => {
     e.preventDefault();
@@ -157,7 +158,8 @@ export default function RBHeaderNav() {
               style={{
                 background: "var(--rb-accent)",
                 color: "var(--rb-dark)",
-                boxShadow: "0 0 22px -2px var(--rb-accent), 0 4px 12px rgba(0,0,0,0.35)",
+                boxShadow:
+                  "0 0 34px -2px var(--rb-accent), 0 0 16px -4px var(--rb-accent), 0 6px 16px rgba(0,0,0,0.4)",
               }}
             >
               <FaPhone className="w-[18px] h-[18px]" />
@@ -175,29 +177,34 @@ export default function RBHeaderNav() {
 
         {/* Men / Women — one segmented pill, active half filled. Highlights the
             section you are actually in rather than always looking the same. */}
-        <div className="relative mt-3 rounded-full border border-white/15 bg-white/5 p-1 backdrop-blur-sm">
-          <div className="grid grid-cols-2 gap-1">
+        <div className="relative mt-3 rounded-full border border-white/20 bg-white/[0.07] p-1.5 backdrop-blur-sm">
+          <div className="grid grid-cols-2 gap-1.5">
             {SEGMENTS.map(({ label, href, Icon }) => {
-              const active = router.asPath.split("?")[0] === href;
+              // Two separate ideas: which page you are actually on (for
+              // assistive tech) and which half is lit. Men stays lit anywhere
+              // outside /women so the control never renders flat.
+              const onThisPage = currentPath === href;
+              const lit = currentPath === "/women" ? href === "/women" : href === "/men";
               return (
                 <Link
                   key={href}
                   href={href}
-                  aria-current={active ? "page" : undefined}
-                  className={`h-11 rounded-full flex items-center justify-center gap-2 text-sm font-bold tracking-wide transition-all ${
-                    active ? "text-white" : "text-white/70 active:text-white"
+                  aria-current={onThisPage ? "page" : undefined}
+                  className={`h-12 rounded-full flex items-center justify-center gap-2.5 text-[15px] font-bold tracking-wide transition-all ${
+                    lit ? "text-white" : "text-white/75 active:text-white"
                   }`}
                   style={
-                    active
+                    lit
                       ? {
                           background:
-                            "linear-gradient(90deg, var(--rb-primary-hover), var(--rb-primary))",
-                          boxShadow: "0 0 18px -4px var(--rb-primary-hover)",
+                            "linear-gradient(100deg, var(--rb-primary-hover) 0%, var(--rb-primary) 100%)",
+                          boxShadow:
+                            "0 0 28px -2px var(--rb-primary-hover), 0 0 12px -2px var(--rb-primary-hover), 0 6px 16px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.28)",
                         }
                       : undefined
                   }
                 >
-                  <Icon className="w-[18px] h-[18px]" />
+                  <Icon className="w-5 h-5" />
                   {label}
                 </Link>
               );

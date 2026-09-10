@@ -16,7 +16,7 @@ export default function RBPromoStrip() {
         {/* gold rules flanking the message, as in the reference */}
         <span
           aria-hidden
-          className="hidden sm:block h-px w-8 md:w-16 flex-shrink-0"
+          className="block h-px w-5 sm:w-8 md:w-16 flex-shrink-0"
           style={{ background: "linear-gradient(90deg, transparent, var(--rb-accent))" }}
         />
 
@@ -25,7 +25,7 @@ export default function RBPromoStrip() {
 
         {/* the subtitle now shows on phones too — it carries the dates */}
         <p
-          className="text-xs md:text-sm font-bold tracking-wide"
+          className="text-[11px] sm:text-xs md:text-sm font-bold tracking-wide whitespace-nowrap"
           style={{ color: "var(--rb-accent-light)" }}
         >
           <span className="uppercase">{promo.label}</span>
@@ -43,7 +43,7 @@ export default function RBPromoStrip() {
 
         <span
           aria-hidden
-          className="hidden sm:block h-px w-8 md:w-16 flex-shrink-0"
+          className="block h-px w-5 sm:w-8 md:w-16 flex-shrink-0"
           style={{ background: "linear-gradient(90deg, var(--rb-accent), transparent)" }}
         />
         <Link
