@@ -6,6 +6,32 @@ import { useGlobal } from "@/global/GlobalContext";
 // Single source of truth — same menu as the live site's DesktopNav.
 import { desktopNavItems } from "@/content/navItems";
 
+// Head-and-shoulders marks for the Men / Women segments. Inline rather than
+// pulled from react-icons so the pair is visually matched at 18px — the icon
+// set has no equivalent female bust.
+const IconMan = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
+    strokeLinecap="round" strokeLinejoin="round" aria-hidden {...props}>
+    <circle cx="12" cy="8" r="3.6" />
+    <path d="M4.8 20c0-3.7 3.2-6.2 7.2-6.2s7.2 2.5 7.2 6.2" />
+  </svg>
+);
+
+const IconWoman = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
+    strokeLinecap="round" strokeLinejoin="round" aria-hidden {...props}>
+    <circle cx="12" cy="8" r="3.6" />
+    <path d="M7.6 7.2C8.4 4.6 10 3.4 12 3.4s3.6 1.2 4.4 3.8" />
+    <path d="M7.9 7.6v4.2M16.1 7.6v4.2" />
+    <path d="M4.8 20c0-3.7 3.2-6.2 7.2-6.2s7.2 2.5 7.2 6.2" />
+  </svg>
+);
+
+const SEGMENTS = [
+  { label: "Men", href: "/men", Icon: IconMan },
+  { label: "Women", href: "/women", Icon: IconWoman },
+];
+
 function MobileDrawer({ open, onClose }) {
   const [expanded, setExpanded] = useState(null);
   return (
@@ -81,57 +107,102 @@ export default function RBHeaderNav() {
       <MobileDrawer open={menuOpen} onClose={() => setMenuOpen(false)} />
 
       {/* Mobile-only header — desktop rows below are untouched.
-          Same 12px gutter / pill language as the bottom nav and hero media, so
-          the three read as one system. Previously the three controls were styled
-          differently (one bordered, two bare), which is what made it look flat. */}
-      <div className="lg:hidden bg-[var(--rb-primary)] px-3 py-3">
-        <div className="flex items-center justify-between gap-3">
+          Deep gradient ground with soft light sweeps, one gold "call" action
+          that carries a glow, and Men/Women as a single segmented pill whose
+          active half is filled — so the bar reads as one designed object rather
+          than a row of separate controls. */}
+      <div
+        className="lg:hidden relative overflow-hidden px-3 py-3"
+        style={{
+          background:
+            "linear-gradient(135deg, var(--rb-primary-mid2) 0%, var(--rb-primary) 55%, var(--rb-primary-mid) 100%)",
+        }}
+      >
+        {/* ambient light sweeps */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -left-16 -top-20 w-56 h-56 rounded-full blur-3xl opacity-40"
+          style={{ background: "var(--rb-primary-hover)" }}
+        />
+        <span
+          aria-hidden
+          className="pointer-events-none absolute -right-20 -bottom-24 w-64 h-64 rounded-full blur-3xl opacity-30"
+          style={{ background: "var(--rb-primary-hover)" }}
+        />
+
+        <div className="relative flex items-center justify-between gap-3">
           <Link href="/" className="flex-shrink-0" aria-label="Indian Hair World — home">
             <img
               src="/images/IHW LOGO.png"
               alt="Indian Hair World"
-              className="h-7 w-auto object-contain brightness-0 invert"
+              className="h-8 w-auto object-contain brightness-0 invert"
               onError={e => { e.currentTarget.style.display = "none"; }}
             />
           </Link>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <Link
               href="/search"
               aria-label="Search"
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white bg-white/10 border border-white/15 backdrop-blur-sm transition-colors active:bg-white/20"
+              className="w-11 h-11 rounded-full flex items-center justify-center text-white bg-white/10 border border-white/15 backdrop-blur-sm transition-colors active:bg-white/20"
             >
-              <FaMagnifyingGlass className="w-4 h-4" />
+              <FaMagnifyingGlass className="w-[18px] h-[18px]" />
             </Link>
-            {/* calling is the primary action, so it gets the accent fill */}
+
+            {/* calling is the primary action: solid accent fill plus a glow */}
             <a
               href="tel:+918910097668"
               aria-label="Call us"
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white bg-[var(--rb-accent)] shadow-lg shadow-black/25 transition-transform active:scale-95"
+              className="w-11 h-11 rounded-full flex items-center justify-center transition-transform active:scale-95"
+              style={{
+                background: "var(--rb-accent)",
+                color: "var(--rb-dark)",
+                boxShadow: "0 0 22px -2px var(--rb-accent), 0 4px 12px rgba(0,0,0,0.35)",
+              }}
             >
-              <FaPhone className="w-4 h-4" />
+              <FaPhone className="w-[18px] h-[18px]" />
             </a>
+
             <button
               onClick={() => setMenuOpen(true)}
               aria-label="Open menu"
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white bg-white/10 border border-white/15 backdrop-blur-sm transition-colors active:bg-white/20"
+              className="w-11 h-11 rounded-full flex items-center justify-center text-white bg-white/10 border border-white/15 backdrop-blur-sm transition-colors active:bg-white/20"
             >
-              <FaBars className="w-4 h-4" />
+              <FaBars className="w-[18px] h-[18px]" />
             </button>
           </div>
         </div>
 
-        {/* Men / Women shortcuts — the two journeys that matter most on a phone */}
-        <div className="grid grid-cols-2 gap-2 mt-3">
-          {[["Men", "/men"], ["Women", "/women"]].map(([label, href]) => (
-            <Link
-              key={href}
-              href={href}
-              className="h-10 rounded-full flex items-center justify-center text-sm font-bold tracking-wide text-white bg-white/10 border border-white/15 backdrop-blur-sm transition-colors active:bg-white/20"
-            >
-              {label}
-            </Link>
-          ))}
+        {/* Men / Women — one segmented pill, active half filled. Highlights the
+            section you are actually in rather than always looking the same. */}
+        <div className="relative mt-3 rounded-full border border-white/15 bg-white/5 p-1 backdrop-blur-sm">
+          <div className="grid grid-cols-2 gap-1">
+            {SEGMENTS.map(({ label, href, Icon }) => {
+              const active = router.asPath.split("?")[0] === href;
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  aria-current={active ? "page" : undefined}
+                  className={`h-11 rounded-full flex items-center justify-center gap-2 text-sm font-bold tracking-wide transition-all ${
+                    active ? "text-white" : "text-white/70 active:text-white"
+                  }`}
+                  style={
+                    active
+                      ? {
+                          background:
+                            "linear-gradient(90deg, var(--rb-primary-hover), var(--rb-primary))",
+                          boxShadow: "0 0 18px -4px var(--rb-primary-hover)",
+                        }
+                      : undefined
+                  }
+                >
+                  <Icon className="w-[18px] h-[18px]" />
+                  {label}
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
 

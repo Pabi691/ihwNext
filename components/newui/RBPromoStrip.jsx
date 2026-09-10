@@ -12,14 +12,40 @@ export default function RBPromoStrip() {
 
   return (
     <div className="relative w-full bg-gradient-to-r from-[var(--rb-primary-mid2)] to-[var(--rb-primary)] overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-2.5 flex items-center justify-center gap-3 text-center relative z-10">
-        <FaGift className="w-4 h-4 text-[var(--rb-accent-light)] flex-shrink-0" />
-        <p className="text-white text-xs md:text-sm font-semibold">
-          {promo.label}
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-2.5 flex items-center justify-center gap-2.5 md:gap-3 text-center relative z-10">
+        {/* gold rules flanking the message, as in the reference */}
+        <span
+          aria-hidden
+          className="hidden sm:block h-px w-8 md:w-16 flex-shrink-0"
+          style={{ background: "linear-gradient(90deg, transparent, var(--rb-accent))" }}
+        />
+
+        <FaGift className="w-4 h-4 flex-shrink-0" style={{ color: "var(--rb-accent-light)" }} />
+        <span aria-hidden className="h-4 w-px flex-shrink-0 bg-white/25" />
+
+        {/* the subtitle now shows on phones too — it carries the dates */}
+        <p
+          className="text-xs md:text-sm font-bold tracking-wide"
+          style={{ color: "var(--rb-accent-light)" }}
+        >
+          <span className="uppercase">{promo.label}</span>
           {promo.subtitle && (
-            <span className="hidden sm:inline text-white/70 font-normal"> · {promo.subtitle}</span>
+            <>
+              <span
+                aria-hidden
+                className="inline-block align-middle mx-2 w-1 h-1 rounded-full"
+                style={{ background: "var(--rb-accent)" }}
+              />
+              <span>{promo.subtitle}</span>
+            </>
           )}
         </p>
+
+        <span
+          aria-hidden
+          className="hidden sm:block h-px w-8 md:w-16 flex-shrink-0"
+          style={{ background: "linear-gradient(90deg, var(--rb-accent), transparent)" }}
+        />
         <Link
           href="/shop"
           className="hidden md:inline-flex items-center bg-[var(--rb-accent-light)] hover:bg-white text-[var(--rb-dark)] text-[11px] font-bold px-3 py-1 rounded-full transition-colors flex-shrink-0"
