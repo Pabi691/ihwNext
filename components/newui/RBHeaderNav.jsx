@@ -116,7 +116,7 @@ export default function RBHeaderNav() {
         className="lg:hidden relative overflow-hidden px-3 py-3"
         style={{
           background:
-            "linear-gradient(135deg, var(--rb-primary-mid2) 0%, var(--rb-primary) 55%, var(--rb-primary-mid) 100%)",
+            "linear-gradient(135deg, var(--rb-primary-mid2) 0%, var(--rb-primary-mid) 55%, var(--rb-primary-mid2) 100%)",
         }}
       >
         {/* ambient light sweeps */}
@@ -156,7 +156,8 @@ export default function RBHeaderNav() {
               aria-label="Call us"
               className="w-11 h-11 rounded-full flex items-center justify-center transition-transform active:scale-95"
               style={{
-                background: "var(--rb-accent)",
+                background:
+                  "linear-gradient(160deg, color-mix(in srgb, var(--rb-accent) 72%, white) 0%, var(--rb-accent) 100%)",
                 color: "var(--rb-dark)",
                 boxShadow:
                   "0 0 34px -2px var(--rb-accent), 0 0 16px -4px var(--rb-accent), 0 6px 16px rgba(0,0,0,0.4)",
@@ -177,7 +178,7 @@ export default function RBHeaderNav() {
 
         {/* Men / Women — one segmented pill, active half filled. Highlights the
             section you are actually in rather than always looking the same. */}
-        <div className="relative mt-3 rounded-full border border-white/20 bg-white/[0.07] p-1.5 backdrop-blur-sm">
+        <div className="relative mt-3 rounded-full border border-white/25 bg-white/[0.06] p-1.5 backdrop-blur-sm">
           <div className="grid grid-cols-2 gap-1.5">
             {SEGMENTS.map(({ label, href, Icon }) => {
               // Two separate ideas: which page you are actually on (for
@@ -197,9 +198,9 @@ export default function RBHeaderNav() {
                     lit
                       ? {
                           background:
-                            "linear-gradient(100deg, var(--rb-primary-hover) 0%, var(--rb-primary) 100%)",
+                            "linear-gradient(100deg, color-mix(in srgb, var(--rb-primary-hover) 62%, white) 0%, var(--rb-primary-hover) 100%)",
                           boxShadow:
-                            "0 0 28px -2px var(--rb-primary-hover), 0 0 12px -2px var(--rb-primary-hover), 0 6px 16px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.28)",
+                            "0 0 30px -2px color-mix(in srgb, var(--rb-primary-hover) 70%, white), 0 0 14px -3px var(--rb-primary-hover), 0 6px 18px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.45)",
                         }
                       : undefined
                   }
