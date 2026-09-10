@@ -8,6 +8,9 @@
   --rb-primary: #7a1420;        /* deep maroon — button/section FILLS */
   --rb-heading: #7a1420;        /* heading + highlighted-word TEXT (split from --rb-primary) */
   --rb-primary-hover: #8f1826;  /* maroon hover/active state */
+  --rb-primary-lit: #b52f42;    /* lit surfaces (nav pill) — lighter --rb-primary-hover */
+  --rb-primary-lit-soft: #c04a5b;/* the softer stop of that lit gradient */
+  --rb-accent-lit: #e5b46a;     /* lit accent (call button) */
   --rb-primary-mid: #6b0f16;    /* mid maroon — gradient stop */
   --rb-primary-mid2: #5c0f16;   /* mid maroon — gradient stop */
   --rb-dark: #4a0a10;           /* darkest maroon — dark section backgrounds */

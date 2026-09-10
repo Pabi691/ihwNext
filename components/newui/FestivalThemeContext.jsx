@@ -106,12 +106,50 @@ function hexToRgbTriplet(hex) {
   return `${(n >> 16) & 255} ${(n >> 8) & 255} ${n & 255}`;
 }
 
+// Lift lightness while holding hue and saturation. Mixing toward white would
+// raise lightness too, but it drags saturation down and the result reads dusty
+// rather than vivid. Computed here so the value ships as a plain hex — relying
+// on CSS relative colour meant browsers without it silently fell back to the
+// unlit shade.
+function lighten(hex, byL) {
+  const n = parseInt(String(hex).slice(1), 16);
+  const r = ((n >> 16) & 255) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h = 0;
+  const l = (max + min) / 2;
+  const d = max - min;
+  const sat = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+  if (d !== 0) {
+    if (max === r) h = ((g - b) / d) % 6;
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h *= 60;
+    if (h < 0) h += 360;
+  }
+  const L = Math.min(1, Math.max(0, l + byL));
+  const c = (1 - Math.abs(2 * L - 1)) * sat;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = L - c / 2;
+  const [r1, g1, b1] =
+    h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x]
+    : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x];
+  const hx = (v) => Math.round((v + m) * 255).toString(16).padStart(2, "0");
+  return `#${hx(r1)}${hx(g1)}${hx(b1)}`;
+}
+
 // ":root{...}" for one palette. Also drives the live-site --site-* tokens from
 // the same values so an active theme re-skins the whole storefront, not just
 // the newui components.
 function buildPaletteCss(p) {
   if (!p) return "";
   const rbVars = Object.entries(p).map(([k, v]) => `${k}:${v}`).join(";");
+  // Derived shades for lit surfaces (the segmented nav pill, the call button).
+  const hover = p["--rb-primary-hover"] || p["--rb-primary"];
+  const litVars = [
+    `--rb-primary-lit:${lighten(hover, 0.14)}`,
+    `--rb-primary-lit-soft:${lighten(hover, 0.2)}`,
+    `--rb-accent-lit:${lighten(p["--rb-accent"] || "#d9932e", 0.12)}`,
+  ].join(";");
   const siteVars = [
     `--site-primary:${p["--rb-primary"]}`,
     `--site-heading:${p["--rb-heading"] || p["--rb-primary"]}`,
@@ -131,7 +169,7 @@ function buildPaletteCss(p) {
     `--site-accent-rgb:${hexToRgbTriplet(p["--rb-accent"])}`,
     `--site-dark-rgb:${hexToRgbTriplet(p["--rb-dark"])}`,
   ].join(";");
-  return `:root{${rbVars};${siteVars}}`;
+  return `:root{${rbVars};${litVars};${siteVars}}`;
 }
 
 function normalizePalette(input) {
