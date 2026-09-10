@@ -27,6 +27,42 @@ const IconWoman = (props) => (
   </svg>
 );
 
+// Gold alpona divider: tapered rules, diamond accents, centred lotus. Drawn
+// rather than shipped as an image so it inherits the festival accent colour and
+// stays crisp at any density.
+const GoldDivider = () => (
+  <div className="mt-4 flex items-center justify-center gap-2.5" aria-hidden>
+    <span
+      className="h-px flex-1 max-w-[96px]"
+      style={{ background: "linear-gradient(90deg, transparent, var(--rb-accent))" }}
+    />
+    <svg viewBox="0 0 8 8" className="w-[7px] h-[7px] flex-shrink-0" style={{ color: "var(--rb-accent)" }}>
+      <rect x="1.2" y="1.2" width="5.6" height="5.6" transform="rotate(45 4 4)" fill="currentColor" />
+    </svg>
+
+    <svg viewBox="0 0 44 22" className="w-9 h-[18px] flex-shrink-0" fill="none" style={{ color: "var(--rb-accent)" }}>
+      {/* outer petals */}
+      <path d="M22 19C15.4 18.2 9.6 15 6.4 10.2c5.8-1.2 12.2 2 15.6 8.8Z" fill="currentColor" opacity=".45" />
+      <path d="M22 19c6.6-.8 12.4-4 15.6-8.8-5.8-1.2-12.2 2-15.6 8.8Z" fill="currentColor" opacity=".45" />
+      {/* mid petals */}
+      <path d="M22 19c-4.4-1.4-7.8-5.2-8.6-9.8 4.4.9 7.8 4.6 8.6 9.8Z" fill="currentColor" opacity=".7" />
+      <path d="M22 19c4.4-1.4 7.8-5.2 8.6-9.8-4.4.9-7.8 4.6-8.6 9.8Z" fill="currentColor" opacity=".7" />
+      {/* centre petal */}
+      <path d="M22 2.6c2.9 4.2 2.9 11.1 0 16.4-2.9-5.3-2.9-12.2 0-16.4Z" fill="currentColor" />
+      {/* base line */}
+      <path d="M14 19.6h16" stroke="currentColor" strokeWidth="1" strokeLinecap="round" opacity=".55" />
+    </svg>
+
+    <svg viewBox="0 0 8 8" className="w-[7px] h-[7px] flex-shrink-0" style={{ color: "var(--rb-accent)" }}>
+      <rect x="1.2" y="1.2" width="5.6" height="5.6" transform="rotate(45 4 4)" fill="currentColor" />
+    </svg>
+    <span
+      className="h-px flex-1 max-w-[96px]"
+      style={{ background: "linear-gradient(90deg, var(--rb-accent), transparent)" }}
+    />
+  </div>
+);
+
 const SEGMENTS = [
   { label: "Men", href: "/men", Icon: IconMan },
   { label: "Women", href: "/women", Icon: IconWoman },
@@ -96,6 +132,7 @@ export default function RBHeaderNav() {
   const [q, setQ] = useState("");
   const router = useRouter();
   const currentPath = router.asPath.split("?")[0];
+  const anyLit = currentPath === "/men" || currentPath === "/women";
 
   const submitSearch = (e) => {
     e.preventDefault();
@@ -203,16 +240,30 @@ export default function RBHeaderNav() {
           }
         `}</style>
 
-        {/* Men / Women — one segmented pill, active half filled. Highlights the
-            section you are actually in rather than always looking the same. */}
-        <div className="relative mt-3 rounded-full border border-white/25 bg-white/[0.06] p-2 backdrop-blur-sm">
+        {/* Men / Women — one segmented pill. Equal weight until you are actually
+            inside one of the two sections, then that half lights. */}
+        <div
+          className="relative mt-3 rounded-full border border-white/20 bg-white/[0.07] p-2 backdrop-blur-md"
+          style={{
+            boxShadow:
+              "inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.15), 0 8px 24px rgba(0,0,0,0.28)",
+          }}
+        >
+          {/* hairline between equals — hidden once one half is lit, since the
+              filled pill already separates them */}
+          {!anyLit && (
+            <span
+              aria-hidden
+              className="pointer-events-none absolute left-1/2 top-3 bottom-3 w-px -translate-x-1/2 bg-white/15"
+            />
+          )}
           <div className="grid grid-cols-2 gap-2">
             {SEGMENTS.map(({ label, href, Icon }) => {
-              // Two separate ideas: which page you are actually on (for
-              // assistive tech) and which half is lit. Men stays lit anywhere
-              // outside /women so the control never renders flat.
+              // Lit only where you actually are. On the homepage neither
+              // matches, so the two halves carry equal weight — which is the
+              // point of a segmented control that also states a location.
               const onThisPage = currentPath === href;
-              const lit = currentPath === "/women" ? href === "/women" : href === "/men";
+              const lit = onThisPage;
               return (
                 <Link
                   key={href}
@@ -229,6 +280,8 @@ export default function RBHeaderNav() {
             })}
           </div>
         </div>
+
+        <GoldDivider />
       </div>
 
       {/* Row 1 — logo, search, contact, account icons */}
