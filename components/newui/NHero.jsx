@@ -26,20 +26,33 @@ const QUICK_TRUST = [
   { icon: BadgeCheck, title: "Top Rated", subtitle: "4.9/5 by customers" },
 ];
 
+// How far a rangoli hangs past the hero edge, as a percentage of its OWN size.
+// The hero clips it (overflow-hidden), so this is what leaves only part of the
+// motif showing: at 50 a side placement shows half, a corner shows a quarter.
+// The old offset was a percentage of the HERO, so at any sane value the motif
+// stayed almost entirely inside and never read as running off the edge.
+const RANGOLI_BLEED = 50;
+
 // absolute-position style for one CRM-configured rangoli placement
 function rangoliStyle({ position = "top-right", size = 40, rotation = 0, opacity = 20 }) {
   const s = { position: "absolute", width: `${size}%`, opacity: (opacity ?? 20) / 100 };
-  const OFF = "-4%";
-  const tf = [];
-  if (position.includes("top")) s.top = OFF;
-  if (position.includes("bottom")) s.bottom = OFF;
-  if (position === "top-center" || position === "bottom-center") { s.left = "50%"; tf.push("translateX(-50%)"); }
-  else if (position === "left-center") { s.left = OFF; s.top = "50%"; tf.push("translateY(-50%)"); }
-  else if (position === "right-center") { s.right = OFF; s.top = "50%"; tf.push("translateY(-50%)"); }
+  const B = RANGOLI_BLEED;
+  let tx = 0;
+  let ty = 0;
+
+  if (position.includes("top")) { s.top = 0; ty = -B; }
+  if (position.includes("bottom")) { s.bottom = 0; ty = B; }
+
+  if (position === "top-center" || position === "bottom-center") { s.left = "50%"; tx = -50; }
+  else if (position === "left-center") { s.left = 0; s.top = "50%"; tx = -B; ty = -50; }
+  else if (position === "right-center") { s.right = 0; s.top = "50%"; tx = B; ty = -50; }
   else {
-    if (position.includes("left")) s.left = OFF;
-    if (position.includes("right")) s.right = OFF;
+    if (position.includes("left")) { s.left = 0; tx = -B; }
+    if (position.includes("right")) { s.right = 0; tx = B; }
   }
+
+  const tf = [];
+  if (tx || ty) tf.push(`translate(${tx}%, ${ty}%)`);
   if (rotation) tf.push(`rotate(${rotation}deg)`);
   if (tf.length) s.transform = tf.join(" ");
   return s;
@@ -54,8 +67,10 @@ function RangoliLayer({ items }) {
   }
   return (
     <>
-      <RangoliMotif className="absolute -right-9 -top-9 w-40 h-40 opacity-20 pointer-events-none" />
-      <RangoliMotif className="absolute -left-12 bottom-8 w-32 h-32 opacity-[0.14] pointer-events-none" />
+      {/* offsets are half of each motif's own size, so they run off the edge
+          the same way a CRM-placed rangoli does */}
+      <RangoliMotif className="absolute -right-20 -top-20 w-40 h-40 opacity-20 pointer-events-none" />
+      <RangoliMotif className="absolute -left-16 bottom-8 w-32 h-32 opacity-[0.14] pointer-events-none" />
     </>
   );
 }
@@ -452,7 +467,7 @@ export default function NHero() {
             </div>
           ) : (
             <div className="px-3 pt-3">
-              <div className="relative h-[10vh] min-h-[120px] max-h-[200px] w-full rounded-[35px] overflow-hidden">
+              <div className="relative h-[10vh] min-h-[120px] max-h-[200px] w-full rounded-[9px] overflow-hidden">
                 <FestivalFadeImages
                   images={mobileBanners}
                   alt={[hero.eyebrow, hero.titleLines.join(" ")].filter(Boolean).join(" ") || "Indian Hair World"}
