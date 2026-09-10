@@ -391,7 +391,7 @@ export default function NHero() {
             )}
             {hero.titleLines.length > 0 && (
               <h1
-                className={`${displaySerif.className} text-[2.6rem] font-black leading-[1.06] tracking-[-0.01em] bg-gradient-to-b from-[var(--rb-accent-lighter)] via-[var(--rb-accent-light)] to-[var(--rb-accent)] bg-clip-text text-transparent mb-3`}
+                className={`${displaySerif.className} italic text-[2.6rem] font-black leading-[1.06] tracking-[-0.01em] bg-gradient-to-b from-[var(--rb-accent-lighter)] via-[var(--rb-accent-light)] to-[var(--rb-accent)] bg-clip-text text-transparent mb-3`}
                 style={{ filter: "drop-shadow(0 2px 10px rgba(0,0,0,0.45))" }}
               >
                 {hero.titleLines.map((line, i) => (
