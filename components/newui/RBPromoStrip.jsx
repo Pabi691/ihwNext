@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { FaGift } from "react-icons/fa6";
 import { useFestivalTheme } from "./FestivalThemeContext";
@@ -7,43 +7,91 @@ export default function RBPromoStrip() {
   const { theme } = useFestivalTheme();
   const { promo } = theme;
 
+  // A long label ran off the edge of a phone, so the message scrolls — but only
+  // when it genuinely does not fit. Short copy stays centred and still, which is
+  // why this measures rather than always animating.
+  const viewportRef = useRef(null);
+  const measureRef = useRef(null);
+  const [overflowing, setOverflowing] = useState(false);
+
+  useEffect(() => {
+    const check = () => {
+      const vp = viewportRef.current;
+      const inner = measureRef.current;
+      if (!vp || !inner) return;
+      setOverflowing(inner.scrollWidth > vp.clientWidth + 2);
+    };
+    check();
+    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(check) : null;
+    if (ro && viewportRef.current) ro.observe(viewportRef.current);
+    window.addEventListener("resize", check);
+    return () => {
+      if (ro) ro.disconnect();
+      window.removeEventListener("resize", check);
+    };
+  }, [promo.label, promo.subtitle]);
+
   // Blank in the CRM => no promo strip at all.
   if (!promo.label && !promo.subtitle) return null;
 
+  const message = (
+    <>
+      <span className="uppercase">{promo.label}</span>
+      {promo.subtitle && (
+        <>
+          <span
+            aria-hidden
+            className="inline-block align-middle mx-2 w-1 h-1 rounded-full"
+            style={{ background: "var(--rb-accent)" }}
+          />
+          <span>{promo.subtitle}</span>
+        </>
+      )}
+    </>
+  );
+
   return (
     <div className="relative w-full bg-gradient-to-r from-[var(--rb-primary-mid2)] to-[var(--rb-primary)] overflow-hidden">
+      <style>{`
+        @keyframes rb-promo-scroll {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+        .rb-promo-marquee { animation: rb-promo-scroll 22s linear infinite; }
+        /* Motion here is decorative, so honour a reduced-motion preference —
+           the message simply sits still and clips instead. */
+        @media (prefers-reduced-motion: reduce) {
+          .rb-promo-marquee { animation: none; }
+        }
+      `}</style>
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-2.5 flex items-center justify-center gap-2.5 md:gap-3 text-center relative z-10">
         {/* gold rules flanking the message, as in the reference */}
         <span
           aria-hidden
-          className="block h-px w-5 sm:w-8 md:w-16 flex-shrink-0"
+          className="block h-px w-4 sm:w-8 md:w-16 flex-shrink-0"
           style={{ background: "linear-gradient(90deg, transparent, var(--rb-accent))" }}
         />
 
         <FaGift className="w-4 h-4 flex-shrink-0" style={{ color: "var(--rb-accent-light)" }} />
         <span aria-hidden className="h-4 w-px flex-shrink-0 bg-white/25" />
 
-        {/* the subtitle now shows on phones too — it carries the dates */}
-        <p
-          className="text-[11px] sm:text-xs md:text-sm font-bold tracking-wide whitespace-nowrap"
-          style={{ color: "var(--rb-accent-light)" }}
-        >
-          <span className="uppercase">{promo.label}</span>
-          {promo.subtitle && (
-            <>
-              <span
-                aria-hidden
-                className="inline-block align-middle mx-2 w-1 h-1 rounded-full"
-                style={{ background: "var(--rb-accent)" }}
-              />
-              <span>{promo.subtitle}</span>
-            </>
-          )}
-        </p>
+        {/* the subtitle shows on phones too — it carries the dates */}
+        <div ref={viewportRef} className="relative flex-1 min-w-0 overflow-hidden">
+          <div
+            className={`flex w-max text-[11px] sm:text-xs md:text-sm font-bold tracking-wide whitespace-nowrap ${
+              overflowing ? "rb-promo-marquee" : "mx-auto"
+            }`}
+            style={{ color: "var(--rb-accent-light)" }}
+          >
+            <span ref={measureRef} className={overflowing ? "pr-10" : ""}>{message}</span>
+            {/* second copy so the loop has no gap at the wrap point */}
+            {overflowing && <span aria-hidden className="pr-10">{message}</span>}
+          </div>
+        </div>
 
         <span
           aria-hidden
-          className="block h-px w-5 sm:w-8 md:w-16 flex-shrink-0"
+          className="block h-px w-4 sm:w-8 md:w-16 flex-shrink-0"
           style={{ background: "linear-gradient(90deg, var(--rb-accent), transparent)" }}
         />
         <Link
