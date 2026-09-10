@@ -8,6 +8,7 @@ import "swiper/css/pagination";
 import { ImageService } from "@/content/image-service";
 import { FaPhone, FaWhatsapp, FaRankingStar, FaArrowRight } from "react-icons/fa6";
 import { Users, ShieldCheck, BadgeCheck, Headphones, Truck, RefreshCw } from "lucide-react";
+import { Playfair_Display } from "next/font/google";
 import RBGenderNav from "@/components/newui/RBGenderNav";
 import { useFestivalTheme } from "./FestivalThemeContext";
 
@@ -111,6 +112,16 @@ function FestivalFadeImages({ images, alt, fill = false }) {
     </div>
   );
 }
+
+// Display face for the festival headline only — the rest of the page stays on
+// Poppins. The ornate reference reads that way largely because of the serif,
+// not the colour; the gold gradient was already here.
+const displaySerif = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["700", "800", "900"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
 
 export default function NHero() {
   const [bannerImages, setBannerImages] = useState([]);
@@ -379,7 +390,10 @@ export default function NHero() {
               <p className="text-[var(--rb-accent-light)] text-sm font-medium mb-1 drop-shadow">{hero.eyebrow}</p>
             )}
             {hero.titleLines.length > 0 && (
-              <h1 className="text-4xl font-black leading-[1.05] bg-gradient-to-b from-[var(--rb-accent-lighter)] to-[var(--rb-accent)] bg-clip-text text-transparent mb-3 [text-shadow:0_2px_8px_rgba(0,0,0,0.35)]">
+              <h1
+                className={`${displaySerif.className} text-[2.6rem] font-black leading-[1.06] tracking-[-0.01em] bg-gradient-to-b from-[var(--rb-accent-lighter)] via-[var(--rb-accent-light)] to-[var(--rb-accent)] bg-clip-text text-transparent mb-3`}
+                style={{ filter: "drop-shadow(0 2px 10px rgba(0,0,0,0.45))" }}
+              >
                 {hero.titleLines.map((line, i) => (
                   <React.Fragment key={i}>
                     {i > 0 && <br />}
