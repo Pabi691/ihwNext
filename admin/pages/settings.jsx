@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useAdmin } from "@/components/AdminContext";
 import { useAuthGuard } from "@/components/useAuthGuard";
 import AdminLayout from "@/components/AdminLayout";
-import { FiSave, FiTag, FiAlertCircle, FiZap, FiImage, FiTrash2, FiBookmark, FiFolder, FiUploadCloud, FiGrid, FiChevronDown, FiPlus } from "react-icons/fi";
+import { FiSave, FiTag, FiAlertCircle, FiZap, FiImage, FiTrash2, FiBookmark, FiFolder, FiUploadCloud, FiGrid, FiChevronDown, FiPlus, FiGift, FiSearch, FiPhone, FiMenu } from "react-icons/fi";
 
 function Section({ title, icon: Icon, children, collapsible = false, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -464,6 +464,58 @@ function PreviewBar({ w = "100%", h = 8, c = "rgba(0,0,0,0.10)" }) {
   return <span style={{ display: "block", width: w, height: h, borderRadius: 4, background: c }} />;
 }
 
+// Bust marks and lotus for the preview, matching the shapes the site draws.
+function PreviewBust({ woman = false }) {
+  return (
+    <svg viewBox="0 0 24 24" className="w-3 h-3" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <circle cx="12" cy="8" r="3.6" />
+      {woman && <path d="M7.6 7.2C8.4 4.6 10 3.4 12 3.4s3.6 1.2 4.4 3.8" />}
+      {woman && <path d="M7.9 7.6v4.2M16.1 7.6v4.2" />}
+      <path d="M4.8 20c0-3.7 3.2-6.2 7.2-6.2s7.2 2.5 7.2 6.2" />
+    </svg>
+  );
+}
+
+function PreviewLotus({ color }) {
+  return (
+    <svg viewBox="0 0 44 22" className="w-6 h-3" fill="none" style={{ color }} aria-hidden>
+      <path d="M22 19C15.4 18.2 9.6 15 6.4 10.2c5.8-1.2 12.2 2 15.6 8.8Z" fill="currentColor" opacity=".45" />
+      <path d="M22 19c6.6-.8 12.4-4 15.6-8.8-5.8-1.2-12.2 2-15.6 8.8Z" fill="currentColor" opacity=".45" />
+      <path d="M22 19c-4.4-1.4-7.8-5.2-8.6-9.8 4.4.9 7.8 4.6 8.6 9.8Z" fill="currentColor" opacity=".7" />
+      <path d="M22 19c4.4-1.4 7.8-5.2 8.6-9.8-4.4.9-7.8 4.6-8.6 9.8Z" fill="currentColor" opacity=".7" />
+      <path d="M22 2.6c2.9 4.2 2.9 11.1 0 16.4-2.9-5.3-2.9-12.2 0-16.4Z" fill="currentColor" />
+    </svg>
+  );
+}
+
+// Mirrors the lighten() in the storefront's FestivalThemeContext: hold hue and
+// saturation, lift lightness. Without it the preview would show the unlit
+// colour for the segmented pill and misrepresent what visitors see.
+function lightenHex(hex, byL) {
+  const n = parseInt(String(hex || "#000000").slice(1), 16);
+  const r = ((n >> 16) & 255) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  const l = (max + min) / 2, d = max - min;
+  const sat = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+  let h = 0;
+  if (d !== 0) {
+    if (max === r) h = ((g - b) / d) % 6;
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h = (h * 60 + 360) % 360;
+  }
+  const L = Math.min(1, Math.max(0, l + byL));
+  const c = (1 - Math.abs(2 * L - 1)) * sat;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = L - c / 2;
+  const [r1, g1, b1] =
+    h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x]
+    : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x];
+  const hx = (v) => Math.round((v + m) * 255).toString(16).padStart(2, "0");
+  return `#${hx(r1)}${hx(g1)}${hx(b1)}`;
+}
+
 function FestivalPreview({ fest }) {
   const p = { ...DEFAULT_PALETTE, ...(fest.palette || {}) };
   const hero = fest.hero || {};
@@ -474,6 +526,10 @@ function FestivalPreview({ fest }) {
   const heroVideo = fest.heroMedia === "video" ? (fest.heroVideo || "").trim() : "";
   const rangoli = (fest.rangoli || []).filter((r) => r && r.url);
   const saleBg = (fest.saleSection?.bg || "").trim();
+  const hoverHex = p["--rb-primary-hover"] || p["--rb-primary"];
+  const litHex = lightenHex(hoverHex, 0.14);
+  const litSoftHex = lightenHex(hoverHex, 0.2);
+  const accentLitHex = lightenHex(p["--rb-accent"], 0.12);
 
   return (
     <div className="w-[320px]">
@@ -482,28 +538,57 @@ function FestivalPreview({ fest }) {
           className="h-[600px] overflow-y-auto bg-white rounded-b-[26px]"
           style={{ scrollbarWidth: "none" }}
         >
-          {/* promo strip — only when there is copy for it */}
+          {/* promo strip — one line, as on the site: gold rules, gift, dot */}
           {(promo.label || promo.subtitle) && (
             <div
-              className="px-3 py-1.5 text-center"
+              className="px-2 py-1.5 flex items-center justify-center gap-1.5 overflow-hidden"
               style={{ background: `linear-gradient(90deg, ${p["--rb-primary-mid2"]}, ${p["--rb-primary"]})` }}
             >
-              {promo.label && (
-                <div className="text-[10px] font-bold tracking-wide" style={{ color: p["--rb-accent-lighter"] }}>
-                  {promo.label}
-                </div>
-              )}
-              {promo.subtitle && <div className="text-[9px] text-white/80">{promo.subtitle}</div>}
+              <span className="h-px w-3 flex-shrink-0"
+                style={{ background: `linear-gradient(90deg, transparent, ${p["--rb-accent"]})` }} />
+              <FiGift size={11} className="flex-shrink-0" style={{ color: p["--rb-accent-light"] }} />
+              <span className="h-3 w-px flex-shrink-0 bg-white/25" />
+              <p className="text-[10px] font-bold tracking-wide whitespace-nowrap truncate"
+                style={{ color: p["--rb-accent-light"] }}>
+                <span className="uppercase">{promo.label}</span>
+                {promo.subtitle && (
+                  <>
+                    <span className="inline-block align-middle mx-1.5 w-1 h-1 rounded-full"
+                      style={{ background: p["--rb-accent"] }} />
+                    <span>{promo.subtitle}</span>
+                  </>
+                )}
+              </p>
+              <span className="h-px w-3 flex-shrink-0"
+                style={{ background: `linear-gradient(90deg, ${p["--rb-accent"]}, transparent)` }} />
             </div>
           )}
 
-          {/* header chrome */}
-          <div className="flex items-center justify-between px-3 py-2.5" style={{ background: p["--rb-dark"] }}>
+          {/* header — glass search and menu, accent-filled call, as on the site */}
+          <div
+            className="flex items-center justify-between px-3 py-2.5"
+            style={{
+              background: `linear-gradient(135deg, ${p["--rb-primary-mid2"]}, ${p["--rb-primary-mid"]} 55%, ${p["--rb-primary-mid2"]})`,
+            }}
+          >
             <span className="text-white font-black text-sm tracking-tight">IHW</span>
-            <div className="flex gap-1.5">
-              {[0, 1, 2].map((i) => (
-                <span key={i} className="w-4 h-4 rounded-full" style={{ background: "rgba(255,255,255,0.25)" }} />
-              ))}
+            <div className="flex items-center gap-1.5">
+              <span className="w-7 h-7 rounded-full flex items-center justify-center text-white"
+                style={{ background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                <FiSearch size={13} />
+              </span>
+              <span className="w-7 h-7 rounded-full flex items-center justify-center"
+                style={{
+                  background: `linear-gradient(160deg, ${accentLitHex}, ${p["--rb-accent"]})`,
+                  color: p["--rb-dark"],
+                  boxShadow: `0 0 14px -2px ${p["--rb-accent"]}`,
+                }}>
+                <FiPhone size={13} />
+              </span>
+              <span className="w-7 h-7 rounded-full flex items-center justify-center text-white"
+                style={{ background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                <FiMenu size={13} />
+              </span>
             </div>
           </div>
 
@@ -517,19 +602,59 @@ function FestivalPreview({ fest }) {
             {rangoli.map((r, i) => (
               <img key={i} src={r.url} alt="" aria-hidden className="select-none" style={rangoliBoxStyle(r)} />
             ))}
+            {/* Men / Women + gold divider, which open the hero on the site */}
+            <div className="relative px-3 pt-3">
+              <div
+                className="mx-auto max-w-[240px] rounded-full p-1"
+                style={{
+                  background: "rgba(255,255,255,0.07)",
+                  border: "1px solid rgba(255,255,255,0.20)",
+                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.28), 0 6px 18px rgba(0,0,0,0.28)",
+                }}
+              >
+                <div className="grid grid-cols-2 gap-1">
+                  <span
+                    className="h-7 rounded-full flex items-center justify-center gap-1 text-[11px] font-semibold text-white"
+                    style={{
+                      background: `linear-gradient(180deg, ${litSoftHex} 0%, ${litHex} 42%, ${hoverHex} 100%)`,
+                      boxShadow: `0 0 18px -4px ${litHex}, inset 0 1px 0 rgba(255,255,255,0.6)`,
+                    }}
+                  >
+                    <PreviewBust /> Men
+                  </span>
+                  <span className="h-7 rounded-full flex items-center justify-center gap-1 text-[11px] font-semibold text-white/75">
+                    <PreviewBust woman /> Women
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-2 flex items-center justify-center gap-1.5">
+                <span className="h-px w-10"
+                  style={{ background: `linear-gradient(90deg, transparent, ${p["--rb-accent"]})` }} />
+                <span className="w-1 h-1 rotate-45" style={{ background: p["--rb-accent"] }} />
+                <PreviewLotus color={p["--rb-accent"]} />
+                <span className="w-1 h-1 rotate-45" style={{ background: p["--rb-accent"] }} />
+                <span className="h-px w-10"
+                  style={{ background: `linear-gradient(90deg, ${p["--rb-accent"]}, transparent)` }} />
+              </div>
+            </div>
+
+            {/* media: a video runs full-bleed, images sit inset and rounded */}
             {heroVideo ? (
               <video
                 key={heroVideo}
                 src={heroVideo}
-                className="relative block w-full h-auto"
+                className="relative block w-full h-auto mt-3"
                 muted
                 loop
                 autoPlay
                 playsInline
               />
             ) : (
-              <div className="relative">
-                <FadeSlider images={images} palette={p} bleed />
+              <div className="relative px-3 pt-3">
+                <div className="rounded-[26px] overflow-hidden">
+                  <FadeSlider images={images} palette={p} bleed />
+                </div>
               </div>
             )}
             <div className="relative px-4 pt-4 pb-6">
