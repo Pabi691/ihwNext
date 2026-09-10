@@ -92,7 +92,7 @@ function BranchCard({ branch, dir }) {
 
         <div className="mt-3 md:mt-5 space-y-2 md:space-y-3">
           <div className="flex items-start gap-2.5 md:gap-3 text-[12px] md:text-[15px] text-white/70">
-            <FaLocationDot className="w-4 h-4 text-[var(--rb-heading)] flex-shrink-0 mt-0.5" />
+            <FaLocationDot className="w-4 h-4 text-[var(--rb-heading-dark)] flex-shrink-0 mt-0.5" />
             <span className="leading-snug line-clamp-2 md:line-clamp-none">{branch.address}</span>
           </div>
           <div className="flex items-center gap-2.5 md:gap-3 text-[12px] md:text-[15px] text-white/70">
@@ -151,9 +151,9 @@ export default function NBookAppointment() {
 
         {/* header */}
         <div className="relative text-center pt-10 md:pt-14 px-4">
-          <span className="text-[var(--rb-heading)] text-xs font-bold uppercase tracking-[0.3em]">Visit Us</span>
+          <span className="text-[var(--rb-heading-dark)] text-xs font-bold uppercase tracking-[0.3em]">Visit Us</span>
           <h2 className="text-3xl md:text-5xl font-black text-white mt-2">
-            Book an <span className="text-[var(--rb-heading)]">Appointment</span>
+            Book an <span className="text-[var(--rb-heading-dark)]">Appointment</span>
           </h2>
           <p className="text-white/40 text-sm mt-3 max-w-lg mx-auto">
             Scroll through our branches — walk into any one for a free consultation.

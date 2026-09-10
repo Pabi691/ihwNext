@@ -17,6 +17,8 @@
 
 const PALETTE_KEYS = [
   "--rb-primary",
+  "--rb-heading",
+  "--rb-heading-dark",
   "--rb-primary-hover",
   "--rb-primary-mid",
   "--rb-primary-mid2",
@@ -32,6 +34,8 @@ const PALETTE_KEYS = [
 // backfill anything the model omits or returns malformed.
 const FALLBACK_PALETTE = {
   "--rb-primary": "#7a1420",
+  "--rb-heading": "#7a1420",
+  "--rb-heading-dark": "#f0c96b",
   "--rb-primary-hover": "#8f1826",
   "--rb-primary-mid": "#6b0f16",
   "--rb-primary-mid2": "#5c0f16",
@@ -122,7 +126,9 @@ Return ONLY a JSON object (no markdown) with this exact shape:
 {
   "name": "proper display name of the festival",
   "palette": {
-    "--rb-primary": "#rrggbb",        // deep saturated colour evoking the festival; buttons + headings; white text must be readable on it
+    "--rb-primary": "#rrggbb",        // deep saturated colour evoking the festival; button + bar FILLS only; white text must be readable on it
+    "--rb-heading": "#rrggbb",        // heading TEXT on the light cream sections; dark enough to read on --rb-cream
+    "--rb-heading-dark": "#rrggbb",   // heading TEXT on the dark sections; must be LIGHT enough to read on --rb-dark, never a dark shade
     "--rb-primary-hover": "#rrggbb",  // a touch lighter than --rb-primary
     "--rb-primary-mid": "#rrggbb",    // darker than --rb-primary, a gradient stop
     "--rb-primary-mid2": "#rrggbb",   // darker still, a gradient stop; white text must be readable on it

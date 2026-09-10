@@ -45,7 +45,7 @@ const OurCollections = ({
       <section className="w-full bg-gray-950 py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-8 md:mb-12">
-            <p className="text-[var(--site-heading)] text-xs font-semibold uppercase tracking-[0.2em] mb-3">
+            <p className="text-[var(--site-heading-dark)] text-xs font-semibold uppercase tracking-[0.2em] mb-3">
               {eyebrow}
             </p>
             <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">
@@ -92,7 +92,7 @@ const OurCollections = ({
                     <p className="text-white text-base md:text-2xl font-bold leading-tight">
                       {toTitle(item.name)}
                     </p>
-                    <span className="mt-2 md:mt-3 inline-flex items-center gap-1.5 text-white/70 text-xs md:text-sm font-medium group-hover:text-[var(--site-heading)] transition-colors duration-300">
+                    <span className="mt-2 md:mt-3 inline-flex items-center gap-1.5 text-white/70 text-xs md:text-sm font-medium group-hover:text-[var(--site-heading-dark)] transition-colors duration-300">
                       Shop Now{" "}
                       <FiArrowRight
                         size={13}

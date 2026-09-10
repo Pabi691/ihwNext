@@ -43,7 +43,8 @@ const COLOR_OPTIONS = [
 // The descriptions match real usage in the storefront components — the point is
 // that nobody should have to guess which swatch changes which pixel.
 const PALETTE_FIELDS = [
-  ["--rb-heading",        "Heading text",      "TEXT only — section headings and the highlighted word (e.g. the word “Appointment” in “Book an Appointment”). Pick this for readability; it never paints a background."],
+  ["--rb-heading",        "Heading text",      "TEXT only — section headings and the highlighted word, on the light cream sections. Pick this for readability against cream; it never paints a background."],
+  ["--rb-heading-dark",   "Heading on dark",   "TEXT only — the same headings where the section background is dark (e.g. “VISIT US” and the word “Appointment” in “Book an Appointment”). Must be light, or it disappears into the dark background."],
   ["--rb-primary",        "Main fill",         "BACKGROUND only — button fills, the promo strip and coloured bars. Changing this never moves any text colour."],
   ["--rb-primary-hover",  "Button hover",      "BACKGROUND — fill of a button while it is pressed or hovered. Usually a touch lighter than Main colour."],
   ["--rb-primary-mid",    "Gradient · middle", "BACKGROUND only — a middle stop of the hero gradient. Never used for text."],
@@ -58,6 +59,7 @@ const PALETTE_FIELDS = [
 
 const DEFAULT_PALETTE = {
   "--rb-heading": "#7a1420",
+  "--rb-heading-dark": "#f0c96b",
   "--rb-primary": "#7a1420",
   "--rb-primary-hover": "#8f1826",
   "--rb-primary-mid": "#6b0f16",
@@ -157,6 +159,13 @@ function festivalFromSettings(raw) {
       // inherit from it so loading one does not silently recolour headings.
       if (!d.palette?.["--rb-heading"] && d.palette?.["--rb-primary"]) {
         merged["--rb-heading"] = d.palette["--rb-primary"];
+      }
+      // "Heading on dark" is newer still. Never inherit it from --rb-primary or
+      // --rb-heading: those are picked to read on cream, and this one sits on
+      // --rb-dark. The accent tint is the closest existing light-on-dark value.
+      if (!d.palette?.["--rb-heading-dark"]) {
+        merged["--rb-heading-dark"] =
+          d.palette?.["--rb-accent-light"] || DEFAULT_PALETTE["--rb-heading-dark"];
       }
       return merged;
     })(),

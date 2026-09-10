@@ -88,6 +88,7 @@ function normalizeRangoli(data) {
 const PALETTE_KEYS = [
   "--rb-primary",
   "--rb-heading",
+  "--rb-heading-dark",
   "--rb-primary-hover",
   "--rb-primary-mid",
   "--rb-primary-mid2",
@@ -153,6 +154,7 @@ function buildPaletteCss(p) {
   const siteVars = [
     `--site-primary:${p["--rb-primary"]}`,
     `--site-heading:${p["--rb-heading"] || p["--rb-primary"]}`,
+    `--site-heading-dark:${p["--rb-heading-dark"] || p["--rb-accent-light"] || p["--rb-accent"]}`,
     `--site-primary-hover:${p["--rb-primary-hover"]}`,
     `--site-accent:${p["--rb-accent"]}`,
     `--site-hero-from:${p["--rb-primary-mid2"]}`,
@@ -182,6 +184,11 @@ function normalizePalette(input) {
   // Themes saved before --rb-heading existed only carry --rb-primary; keep them
   // rendering exactly as they did by deriving the heading colour from it.
   if (!out["--rb-heading"] && out["--rb-primary"]) out["--rb-heading"] = out["--rb-primary"];
+  // Same for --rb-heading-dark. It must never fall back to --rb-heading: that
+  // colour is chosen to read on cream, and these headings sit on --rb-dark.
+  // --rb-accent-light is already the "light enough for dark grounds" token.
+  if (!out["--rb-heading-dark"]) out["--rb-heading-dark"] = out["--rb-accent-light"] || out["--rb-accent"] || "";
+  if (!out["--rb-heading-dark"]) delete out["--rb-heading-dark"];
   return Object.keys(out).length ? out : null;
 }
 

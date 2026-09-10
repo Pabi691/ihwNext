@@ -7,6 +7,7 @@
 :root {
   --rb-primary: #7a1420;        /* deep maroon — button/section FILLS */
   --rb-heading: #7a1420;        /* heading + highlighted-word TEXT (split from --rb-primary) */
+  --rb-heading-dark: #f0c96b;   /* the same headings where they sit on a DARK section */
   --rb-primary-hover: #8f1826;  /* maroon hover/active state */
   --rb-primary-lit: #b52f42;    /* lit surfaces (nav pill) — lighter --rb-primary-hover */
   --rb-primary-lit-soft: #c04a5b;/* the softer stop of that lit gradient */
@@ -29,6 +30,7 @@
 :root {
   --site-primary: #04A9FF;        /* brand blue — FILLS: badges, CTAs, bars */
   --site-heading: #04A9FF;        /* heading + highlighted-word TEXT (split from --site-primary) */
+  --site-heading-dark: #04A9FF;   /* the same headings on the DARK sections (footer, WelcomeSection) */
   --site-primary-hover: #0070cc;  /* brand blue, darker — button hover */
   --site-accent: #ef7f1a;         /* orange — hero badge, price block, award icons, hamburger */
 
