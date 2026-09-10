@@ -31,9 +31,9 @@ const IconWoman = (props) => (
 // rather than shipped as an image so it inherits the festival accent colour and
 // stays crisp at any density.
 const GoldDivider = () => (
-  <div className="mt-4 flex items-center justify-center gap-2.5" aria-hidden>
+  <div className="mt-3 flex items-center justify-center gap-2" aria-hidden>
     <span
-      className="h-px flex-1 max-w-[96px]"
+      className="h-px flex-1 max-w-[72px]"
       style={{ background: "linear-gradient(90deg, transparent, var(--rb-accent))" }}
     />
     <svg viewBox="0 0 8 8" className="w-[7px] h-[7px] flex-shrink-0" style={{ color: "var(--rb-accent)" }}>
@@ -57,7 +57,7 @@ const GoldDivider = () => (
       <rect x="1.2" y="1.2" width="5.6" height="5.6" transform="rotate(45 4 4)" fill="currentColor" />
     </svg>
     <span
-      className="h-px flex-1 max-w-[96px]"
+      className="h-px flex-1 max-w-[72px]"
       style={{ background: "linear-gradient(90deg, var(--rb-accent), transparent)" }}
     />
   </div>
@@ -132,7 +132,6 @@ export default function RBHeaderNav() {
   const [q, setQ] = useState("");
   const router = useRouter();
   const currentPath = router.asPath.split("?")[0];
-  const anyLit = currentPath === "/men" || currentPath === "/women";
 
   const submitSearch = (e) => {
     e.preventDefault();
@@ -243,37 +242,29 @@ export default function RBHeaderNav() {
         {/* Men / Women — one segmented pill. Equal weight until you are actually
             inside one of the two sections, then that half lights. */}
         <div
-          className="relative mt-3 rounded-full border border-white/20 bg-white/[0.07] p-2 backdrop-blur-md"
+          className="relative mt-3 mx-auto max-w-[330px] rounded-full border border-white/20 bg-white/[0.07] p-1 backdrop-blur-md"
           style={{
             boxShadow:
               "inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -1px 0 rgba(0,0,0,0.15), 0 8px 24px rgba(0,0,0,0.28)",
           }}
         >
-          {/* hairline between equals — hidden once one half is lit, since the
-              filled pill already separates them */}
-          {!anyLit && (
-            <span
-              aria-hidden
-              className="pointer-events-none absolute left-1/2 top-3 bottom-3 w-px -translate-x-1/2 bg-white/15"
-            />
-          )}
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-1">
             {SEGMENTS.map(({ label, href, Icon }) => {
-              // Lit only where you actually are. On the homepage neither
-              // matches, so the two halves carry equal weight — which is the
-              // point of a segmented control that also states a location.
+              // One half always carries the colour and the glow, the other stays
+              // transparent — the control is never flat. Which half is lit
+              // follows the route, defaulting to Men outside /women.
               const onThisPage = currentPath === href;
-              const lit = onThisPage;
+              const lit = currentPath === "/women" ? href === "/women" : href === "/men";
               return (
                 <Link
                   key={href}
                   href={href}
                   aria-current={onThisPage ? "page" : undefined}
-                  className={`h-[52px] rounded-full flex items-center justify-center gap-2.5 text-base font-semibold tracking-wide transition-all ${
+                  className={`h-10 rounded-full flex items-center justify-center gap-2 text-sm font-semibold tracking-wide transition-all ${
                     lit ? "text-white rb-seg-lit" : "text-white/75 active:text-white"
                   }`}
                 >
-                  <Icon className="w-6 h-6" />
+                  <Icon className="w-[17px] h-[17px]" />
                   {label}
                 </Link>
               );
