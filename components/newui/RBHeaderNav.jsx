@@ -176,10 +176,37 @@ export default function RBHeaderNav() {
           </div>
         </div>
 
+        {/* Lit half. color-mix with white raised lightness but dragged saturation
+            78 -> 58, which is what made it dusty pink instead of the vivid
+            crimson in the reference. Relative colour keeps hue and saturation
+            and lifts lightness alone. Plain gradient first for browsers without
+            hsl(from ...), which simply get the flatter fill. */}
+        <style>{`
+          .rb-seg-lit {
+            background: linear-gradient(135deg, var(--rb-primary-hover) 0%, var(--rb-primary) 100%);
+            box-shadow: 0 0 26px -4px var(--rb-primary-hover),
+                        0 6px 18px rgba(0,0,0,0.4),
+                        inset 0 1px 0 rgba(255,255,255,0.5);
+          }
+          @supports (color: hsl(from red h s l)) {
+            .rb-seg-lit {
+              background: linear-gradient(135deg,
+                hsl(from var(--rb-primary-hover) h calc(s + 6%) calc(l + 14%)) 0%,
+                var(--rb-primary-hover) 58%,
+                hsl(from var(--rb-primary-hover) h s calc(l - 7%)) 100%);
+              box-shadow:
+                0 0 36px -4px hsl(from var(--rb-primary-hover) h s calc(l + 10%)),
+                0 0 18px -6px hsl(from var(--rb-primary-hover) h s calc(l + 20%)),
+                0 6px 20px rgba(0,0,0,0.45),
+                inset 0 1px 0 rgba(255,255,255,0.55);
+            }
+          }
+        `}</style>
+
         {/* Men / Women — one segmented pill, active half filled. Highlights the
             section you are actually in rather than always looking the same. */}
-        <div className="relative mt-3 rounded-full border border-white/25 bg-white/[0.06] p-1.5 backdrop-blur-sm">
-          <div className="grid grid-cols-2 gap-1.5">
+        <div className="relative mt-3 rounded-full border border-white/25 bg-white/[0.06] p-2 backdrop-blur-sm">
+          <div className="grid grid-cols-2 gap-2">
             {SEGMENTS.map(({ label, href, Icon }) => {
               // Two separate ideas: which page you are actually on (for
               // assistive tech) and which half is lit. Men stays lit anywhere
@@ -191,21 +218,11 @@ export default function RBHeaderNav() {
                   key={href}
                   href={href}
                   aria-current={onThisPage ? "page" : undefined}
-                  className={`h-12 rounded-full flex items-center justify-center gap-2.5 text-[15px] font-bold tracking-wide transition-all ${
-                    lit ? "text-white" : "text-white/75 active:text-white"
+                  className={`h-[52px] rounded-full flex items-center justify-center gap-2.5 text-base font-semibold tracking-wide transition-all ${
+                    lit ? "text-white rb-seg-lit" : "text-white/75 active:text-white"
                   }`}
-                  style={
-                    lit
-                      ? {
-                          background:
-                            "linear-gradient(100deg, color-mix(in srgb, var(--rb-primary-hover) 62%, white) 0%, var(--rb-primary-hover) 100%)",
-                          boxShadow:
-                            "0 0 30px -2px color-mix(in srgb, var(--rb-primary-hover) 70%, white), 0 0 14px -3px var(--rb-primary-hover), 0 6px 18px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.45)",
-                        }
-                      : undefined
-                  }
                 >
-                  <Icon className="w-5 h-5" />
+                  <Icon className="w-6 h-6" />
                   {label}
                 </Link>
               );
