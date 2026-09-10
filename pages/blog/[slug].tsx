@@ -5,7 +5,8 @@ import Link from "next/link";
 import MainLayOut from "@/layout/MainLayOut";
 import { DesktopNav } from "@/components/Navigation";
 import TopBar from "@/components/home/TopBar";
-import { BlogService, getBlogImageUrl } from "@/content/blog-service";
+import { getBlogImageUrl } from "@/content/blog-service";
+import { BlogService } from "@/content/blog-service.server";
 
 interface Blog {
   id: number;

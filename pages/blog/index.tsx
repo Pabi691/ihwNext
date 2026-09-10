@@ -6,7 +6,7 @@ import MainLayOut from "@/layout/MainLayOut";
 import { DesktopNav } from "@/components/Navigation";
 import TopBar from "@/components/home/TopBar";
 import BlogCard from "@/components/blog/BlogCard";
-import { BlogService } from "@/content/blog-service";
+import { BlogService } from "@/content/blog-service.server";
 
 const POSTS_PER_PAGE = 9;
 
