@@ -123,6 +123,86 @@ const displaySerif = Playfair_Display({
   display: "swap",
 });
 
+// Gold roundel + lotus that opens the festival tagline. Drawn rather than
+// shipped as an image so it takes the active accent colour like the rest of the
+// festival chrome.
+function TaglineSeal() {
+  return (
+    <span
+      className="relative grid place-items-center flex-shrink-0 w-8 h-8 rounded-full"
+      style={{ boxShadow: "inset 0 0 0 1px var(--rb-accent), 0 0 16px -6px var(--rb-accent)" }}
+      aria-hidden
+    >
+      <span className="absolute inset-0 rounded-full" style={{ background: "var(--rb-accent)", opacity: 0.18 }} />
+      <svg viewBox="0 0 44 22" className="relative w-5 h-[10px]" fill="none" style={{ color: "var(--rb-accent-light)" }}>
+        <path d="M22 19C15.4 18.2 9.6 15 6.4 10.2c5.8-1.2 12.2 2 15.6 8.8Z" fill="currentColor" opacity=".45" />
+        <path d="M22 19c6.6-.8 12.4-4 15.6-8.8-5.8-1.2-12.2 2-15.6 8.8Z" fill="currentColor" opacity=".45" />
+        <path d="M22 19c-4.4-1.4-7.8-5.2-8.6-9.8 4.4.9 7.8 4.6 8.6 9.8Z" fill="currentColor" opacity=".7" />
+        <path d="M22 19c4.4-1.4 7.8-5.2 8.6-9.8-4.4.9-7.8 4.6-8.6 9.8Z" fill="currentColor" opacity=".7" />
+        <path d="M22 2.6c2.9 4.2 2.9 11.1 0 16.4-2.9-5.3-2.9-12.2 0-16.4Z" fill="currentColor" />
+      </svg>
+    </span>
+  );
+}
+
+// Faint alpona watermark behind the price card — the same lotus as the tagline
+// seal and the divider, stroked instead of filled so it reads as a watermark.
+function PriceOrnament({ className }) {
+  return (
+    <svg viewBox="0 0 44 24" className={className} fill="none" aria-hidden style={{ color: "var(--rb-accent)" }}>
+      <g stroke="currentColor" strokeWidth=".7" strokeLinecap="round">
+        <path d="M22 19C15.4 18.2 9.6 15 6.4 10.2c5.8-1.2 12.2 2 15.6 8.8Z" />
+        <path d="M22 19c6.6-.8 12.4-4 15.6-8.8-5.8-1.2-12.2 2-15.6 8.8Z" />
+        <path d="M22 19c-4.4-1.4-7.8-5.2-8.6-9.8 4.4.9 7.8 4.6 8.6 9.8Z" />
+        <path d="M22 19c4.4-1.4 7.8-5.2 8.6-9.8-4.4.9-7.8 4.6-8.6 9.8Z" />
+        <path d="M22 2.6c2.9 4.2 2.9 11.1 0 16.4-2.9-5.3-2.9-12.2 0-16.4Z" />
+        <path d="M7 21.6h30" opacity=".55" />
+      </g>
+    </svg>
+  );
+}
+
+// Gold flourish that trails the endorsement card, as in the reference. Stroked
+// paths rather than an image so it takes the accent colour and stays crisp.
+function TrustedSwash({ className }) {
+  return (
+    <svg viewBox="0 0 84 56" className={className} fill="none" aria-hidden style={{ color: "var(--rb-accent)" }}>
+      <path
+        d="M2 40C14 20 34 10 52 16c9 3 12 13 6 18-5 4-12 1-12-6 0-10 11-18 26-18"
+        stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" opacity=".9"
+      />
+      <path
+        d="M6 50c11-8 24-11 36-8" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" opacity=".45"
+      />
+      <circle cx="76" cy="7" r="1.9" fill="currentColor" opacity=".85" />
+    </svg>
+  );
+}
+
+// The reference sets the payoff of the tagline in gold. Authors can mark it
+// explicitly with **double asterisks** from the CRM; with no markup we fall back
+// to the phrase after the last connector, which is where these lines put it
+// ("Celebrate Pujo with flawless confidence").
+function taglineParts(text) {
+  const raw = String(text || "");
+  if (raw.includes("**")) {
+    return raw
+      .split("**")
+      .map((seg, i) => ({ text: seg, em: i % 2 === 1 }))
+      .filter((p) => p.text);
+  }
+  const last = [...raw.matchAll(/\s(?:with|for|in|of|to)\s/gi)].pop();
+  if (!last) return [{ text: raw, em: false }];
+  const cut = last.index + last[0].length;
+  const tail = raw.slice(cut);
+  // A one-word tail ("...made for you") reads as a typo in gold, not emphasis.
+  if (tail.trim().split(/\s+/).length < 2) return [{ text: raw, em: false }];
+  return [
+    { text: raw.slice(0, cut), em: false },
+    { text: tail, em: true },
+  ];
+}
+
 export default function NHero() {
   const [bannerImages, setBannerImages] = useState([]);
   const { theme } = useFestivalTheme();
@@ -385,7 +465,9 @@ export default function NHero() {
           {theme.active && <RangoliLayer items={theme.rangoli} />}
 
           {/* bottom: content on the gradient — each line only if the CRM field is set */}
-          <div className="relative z-10 p-6 pb-8">
+          {/* pb clears the -mt-9 the price card uses to straddle this edge —
+              at pb-8 the two collide */}
+          <div className="relative z-10 p-6 pb-14">
             {hero.eyebrow && (
               <p className="text-[var(--rb-accent-light)] text-sm font-medium mb-1 drop-shadow">{hero.eyebrow}</p>
             )}
@@ -403,13 +485,60 @@ export default function NHero() {
               </h1>
             )}
             {hero.tagline && (
-              <p className="text-white text-base font-medium mb-4 drop-shadow">{hero.tagline}</p>
+              <div className="flex items-center gap-3 mb-4">
+                <TaglineSeal />
+                <span
+                  className="h-6 w-px flex-shrink-0"
+                  style={{ background: "linear-gradient(180deg, transparent, var(--rb-accent), transparent)" }}
+                  aria-hidden
+                />
+                <p className="text-white/85 text-[15px] leading-snug drop-shadow">
+                  {taglineParts(hero.tagline).map((part, i) =>
+                    part.em ? (
+                      <strong key={i} className="font-bold text-[var(--rb-accent-light)]">{part.text}</strong>
+                    ) : (
+                      <React.Fragment key={i}>{part.text}</React.Fragment>
+                    )
+                  )}
+                </p>
+              </div>
             )}
 
             {hero.trustedBy && (
-              <div className="inline-flex flex-col bg-white/10 border border-white/20 rounded-xl px-4 py-2 backdrop-blur-sm">
-                <span className="text-[var(--rb-accent-light)] text-[9px] font-bold uppercase tracking-wider">Trusted By</span>
-                <span className="text-white text-sm font-black">{hero.trustedBy}</span>
+              <div className="flex items-center gap-1">
+                <div
+                  className="relative inline-flex flex-col pl-5 pr-9 py-2.5"
+                  style={{
+                    // Pill cap right, 18px left. The cap radius must stay near half the
+                    // card height: when the two radii on one edge overshoot it, CSS scales
+                    // *every* corner by the same factor, so a 9999px cap would flatten the
+                    // left corners to nothing. Overshooting slightly still yields an exact
+                    // cap (it scales to height/2) and keeps the left visibly round.
+                    borderRadius: "18px 38px 38px 18px",
+                    background:
+                      "linear-gradient(135deg, var(--rb-primary-lit) 0%, var(--rb-primary-hover) 52%, var(--rb-dark) 100%)",
+                    boxShadow: "0 0 26px -12px var(--rb-accent), 0 8px 20px -8px rgba(0,0,0,0.55)",
+                  }}
+                >
+                  {/* softened gold hairline — a full-strength accent border reads as a highlighter */}
+                  <span
+                    className="absolute inset-0 pointer-events-none"
+                    style={{ borderRadius: "18px 38px 38px 18px", border: "1px solid var(--rb-accent)", opacity: 0.55 }}
+                    aria-hidden
+                  />
+                  <span className="relative text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--rb-accent-light)]">
+                    Trusted By
+                  </span>
+                  <span className="relative text-white text-lg font-extrabold leading-tight mt-0.5 whitespace-nowrap">
+                    {hero.trustedBy}
+                  </span>
+                  <span
+                    className="relative mt-1.5 h-px w-full"
+                    style={{ background: "linear-gradient(90deg, var(--rb-accent), transparent)" }}
+                    aria-hidden
+                  />
+                </div>
+                <TrustedSwash className="w-14 h-10 flex-shrink-0 -ml-1" />
               </div>
             )}
 
@@ -423,16 +552,31 @@ export default function NHero() {
           </div>
         </div>
 
-        {/* Price + EMI — straddles the bottom edge of the blue hero card */}
-        <div className="flex items-center justify-between gap-3 bg-white rounded-2xl px-4 py-3 -mt-9 relative z-10 mx-3 shadow-lg border border-[var(--rb-cream-border)]">
-          <div>
-            <p className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Starting At</p>
-            <p className="text-2xl font-black text-[var(--rb-heading)]">Rs. 5,999<span className="text-sm font-bold">/-</span></p>
+        {/* Price + EMI — straddles the bottom edge of the hero card */}
+        <div className="relative overflow-hidden flex items-center justify-between gap-3 rounded-2xl px-5 py-4 -mt-9 z-10 mx-3 shadow-lg bg-[var(--rb-cream)] border border-[var(--rb-cream-border)]">
+          <PriceOrnament className="pointer-events-none absolute left-1/2 -translate-x-1/2 -bottom-1 w-28 h-16 opacity-[0.22]" />
+
+          <div className="relative">
+            <p className="text-gray-500 text-[10px] font-bold uppercase tracking-[0.18em]">Starting At</p>
+            <p className="text-[28px] leading-none font-black text-[var(--rb-heading)] mt-1.5">
+              Rs. 5,999<span className="text-base font-bold">/-</span>
+            </p>
+            <span
+              className="block mt-2 h-[2px] w-16 rounded-full"
+              style={{ background: "linear-gradient(90deg, var(--rb-accent), transparent)" }}
+              aria-hidden
+            />
           </div>
-          <div className="w-px h-12 bg-gray-100" />
-          <div className="flex flex-col items-center">
-            <img src="/images/bajaj.png" alt="Bajaj Finserv" className="h-10 object-contain" />
-            <span className="text-gray-400 text-[9px] mt-0.5">Available</span>
+
+          {/* not flex-shrink-0: the strapline has to be allowed to wrap, or the
+              row overflows the 390px viewport */}
+          <div className="relative flex flex-col items-end gap-1.5 min-w-0">
+            <span className="text-[9px] font-semibold leading-tight text-right text-[#0a5ca8] max-w-[92px]">
+              We Accept EMI Available
+            </span>
+            <span className="rounded-lg bg-white px-2.5 py-1.5 shadow-sm">
+              <img src="/images/bajaj.png" alt="Bajaj Finserv" className="h-7 object-contain" />
+            </span>
           </div>
         </div>
 
