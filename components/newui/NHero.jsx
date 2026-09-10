@@ -8,6 +8,7 @@ import "swiper/css/pagination";
 import { ImageService } from "@/content/image-service";
 import { FaPhone, FaWhatsapp, FaRankingStar, FaArrowRight } from "react-icons/fa6";
 import { Users, ShieldCheck, BadgeCheck, Headphones, Truck, RefreshCw } from "lucide-react";
+import RBGenderNav from "@/components/newui/RBGenderNav";
 import { useFestivalTheme } from "./FestivalThemeContext";
 
 const STATS = [
@@ -338,7 +339,11 @@ export default function NHero() {
       <div className="lg:hidden">
         <div className="relative overflow-hidden bg-gradient-to-br from-[var(--rb-primary-mid2)] via-[var(--rb-primary-mid)] to-[var(--rb-dark)]">
 
-          {/* top: hero media. Images sit inset with the same 12px gap and 35px
+          {/* Men / Women sits at the top of the hero rather than in the header
+              bar, so the first thing on the page is the choice of section. */}
+          <RBGenderNav />
+
+          {/* hero media. Images sit inset with the same 12px gap and 35px
               radius as the bottom nav, so the two read as one system. A video
               still runs full-bleed — no padding, no rounding — as intended. */}
           {heroVideo ? (
