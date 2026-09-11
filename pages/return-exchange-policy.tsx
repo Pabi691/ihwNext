@@ -10,7 +10,7 @@ const ReturnPolicy = () => {
         <div className="return-exchange-policy max-w-4xl mx-auto p-6 space-y-6">
           <h1 className="text-2xl font-bold">Indian Hair World – Return & Exchange Policy</h1>
 
-          <p><strong>Branches:</strong> Salt Lake, Kolkata | Lake Gardens, Kolkata | Durgapur</p>
+          <p><strong>Branches:</strong> Salt Lake, Kolkata | Lake Gardens, Kolkata | Durgapur | Siliguri | Sodepur</p>
           <p><strong>Contact:</strong> Phone: +918240561627 | Email: support@indianhairworld.com</p>
 
           <section>

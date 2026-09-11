@@ -262,6 +262,7 @@ const NavTop = () => {
                 <Link onClick={() => setShowMenu(false)} className='text-xs font-medium' to={'/branch/salt-lake'}>- Salt Lake, Kolkata</Link>
                 <Link onClick={() => setShowMenu(false)} className='text-xs font-medium' to={'/branch/durgapur'}>- Durgapur</Link>
                 <Link onClick={() => setShowMenu(false)} className='text-xs font-medium' to={'/branch/siliguri'}>- Siliguri</Link>
+                <Link onClick={() => setShowMenu(false)} className='text-xs font-medium' to={'/branch/sodepur'}>- Sodepur</Link>
                 <p className='font-semibold'>Shop In</p>
                 <Link className='text-xs font-medium' onClick={() => setShowMenu(false)} to={'/shop'}>- All Products</Link>
                 <Link className='text-xs font-medium text-[var(--site-heading)]' onClick={() => setShowMenu(false)} to={'/shop?tryon=1'}>- ✂️ Virtual Hair Try-On</Link>

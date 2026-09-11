@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useAdmin } from "@/components/AdminContext";
 import { useAuthGuard } from "@/components/useAuthGuard";
 import AdminLayout from "@/components/AdminLayout";
-import { FiSave, FiTag, FiAlertCircle, FiZap, FiImage, FiTrash2, FiBookmark, FiFolder, FiUploadCloud, FiGrid, FiChevronDown, FiPlus, FiGift, FiSearch, FiPhone, FiMenu } from "react-icons/fi";
+import { FiSave, FiTag, FiAlertCircle, FiZap, FiImage, FiTrash2, FiBookmark, FiFolder, FiUploadCloud, FiGrid, FiChevronDown, FiPlus, FiGift, FiSearch, FiPhone, FiMenu, FiEyeOff } from "react-icons/fi";
 
 function Section({ title, icon: Icon, children, collapsible = false, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -848,6 +848,7 @@ export default function Settings() {
     sale_label:        "SALE",
     sale_banner_text:  "Limited time offers — shop now!",
     sale_badge_color:  "red",
+    hide_out_of_stock: "0",
   });
   const [fest, setFest]         = useState({ ...EMPTY_FESTIVAL });
   const [library, setLibrary]   = useState([]);
@@ -1274,6 +1275,30 @@ export default function Settings() {
                   🔥 {form.sale_label || "SALE"}
                 </span>
                 <span className="text-xs text-gray-400 truncate">{form.sale_banner_text}</span>
+              </div>
+            </Section>
+
+            {/* Product Visibility */}
+            <Section title="Product Visibility (storefront)" icon={FiEyeOff} collapsible>
+              <div className="flex items-center justify-between gap-4 p-3 bg-gray-50 rounded-xl">
+                <div>
+                  <p className="text-sm font-medium text-gray-700">Hide out-of-stock products on the website</p>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    When on, products with no stock left drop out of the shop, category, sale and homepage listings.
+                    They stay visible here in the admin, and their product page still opens from a direct link.
+                  </p>
+                </div>
+                <button type="button" role="switch"
+                  aria-checked={form.hide_out_of_stock === "1"}
+                  aria-label="Hide out-of-stock products on the website"
+                  onClick={() => set("hide_out_of_stock", form.hide_out_of_stock === "1" ? "0" : "1")}
+                  className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors ${
+                    form.hide_out_of_stock === "1" ? "bg-[#04A9FF]" : "bg-gray-300"
+                  }`}>
+                  <span className={`inline-block h-5 w-5 rounded-full bg-white shadow transition-transform ${
+                    form.hide_out_of_stock === "1" ? "translate-x-5" : "translate-x-0.5"
+                  }`} />
+                </button>
               </div>
             </Section>
 

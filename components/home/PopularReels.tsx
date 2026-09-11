@@ -13,6 +13,16 @@ const allReels: ReelItem[] = [
         videoFile: '/videos/men-reel-4.mp4',
     },
     {
+        reelId: 'men-reel-5',
+        videoUrl: 'https://www.instagram.com/indianhairworld.service/',
+        productUrl: '/product/03-mm-hair-patch-black',
+        thumbnail: 'https://cdn.indianhairworld.com/product-images/0.3-mm-hair-patch-black-2.jpg',
+        productName: '0.3 Mm Hair Patch – Black',
+        price: 39999,
+        salePrice: 26999,
+        videoFile: '/videos/men-reel-5.mp4',
+    },
+    {
         reelId: 'DR2gOBik31w',
         videoUrl: 'https://www.instagram.com/reel/DR2gOBik31w/',
         productUrl: '/product/03-mm-hair-patch-black',

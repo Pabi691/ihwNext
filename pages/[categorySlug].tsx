@@ -17,7 +17,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   // Branch isolation: If the user requests a known branch directly at the root, force 404.
   // Branches must be accessed via /branch/:slug
-  const knownBranches = ["kolkata", "salt-lake", "durgapur", "siliguri"];
+  const knownBranches = ["kolkata", "salt-lake", "durgapur", "siliguri", "sodepur"];
   if (knownBranches.includes(String(slug).toLowerCase())) {
     return { notFound: true };
   }

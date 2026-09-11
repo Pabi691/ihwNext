@@ -549,6 +549,12 @@ const TermsCondition = () => {
               <p>City Center, Siliguri, WB 734001</p>
               <p>📞 +917439436698</p>
             </div>
+
+            <div className="mt-4">
+              <p className="font-semibold">Sodepur</p>
+              <p>83, RN Avenue, Sodepur Rd, Pansila, Khardaha, WB 700112</p>
+              <p>📞 +918910097668</p>
+            </div>
           </section>
         </div>
       </MainLayOut>
