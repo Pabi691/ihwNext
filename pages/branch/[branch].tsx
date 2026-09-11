@@ -29,7 +29,7 @@ const Branches = () => {
     const SITE = "https://www.indianhairworld.com";
     const { theme } = useFestivalTheme();
     const festivalActive = theme.active;
-    const branchPage = theme.branchPages?.[branch as string] || null;
+    const branchPage = (theme.branchPages as Record<string, any> | undefined)?.[branch as string] || null;
 
     return (
         <>
