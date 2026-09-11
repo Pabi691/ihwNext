@@ -9,7 +9,7 @@ const BranchMap = ({ data, compact = false }) => {
       <section className="w-full bg-gray-50 py-6 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 md:px-10 flex flex-col md:flex-row gap-4 items-center justify-between">
           <div className="flex items-center gap-3">
-            <MapPin className="text-[#ef7f1a] w-5 h-5 flex-shrink-0" />
+            <MapPin className="text-[var(--site-accent)] w-5 h-5 flex-shrink-0" />
             <p className="text-gray-800 text-sm font-medium">{data.address}{data.landmark ? ` — ${data.landmark}` : ''}</p>
           </div>
           <div className="flex items-center gap-3">
@@ -18,7 +18,7 @@ const BranchMap = ({ data, compact = false }) => {
                 href={data.gmbUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 border border-[#ef7f1a] text-[#ef7f1a] hover:bg-orange-50 text-sm font-semibold px-5 py-2.5 rounded-full transition whitespace-nowrap"
+                className="flex items-center gap-2 border border-[var(--site-accent)] text-[var(--site-accent)] hover:bg-[var(--site-accent-tint)] text-sm font-semibold px-5 py-2.5 rounded-full transition whitespace-nowrap"
               >
                 View on Google
               </a>
@@ -27,7 +27,7 @@ const BranchMap = ({ data, compact = false }) => {
               href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(data.address)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-[#ef7f1a] hover:bg-orange-600 text-white text-sm font-semibold px-5 py-2.5 rounded-full shadow transition whitespace-nowrap"
+              className="flex items-center gap-2 bg-[var(--site-accent)] hover:bg-[var(--site-accent-deep)] text-white text-sm font-semibold px-5 py-2.5 rounded-full shadow transition whitespace-nowrap"
             >
               <Navigation2 className="w-4 h-4" /> Get Directions
             </a>
@@ -58,7 +58,7 @@ const BranchMap = ({ data, compact = false }) => {
               <h2 className="text-3xl font-extrabold text-gray-900 mb-2">
                 Visit Indian Hair World
               </h2>
-              <h3 className="text-xl font-semibold text-[#ef7f1a]">{data.name}</h3>
+              <h3 className="text-xl font-semibold text-[var(--site-accent)]">{data.name}</h3>
             </div>
 
             <div className="space-y-6">
@@ -80,7 +80,7 @@ const BranchMap = ({ data, compact = false }) => {
                       href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(data.address)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 bg-[#ef7f1a] hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-full shadow transition"
+                      className="inline-flex items-center gap-2 bg-[var(--site-accent)] hover:bg-[var(--site-accent-deep)] text-white text-sm font-semibold px-4 py-2 rounded-full shadow transition"
                     >
                       <Navigation2 className="w-4 h-4" /> Get Directions
                     </a>
@@ -89,7 +89,7 @@ const BranchMap = ({ data, compact = false }) => {
                         href={data.gmbUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 border border-[#ef7f1a] text-[#ef7f1a] hover:bg-orange-50 text-sm font-semibold px-4 py-2 rounded-full transition"
+                        className="inline-flex items-center gap-2 border border-[var(--site-accent)] text-[var(--site-accent)] hover:bg-[var(--site-accent-tint)] text-sm font-semibold px-4 py-2 rounded-full transition"
                       >
                         View on Google
                       </a>
@@ -106,7 +106,7 @@ const BranchMap = ({ data, compact = false }) => {
                   <div>
                     <p className="text-sm font-bold text-gray-900 mb-1">Phone</p>
                     {data.phones.map((phone, i) => (
-                      <a key={i} href={`tel:${phone.replace(/[^0-9+]/g, '')}`} className="block text-[#ef7f1a] hover:underline font-medium text-sm">
+                      <a key={i} href={`tel:${phone.replace(/[^0-9+]/g, '')}`} className="block text-[var(--site-accent)] hover:underline font-medium text-sm">
                         {phone}
                       </a>
                     ))}

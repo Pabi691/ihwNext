@@ -50,6 +50,7 @@ export const DEFAULT_THEME = {
   rangoli: [],             // 0..3 { url, position, size, rotation, opacity } — [] => drawn SVG motif
   bottomNav: null,         // { bg, bgImage, icons:[4] } — mobile BottomFixedNav overrides
   saleSection: null,       // { bg } — NSaleOffers section background override
+  branchPages: {},         // { [branchSlug]: { hero, content } } — copy specific to one branch page
 };
 
 function normalizeBottomNav(data) {
@@ -83,6 +84,40 @@ function normalizeRangoli(data) {
     return [{ ...RANGOLI_DEFAULT, url: data.rangoliImage.trim() }];
   }
   return [];
+}
+
+// Branch-page copy is deliberately separate from the storefront hero. The
+// same festive art and palette are shared, but each location can have its own
+// headline and message in the CRM.
+function normalizeBranchPages(data) {
+  const source = data && data.branchPages;
+  if (!source || typeof source !== "object" || Array.isArray(source)) return {};
+
+  const pages = {};
+  for (const [slug, value] of Object.entries(source)) {
+    if (!/^[a-z0-9-]+$/i.test(slug) || !value || typeof value !== "object") continue;
+    const rawLines = Array.isArray(value.hero?.titleLines) && value.hero.titleLines.length
+      ? value.hero.titleLines
+      : [value.hero?.line1, value.hero?.line2];
+    const titleLines = rawLines
+      .map((line) => String(line || "").trim())
+      .filter(Boolean)
+      .slice(0, 2);
+    const hero = {
+      eyebrow: String(value.hero?.eyebrow || "").trim(),
+      titleLines,
+      tagline: String(value.hero?.tagline || "").trim(),
+      trustedBy: String(value.hero?.trustedBy || "").trim(),
+    };
+    const content = {
+      heading: String(value.content?.heading || "").trim(),
+      body: String(value.content?.body || "").trim(),
+    };
+    if (hero.eyebrow || hero.titleLines.length || hero.tagline || hero.trustedBy || content.heading || content.body) {
+      pages[slug] = { hero, content };
+    }
+  }
+  return pages;
 }
 
 const PALETTE_KEYS = [
@@ -171,7 +206,51 @@ function buildPaletteCss(p) {
     `--site-accent-rgb:${hexToRgbTriplet(p["--rb-accent"])}`,
     `--site-dark-rgb:${hexToRgbTriplet(p["--rb-dark"])}`,
   ].join(";");
-  return `:root{${rbVars};${litVars};${siteVars}}`;
+  // Branch pages. Fills come from the primary; anything painted ON a dark branch
+  // section takes the light heading/accent tint, never a fill colour — the same
+  // split that keeps --site-heading-dark readable. Hover shades are derived
+  // from the palette rather than added as more CRM fields.
+  const accent = p["--rb-accent"] || "#d9932e";
+  const onDeep = p["--rb-heading-dark"] || p["--rb-accent-light"] || accent;
+  const branchVars = [
+    `--site-brand:${p["--rb-primary"]}`,
+    `--site-brand-hover:${p["--rb-primary-hover"]}`,
+    `--site-on-brand:${p["--rb-cream"]}`,
+    `--site-brand-bright:${p["--rb-primary"]}`,
+    `--site-accent-hover:${lighten(accent, -0.08)}`,
+    `--site-accent-deep:${lighten(accent, -0.12)}`,
+    `--site-accent-tint:${p["--rb-cream"]}`,
+    `--site-deep:${p["--rb-primary-mid2"]}`,
+    `--site-deeper:${p["--rb-dark"]}`,
+    `--site-on-deep:${onDeep}`,
+    `--site-on-deep-rgb:${hexToRgbTriplet(onDeep)}`,
+    `--site-on-deep-cta:${lightestUnderWhite(hover)}`,
+    `--site-on-deep-cta-hover:${lighten(lightestUnderWhite(hover), -0.06)}`,
+  ].join(";");
+  return `:root{${rbVars};${litVars};${siteVars};${branchVars}}`;
+}
+
+// WCAG relative luminance of a #rrggbb colour.
+function luminance(hex) {
+  const n = parseInt(String(hex).slice(1), 16);
+  const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => {
+    v /= 255;
+    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+// The lightest shade of `hex` that still carries white text at WCAG AA (4.5:1).
+// A button sitting on a dark section wants to be as light as it can, so it reads
+// against the section, but never so light that its label fails. A fixed shade
+// can't do both across palettes: the plain primary nearly vanishes into a dark
+// maroon section, while a lit tint fails white text on lighter palettes.
+function lightestUnderWhite(hex) {
+  for (let byL = 0.2; byL >= -0.3; byL -= 0.02) {
+    const c = lighten(hex, byL);
+    if (1.05 / (luminance(c) + 0.05) >= 4.5) return c;
+  }
+  return hex;
 }
 
 function normalizePalette(input) {
@@ -238,6 +317,7 @@ function parseFestivalTheme(raw) {
       data.saleSection && typeof data.saleSection.bg === "string" && data.saleSection.bg.trim()
         ? { bg: data.saleSection.bg.trim() }
         : null,
+    branchPages: normalizeBranchPages(data),
   };
 }
 

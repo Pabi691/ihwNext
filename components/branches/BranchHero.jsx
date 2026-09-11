@@ -33,14 +33,14 @@ const BranchHero = () => {
           <div className="w-full md:w-1/2 flex flex-col justify-center text-center md:text-left z-10">
 
             {/* CTR Hook Badge */}
-            <div className="w-fit mx-auto md:mx-0 mb-4 inline-flex items-center gap-1.5 bg-[#ef7f1a] text-white px-3 py-1.5 rounded-md text-xs sm:text-sm font-bold uppercase tracking-wider shadow-sm">
+            <div className="w-fit mx-auto md:mx-0 mb-4 inline-flex items-center gap-1.5 bg-[var(--site-accent)] text-white px-3 py-1.5 rounded-md text-xs sm:text-sm font-bold uppercase tracking-wider shadow-sm">
               <FaRankingStar className="w-4 h-4" />
               India's #1 Non-Surgical Hair Replacement
             </div>
 
             {/* SEO H1 Headline */}
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 tracking-tight">
-              <span className="bg-gradient-to-r from-[#0A3D91] via-[#1E5CCB] to-[#F5D76E] bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(255,215,100,0.35)]">
+              <span className="bg-gradient-to-r from-[var(--site-hero-from)] via-[var(--site-hero-via)] to-[var(--site-hero-to)] bg-clip-text text-transparent drop-shadow-[0_2px_8px_rgba(255,215,100,0.35)]">
                 {branchDetails.h1}
               </span>
             </h1>
@@ -48,14 +48,14 @@ const BranchHero = () => {
             {/* Keyword-rich Subheadline */}
             <span className="text-gray-900 text-base md:text-xl mb-6 max-w-lg mx-auto md:mx-0">
               {/* Transform your look in 60 minutes with 100% natural, undetectable Indian human hair.  */}
-              <strong className="text-blue-600 font-bold">No Surgery. No Side Effects.</strong>
+              <strong className="text-[var(--site-brand-bright)] font-bold">No Surgery. No Side Effects.</strong>
             </span>
 
             {/* Price & EMI block */}
-            <div className="flex flex-row items-center gap-4 bg-[#ef7f1a]/5 border border-[#ef7f1a]/20 p-4 rounded-2xl mb-8 w-fit mx-auto md:mx-0">
+            <div className="flex flex-row items-center gap-4 bg-[rgb(var(--site-accent-rgb)_/_0.05)] border border-[rgb(var(--site-accent-rgb)_/_0.2)] p-4 rounded-2xl mb-8 w-fit mx-auto md:mx-0">
               <div>
                 <p className="text-sm text-gray-500 font-semibold uppercase tracking-wider mb-1">Starting At</p>
-                <p className="text-2xl md:text-4xl font-extrabold text-[#ef7f1a]">Rs. 5999/-</p>
+                <p className="text-2xl md:text-4xl font-extrabold text-[var(--site-accent)]">Rs. 5999/-</p>
               </div>
               <div className="w-[1px] h-12 bg-gray-300 hidden md:block mx-2"></div>
               <div className="flex flex-col items-center justify-center">
@@ -149,32 +149,32 @@ const BranchHero = () => {
             />
 
             <GlassBadge
-              icon={<FaAward className="text-[#ef7f1a] w-4 h-4" />}
+              icon={<FaAward className="text-[var(--site-accent)] w-4 h-4" />}
               text="Times Brand Icons 2024"
             />
 
             <GlassBadge
-              icon={<FaTrophy className="text-[#ef7f1a] w-4 h-4" />}
+              icon={<FaTrophy className="text-[var(--site-accent)] w-4 h-4" />}
               text="International Excellence Award 2024"
             />
 
             <GlassBadge
-              icon={<FaTrophy className="text-[#ef7f1a] w-4 h-4" />}
+              icon={<FaTrophy className="text-[var(--site-accent)] w-4 h-4" />}
               text="Global Fame Award 2024"
             />
 
             <GlassBadge
-              icon={<FaThumbsUp className="text-[#ef7f1a] w-4 h-4" />}
+              icon={<FaThumbsUp className="text-[var(--site-accent)] w-4 h-4" />}
               text="Nation Pride Award 2022"
             />
 
             <GlassBadge
-              icon={<FaThumbsUp className="text-[#ef7f1a] w-4 h-4" />}
+              icon={<FaThumbsUp className="text-[var(--site-accent)] w-4 h-4" />}
               text="Bengal Pride Award 2021"
             />
 
             <GlassBadge
-              icon={<FaThumbsUp className="text-[#ef7f1a] w-4 h-4" />}
+              icon={<FaThumbsUp className="text-[var(--site-accent)] w-4 h-4" />}
               text="Bengal Pride Award 2021"
             />
           </div>
@@ -192,32 +192,32 @@ const BranchHero = () => {
             />
 
             <GlassBadge
-              icon={<FaAward className="text-[#ef7f1a] w-4 h-4" />}
+              icon={<FaAward className="text-[var(--site-accent)] w-4 h-4" />}
               text="Times Brand Icons 2024"
             />
 
             <GlassBadge
-              icon={<FaTrophy className="text-[#ef7f1a] w-4 h-4" />}
+              icon={<FaTrophy className="text-[var(--site-accent)] w-4 h-4" />}
               text="International Excellence Award 2024"
             />
 
             <GlassBadge
-              icon={<FaTrophy className="text-[#ef7f1a] w-4 h-4" />}
+              icon={<FaTrophy className="text-[var(--site-accent)] w-4 h-4" />}
               text="Global Fame Award 2024"
             />
 
             <GlassBadge
-              icon={<FaThumbsUp className="text-[#ef7f1a] w-4 h-4" />}
+              icon={<FaThumbsUp className="text-[var(--site-accent)] w-4 h-4" />}
               text="Nation Pride Award 2022"
             />
 
             <GlassBadge
-              icon={<FaThumbsUp className="text-[#ef7f1a] w-4 h-4" />}
+              icon={<FaThumbsUp className="text-[var(--site-accent)] w-4 h-4" />}
               text="Bengal Pride Award 2021"
             />
 
             <GlassBadge
-              icon={<FaThumbsUp className="text-[#ef7f1a] w-4 h-4" />}
+              icon={<FaThumbsUp className="text-[var(--site-accent)] w-4 h-4" />}
               text="Bengal Pride Award 2021"
             />
 
@@ -227,27 +227,27 @@ const BranchHero = () => {
             />
 
             <GlassBadge
-              icon={<FaAward className="text-[#ef7f1a] w-4 h-4" />}
+              icon={<FaAward className="text-[var(--site-accent)] w-4 h-4" />}
               text="Times Brand Icons 2024"
             />
 
             <GlassBadge
-              icon={<FaTrophy className="text-[#ef7f1a] w-4 h-4" />}
+              icon={<FaTrophy className="text-[var(--site-accent)] w-4 h-4" />}
               text="International Excellence Award 2024"
             />
 
             <GlassBadge
-              icon={<FaTrophy className="text-[#ef7f1a] w-4 h-4" />}
+              icon={<FaTrophy className="text-[var(--site-accent)] w-4 h-4" />}
               text="Global Fame Award 2024"
             />
 
             <GlassBadge
-              icon={<FaThumbsUp className="text-[#ef7f1a] w-4 h-4" />}
+              icon={<FaThumbsUp className="text-[var(--site-accent)] w-4 h-4" />}
               text="Nation Pride Award 2022"
             />
 
             <GlassBadge
-              icon={<FaThumbsUp className="text-[#ef7f1a] w-4 h-4" />}
+              icon={<FaThumbsUp className="text-[var(--site-accent)] w-4 h-4" />}
               text="Bengal Pride Award 2021"
             />
           </div>

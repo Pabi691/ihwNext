@@ -34,13 +34,13 @@ export default function StoreCard({
         <h3 className="text-xl sm:text-2xl font-bold">{name}</h3>
 
         <p className="flex items-center text-sm text-gray-900">
-          <span className="w-3 h-3 rounded-full bg-[#04a9ff] mr-2" />
+          <span className="w-3 h-3 rounded-full bg-[var(--site-primary)] mr-2" />
           Opening time –{" "}
           <span className="ml-1 font-semibold text-gray-900">{time}</span>
         </p>
 
         <p className="text-sm text-gray-900 leading-relaxed">
-          <i className="fas fa-map-marker-alt text-[#04a9ff] mr-2" />
+          <i className="fas fa-map-marker-alt text-[var(--site-primary)] mr-2" />
           {address}
         </p>
 
@@ -48,13 +48,13 @@ export default function StoreCard({
           href={`tel:${phone}`}
           className="flex items-center text-sm text-black"
         >
-          <i className="fas fa-phone-alt text-[#04a9ff] mr-2" />
+          <i className="fas fa-phone-alt text-[var(--site-primary)] mr-2" />
           {phone}
         </a>
 
         <a
           href={`tel:${phone}`}
-          className="block text-center mt-4 px-4 py-2 text-sm font-medium text-black bg-white border border-[#04a9ff] rounded-full hover:bg-[#04a9ff] hover:text-white transition"
+          className="block text-center mt-4 px-4 py-2 text-sm font-medium text-black bg-white border border-[var(--site-primary)] rounded-full hover:bg-[var(--site-primary)] hover:text-white transition"
         >
           SCHEDULE BOOKING
         </a>

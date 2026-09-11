@@ -8,7 +8,7 @@ import { DesktopNav, MobileNav } from "../components/Navigation";
 import TopBar from "../components/home/TopBar";
 import { toAbsoluteUrlIfPresent } from "@/utils/seo";
 import { fetchPageSeo } from "@/utils/serverSeo";
-import { backendFetchJson } from "@/utils/backendFetch";
+import { getActiveFestivalTheme } from "@/utils/festivalTheme";
 import JsonLd from "@/components/JsonLd";
 import NewUIPreview from "@/components/newui/NewUIPreview";
 
@@ -63,35 +63,13 @@ const Home = ({ festivalTheme }: { festivalTheme?: any }) => {
   )
 }
 
-// Cache get_public_settings across requests so the homepage doesn't hit the
-// backend on every render (bots + traffic were flooding it and tripping the
-// host WAF). One process-wide fetch per minute is plenty for a theme flag.
-let publicSettingsCache: { at: number; data: any } | null = null;
-const PUBLIC_SETTINGS_TTL_MS = 60 * 1000;
-
-async function getPublicSettings(): Promise<any> {
-  if (publicSettingsCache && Date.now() - publicSettingsCache.at < PUBLIC_SETTINGS_TTL_MS) {
-    return publicSettingsCache.data;
-  }
-  const json = await backendFetchJson("/api/v1/get_public_settings");
-  publicSettingsCache = { at: Date.now(), data: json };
-  return json;
-}
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const pathname = "/";
   const seo = await fetchPageSeo(pathname, "home");
 
-  // Decide the homepage variant server-side (avoids a layout flash).
-  let festivalTheme: any = null;
-  try {
-    const json = await getPublicSettings();
-    const raw = json?.settings?.festival_theme;
-    const ft = typeof raw === "string" ? JSON.parse(raw || "{}") : raw;
-    if (ft && ft.active) festivalTheme = ft;
-  } catch {
-    festivalTheme = null;
-  }
+  // Decide the homepage variant server-side (avoids a layout flash). The
+  // helper owns the cached get_public_settings read, shared with /branch/*.
+  const festivalTheme = await getActiveFestivalTheme();
 
   return {
     props: {

@@ -70,27 +70,27 @@ const Durgapur = () => {
               </h2>
 
               <div className="flex items-start gap-4">
-                <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-1" />
+                <CheckCircle2 className="w-6 h-6 text-[var(--site-accent)] flex-shrink-0 mt-1" />
                 <p className="text-gray-900 text-lg"><strong>As featured on Shark Tank India</strong> — the professional hair replacement center in Durgapur with national TV credibility and investor backing.</p>
               </div>
               <div className="flex items-start gap-4">
-                <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-1" />
+                <CheckCircle2 className="w-6 h-6 text-[var(--site-accent)] flex-shrink-0 mt-1" />
                 <p className="text-gray-900 text-lg"><strong>5-time nationally award winning</strong> — Times Brand Icons 2024, IEA 2024, GFA 2024, NPA 2022 and BPA 2021.</p>
               </div>
               <div className="flex items-start gap-4">
-                <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-1" />
+                <CheckCircle2 className="w-6 h-6 text-[var(--site-accent)] flex-shrink-0 mt-1" />
                 <p className="text-gray-900 text-lg"><strong>100% natural Indian human hair</strong> — no artificial fibre, no plastic, no synthetic material. Every hair patch is made from premium Indian human hair.</p>
               </div>
               <div className="flex items-start gap-4">
-                <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-1" />
+                <CheckCircle2 className="w-6 h-6 text-[var(--site-accent)] flex-shrink-0 mt-1" />
                 <p className="text-gray-900 text-lg"><strong>Result in 60 minutes</strong> — come in with hair loss, walk out with a full natural hairstyle. Same-day results at our Durgapur branch.</p>
               </div>
               <div className="flex items-start gap-4">
-                <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-1" />
+                <CheckCircle2 className="w-6 h-6 text-[var(--site-accent)] flex-shrink-0 mt-1" />
                 <p className="text-gray-900 text-lg"><strong>Starting at just Rs.5999 with EMI</strong> — a fraction of the cost of a hair transplant. Easy monthly payment options available.</p>
               </div>
               <div className="flex items-start gap-4">
-                <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-1" />
+                <CheckCircle2 className="w-6 h-6 text-[var(--site-accent)] flex-shrink-0 mt-1" />
                 <p className="text-gray-900 text-lg"><strong>Serving Durgapur & surrounds</strong> — Set in City Center. Open 7 days, 11am–7pm, no appointment needed.</p>
               </div>
             </div>
@@ -111,32 +111,32 @@ const Durgapur = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[#ef7f1a] transition-all shadow-sm hover:shadow-md">
-                  <div className="absolute top-0 right-0 bg-[#ef7f1a] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">1</div>
+                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[var(--site-accent)] transition-all shadow-sm hover:shadow-md">
+                  <div className="absolute top-0 right-0 bg-[var(--site-accent)] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">1</div>
                   <h3 className="text-lg font-bold mb-2 text-gray-900">Free consultation</h3>
                   <p className="text-gray-900 text-sm leading-relaxed">
                     Walk into our Durgapur branch or call +919875517402. Our expert assesses your hair loss type, density and scalp condition — completely free.
                   </p>
                 </div>
 
-                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[#ef7f1a] transition-all shadow-sm hover:shadow-md">
-                  <div className="absolute top-0 right-0 bg-[#ef7f1a] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">2</div>
+                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[var(--site-accent)] transition-all shadow-sm hover:shadow-md">
+                  <div className="absolute top-0 right-0 bg-[var(--site-accent)] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">2</div>
                   <h3 className="text-lg font-bold mb-2 text-gray-900">Select your hair patch</h3>
                   <p className="text-gray-900 text-sm leading-relaxed">
                     Choose from our range of 100% natural Indian human hair patches — matched to your hair colour, texture and style. Starts from Rs.5999.
                   </p>
                 </div>
 
-                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[#ef7f1a] transition-all shadow-sm hover:shadow-md">
-                  <div className="absolute top-0 right-0 bg-[#ef7f1a] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">3</div>
+                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[var(--site-accent)] transition-all shadow-sm hover:shadow-md">
+                  <div className="absolute top-0 right-0 bg-[var(--site-accent)] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">3</div>
                   <h3 className="text-lg font-bold mb-2 text-gray-900">Professional fixing</h3>
                   <p className="text-gray-900 text-sm leading-relaxed">
                     Our technician applies your hair patch in Durgapur using your chosen method — bonding, clipping, taping or weaving. Completely painless.
                   </p>
                 </div>
 
-                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[#ef7f1a] transition-all shadow-sm hover:shadow-md">
-                  <div className="absolute top-0 right-0 bg-[#ef7f1a] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">4</div>
+                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[var(--site-accent)] transition-all shadow-sm hover:shadow-md">
+                  <div className="absolute top-0 right-0 bg-[var(--site-accent)] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">4</div>
                   <h3 className="text-lg font-bold mb-2 text-gray-900">Walk out with a new look</h3>
                   <p className="text-gray-900 text-sm leading-relaxed">
                     Your hair patch is styled, trimmed and blended with your natural hair. The result is 100% undetectable. Total time: 60–90 minutes.
@@ -157,8 +157,8 @@ const Durgapur = () => {
 
                 {/* Floating Action Highlight */}
                 <div className="absolute bottom-6 left-6 bg-white/95 backdrop-blur-sm p-4 rounded-2xl shadow-xl flex items-center gap-3">
-                  <div className="w-10 h-10 bg-[#ef7f1a]/10 rounded-full flex items-center justify-center">
-                    <CheckCircle2 className="w-6 h-6 text-[#ef7f1a]" />
+                  <div className="w-10 h-10 bg-[rgb(var(--site-accent-rgb)_/_0.1)] rounded-full flex items-center justify-center">
+                    <CheckCircle2 className="w-6 h-6 text-[var(--site-accent)]" />
                   </div>
                   <div>
                     <p className="text-sm font-bold text-gray-900">Result in 60 Minutes</p>

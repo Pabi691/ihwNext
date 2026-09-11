@@ -6,14 +6,14 @@ import { useGlobal } from "../global/GlobalContext";
 import { themeBgColor } from "../styles/typography";
 import BottomFixedNav from "@/components/mobileComponents/BottomFixedNav";
 
-const MainLayOut = ({ children }) => {
+const MainLayOut = ({ children, themed = false }) => {
   const [showMenu, setShowMenu] = useState(false);
   // const [loading, setLoading] = useState(true);
   const { accessoriesCat, planters, container, loadingCategories } = useGlobal();
 
   return (
     <>
-      <NavTop />
+      {!themed && <NavTop />}
       <main>{children}</main>
 
       {/* Mobile Footer */}

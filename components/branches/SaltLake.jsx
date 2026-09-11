@@ -75,7 +75,7 @@ const SaltLake = () => {
                     key={i}
                     className="flex items-center gap-3 bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 hover:shadow-md transition"
                   >
-                    <CheckCircle2 className="w-5 h-5 text-[#ef7f1a] flex-shrink-0" />
+                    <CheckCircle2 className="w-5 h-5 text-[var(--site-accent)] flex-shrink-0" />
                     <p className="text-gray-800 text-sm md:text-base font-medium">
                       {item}
                     </p>
@@ -131,7 +131,7 @@ const SaltLake = () => {
         </div>
       </section>
 
-      <section className="w-full py-20 px-4 md:px-10 bg-[#0f172a]">
+      <section className="w-full py-20 px-4 md:px-10 bg-[var(--site-deep)]">
         <div className="max-w-6xl mx-auto">
 
           {/* Heading */}
@@ -174,7 +174,7 @@ const SaltLake = () => {
                     <td className="p-5 font-medium">{row[0]}</td>
 
                     {/* Highlight Price */}
-                    <td className="p-5 font-bold text-[#0a58ca] text-lg">
+                    <td className="p-5 font-bold text-[var(--site-on-deep)] text-lg">
                       {row[1]}
                     </td>
 
@@ -190,7 +190,7 @@ const SaltLake = () => {
             <p className="text-gray-400 mb-4">
               Get a perfect natural look with our expert fitting
             </p>
-            <button onClick={() => window.open("https://wa.me/918961194044", "_blank")} className="bg-[#0a58ca] hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold shadow-lg transition">
+            <button onClick={() => window.open("https://wa.me/918961194044", "_blank")} className="bg-[var(--site-on-deep-cta)] hover:bg-[var(--site-on-deep-cta-hover)] text-white px-6 py-3 rounded-full font-semibold shadow-lg transition">
               Book Free Consultation
             </button>
           </div>
@@ -198,7 +198,7 @@ const SaltLake = () => {
         </div>
       </section>
 
-      <section className="w-full py-20 px-4 md:px-10 bg-[#020617]">
+      <section className="w-full py-20 px-4 md:px-10 bg-[var(--site-deeper)]">
         <div className="max-w-4xl mx-auto text-center">
 
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
@@ -206,17 +206,17 @@ const SaltLake = () => {
           </h2>
 
           {/* Highlight Line */}
-          <div className="w-20 h-1 bg-[#0a58ca] mx-auto mb-6 rounded-full"></div>
+          <div className="w-20 h-1 bg-[var(--site-on-deep)] mx-auto mb-6 rounded-full"></div>
 
           <p className="text-gray-400 leading-relaxed text-lg">
-            We use only <span className="text-[#0a58ca] font-semibold">100% natural Indian human hair</span> —
+            We use only <span className="text-[var(--site-on-deep)] font-semibold">100% natural Indian human hair</span> —
             ensuring realistic texture, natural movement, styling flexibility, and long-lasting results.
             Ethically sourced and quality-checked for a premium finish.
           </p>
 
         </div>
       </section>
-      <section className="w-full py-20 px-4 md:px-10 bg-[#0f172a]">
+      <section className="w-full py-20 px-4 md:px-10 bg-[var(--site-deep)]">
         <div className="max-w-6xl mx-auto">
 
           {/* Heading */}
@@ -246,10 +246,10 @@ const SaltLake = () => {
             ].map((step, i) => (
               <div
                 key={i}
-                className="bg-white/5 backdrop-blur border border-gray-700 p-6 rounded-2xl text-center hover:scale-105 hover:border-[#0a58ca] transition duration-300"
+                className="bg-white/5 backdrop-blur border border-gray-700 p-6 rounded-2xl text-center hover:scale-105 hover:border-[var(--site-on-deep)] transition duration-300"
               >
                 {/* Step Number */}
-                <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center rounded-full bg-[#0a58ca]/20 text-[#0a58ca] font-bold">
+                <div className="w-12 h-12 mx-auto mb-4 flex items-center justify-center rounded-full bg-[rgb(var(--site-on-deep-rgb)_/_0.2)] text-[var(--site-on-deep)] font-bold">
                   {i + 1}
                 </div>
 
@@ -344,32 +344,32 @@ const SaltLake = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[#ef7f1a] transition-all shadow-sm hover:shadow-md">
-                  <div className="absolute top-0 right-0 bg-[#ef7f1a] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">1</div>
+                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[var(--site-accent)] transition-all shadow-sm hover:shadow-md">
+                  <div className="absolute top-0 right-0 bg-[var(--site-accent)] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">1</div>
                   <h3 className="text-lg font-bold mb-2 text-gray-900">Free consultation</h3>
                   <p className="text-gray-900 text-sm leading-relaxed">
                     Walk into our Salt Lake hair patch shop or call +918961194044. Our expert assesses your hair loss type, density and scalp condition — completely free.
                   </p>
                 </div>
 
-                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[#ef7f1a] transition-all shadow-sm hover:shadow-md">
-                  <div className="absolute top-0 right-0 bg-[#ef7f1a] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">2</div>
+                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[var(--site-accent)] transition-all shadow-sm hover:shadow-md">
+                  <div className="absolute top-0 right-0 bg-[var(--site-accent)] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">2</div>
                   <h3 className="text-lg font-bold mb-2 text-gray-900">Select your hair patch</h3>
                   <p className="text-gray-900 text-sm leading-relaxed">
                     Choose from our range of 100% natural Indian human hair patches — matched to your hair colour, texture and style. Starts from Rs.5999.
                   </p>
                 </div>
 
-                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[#ef7f1a] transition-all shadow-sm hover:shadow-md">
-                  <div className="absolute top-0 right-0 bg-[#ef7f1a] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">3</div>
+                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[var(--site-accent)] transition-all shadow-sm hover:shadow-md">
+                  <div className="absolute top-0 right-0 bg-[var(--site-accent)] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">3</div>
                   <h3 className="text-lg font-bold mb-2 text-gray-900">Professional fixing</h3>
                   <p className="text-gray-900 text-sm leading-relaxed">
                     Our technician applies your hair patch in Salt Lake using your chosen method — bonding, clipping, taping or weaving. Completely painless.
                   </p>
                 </div>
 
-                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[#ef7f1a] transition-all shadow-sm hover:shadow-md">
-                  <div className="absolute top-0 right-0 bg-[#ef7f1a] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">4</div>
+                <div className="bg-white border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[var(--site-accent)] transition-all shadow-sm hover:shadow-md">
+                  <div className="absolute top-0 right-0 bg-[var(--site-accent)] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 transition-opacity group-hover:opacity-20">4</div>
                   <h3 className="text-lg font-bold mb-2 text-gray-900">Walk out with a new look</h3>
                   <p className="text-gray-900 text-sm leading-relaxed">
                     Your hair patch is styled, trimmed and blended with your natural hair. The result is 100% undetectable. Total time: 60–90 minutes.

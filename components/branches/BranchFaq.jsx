@@ -35,7 +35,7 @@ const BranchFaq = ({ faqs }) => {
               >
                 <span className="font-semibold text-gray-900 pr-8">{faq.question}</span>
                 {isOpen ? (
-                  <ChevronUp className="w-5 h-5 text-[#ef7f1a] flex-shrink-0" />
+                  <ChevronUp className="w-5 h-5 text-[var(--site-accent)] flex-shrink-0" />
                 ) : (
                   <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />
                 )}

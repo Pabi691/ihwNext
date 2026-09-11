@@ -84,6 +84,78 @@ const RANGOLI_POSITIONS = [
 ];
 const RANGOLI_DEFAULT = { url: "", position: "top-right", size: 40, rotation: 0, opacity: 20 };
 
+// These are the public /branch/[slug] routes. Keeping the list here makes the
+// CRM explicit about where each location-specific festival message appears.
+const BRANCH_PAGE_OPTIONS = [
+  { slug: "kolkata", label: "Lake Gardens, Kolkata" },
+  { slug: "durgapur", label: "Durgapur" },
+  { slug: "siliguri", label: "Siliguri" },
+  { slug: "sodepur", label: "Sodepur" },
+];
+
+const EMPTY_BRANCH_PAGE = {
+  hero: { eyebrow: "", line1: "", line2: "", tagline: "", trustedBy: "" },
+  content: { heading: "", body: "" },
+};
+
+function emptyBranchPages() {
+  return BRANCH_PAGE_OPTIONS.reduce((pages, { slug }) => {
+    pages[slug] = {
+      hero: { ...EMPTY_BRANCH_PAGE.hero },
+      content: { ...EMPTY_BRANCH_PAGE.content },
+    };
+    return pages;
+  }, {});
+}
+
+function normalizeBranchPages(d) {
+  const source = d && d.branchPages;
+  const pages = emptyBranchPages();
+  if (!source || typeof source !== "object" || Array.isArray(source)) return pages;
+
+  for (const { slug } of BRANCH_PAGE_OPTIONS) {
+    const value = source[slug];
+    if (!value || typeof value !== "object") continue;
+    const lines = Array.isArray(value.hero?.titleLines) && value.hero.titleLines.length
+      ? value.hero.titleLines
+      : [value.hero?.line1, value.hero?.line2];
+    pages[slug] = {
+      hero: {
+        eyebrow: typeof value.hero?.eyebrow === "string" ? value.hero.eyebrow : "",
+        line1: typeof lines[0] === "string" ? lines[0] : "",
+        line2: typeof lines[1] === "string" ? lines[1] : "",
+        tagline: typeof value.hero?.tagline === "string" ? value.hero.tagline : "",
+        trustedBy: typeof value.hero?.trustedBy === "string" ? value.hero.trustedBy : "",
+      },
+      content: {
+        heading: typeof value.content?.heading === "string" ? value.content.heading : "",
+        body: typeof value.content?.body === "string" ? value.content.body : "",
+      },
+    };
+  }
+  return pages;
+}
+
+function serializeBranchPages(branchPages) {
+  const pages = normalizeBranchPages({ branchPages });
+  return BRANCH_PAGE_OPTIONS.reduce((out, { slug }) => {
+    const page = pages[slug];
+    out[slug] = {
+      hero: {
+        eyebrow: page.hero.eyebrow.trim(),
+        titleLines: [page.hero.line1.trim(), page.hero.line2.trim()].filter(Boolean),
+        tagline: page.hero.tagline.trim(),
+        trustedBy: page.hero.trustedBy.trim(),
+      },
+      content: {
+        heading: page.content.heading.trim(),
+        body: page.content.body.trim(),
+      },
+    };
+    return out;
+  }, {});
+}
+
 // absolute-position style for one rangoli placement (shared shape with the storefront)
 function rangoliBoxStyle({ position = "top-right", size = 40, rotation = 0, opacity = 20 }) {
   const s = { position: "absolute", width: `${size}%`, opacity: (opacity ?? 20) / 100, pointerEvents: "none" };
@@ -117,6 +189,7 @@ const EMPTY_FESTIVAL = {
   rangoli: [], // up to 3 { url, position, size, rotation, opacity } — overrides the built-in motif
   bottomNav: { bg: "", bgImage: "", icons: ["", "", "", ""] }, // mobile bottom-nav overrides
   saleSection: { bg: "" }, // Special Sale Offers section background
+  branchPages: emptyBranchPages(), // location-specific festival copy for /branch/*
 };
 
 const BOTTOM_NAV_LABELS = ["Home", "Shop", "Cart", "Profile"];
@@ -186,6 +259,7 @@ function festivalFromSettings(raw) {
     rangoli: normalizeRangoli(d),
     bottomNav: normalizeBottomNav(d),
     saleSection: { bg: typeof d.saleSection?.bg === "string" ? d.saleSection.bg : "" },
+    branchPages: normalizeBranchPages(d),
   };
 }
 
@@ -232,6 +306,7 @@ function festivalToSettings(f) {
       .slice(0, 3),
     bottomNav: cleanBottomNav(f.bottomNav),
     saleSection: { bg: (f.saleSection?.bg || "").trim() },
+    branchPages: serializeBranchPages(f.branchPages),
   });
 }
 
@@ -291,6 +366,7 @@ function festToEntry(f, id) {
     rangoli: (f.rangoli || []).filter((r) => r && r.url).map((r) => ({ ...r })).slice(0, 3),
     bottomNav: cleanBottomNav(f.bottomNav),
     saleSection: { bg: (f.saleSection?.bg || "").trim() },
+    branchPages: serializeBranchPages(f.branchPages),
   };
 }
 
@@ -307,6 +383,7 @@ function entryToFest(entry, active) {
     rangoli: normalizeRangoli(entry),
     bottomNav: normalizeBottomNav(entry),
     saleSection: { bg: typeof entry.saleSection?.bg === "string" ? entry.saleSection.bg : "" },
+    branchPages: normalizeBranchPages(entry),
   };
 }
 
@@ -789,6 +866,19 @@ export default function Settings() {
   const setFestPalette = (key, v) => setFest((f) => ({ ...f, palette: { ...f.palette, [key]: v } }));
   const setFestHero = (k, v) => setFest((f) => ({ ...f, hero: { ...f.hero, [k]: v } }));
   const setFestPromo = (k, v) => setFest((f) => ({ ...f, promo: { ...f.promo, [k]: v } }));
+  const setBranchPage = (slug, section, key, value) => setFest((f) => {
+    const current = f.branchPages?.[slug] || EMPTY_BRANCH_PAGE;
+    return {
+      ...f,
+      branchPages: {
+        ...f.branchPages,
+        [slug]: {
+          ...current,
+          [section]: { ...current[section], [key]: value },
+        },
+      },
+    };
+  });
 
   const fetchSettings = useCallback(async () => {
     setLoading(true);
@@ -861,6 +951,7 @@ export default function Settings() {
       rangoli: [],
       bottomNav: { ...EMPTY_FESTIVAL.bottomNav, icons: ["", "", "", ""] },
       saleSection: { ...EMPTY_FESTIVAL.saleSection },
+      branchPages: emptyBranchPages(),
     });
     setError(""); setGenError("");
     setSuccess("Blank theme — give it a name, build it, then “Save current to library”.");
@@ -1333,6 +1424,68 @@ export default function Settings() {
                     <div className="col-span-2">
                       <label className={L}>Hero tagline</label>
                       <input value={fest.hero.tagline} onChange={(e) => setFestHero("tagline", e.target.value)} className={I} maxLength={60} />
+                    </div>
+                  </div>
+
+                  {/* Branch pages use the same active festival shell and art as
+                      home, while each location gets its own editorial copy. */}
+                  <div className="rounded-xl border border-gray-100 bg-gray-50/60 p-3 sm:p-4">
+                    <div className="mb-3">
+                      <label className={L}>Branch page content</label>
+                      <p className="text-[11px] text-gray-400 -mt-1 leading-snug">
+                        Shown only while this theme is active, on the matching <b>/branch/…</b> page.
+                        The festival art and mobile hero layout stay the same as home; these fields make each branch unique.
+                        Leave a field blank to use the branch's normal location-specific fallback.
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      {BRANCH_PAGE_OPTIONS.map(({ slug, label }) => {
+                        const page = fest.branchPages?.[slug] || EMPTY_BRANCH_PAGE;
+                        return (
+                          <details key={slug} className="rounded-xl border border-gray-200 bg-white group">
+                            <summary className="cursor-pointer list-none px-3 py-2.5 flex items-center justify-between gap-3 text-sm font-bold text-gray-700">
+                              <span>{label}</span>
+                              <span className="text-[10px] text-gray-400 font-medium group-open:hidden">Edit content</span>
+                              <span className="text-[10px] text-[#04A9FF] font-medium hidden group-open:inline">Close</span>
+                            </summary>
+                            <div className="border-t border-gray-100 p-3 space-y-3">
+                              <p className="text-[11px] text-gray-400 leading-snug">
+                                Hero fields replace the global festival hero copy for this branch. The branch message appears directly below the hero.
+                              </p>
+                              <div className="grid gap-3 sm:grid-cols-2">
+                                <div>
+                                  <label className={L}>Hero eyebrow</label>
+                                  <input value={page.hero.eyebrow} onChange={(e) => setBranchPage(slug, "hero", "eyebrow", e.target.value)} className={I} maxLength={40} />
+                                </div>
+                                <div>
+                                  <label className={L}>Trusted by</label>
+                                  <input value={page.hero.trustedBy} onChange={(e) => setBranchPage(slug, "hero", "trustedBy", e.target.value)} className={I} maxLength={40} />
+                                </div>
+                                <div>
+                                  <label className={L}>Hero title line 1</label>
+                                  <input value={page.hero.line1} onChange={(e) => setBranchPage(slug, "hero", "line1", e.target.value)} className={I} maxLength={70} />
+                                </div>
+                                <div>
+                                  <label className={L}>Hero title line 2</label>
+                                  <input value={page.hero.line2} onChange={(e) => setBranchPage(slug, "hero", "line2", e.target.value)} className={I} maxLength={70} />
+                                </div>
+                                <div className="sm:col-span-2">
+                                  <label className={L}>Hero tagline</label>
+                                  <input value={page.hero.tagline} onChange={(e) => setBranchPage(slug, "hero", "tagline", e.target.value)} className={I} maxLength={100} />
+                                </div>
+                                <div className="sm:col-span-2">
+                                  <label className={L}>Branch message heading</label>
+                                  <input value={page.content.heading} onChange={(e) => setBranchPage(slug, "content", "heading", e.target.value)} className={I} maxLength={100} />
+                                </div>
+                                <div className="sm:col-span-2">
+                                  <label className={L}>Branch message</label>
+                                  <textarea value={page.content.body} onChange={(e) => setBranchPage(slug, "content", "body", e.target.value)} className={`${I} min-h-24 resize-y`} maxLength={600} />
+                                </div>
+                              </div>
+                            </div>
+                          </details>
+                        );
+                      })}
                     </div>
                   </div>
 

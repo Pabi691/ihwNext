@@ -218,10 +218,27 @@ function taglineParts(text) {
   ];
 }
 
-export default function NHero() {
+export default function NHero({ branchDetails = null, branchPage = null }) {
   const [bannerImages, setBannerImages] = useState([]);
   const { theme } = useFestivalTheme();
-  const { hero } = theme;
+  const branchHero = branchPage?.hero;
+  // Branch pages share the exact festival hero artwork and mobile layout with
+  // home, but their location copy comes from the per-branch CRM fields. Until
+  // that copy is authored, the branch's existing SEO heading is a useful,
+  // location-correct fallback rather than the generic homepage headline.
+  const hero = branchDetails
+    ? {
+        eyebrow: branchHero?.eyebrow || `Indian Hair World — ${branchDetails.name}`,
+        titleLines: branchHero?.titleLines?.length ? branchHero.titleLines : [branchDetails.h1],
+        tagline: branchHero?.tagline || theme.hero.tagline,
+        trustedBy: branchHero?.trustedBy || theme.hero.trustedBy,
+      }
+    : theme.hero;
+  const contactPhone = branchDetails?.phones?.[0] || "+917980221032";
+  const whatsapp = (branchDetails?.whatsapp || "+917980221032").replace(/\D/g, "");
+  const whatsappMessage = branchDetails
+    ? `Hello Indian Hair World, I would like to inquire about your ${branchDetails.name} branch.`
+    : "Hello Indian Hair World, I would like to inquire about your hair replacement services.";
   const festivalImages = theme.backgroundImages?.length
     ? theme.backgroundImages
     : [theme.backgroundImage || "/images/bannerIhw.png"];
@@ -286,13 +303,20 @@ export default function NHero() {
             </div>
 
             {/* Headline */}
-            <h1 className="text-3xl md:text-4xl xl:text-[2.75rem] font-extrabold leading-[1.5] text-[var(--rb-dark)] mb-2 max-w-sm">
-              Best Hair Patch &amp; Non-Surgical Hair Replacement in{" "}
-              <span className="text-[var(--rb-accent)]">Kolkata</span>
+            <h1 className="text-3xl md:text-4xl xl:text-[2.75rem] font-extrabold leading-[1.25] text-[var(--rb-dark)] mb-2 max-w-xl">
+              {branchDetails ? hero.titleLines.map((line, i) => (
+                <React.Fragment key={i}>
+                  {i > 0 && <br />}
+                  <span className={i === hero.titleLines.length - 1 ? "text-[var(--rb-accent)]" : ""}>{line}</span>
+                </React.Fragment>
+              )) : <>
+                Best Hair Patch &amp; Non-Surgical Hair Replacement in{" "}
+                <span className="text-[var(--rb-accent)]">Kolkata</span>
+              </>}
             </h1>
 
             <p className="text-gray-600 text-base md:text-lg mb-4 max-w-md leading-relaxed">
-              No Surgery. No Side Effects.
+              {branchDetails ? (hero.tagline || "No Surgery. No Side Effects.") : "No Surgery. No Side Effects."}
             </p>
 
             {/* Price + EMI */}
@@ -313,7 +337,7 @@ export default function NHero() {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 mb-5">
             <a
-              href="tel:+917980221032"
+              href={`tel:${contactPhone}`}
               className="inline-flex items-center justify-center gap-3 bg-[var(--rb-primary)] hover:bg-[var(--rb-primary-hover)] text-white font-bold pl-6 pr-2.5 py-3.5 rounded-xl text-sm transition-all duration-200 shadow-lg shadow-[var(--rb-primary)]/30 hover:-translate-y-0.5"
             >
               <FaPhone className="w-8 h-8" />
@@ -323,7 +347,7 @@ export default function NHero() {
               </span>
             </a>
             <a
-              href="https://wa.me/917980221032?text=Hello%20Indian%20Hair%20World%2C%20I%20would%20like%20to%20inquire%20about%20your%20hair%20replacement%20services."
+              href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(whatsappMessage)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-3 bg-emerald-500 hover:bg-emerald-600 text-white font-bold pl-6 pr-2.5 py-3.5 rounded-xl text-sm transition-all duration-200 shadow-lg shadow-emerald-500/20 hover:-translate-y-0.5"
@@ -598,13 +622,13 @@ export default function NHero() {
         {/* CTA buttons */}
         <div className="flex gap-3 mt-5 mx-3">
           <a
-            href="tel:+917980221032"
+            href={`tel:${contactPhone}`}
             className="flex-1 inline-flex items-center justify-center gap-2 bg-[var(--rb-primary)] text-white font-bold px-3 py-3 rounded-xl text-sm"
           >
             <FaPhone className="w-4 h-4" /> Book Free Consultation
           </a>
           <a
-            href="https://wa.me/917980221032?text=Hello%20Indian%20Hair%20World%2C%20I%20would%20like%20to%20inquire%20about%20your%20Raksha%20Bandhan%20offer."
+            href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(whatsappMessage)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-500 text-white font-bold px-3 py-3 rounded-xl text-sm"

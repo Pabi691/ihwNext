@@ -49,6 +49,23 @@
 
   --site-nav-bg: #111827;         /* mobile BottomFixedNav bar background */
 
+  /* Branch-page tokens. Same contract as above: each default is the exact
+     colour it replaced, so with no festival theme active /branch/* renders
+     pixel-identical. FestivalThemeContext remaps them while a theme is live. */
+  --site-brand: #0A3D91;             /* navy fill + text on light (Siliguri, Sodepur, branch intro) */
+  --site-brand-hover: #0d4db5;       /* hover of --site-brand fills */
+  --site-on-brand: #dbeafe;          /* body text ON a --site-brand band (was text-blue-100) */
+  --site-brand-bright: #2563eb;      /* bullets, rule and emphasis on light (was blue-600) */
+  --site-accent-hover: #d96f10;      /* hover of --site-accent fills */
+  --site-accent-deep: #ea580c;       /* accent hover fills + chip icons (was orange-600) */
+  --site-accent-tint: #fff7ed;       /* accent washes + outline-button hover (was orange-50) */
+  --site-deep: #0f172a;              /* dark section background (Salt Lake, Lake Gardens) */
+  --site-deeper: #020617;            /* darker section background (Salt Lake) */
+  --site-on-deep: #0a58ca;           /* accent TEXT, bars, borders ON --site-deep sections */
+  --site-on-deep-rgb: 10 88 202;     /* channel triplet of --site-on-deep, for /opacity */
+  --site-on-deep-cta: #0a58ca;       /* CTA FILL on --site-deep sections — carries white text */
+  --site-on-deep-cta-hover: #1d4ed8; /* hover of that CTA (was blue-700) */
+
   /* space-separated channel triplets — for the `/opacity` call-sites where
      Tailwind's `bg-[var(--x)]/5` would emit invalid `rgb(#hex / .05)` */
   --site-primary-rgb: 4 169 255;

@@ -23,7 +23,7 @@ const Siliguri = () => {
               <p className="text-gray-700 leading-relaxed mb-8">
                 Our hair specialists help you choose the ideal solution based on your age, hair texture, scalp condition, and styling preferences.
               </p>
-              <a href="tel:+917439436698" className="inline-flex items-center gap-2 bg-[#0A3D91] text-white font-bold px-6 py-3 rounded-xl hover:bg-[#0d4db5] transition-colors">
+              <a href="tel:+917439436698" className="inline-flex items-center gap-2 bg-[var(--site-brand)] text-white font-bold px-6 py-3 rounded-xl hover:bg-[var(--site-brand-hover)] transition-colors">
                 Book Free Consultation
               </a>
             </div>
@@ -46,13 +46,13 @@ const Siliguri = () => {
                   ))}
                 </ul>
               </div>
-              <div className="bg-[#ef7f1a]/5 border border-[#ef7f1a]/20 rounded-2xl p-6">
+              <div className="bg-[rgb(var(--site-accent-rgb)_/_0.05)] border border-[rgb(var(--site-accent-rgb)_/_0.2)] rounded-2xl p-6">
                 <h3 className="text-lg font-bold text-gray-900 mb-3">Affordable Hair Patch Price in Siliguri</h3>
                 <p className="text-gray-600 text-sm mb-3">One of the most common questions we receive is about hair patch pricing. Hair patch cost depends on:</p>
                 <ul className="space-y-2 mb-4">
                   {["Hair quality", "Base material", "Hair density", "Size of bald area", "Customization requirements"].map((f) => (
                     <li key={f} className="flex items-center gap-2 text-sm text-gray-700">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#ef7f1a] flex-shrink-0" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--site-accent)] flex-shrink-0" />
                       {f}
                     </li>
                   ))}
@@ -60,7 +60,7 @@ const Siliguri = () => {
                 <p className="text-sm text-gray-700 mb-2">
                   At Indian Hair World Siliguri, we offer affordable solutions suitable for every budget while maintaining premium quality and natural results.
                 </p>
-                <p className="text-sm font-semibold text-[#0A3D91]">Book a free consultation to get a personalized quote.</p>
+                <p className="text-sm font-semibold text-[var(--site-brand)]">Book a free consultation to get a personalized quote.</p>
               </div>
             </div>
           </div>
@@ -121,8 +121,8 @@ const Siliguri = () => {
                   { n: 3, title: "Professional Fixing", desc: "Our technician applies your hair patch using your chosen method — bonding, clipping, taping or weaving. Completely painless." },
                   { n: 4, title: "Walk Out With a New Look", desc: "Your hair patch is styled, trimmed and blended with your natural hair. The result is 100% undetectable. Total time: 60–90 minutes." },
                 ].map((s) => (
-                  <div key={s.n} className="bg-gray-50 border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[#ef7f1a] transition-all shadow-sm hover:shadow-md">
-                    <div className="absolute top-0 right-0 bg-[#ef7f1a] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 group-hover:opacity-20 transition-opacity">
+                  <div key={s.n} className="bg-gray-50 border border-gray-100 rounded-2xl p-6 relative overflow-hidden group hover:border-[var(--site-accent)] transition-all shadow-sm hover:shadow-md">
+                    <div className="absolute top-0 right-0 bg-[var(--site-accent)] text-white font-black text-3xl opacity-10 rounded-bl-2xl px-3 py-1.5 group-hover:opacity-20 transition-opacity">
                       {s.n}
                     </div>
                     <h3 className="text-lg font-bold mb-2 text-gray-900">{s.title}</h3>
@@ -135,8 +135,8 @@ const Siliguri = () => {
               <div className="relative w-full aspect-square md:aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
                 <img src="/images/serv_img.jpg" alt="4 Simple Steps to Get a Hair Patch in Siliguri" className="w-full h-full object-cover" />
                 <div className="absolute bottom-6 left-6 bg-white/95 backdrop-blur-sm p-4 rounded-2xl shadow-xl flex items-center gap-3">
-                  <div className="w-10 h-10 bg-[#ef7f1a]/10 rounded-full flex items-center justify-center">
-                    <CheckCircle2 className="w-6 h-6 text-[#ef7f1a]" />
+                  <div className="w-10 h-10 bg-[rgb(var(--site-accent-rgb)_/_0.1)] rounded-full flex items-center justify-center">
+                    <CheckCircle2 className="w-6 h-6 text-[var(--site-accent)]" />
                   </div>
                   <div>
                     <p className="text-sm font-bold text-gray-900">Result in 60 Minutes</p>
@@ -175,7 +175,7 @@ const Siliguri = () => {
               { title: "Customized Wigs", desc: "Bespoke wigs crafted to your exact measurements, colour, density, and style." },
             ].map((t) => (
               <div key={t.title} className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 hover:border-blue-200 hover:shadow-md transition-all">
-                <div className="w-8 h-1 bg-[#0A3D91] rounded-full mb-3" />
+                <div className="w-8 h-1 bg-[var(--site-brand)] rounded-full mb-3" />
                 <h3 className="text-lg font-bold text-gray-900 mb-2">{t.title}</h3>
                 <p className="text-gray-600 text-sm leading-relaxed">{t.desc}</p>
               </div>
@@ -286,7 +286,7 @@ const Siliguri = () => {
                 <ul className="space-y-2">
                   {["Natural appearance", "Custom fitting", "Secure attachment", "Long-lasting performance", "Easy styling"].map((i) => (
                     <li key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#0A3D91] flex-shrink-0" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--site-brand)] flex-shrink-0" />
                       {i}
                     </li>
                   ))}
@@ -310,7 +310,7 @@ const Siliguri = () => {
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm">
-              <div className="w-10 h-1 bg-[#0A3D91] rounded-full mb-4" />
+              <div className="w-10 h-1 bg-[var(--site-brand)] rounded-full mb-4" />
               <h3 className="text-xl font-bold text-gray-900 mb-3">Indian Human Hair in Siliguri</h3>
               <p className="text-gray-600 text-sm leading-relaxed mb-3">
                 Indian Hair World specializes in premium <strong>Indian human hair</strong> products sourced ethically and processed with strict quality standards.
@@ -319,7 +319,7 @@ const Siliguri = () => {
               <ul className="space-y-2 mb-3">
                 {["Natural shine", "Long-lasting quality", "Soft texture", "Styling flexibility", "Realistic appearance"].map((i) => (
                   <li key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#0A3D91] flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--site-brand)] flex-shrink-0" />
                     {i}
                   </li>
                 ))}
@@ -327,7 +327,7 @@ const Siliguri = () => {
               <p className="text-xs text-gray-500 leading-relaxed">Indian human hair remains one of the most sought-after hair types worldwide due to its durability and natural look.</p>
             </div>
             <div className="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm">
-              <div className="w-10 h-1 bg-[#ef7f1a] rounded-full mb-4" />
+              <div className="w-10 h-1 bg-[var(--site-accent)] rounded-full mb-4" />
               <h3 className="text-xl font-bold text-gray-900 mb-3">Lace Hair Systems</h3>
               <p className="text-gray-600 text-sm leading-relaxed mb-4">
                 <strong>Lace hair</strong> systems are popular for the most realistic hairline possible. Lightweight construction provides exceptional breathability and an undetectable appearance for men and women.
@@ -335,7 +335,7 @@ const Siliguri = () => {
               <ul className="space-y-2">
                 {["Front hairline restoration", "Full lace hair systems", "Men's hair replacement", "Women's hair enhancement", "Ultra-realistic appearance"].map((i) => (
                   <li key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#ef7f1a] flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--site-accent)] flex-shrink-0" />
                     {i}
                   </li>
                 ))}
@@ -441,8 +441,8 @@ const Siliguri = () => {
               <h3 className="text-xl font-bold text-gray-900 mb-6">Services at Our Siliguri Branch</h3>
               <div className="space-y-5">
                 {[
-                  { title: "Hair Patch for Men", desc: "Cover any partial or full bald spot. Methods: bonding, clipping, taping or weaving. Result in 60 minutes from ₹5,999.", color: "bg-[#0A3D91]" },
-                  { title: "Hair Wig for Men", desc: "Full head hair wig for completely bald men. Washable, adjustable, lasts 1–2 years. No activity restrictions.", color: "bg-[#ef7f1a]" },
+                  { title: "Hair Patch for Men", desc: "Cover any partial or full bald spot. Methods: bonding, clipping, taping or weaving. Result in 60 minutes from ₹5,999.", color: "bg-[var(--site-brand)]" },
+                  { title: "Hair Wig for Men", desc: "Full head hair wig for completely bald men. Washable, adjustable, lasts 1–2 years. No activity restrictions.", color: "bg-[var(--site-accent)]" },
                   { title: "Hair Patch for Women", desc: "Crown thinning, frontal hair loss or alopecia — our women's hair patch blends seamlessly. Non-surgical and painless.", color: "bg-pink-500" },
                   { title: "Hair Extensions & Toppers", desc: "Clip-in extensions, hair toppers, colour strands and buns. 100% natural Indian human hair.", color: "bg-green-500" },
                   { title: "Hair Patch Servicing", desc: "Professional bonding maintenance every 25–45 days to keep your patch looking fresh and natural.", color: "bg-purple-500" },
@@ -489,7 +489,7 @@ const Siliguri = () => {
                   { label: "Convenient Location", desc: "Serving customers from Siliguri and surrounding North Bengal regions." },
                 ].map((item) => (
                   <div key={item.label} className="flex items-start gap-4">
-                    <CheckCircle2 className="w-6 h-6 text-[#ef7f1a] flex-shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-6 h-6 text-[var(--site-accent)] flex-shrink-0 mt-0.5" />
                     <p className="text-gray-700 text-sm leading-relaxed">
                       <strong className="text-gray-900">{item.label}</strong> — {item.desc}
                     </p>
@@ -502,22 +502,22 @@ const Siliguri = () => {
       </div>
 
       {/* ── Book Your Free Consultation Today ── */}
-      <div className="bg-[#0A3D91] py-14">
+      <div className="bg-[var(--site-brand)] py-14">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
             Book Your Free Consultation Today
           </h2>
-          <p className="text-blue-100 text-base md:text-lg leading-relaxed mb-3">
+          <p className="text-[var(--site-on-brand)] text-base md:text-lg leading-relaxed mb-3">
             Restore your confidence with the most trusted destination for hair patch, wigs, hair toppers, toupees, lace hair systems, and non-surgical hair replacement in Siliguri.
           </p>
-          <p className="text-blue-100 text-base md:text-lg leading-relaxed mb-8">
+          <p className="text-[var(--site-on-brand)] text-base md:text-lg leading-relaxed mb-8">
             Visit Indian Hair World Siliguri and discover a natural-looking hair solution designed specifically for you.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="tel:+917439436698" className="inline-flex items-center justify-center gap-2 bg-[#ef7f1a] text-white font-bold px-8 py-4 rounded-xl hover:bg-[#d96f10] transition-colors text-base">
+            <a href="tel:+917439436698" className="inline-flex items-center justify-center gap-2 bg-[var(--site-accent)] text-white font-bold px-8 py-4 rounded-xl hover:bg-[var(--site-accent-hover)] transition-colors text-base">
               Call +91 74394 36698
             </a>
-            <a href={`https://wa.me/917439436698`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 bg-white text-[#0A3D91] font-bold px-8 py-4 rounded-xl hover:bg-blue-50 transition-colors text-base">
+            <a href={`https://wa.me/917439436698`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 bg-white text-[var(--site-brand)] font-bold px-8 py-4 rounded-xl hover:bg-blue-50 transition-colors text-base">
               WhatsApp Us
             </a>
           </div>
@@ -534,8 +534,8 @@ const Siliguri = () => {
           <div className="flex flex-wrap justify-center gap-3">
             {["Siliguri", "Matigara", "Bagdogra", "Pradhan Nagar", "Sevoke Road", "Hakim Para", "Jalpaiguri", "Kalimpong", "Darjeeling", "Kurseong", "Islampur", "North Bengal", "Sikkim"].map((area) => (
               <div key={area} className="flex items-center gap-2 bg-white border border-blue-100 rounded-full px-5 py-2 shadow-sm">
-                <MapPin className="w-3.5 h-3.5 text-[#0A3D91]" />
-                <span className="text-sm font-semibold text-[#0A3D91]">{area}</span>
+                <MapPin className="w-3.5 h-3.5 text-[var(--site-brand)]" />
+                <span className="text-sm font-semibold text-[var(--site-brand)]">{area}</span>
               </div>
             ))}
           </div>
