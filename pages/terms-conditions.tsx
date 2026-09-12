@@ -104,6 +104,10 @@ const TermsCondition = () => {
             <p>
               We do not warrant that the quality of any products, Services, information, or other material purchased or obtained by you will meet your expectations, or that any errors in the Service will be corrected.
             </p>
+
+            <p>
+              <strong>The 20% discount is valid on offline (in-store) services only.</strong>
+            </p>
           </section>
           <section className="mt-8 space-y-4">
             <h2 className="text-xl font-semibold">
