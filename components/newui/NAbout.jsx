@@ -4,7 +4,7 @@ import { FaPhone, FaArrowRight } from "react-icons/fa6";
 const stats = [
   { value: "2015", label: "Founded" },
   { value: "10,000+", label: "Customers Served" },
-  { value: "4", label: "Branches" },
+  { value: "5", label: "Branches" },
   { value: "5", label: "National Awards" },
 ];
 
