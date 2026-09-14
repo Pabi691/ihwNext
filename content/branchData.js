@@ -163,6 +163,8 @@ export const branchData = {
       "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3680.4207198653226!2d88.3854684!3d22.712598699999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f89b04dab5b9e5%3A0x139f519c883e6ee2!2sIndian%20Hair%20World%20Sodepur!5e0!3m2!1sen!2sin!4v1785831935261!5m2!1sen!2sin",
     gmbUrl: "https://g.page/r/CeJuPoicUZ8TEBM/",
     page_title: "Non Surgical Hair Replacement in Sodepur – Natural Looking Hair Patch, Extensions & Topper",
+    image: "/images/sodepur.jpg",
+    banner_img: "/images/sodepur.jpg",
     component: <Sodepur />,
     menProduct: <SingleSlider slug_name="get_slug_data/men-products" title="MEN’S HAIR PRODUCTS" />,
     womenProduct: <SingleSlider slug_name="get_slug_data/women-products" title="WOMEN’S HAIR PRODUCTS" />,

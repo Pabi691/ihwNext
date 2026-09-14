@@ -41,7 +41,7 @@ const branches = [
     phones: ["+918910097668"],
     whatsapp: "+918910097668",
     hours: "Mon–Sun: 11 AM – 7 PM",
-    image: "/images/sodepur-office.png",
+    image: "/images/sodepur.jpg",
   },
 ];
 
