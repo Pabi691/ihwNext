@@ -19,7 +19,7 @@ export const branchData = {
     landmark: "Near Tollygunge Metro Station",
     opening_hours: "Monday to Sunday — 11:00 AM to 7:00 PM",
     serving_areas: "Lake Gardens, Tollygunge, Gariahat, Behala, New Alipore, Ballygunge, south Kolkata",
-    image: "/images/lake-garden-office.png",
+    image: "/images/lake-garden.webp",
     page_title: "Non Surgical Hair Replacement in Lake Gardens, Kolkata – Natural Looking Hair Patch, Extensions & Topper",
     banner_img: "/images/lake-garden.jpg",
     mapUrl:
@@ -53,7 +53,7 @@ export const branchData = {
     landmark: "Opp. CC1, Sector-1",
     opening_hours: "Monday to Sunday — 11:00 AM to 7:00 PM",
     serving_areas: "Salt Lake, New Town, Rajarhat, and surrounding areas",
-    image: "/images/salt-lake-office.png",
+    image: "/images/salt-lake.webp",
     page_title: "Non Surgical Hair Replacement in Saltlake, Kolkata – Natural Looking Hair Patch, Extensions & Topper",
     banner_img: "/images/salt-lake.jpg",
     mapUrl:
@@ -82,7 +82,7 @@ export const branchData = {
     landmark: "Above PNB, City Center",
     opening_hours: "Monday to Sunday — 11:00 AM to 7:00 PM",
     serving_areas: "Durgapur and surrounding areas",
-    image: "/images/durgapur-office.png",
+    image: "/images/durgapur.webp",
     page_title: "Non Surgical Hair Replacement in Durgapur – Natural Looking Hair Patch, Extensions & Topper",
     banner_img: "/images/durgapur.jpg",
     mapUrl:
@@ -122,7 +122,7 @@ export const branchData = {
     mapUrl:
       "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d14254.005381321096!2d88.43067!3d26.728373!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39e4416ca8690379%3A0x72b0c331c2df8498!2sIndian%20Hair%20World%20Siliguri!5e0!3m2!1sen!2sin!4v1769175086449!5m2!1sen!2sin",
     page_title: "Non Surgical Hair Replacement in Siliguri – Natural Looking Hair Patch, Extensions & Topper",
-    image: "/images/siliguri-office.png",
+    image: "/images/siliguri.webp",
     banner_img: "/images/siliguri.png",
     component: <Siliguri />,
     menProduct: <SingleSlider slug_name="get_slug_data/men-products" title="MEN’S HAIR PRODUCTS" />,

@@ -41,7 +41,7 @@ export default function OurStoresSection() {
           <SwiperSlide>
             <StoreCard
               name="Durgapur Store"
-              image="/images/durgapur-office.jpg"
+              image="/images/durgapur.webp"
               time="11AM - 7PM"
               address="2nd Floor, Above Punjab National Bank, City Center, Durgapur, WB - 713216"
               phone="+919875517402"
@@ -52,7 +52,7 @@ export default function OurStoresSection() {
           <SwiperSlide>
             <StoreCard
               name="Kolkata Salt Lake Store"
-              image="/images/salt-lake-office.jpg"
+              image="/images/salt-lake.webp"
               time="11AM - 7PM"
               address="EC-20, Ground Floor Back Side, Opp. CC1, Sector - 1, Salt Lake City, Kolkata - 700064"
               phone="+918961194044"

@@ -9,7 +9,7 @@ const branches = [
     phones: ["+917980221032"],
     whatsapp: "+917980221032",
     hours: "Mon–Sun: 11 AM – 7 PM",
-    image: "/images/lake-garden-office.png",
+    image: "/images/lake-garden.webp",
   },
   {
     name: "Salt Lake, Kolkata",
@@ -17,7 +17,7 @@ const branches = [
     phones: ["+918961194044"],
     whatsapp: "+918961194044",
     hours: "Mon–Sun: 11 AM – 7 PM",
-    image: "/images/salt-lake-office.png",
+    image: "/images/salt-lake.webp",
   },
   {
     name: "Durgapur",
@@ -25,7 +25,7 @@ const branches = [
     phones: ["+919875517402"],
     whatsapp: "+919875517402",
     hours: "Mon–Sun: 11 AM – 7 PM",
-    image: "/images/durgapur-office.png",
+    image: "/images/durgapur.webp",
   },
   {
     name: "Siliguri",
@@ -33,7 +33,7 @@ const branches = [
     phones: ["+917439436698"],
     whatsapp: "+917439436698",
     hours: "Mon–Sun: 11 AM – 7 PM",
-    image: "/images/siliguri-office.png",
+    image: "/images/siliguri.webp",
   },
   {
     name: "Sodepur",
@@ -68,7 +68,7 @@ function BranchCard({ branch, dir }) {
           initial={{ scale: 1.15 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.9, ease: EASE }}
-          onError={(e) => { e.currentTarget.src = "/images/salt-lake-office.png"; }}
+          onError={(e) => { e.currentTarget.src = "/images/salt-lake.webp"; }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[var(--rb-dark)]/70 via-transparent to-transparent" />
       </div>
