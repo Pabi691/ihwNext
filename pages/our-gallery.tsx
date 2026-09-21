@@ -12,7 +12,7 @@ const Gallery = () => {
         <MainLayOut>
             <DesktopNav />
             <GalleryBanner />
-            <TransformationsGallery />
+            <TransformationsGallery variant="full" />
             <GlobalFameAwardsGallery />
             <TimesBrandIcons2024 />
             <VideoGallery />

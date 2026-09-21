@@ -15,7 +15,7 @@ import {
 /* ── Above the fold — eager ──────────────────────────────────────── */
 import PopularReels from '@/components/home/PopularReels';
 import BranchAppointmentBanner from '@/components/branches/BranchAppointmentBanner';
-import ShopOnlineBanner from '@/components/ShopOnlineBanner';
+import TransformationsGallery from '@/components/gallery/TransformationsGallery';
 import SaleProductsSection from '@/components/home/SaleProductsSection';
 import CartReminderSection from '@/components/home/CartReminderSection';
 
@@ -91,8 +91,8 @@ const MobileHomeBody = () => {
     <div>
       {/* ── Above fold (eager) ── */}
       <PopularReels />
+      <TransformationsGallery />
       <BranchAppointmentBanner />
-      <ShopOnlineBanner />
       <CartReminderSection />
       <SaleProductsSection />
 

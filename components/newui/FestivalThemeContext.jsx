@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { ENV } from "@/config/env";
+import { fetchPublicSettings } from "@/utils/publicSettings";
 
 /**
  * Festival theme — read-only on the storefront.
@@ -323,42 +323,11 @@ function parseFestivalTheme(raw) {
 
 const FestivalThemeContext = createContext({ theme: DEFAULT_THEME, loading: true });
 
-// The provider sits in _app.tsx, so without this it re-fetches get_public_settings
-// on every client-side navigation. Cache the raw value briefly and share one
-// in-flight request across all mounts.
-const PUBLIC_SETTINGS_TTL_MS = 60 * 1000;
-const PUBLIC_SETTINGS_CACHE_KEY = "ihw:get_public_settings:v1";
-let inFlightPublicSettings = null;
-
+// The provider sits in _app.tsx; fetchPublicSettings caches the settings read
+// briefly and shares one in-flight request, so client navigations don't re-fetch.
 async function fetchPublicSettingsRaw() {
-  // 1. fresh value stashed this session?
-  try {
-    const cached = JSON.parse(sessionStorage.getItem(PUBLIC_SETTINGS_CACHE_KEY) || "null");
-    if (cached && Date.now() - cached.at < PUBLIC_SETTINGS_TTL_MS) return cached.raw;
-  } catch {
-    /* ignore */
-  }
-  // 2. a request already going out? ride it.
-  if (inFlightPublicSettings) return inFlightPublicSettings;
-
-  inFlightPublicSettings = (async () => {
-    try {
-      const res = await fetch(`${ENV.API_URL}/api/v1/get_public_settings`, {
-        headers: { Accept: "application/json" },
-      });
-      const json = await res.json();
-      const raw = json?.settings?.[SETTINGS_KEY];
-      try {
-        sessionStorage.setItem(PUBLIC_SETTINGS_CACHE_KEY, JSON.stringify({ at: Date.now(), raw }));
-      } catch {
-        /* ignore quota */
-      }
-      return raw;
-    } finally {
-      inFlightPublicSettings = null;
-    }
-  })();
-  return inFlightPublicSettings;
+  const settings = await fetchPublicSettings();
+  return settings?.[SETTINGS_KEY];
 }
 
 export function FestivalThemeProvider({ children, forcedTheme = null }) {

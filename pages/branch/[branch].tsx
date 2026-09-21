@@ -6,6 +6,7 @@ import BranchHero from "@/components/branches/BranchHero";
 import BranchContent from "@/components/branches/BranchContent";
 import PopularReels from "@/components/home/PopularReels";
 import OurWorks from "@/components/home/OurWorks";
+import TransformationsGallery from "@/components/gallery/TransformationsGallery";
 import { toAbsoluteUrlIfPresent } from "@/utils/seo";
 import { fetchPageSeo } from "@/utils/serverSeo";
 import { getActiveFestivalTheme } from "@/utils/festivalTheme";
@@ -114,6 +115,7 @@ const Branches = () => {
                     </div>
                 </div>
                 <PopularReels />
+                <TransformationsGallery />
                 <BranchContent />
                 {/* <BranchMap data={data} compact /> */}
                 <AchievementSlider />

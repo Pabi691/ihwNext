@@ -15,7 +15,7 @@ import {
 /* ── Above the fold — loaded eagerly ─────────────────────────────── */
 import PopularReels from './PopularReels';
 import BranchAppointmentBanner from '../branches/BranchAppointmentBanner';
-import ShopOnlineBanner from '../ShopOnlineBanner';
+import TransformationsGallery from '../gallery/TransformationsGallery';
 import SaleProductsSection from './SaleProductsSection';
 import CartReminderSection from './CartReminderSection';
 
@@ -86,8 +86,8 @@ const HomeBody = () => {
     <>
       {/* ── Above fold (eager) ── */}
       <PopularReels />
+      <TransformationsGallery />
       <BranchAppointmentBanner />
-      <ShopOnlineBanner />
       <CartReminderSection />
       <SaleProductsSection />
 

@@ -14,7 +14,7 @@ import NHero             from "@/components/newui/NHero";
 import PopularReels      from "@/components/home/PopularReels";
 import NSaleOffers       from "@/components/newui/NSaleOffers";
 import NBookAppointment  from "@/components/newui/NBookAppointment";
-import NShopBanner       from "@/components/newui/NShopBanner";
+import TransformationsGallery from "@/components/gallery/TransformationsGallery";
 import NWomensCollections from "@/components/newui/NWomensCollections";
 import NMensCollections   from "@/components/newui/NMensCollections";
 import NProductSlider    from "@/components/newui/NProductSlider";
@@ -56,7 +56,7 @@ export default function NewUIPreview() {
 
         <PopularReels />
 
-        <NShopBanner />
+        <TransformationsGallery />
 
         <NSaleOffers />
 
