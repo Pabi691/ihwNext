@@ -4,13 +4,13 @@ import Head from "next/head";
 import AdminLayout from "@/components/AdminLayout";
 import { useAdmin } from "@/components/AdminContext";
 import { useAuthGuard } from "@/components/useAuthGuard";
+import { MediaPickerModal, uploadToMediaLibrary, mediaErrorText } from "@/components/MediaLibrary";
 import { useEditor, EditorContent } from "@tiptap/react";
+import { BubbleMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
-import LinkExt from "@tiptap/extension-link";
 import ImageExt from "@tiptap/extension-image";
-import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
-import TextStyle from "@tiptap/extension-text-style";
+import { TextStyle } from "@tiptap/extension-text-style";
 import Color from "@tiptap/extension-color";
 import Placeholder from "@tiptap/extension-placeholder";
 import {
@@ -18,7 +18,7 @@ import {
   FiChevronDown, FiChevronUp, FiAlertCircle, FiCheckCircle,
   FiBold, FiItalic, FiList, FiCode, FiMinus,
   FiAlignLeft, FiAlignCenter, FiAlignRight, FiAlignJustify,
-  FiRotateCcw, FiRotateCw,
+  FiRotateCcw, FiRotateCw, FiRefreshCw, FiTrash2, FiUploadCloud,
 } from "react-icons/fi";
 import {
   MdFormatStrikethrough, MdFormatUnderlined, MdFormatListNumbered,
@@ -33,6 +33,18 @@ function estimateReadTime(text) {
   const words = (text || "").split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.ceil(words / 200));
 }
+
+// "indianhairworld.com/about" -> "https://indianhairworld.com/about"; site paths,
+// anchors, mailto: and tel: are kept as typed.
+function normalizeUrl(raw) {
+  const v = raw.trim();
+  if (!v) return "";
+  if (/^(https?:\/\/|mailto:|tel:|\/|#)/i.test(v)) return v;
+  return `https://${v}`;
+}
+
+const imageFilesFrom = (dataTransfer) =>
+  Array.from(dataTransfer?.files || []).filter((f) => f.type.startsWith("image/"));
 
 // ── Toolbar ─────────────────────────────────────────────────────────────────
 function ToolBtn({ onClick, active, title, children, disabled }) {
@@ -57,23 +69,12 @@ function Sep() {
   return <span className="w-px h-5 bg-gray-200 mx-1 flex-shrink-0 self-center" />;
 }
 
-function EditorToolbar({ editor }) {
+function EditorToolbar({ editor, onLink, onInsertImage }) {
   if (!editor) return (
     <div className="h-11 bg-gray-50 border-b border-gray-200 rounded-t-xl animate-pulse" />
   );
 
-  const insertLink = () => {
-    const prev = editor.getAttributes("link").href || "";
-    const url = window.prompt("Enter URL:", prev || "https://");
-    if (url === null) return;
-    if (!url) { editor.chain().focus().unsetLink().run(); return; }
-    editor.chain().focus().setLink({ href: url, target: "_blank" }).run();
-  };
-
-  const insertImage = () => {
-    const url = window.prompt("Image URL:");
-    if (url) editor.chain().focus().setImage({ src: url }).run();
-  };
+  const canLink = !editor.state.selection.empty || editor.isActive("link");
 
   return (
     <div className="flex flex-wrap items-center gap-0.5 px-3 py-2 border-b border-gray-200 bg-gray-50 rounded-t-xl sticky top-0 z-10">
@@ -156,10 +157,11 @@ function EditorToolbar({ editor }) {
       <Sep />
 
       {/* Insert */}
-      <ToolBtn onClick={insertLink} active={editor.isActive("link")} title="Insert / Edit Link">
+      <ToolBtn onClick={onLink} active={editor.isActive("link")} disabled={!canLink}
+        title={canLink ? "Add / Edit Link" : "Select some text to add a link"}>
         <FiLink size={13} />
       </ToolBtn>
-      <ToolBtn onClick={insertImage} title="Insert Image from URL">
+      <ToolBtn onClick={onInsertImage} title="Insert Image from Media">
         <FiImage size={13} />
       </ToolBtn>
 
@@ -173,7 +175,154 @@ function EditorToolbar({ editor }) {
   );
 }
 
+// ── Bubble menus ────────────────────────────────────────────────────────────
+function BubbleBtn({ onClick, danger, children }) {
+  return (
+    <button
+      type="button"
+      onMouseDown={(e) => { e.preventDefault(); onClick(); }}
+      className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
+        danger ? "text-red-500 hover:bg-red-50" : "text-gray-700 hover:bg-gray-100"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+const bubbleCls = "z-50 flex items-center gap-1 bg-white border border-gray-200 rounded-xl shadow-lg p-1.5";
+// "fixed" so the editor card's overflow-hidden can't clip the menus.
+const BUBBLE_OPTIONS = { placement: "bottom", offset: 8, strategy: "fixed" };
+
+// Shown for a text selection or when the cursor sits inside a link. Stays open
+// while its own input has focus.
+const showLinkBubble = ({ editor, element, state, from, to }) => {
+  if (element.contains(document.activeElement)) return true;
+  if (!editor.isEditable || !editor.isFocused) return false;
+  if (state.selection.node || editor.isActive("codeBlock")) return false;
+  return from !== to || editor.isActive("link");
+};
+
+function LinkBubble({ editor, editing, setEditing }) {
+  const [url, setUrl] = useState("");
+  const [newTab, setNewTab] = useState(true);
+  const isLink = editor.isActive("link");
+  const { href, target } = editor.getAttributes("link");
+
+  // Prefill from the existing link each time the edit form opens.
+  useEffect(() => {
+    if (!editing) return;
+    setUrl(href || "");
+    setNewTab(isLink ? target === "_blank" : true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editing]);
+
+  // Leave edit mode when the user moves the cursor somewhere else.
+  useEffect(() => {
+    const leave = () => setEditing(false);
+    editor.on("selectionUpdate", leave);
+    return () => editor.off("selectionUpdate", leave);
+  }, [editor, setEditing]);
+
+  const apply = () => {
+    const next = normalizeUrl(url);
+    const chain = editor.chain().focus().extendMarkRange("link");
+    if (next) chain.setLink({ href: next, target: newTab ? "_blank" : null }).run();
+    else chain.unsetLink().run();
+    setEditing(false);
+  };
+
+  const remove = () => {
+    editor.chain().focus().extendMarkRange("link").unsetLink().run();
+    setEditing(false);
+  };
+
+  return (
+    <BubbleMenu editor={editor} pluginKey="linkBubble" shouldShow={showLinkBubble}
+      options={BUBBLE_OPTIONS} className={bubbleCls}>
+      {editing ? (
+        <form onSubmit={(e) => { e.preventDefault(); apply(); }} className="flex items-center gap-1.5">
+          <FiLink size={13} className="text-gray-400 ml-1 flex-shrink-0" />
+          <input
+            autoFocus
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") { e.preventDefault(); setEditing(false); editor.commands.focus(); }
+            }}
+            placeholder="Paste or type a link address…"
+            className="w-72 text-sm px-2 py-1.5 border border-gray-200 rounded-lg outline-none focus:border-[#04A9FF]"
+          />
+          <label className="flex items-center gap-1 text-[11px] text-gray-500 whitespace-nowrap px-1">
+            <input type="checkbox" checked={newTab} onChange={(e) => setNewTab(e.target.checked)} />
+            New tab
+          </label>
+          <button type="submit" className="px-3 py-1.5 rounded-lg bg-[#04A9FF] hover:bg-[#0070cc] text-white text-xs font-bold">
+            Apply
+          </button>
+        </form>
+      ) : isLink ? (
+        <>
+          <a href={href} target="_blank" rel="noopener noreferrer"
+            className="max-w-[240px] truncate px-2 text-xs text-[#04A9FF] hover:underline">{href}</a>
+          <BubbleBtn onClick={() => setEditing(true)}>Edit</BubbleBtn>
+          <BubbleBtn onClick={remove} danger>Remove</BubbleBtn>
+        </>
+      ) : (
+        <BubbleBtn onClick={() => setEditing(true)}><FiLink size={12} /> Add link</BubbleBtn>
+      )}
+    </BubbleMenu>
+  );
+}
+
+const showImageBubble = ({ editor, element }) =>
+  editor.isActive("image") && (editor.isFocused || element.contains(document.activeElement));
+
+function ImageAltForm({ editor, initialAlt }) {
+  const [alt, setAlt] = useState(initialAlt);
+  return (
+    <form
+      onSubmit={(e) => { e.preventDefault(); editor.chain().focus().updateAttributes("image", { alt: alt.trim() }).run(); }}
+      className="flex items-center gap-1.5"
+    >
+      <input
+        value={alt}
+        onChange={(e) => setAlt(e.target.value)}
+        placeholder="Alt text — describe this image"
+        className={`w-64 text-sm px-2.5 py-1.5 rounded-lg border outline-none focus:border-[#04A9FF] ${
+          initialAlt ? "border-gray-200" : "border-amber-300 bg-amber-50"
+        }`}
+      />
+      <button type="submit" disabled={alt.trim() === initialAlt}
+        className="px-3 py-1.5 rounded-lg bg-[#04A9FF] hover:bg-[#0070cc] text-white text-xs font-bold disabled:opacity-40">
+        Save alt
+      </button>
+    </form>
+  );
+}
+
+function ImageBubble({ editor, onReplace }) {
+  const { src, alt } = editor.getAttributes("image");
+  return (
+    <BubbleMenu editor={editor} pluginKey="imageBubble" shouldShow={showImageBubble}
+      options={BUBBLE_OPTIONS} className={bubbleCls}>
+      <ImageAltForm key={`${editor.state.selection.from}:${src}`} editor={editor} initialAlt={alt || ""} />
+      <Sep />
+      <BubbleBtn onClick={onReplace}><FiRefreshCw size={12} /> Replace</BubbleBtn>
+      <BubbleBtn onClick={() => editor.chain().focus().deleteSelection().run()} danger>
+        <FiTrash2 size={12} /> Remove
+      </BubbleBtn>
+    </BubbleMenu>
+  );
+}
+
 // ── Page ─────────────────────────────────────────────────────────────────────
+const PICKER_LABELS = {
+  content:  { title: "Insert image into post", selectLabel: "Insert into post" },
+  replace:  { title: "Replace image",          selectLabel: "Replace image" },
+  featured: { title: "Choose featured image",  selectLabel: "Set featured image" },
+};
+
 export default function BlogEditorPage() {
   const router = useRouter();
   const { id } = router.query;
@@ -193,28 +342,38 @@ export default function BlogEditorPage() {
     meta_description: "",
     meta_keywords: "",
   });
-  const [imgFile, setImgFile] = useState(null);
-  const [imgPreview, setImgPreview] = useState(null);
+  const [featured, setFeatured] = useState(null);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
   const [seoOpen, setSeoOpen] = useState(false);
-  const fileRef = useRef();
+  const [picker, setPicker] = useState(null); // "content" | "replace" | "featured"
+  const [linkEditing, setLinkEditing] = useState(false);
+  const [editorUploads, setEditorUploads] = useState(0);
   const contentLoaded = useRef(false);
+  const originalFeatured = useRef(null);
+  const apiRef = useRef(api);
+  const editorRef = useRef(null);
+  const insertFilesRef = useRef(null);
+  apiRef.current = api;
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
   const editor = useEditor({
     immediatelyRender: false,
+    // Re-render on every change so the toolbar state, word count and bubble menus stay current.
+    shouldRerenderOnTransaction: true,
     extensions: [
-      StarterKit,
-      LinkExt.configure({
-        openOnClick: false,
-        HTMLAttributes: { rel: "noopener noreferrer", target: "_blank" },
+      // StarterKit v3 already bundles Link and Underline; configure them here
+      // instead of registering them a second time.
+      StarterKit.configure({
+        link: {
+          openOnClick: false,
+          HTMLAttributes: { rel: "noopener noreferrer", target: null },
+        },
       }),
       ImageExt,
-      Underline,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
       TextStyle,
       Color,
@@ -222,8 +381,46 @@ export default function BlogEditorPage() {
     ],
     editorProps: {
       attributes: { class: "min-h-[520px] outline-none" },
+      // Pasted / dropped image files go into the Media library, then into the post.
+      handlePaste: (view, event) => {
+        const files = imageFilesFrom(event.clipboardData);
+        if (!files.length) return false;
+        event.preventDefault();
+        insertFilesRef.current?.(files, null);
+        return true;
+      },
+      handleDrop: (view, event, slice, moved) => {
+        if (moved) return false;
+        const files = imageFilesFrom(event.dataTransfer);
+        if (!files.length) return false;
+        event.preventDefault();
+        const pos = view.posAtCoords({ left: event.clientX, top: event.clientY })?.pos;
+        insertFilesRef.current?.(files, pos ?? null);
+        return true;
+      },
     },
   });
+  editorRef.current = editor;
+
+  insertFilesRef.current = async (files, pos) => {
+    setEditorUploads((n) => n + files.length);
+    let at = pos;
+    for (const file of files) {
+      try {
+        const im = await uploadToMediaLibrary(apiRef.current, file, { pageKey: "blog" });
+        const ed = editorRef.current;
+        if (im && ed) {
+          const node = { type: "image", attrs: { src: im.image_path, alt: im.alt_text || "", title: im.title || null } };
+          if (typeof at === "number") ed.chain().focus().insertContentAt(at, node).run();
+          else ed.chain().focus().insertContent(node).run();
+          at = null; // further files follow the one just inserted
+        }
+      } catch (err) {
+        setError(`Image upload failed: ${mediaErrorText(err, file.name)}`);
+      }
+      setEditorUploads((n) => n - 1);
+    }
+  };
 
   // Load existing blog data
   useEffect(() => {
@@ -246,7 +443,8 @@ export default function BlogEditorPage() {
           meta_description: blog.meta_description || "",
           meta_keywords: blog.meta_keywords || "",
         });
-        setImgPreview(blog.featured_image || null);
+        setFeatured(blog.featured_image || null);
+        originalFeatured.current = blog.featured_image || null;
         if (blog.content) editor.commands.setContent(blog.content);
       } catch {
         setError("Failed to load blog post.");
@@ -260,11 +458,12 @@ export default function BlogEditorPage() {
     if (isNew) set("slug", slugify(val));
   };
 
-  const handleImg = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setImgFile(file);
-    setImgPreview(URL.createObjectURL(file));
+  const handlePicked = (im) => {
+    const attrs = { src: im.image_path, alt: im.alt_text || "", title: im.title || null };
+    if (picker === "featured") setFeatured(im.image_path);
+    else if (picker === "replace") editor?.chain().focus().updateAttributes("image", attrs).run();
+    else editor?.chain().focus().setImage(attrs).run();
+    setPicker(null);
   };
 
   const handleSave = async () => {
@@ -288,7 +487,8 @@ export default function BlogEditorPage() {
       fd.append("meta_title",        form.meta_title || "");
       fd.append("meta_description",  form.meta_description || "");
       fd.append("meta_keywords",     form.meta_keywords || "");
-      if (imgFile) fd.append("featured_image", imgFile);
+      if (featured && featured !== originalFeatured.current) fd.append("featured_image_url", featured);
+      else if (!featured && originalFeatured.current) fd.append("remove_featured_image", "1");
 
       if (!isNew) {
         await api("post", `/blogs/${id}`, fd);
@@ -329,6 +529,11 @@ export default function BlogEditorPage() {
               ~{readTime} min read &middot; {wordCount} words
             </span>
           )}
+          {editorUploads > 0 && (
+            <span className="flex items-center gap-1.5 text-[#0070cc] text-xs font-semibold bg-blue-50 px-3 py-1.5 rounded-lg">
+              <FiUploadCloud size={13} /> Uploading {editorUploads} image{editorUploads > 1 ? "s" : ""}…
+            </span>
+          )}
           {error && (
             <span className="flex items-center gap-1.5 text-red-500 text-xs font-semibold bg-red-50 px-3 py-1.5 rounded-lg">
               <FiAlertCircle size={13} /> {error}
@@ -341,7 +546,7 @@ export default function BlogEditorPage() {
           )}
           <button
             onClick={handleSave}
-            disabled={saving || saved}
+            disabled={saving || saved || editorUploads > 0}
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#04A9FF] hover:bg-[#0070cc] text-white text-sm font-bold rounded-xl transition-colors shadow-sm disabled:opacity-60"
           >
             <FiSave size={14} />
@@ -380,7 +585,11 @@ export default function BlogEditorPage() {
 
             {/* TipTap editor */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-              <EditorToolbar editor={editor} />
+              <EditorToolbar
+                editor={editor}
+                onLink={() => setLinkEditing(true)}
+                onInsertImage={() => setPicker("content")}
+              />
 
               {/* editor styles */}
               <style>{`
@@ -399,7 +608,9 @@ export default function BlogEditorPage() {
                 .tiptap-wrap .tiptap a{color:#04A9FF;text-decoration:underline}
                 .tiptap-wrap .tiptap a:hover{color:#0070cc}
                 .tiptap-wrap .tiptap hr{border:none;border-top:2px solid #e5e7eb;margin:1.5rem 0}
-                .tiptap-wrap .tiptap img{max-width:100%;height:auto;border-radius:8px;margin:.75rem 0}
+                .tiptap-wrap .tiptap img{max-width:100%;height:auto;border-radius:8px;margin:.75rem 0;cursor:pointer}
+                .tiptap-wrap .tiptap img[alt=""],.tiptap-wrap .tiptap img:not([alt]){outline:2px dashed #f59e0b;outline-offset:3px}
+                .tiptap-wrap .tiptap img.ProseMirror-selectednode{outline:3px solid #04A9FF;outline-offset:3px}
                 .tiptap-wrap .tiptap strong{font-weight:700}
                 .tiptap-wrap .tiptap s{text-decoration:line-through}
                 .tiptap-wrap .tiptap u{text-decoration:underline}
@@ -409,6 +620,16 @@ export default function BlogEditorPage() {
               <div className="px-6 py-5 tiptap-wrap">
                 <EditorContent editor={editor} />
               </div>
+              {editor && (
+                <>
+                  <LinkBubble editor={editor} editing={linkEditing} setEditing={setLinkEditing} />
+                  <ImageBubble editor={editor} onReplace={() => setPicker("replace")} />
+                </>
+              )}
+              <p className="px-6 pb-4 text-[11px] text-gray-400">
+                Select text to add a link. Paste or drop images straight into the post, or use the image button to pick from Media.
+                Click an image to set its alt text — images with a dashed orange outline have none.
+              </p>
             </div>
 
             {/* Short description */}
@@ -507,7 +728,7 @@ export default function BlogEditorPage() {
               </div>
               <button
                 onClick={handleSave}
-                disabled={saving || saved}
+                disabled={saving || saved || editorUploads > 0}
                 className="w-full py-2.5 bg-[#04A9FF] hover:bg-[#0070cc] text-white text-sm font-bold rounded-xl transition-colors disabled:opacity-60"
               >
                 {saving ? "Saving..." : saved ? "Saved!" : isNew ? "Publish Post" : "Update Post"}
@@ -517,31 +738,30 @@ export default function BlogEditorPage() {
             {/* Featured Image */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
               <p className="text-xs text-gray-500 font-bold uppercase tracking-wide mb-3">Featured Image</p>
-              {imgPreview ? (
-                <img src={imgPreview} alt="" className="w-full h-40 object-cover rounded-xl border border-gray-100 mb-3" />
+              {featured ? (
+                <img src={featured} alt="" className="w-full h-40 object-cover rounded-xl border border-gray-100 mb-3" />
               ) : (
                 <div
-                  onClick={() => fileRef.current?.click()}
+                  onClick={() => setPicker("featured")}
                   className="w-full h-40 bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center mb-3 cursor-pointer hover:border-[#04A9FF] hover:bg-blue-50/30 transition-colors"
                 >
                   <FiImage size={26} className="text-gray-300 mb-1.5" />
-                  <span className="text-xs text-gray-400 font-medium">Click to upload</span>
+                  <span className="text-xs text-gray-400 font-medium">Choose from Media</span>
                 </div>
               )}
               <div className="flex gap-2">
-                <button type="button" onClick={() => fileRef.current?.click()}
+                <button type="button" onClick={() => setPicker("featured")}
                   className="flex-1 px-3 py-2 text-xs font-semibold rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors">
-                  {imgPreview ? "Change" : "Upload"}
+                  {featured ? "Change" : "Choose / Upload"}
                 </button>
-                {imgPreview && (
-                  <button type="button" onClick={() => { setImgPreview(null); setImgFile(null); }}
+                {featured && (
+                  <button type="button" onClick={() => setFeatured(null)}
                     className="px-3 py-2 text-xs font-semibold rounded-lg text-red-500 hover:bg-red-50 transition-colors">
                     Remove
                   </button>
                 )}
               </div>
-              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleImg} />
-              <p className="text-[10px] text-gray-400 mt-2">1200×630px · JPG/PNG · max 2MB</p>
+              <p className="text-[10px] text-gray-400 mt-2">1200×630px recommended · JPG/PNG/WebP</p>
             </div>
 
             {/* Tags */}
@@ -566,6 +786,17 @@ export default function BlogEditorPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {picker && (
+        <MediaPickerModal
+          api={api}
+          pageKey="blog"
+          title={PICKER_LABELS[picker].title}
+          selectLabel={PICKER_LABELS[picker].selectLabel}
+          onSelect={handlePicked}
+          onClose={() => setPicker(null)}
+        />
       )}
     </AdminLayout>
   );

@@ -8,7 +8,7 @@ import {
   FiX, FiTruck, FiRotateCcw, FiAward, FiDroplet, FiMaximize2,
   FiFileText, FiChevronDown, FiChevronUp, FiPlus, FiBox, FiNavigation,
   FiMapPin, FiCreditCard, FiSettings, FiAlertCircle, FiCheckCircle, FiBarChart2,
-  FiImage,
+  FiImage, FiFolder,
 } from "react-icons/fi";
 
 const NAV = [
@@ -48,6 +48,7 @@ const NAV = [
     ],
   },
   { href: "/blogs",     label: "Blogs",     icon: FiBookOpen },
+  { href: "/media",     label: "Media",     icon: FiFolder },
   { href: "/pages",     label: "Pages",     icon: FiFileText },
   { href: "/transformations", label: "Transformations", icon: FiImage },
   { href: "/settings",  label: "Settings",  icon: FiSettings },
