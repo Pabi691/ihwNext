@@ -128,6 +128,10 @@ const Branches = () => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const branch = context.params?.branch as string || "kolkata";
+    // Unknown branch: 404 instead of rendering with no data (which crashed with a 500).
+    if (!Object.prototype.hasOwnProperty.call(branchData, branch)) {
+        return { notFound: true };
+    }
     const pathname = `/branch/${branch}`;
     const seo = await fetchPageSeo(pathname, [branch]);
 

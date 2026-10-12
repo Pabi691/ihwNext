@@ -15,6 +15,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     return { notFound: true };
   }
 
+  // Category slugs never contain a dot. Old WordPress/spam file URLs
+  // (*.htm, *.html, *.php) are 404 without a backend call, and stay 404
+  // even if the categories API is down.
+  if (String(slug).includes(".")) {
+    return { notFound: true };
+  }
+
   // Branch isolation: If the user requests a known branch directly at the root, force 404.
   // Branches must be accessed via /branch/:slug
   const knownBranches = ["kolkata", "salt-lake", "durgapur", "siliguri", "sodepur"];

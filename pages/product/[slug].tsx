@@ -59,7 +59,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const pathname = `/product/${slug}`;
-  const { productData, ...seo } = await fetchPageSeo(pathname, slug);
+  const { productData, slugLookupAnswered, ...seo } = await fetchPageSeo(pathname, slug);
+
+  // The backend answered and there is no such product: a real 404, so made-up
+  // or retired /product/... URLs stop counting as pages. If the backend could
+  // not be reached we still render, rather than 404 a genuine product.
+  if (!productData && slugLookupAnswered) {
+    return { notFound: true };
+  }
 
   return {
     props: {

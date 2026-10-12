@@ -7,6 +7,7 @@ export const STATIC_PUBLIC_ROUTES = [
   "/services",
   "/celebrity",
   "/our-gallery",
+  "/blog",
   "/branch/kolkata",
   "/branch/salt-lake",
   "/branch/durgapur",

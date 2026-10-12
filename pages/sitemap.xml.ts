@@ -1,5 +1,6 @@
 import type { GetServerSideProps } from "next";
 import { STATIC_PUBLIC_ROUTES } from "@/utils/seoStaticRoutes";
+import { BlogService } from "@/content/blog-service.server";
 
 const sanitizeApiUrl = (value?: string) => {
   const normalized = (value || "").trim();
@@ -161,7 +162,11 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     productError = err instanceof Error ? err.message : "product-fetch-failed";
   }
 
-  const allRoutes = [...new Set([...STATIC_ROUTES, ...categoryRoutes, ...productRoutes])];
+  // Published blog posts (BlogService logs and returns [] if the backend is unreachable).
+  const blogs: Array<{ slug?: string }> = await BlogService.getAll();
+  const blogRoutes = blogs.map((blog) => (blog?.slug ? `/blog/${blog.slug}` : "")).filter(Boolean);
+
+  const allRoutes = [...new Set([...STATIC_ROUTES, ...categoryRoutes, ...productRoutes, ...blogRoutes])];
   const now = new Date().toISOString();
   const urls = allRoutes
     .map((route) => {
@@ -170,7 +175,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     })
     .join("");
 
-  const debugComment = `generated-by-next-ssr; categories=${categoryRoutes.length}; products=${productRoutes.length}; categorySource=${categorySourceUsed || "none"}; productSource=${productSourceUsed || "none"}; categoryKeys=${categoryPayloadKeys || "none"}; productKeys=${productPayloadKeys || "none"}; categoryError=${categoryError || "none"}; productError=${productError || "none"}`;
+  const debugComment = `generated-by-next-ssr; categories=${categoryRoutes.length}; products=${productRoutes.length}; blogs=${blogRoutes.length}; categorySource=${categorySourceUsed || "none"}; productSource=${productSourceUsed || "none"}; categoryKeys=${categoryPayloadKeys || "none"}; productKeys=${productPayloadKeys || "none"}; categoryError=${categoryError || "none"}; productError=${productError || "none"}`;
   const xml = `<?xml version="1.0" encoding="UTF-8"?><!-- ${debugComment} --><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`;
 
   res.setHeader("Content-Type", "application/xml; charset=utf-8");

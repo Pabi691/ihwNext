@@ -73,7 +73,7 @@ export default function BlogInnerPage({ blog, relatedBlogs }: Props) {
         <meta name="twitter:title" content={metaTitle} />
         <meta name="twitter:description" content={metaDescription} />
         <meta name="twitter:image" content={ogImage} />
-        <link rel="canonical" href={`${siteBase}/blog/${blog.slug}`} />
+        <link rel="canonical" href={`${siteBase}/blog/${blog.slug}`} key="canonical" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "BlogPosting",

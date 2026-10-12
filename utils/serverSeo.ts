@@ -3,7 +3,7 @@ import { ENV } from "@/config/env";
 
 type CachedSeo = {
     expiresAt: number;
-    value: ReturnType<typeof normalizeSeoFromApi> & { productData?: any };
+    value: ReturnType<typeof normalizeSeoFromApi> & { productData?: any; slugLookupAnswered?: boolean };
 };
 
 const seoCache = new Map<string, CachedSeo>();
@@ -41,12 +41,17 @@ export async function fetchPageSeo(
             ogUrl: toAbsoluteUrlIfPresent(seo.ogUrl),
             ogImage: toAbsoluteUrlIfPresent(seo.ogImage),
             productData: seo.productData || null,
+            slugLookupAnswered: !!seo.slugLookupAnswered,
         };
     }
 
     // console.log(`[SEO-Fetch] Path: ${path}, Slug: ${slug}, Token provided: ${!!userToken}`);
 
     let apiData = null;
+    // True once the backend has actually answered a slug lookup. With no data
+    // found, that means the slug does not exist — as opposed to the backend
+    // being unreachable, where callers must not turn a real page into a 404.
+    let slugLookupAnswered = false;
 
     const baseHeaders: HeadersInit = {
         "User-Agent":
@@ -116,6 +121,7 @@ export async function fetchPageSeo(
                 const typedData = (data && typeof data === "object" ? data : null) as
                     | { pageData?: unknown; product_details?: unknown; category_data?: unknown }
                     | null;
+                if (typedData) slugLookupAnswered = true;
                 if (isContactSeoDebug) {
                     console.log(
                         `[SEO-DEBUG][contact-us] api data keys=${Object.keys(typedData || {}).join(",")} pageData=${Boolean(typedData?.pageData)} product_details=${Boolean(typedData?.product_details)} category_data=${Boolean(typedData?.category_data)}`
@@ -190,7 +196,7 @@ export async function fetchPageSeo(
     // Cache even when apiData is null so repeated SSR renders of utility pages
     // (login, register, etc.) don't hit the backend on every request.
     seoCache.set(cacheKey, {
-        value: { ...seo, productData },
+        value: { ...seo, productData, slugLookupAnswered },
         expiresAt: Date.now() + SEO_CACHE_TTL_MS,
     });
 
@@ -200,5 +206,6 @@ export async function fetchPageSeo(
         ogUrl: toAbsoluteUrlIfPresent(seo.ogUrl),
         ogImage: toAbsoluteUrlIfPresent(seo.ogImage),
         productData,
+        slugLookupAnswered,
     };
 }

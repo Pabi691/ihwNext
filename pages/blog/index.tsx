@@ -82,7 +82,7 @@ export default function BlogListingPage({ blogs }: Props) {
         <meta name="keywords" content="hair patch blog, hair wig tips, non-surgical hair replacement, hair care guide, Indian Hair World" />
         <meta property="og:title" content="Hair Care Blog | Indian Hair World" />
         <meta property="og:description" content="Expert articles on hair patches, wigs, and non-surgical hair replacement." />
-        <link rel="canonical" href="https://www.indianhairworld.com/blog" />
+        <link rel="canonical" href="https://www.indianhairworld.com/blog" key="canonical" />
       </Head>
 
       <TopBar />
