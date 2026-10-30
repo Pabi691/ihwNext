@@ -13,6 +13,7 @@ import RBPromoStrip      from "@/components/newui/RBPromoStrip";
 import NHero             from "@/components/newui/NHero";
 import PopularReels      from "@/components/home/PopularReels";
 import NSaleOffers       from "@/components/newui/NSaleOffers";
+import NEmiPromo         from "@/components/newui/NEmiPromo";
 import NBookAppointment  from "@/components/newui/NBookAppointment";
 import TransformationsGallery from "@/components/gallery/TransformationsGallery";
 import NWomensCollections from "@/components/newui/NWomensCollections";
@@ -59,6 +60,8 @@ export default function NewUIPreview() {
         <TransformationsGallery />
 
         <NSaleOffers />
+
+        <NEmiPromo />
 
         <NBookAppointment />
 
