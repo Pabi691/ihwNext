@@ -4,14 +4,17 @@ import axios from "axios";
 const AdminContext = createContext();
 export const useAdmin = () => useContext(AdminContext);
 
-// The browser calls the Laravel backend directly. On Hostinger the admin's own
-// /api proxy (pages/api/[...path].js) can't reach server.indianhairworld.com:
-// the CDN edge refuses requests coming from Hostinger's own servers (403). The
-// backend allows any origin (CORS *), so this works on whatever domain the CRM
-// is served from.
-const API_BASE = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api`;
+// Two ways to reach the Laravel backend:
+//  • API_BACKEND_RESOLVE set when the CRM was built (it runs on the same
+//    Hostinger server as Laravel): call this app's own /api. The proxy in
+//    pages/api/[...path].js connects to Laravel over the loopback, skipping the
+//    CDN edge. Same-origin, so no CORS preflight — on some networks the edge
+//    answered the preflight without CORS headers and login failed.
+//  • otherwise: call Laravel directly from the browser (it allows any origin).
+const VIA_PROXY = !!process.env.NEXT_PUBLIC_API_VIA_PROXY;
+const API_BASE = VIA_PROXY ? "/api" : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api`;
 // Local dev only: /images goes through that proxy so uploads land on the live CDN.
-const IMAGES_BASE = process.env.NEXT_PUBLIC_IMAGES_VIA_PROXY ? "/api" : API_BASE;
+const IMAGES_BASE = VIA_PROXY || process.env.NEXT_PUBLIC_IMAGES_VIA_PROXY ? "/api" : API_BASE;
 
 export const AdminProvider = ({ children }) => {
   const [adminToken, setAdminToken] = useState(null);
