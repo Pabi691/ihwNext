@@ -4,7 +4,7 @@ import { useAdmin } from "@/components/AdminContext";
 import { useAuthGuard } from "@/components/useAuthGuard";
 import AdminLayout from "@/components/AdminLayout";
 import { compressUnder2MB } from "@/components/compressImage";
-import { FiSave, FiTag, FiAlertCircle, FiZap, FiImage, FiTrash2, FiBookmark, FiFolder, FiUploadCloud, FiGrid, FiChevronDown, FiPlus, FiGift, FiSearch, FiPhone, FiMenu, FiEyeOff } from "react-icons/fi";
+import { FiSave, FiTag, FiAlertCircle, FiZap, FiImage, FiTrash2, FiBookmark, FiFolder, FiUploadCloud, FiGrid, FiChevronDown, FiPlus, FiGift, FiSearch, FiPhone, FiMenu, FiEyeOff, FiCloudSnow } from "react-icons/fi";
 
 function Section({ title, icon: Icon, children, collapsible = false, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -277,9 +277,38 @@ function normalizeRangoli(d) {
   return [];
 }
 
-function festivalToSettings(f) {
+// Christmas effects (snow, snowman, sleigh, bells, tree) — stored inside
+// festival_theme as `christmas`, so no new backend setting key is needed. They
+// go live on their own: the theme's `active` flag does not affect them.
+// Storefront reader: components/seasonal/SeasonalEffects.jsx.
+const SNOW_AMOUNTS = ["light", "medium", "heavy"];
+const XMAS_PARTS = [
+  ["snow", "Snowfall", "Snow falling over the whole page"],
+  ["snowman", "Snowman", "Walks along the bottom of the screen and stops to dance"],
+  ["santa", "Santa's sleigh", "Flies across under the header about once a minute"],
+  ["bells", "Bells", "A pair of swinging bells hanging under the header"],
+  ["tree", "Christmas tree", "Twinkling tree in the bottom-left corner"],
+];
+
+function christmasFromSettings(raw) {
+  let d = null;
+  try { d = typeof raw === "string" ? JSON.parse(raw) : raw; } catch { d = null; }
+  const c = d && typeof d === "object" && d.christmas && typeof d.christmas === "object" ? d.christmas : {};
+  return {
+    enabled: !!c.enabled,
+    snow: c.snow !== false,
+    snowman: c.snowman !== false,
+    santa: c.santa !== false,
+    bells: c.bells !== false,
+    tree: c.tree !== false,
+    snowAmount: SNOW_AMOUNTS.includes(c.snowAmount) ? c.snowAmount : "medium",
+  };
+}
+
+function festivalToSettings(f, christmas) {
   const images = (f.heroImages || []).filter(Boolean).slice(0, 3);
   return JSON.stringify({
+    christmas,
     active: !!f.active,
     mode: f.mode === "ai" ? "ai" : "custom",
     name: f.name.trim(),
@@ -826,6 +855,7 @@ export default function Settings() {
     hide_out_of_stock: "0",
   });
   const [fest, setFest]         = useState({ ...EMPTY_FESTIVAL });
+  const [xmas, setXmas]         = useState(() => christmasFromSettings(null));
   const [library, setLibrary]   = useState([]);
   const [libBusy, setLibBusy]   = useState("");
   const [uploadBusy, setUploadBusy] = useState(false);
@@ -864,6 +894,7 @@ export default function Settings() {
         const s = res.data.settings;
         setForm((f) => ({ ...f, ...s }));
         setFest(festivalFromSettings(s.festival_theme));
+        setXmas(christmasFromSettings(s.festival_theme));
         setLibrary(libraryFromSettings(s.festival_theme_library));
       }
     } catch {}
@@ -879,7 +910,7 @@ export default function Settings() {
   const persistLibrary = async (nextLib) => {
     await api("post", "/update_settings", {
       ...form,
-      festival_theme: festivalToSettings(fest),
+      festival_theme: festivalToSettings(fest, xmas),
       festival_theme_library: JSON.stringify(nextLib),
     });
   };
@@ -1153,7 +1184,7 @@ export default function Settings() {
     try {
       await api("post", "/update_settings", {
         ...form,
-        festival_theme: festivalToSettings(fest),
+        festival_theme: festivalToSettings(fest, xmas),
         festival_theme_library: JSON.stringify(library),
       });
       setSuccess("Settings saved successfully.");
@@ -1274,6 +1305,70 @@ export default function Settings() {
                     form.hide_out_of_stock === "1" ? "translate-x-5" : "translate-x-0.5"
                   }`} />
                 </button>
+              </div>
+            </Section>
+
+            {/* Christmas effects */}
+            <Section title="Christmas Effects (storefront)" icon={FiCloudSnow} collapsible>
+              <div className="flex items-center justify-between gap-4 p-3 bg-gray-50 rounded-xl">
+                <div>
+                  <p className="text-sm font-medium text-gray-700">Show Christmas effects on the website</p>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    Works on its own; the festival theme below does not need to be active.
+                    Click <b>Save Settings</b> to apply. Visitors see the change on their next page load, within about a minute.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <span className="text-xs text-gray-400">{xmas.enabled ? "Live" : "Off"}</span>
+                  <button type="button" role="switch"
+                    aria-checked={xmas.enabled}
+                    aria-label="Show Christmas effects on the website"
+                    onClick={() => setXmas((x) => ({ ...x, enabled: !x.enabled }))}
+                    className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors ${
+                      xmas.enabled ? "bg-[#04A9FF]" : "bg-gray-300"
+                    }`}>
+                    <span className={`inline-block h-5 w-5 rounded-full bg-white shadow transition-transform ${
+                      xmas.enabled ? "translate-x-5" : "translate-x-0.5"
+                    }`} />
+                  </button>
+                </div>
+              </div>
+
+              <div className={`space-y-4 ${xmas.enabled ? "" : "opacity-60"}`}>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {XMAS_PARTS.map(([key, label, hint]) => (
+                    <label key={key} className="flex items-start gap-3 p-3 rounded-xl border border-gray-100 hover:border-gray-200 cursor-pointer">
+                      <input type="checkbox" className="mt-0.5" checked={xmas[key]}
+                        onChange={(e) => setXmas((x) => ({ ...x, [key]: e.target.checked }))} />
+                      <span>
+                        <span className="block text-sm font-medium text-gray-700">{label}</span>
+                        <span className="block text-xs text-gray-400">{hint}</span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+
+                <div>
+                  <p className={L}>Snow amount</p>
+                  <div className="inline-flex rounded-lg border border-gray-200 overflow-hidden bg-white text-xs font-bold">
+                    {SNOW_AMOUNTS.map((a) => (
+                      <button key={a} type="button"
+                        onClick={() => setXmas((x) => ({ ...x, snowAmount: a }))}
+                        className={`px-3 py-1.5 capitalize transition-colors ${
+                          xmas.snowAmount === a ? "bg-[#04A9FF] text-white" : "text-gray-500 hover:text-gray-700"
+                        }`}>
+                        {a}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1">Phones get about half as much snow as desktop.</p>
+                </div>
+
+                <p className="text-xs text-gray-400">
+                  Visitors get a small ❄ button (bottom-left) to switch the effects off for themselves.
+                  Nothing moves for people who have &ldquo;reduce motion&rdquo; turned on, and the effects
+                  never show on the checkout and payment pages. None of it blocks clicks.
+                </p>
               </div>
             </Section>
 

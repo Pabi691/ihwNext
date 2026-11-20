@@ -29,6 +29,7 @@ import { LoadingProvider } from "@/global/LoadingContext";
 import LoadingWrapper from "@/global/LoadingWrapper";
 // import GlobalSeo from "@/global/GlobalSeo";
 import FloatingContact from "@/components/FloatingContact";
+import SeasonalEffects from "@/components/seasonal/SeasonalEffects";
 import Loader from "@/components/Loader";
 import ScrollToTop from "@/components/ScrollToTop";
 import { useLoading } from "@/global/LoadingContext";
@@ -128,6 +129,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 <RouteLoadingEvents />
                 <SeoHead seo={resolvedSeo} />
                 <FloatingContact />
+                <SeasonalEffects />
                 <Loader />
                 <LoadingWrapper>
                   <ScrollToTop />
