@@ -12,6 +12,11 @@ const nextConfig = {
   reactStrictMode: false,
   env: {
     NEXT_PUBLIC_API_URL: ADMIN_URL,
+    // The browser calls Laravel directly (see components/AdminContext.jsx).
+    NEXT_PUBLIC_BACKEND_URL: BACKEND_URL,
+    // Local dev only: send /images through pages/api/[...path].js so uploads
+    // land on the live CDN (it swaps in PROD_UPLOAD_TOKEN). A flag, never the token.
+    NEXT_PUBLIC_IMAGES_VIA_PROXY: process.env.PROD_UPLOAD_TOKEN ? "1" : "",
   },
   async rewrites() {
     return [

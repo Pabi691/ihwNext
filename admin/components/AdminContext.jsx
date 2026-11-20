@@ -4,11 +4,14 @@ import axios from "axios";
 const AdminContext = createContext();
 export const useAdmin = () => useContext(AdminContext);
 
-// Same-origin on purpose: the browser always calls this admin's own /api proxy
-// (pages/api/[...path].js), so the CRM works on whatever domain it is served
-// from. A full URL baked in at build time sent home.indianhairworld.com's
-// requests to ihwadmin.vercel.app, which the browser blocked (CORS).
-const API_BASE = "/api";
+// The browser calls the Laravel backend directly. On Hostinger the admin's own
+// /api proxy (pages/api/[...path].js) can't reach server.indianhairworld.com:
+// the CDN edge refuses requests coming from Hostinger's own servers (403). The
+// backend allows any origin (CORS *), so this works on whatever domain the CRM
+// is served from.
+const API_BASE = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api`;
+// Local dev only: /images goes through that proxy so uploads land on the live CDN.
+const IMAGES_BASE = process.env.NEXT_PUBLIC_IMAGES_VIA_PROXY ? "/api" : API_BASE;
 
 export const AdminProvider = ({ children }) => {
   const [adminToken, setAdminToken] = useState(null);
@@ -60,7 +63,8 @@ export const AdminProvider = ({ children }) => {
       Accept: "application/json",
       ...(!isFormData && { "Content-Type": "application/json" }),
     };
-    const url = `${API_BASE}${endpoint}`;
+    const base = /^\/images(\/|\?|$)/.test(endpoint) ? IMAGES_BASE : API_BASE;
+    const url = `${base}${endpoint}`;
     if (method === "get")    return axios.get(url, { headers });
     if (method === "delete") return axios.delete(url, { headers });
     return axios[method](url, body, { headers });
