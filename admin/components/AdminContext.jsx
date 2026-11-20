@@ -4,7 +4,11 @@ import axios from "axios";
 const AdminContext = createContext();
 export const useAdmin = () => useContext(AdminContext);
 
-const API_BASE = `${process.env.NEXT_PUBLIC_API_URL}/api`;
+// Same-origin on purpose: the browser always calls this admin's own /api proxy
+// (pages/api/[...path].js), so the CRM works on whatever domain it is served
+// from. A full URL baked in at build time sent home.indianhairworld.com's
+// requests to ihwadmin.vercel.app, which the browser blocked (CORS).
+const API_BASE = "/api";
 
 export const AdminProvider = ({ children }) => {
   const [adminToken, setAdminToken] = useState(null);
