@@ -139,10 +139,6 @@ export const normalizeSeoFromApi = (
   const empty = buildDefaultSeo();
 
   if (!apiResponse) return empty;
-  console.log(`[SEO-API] Normalizing SEO for path: ${pathname}, slug: ${slug || "N/A"}`);
-  console.log(`[SEO-API] API Response keys: ${Object.keys(apiResponse).join(", ")}`);
-  console.log(`[SEO-API] API Response pageData: ${apiResponse.pageData ? "present" : "absent"}, product_details: ${apiResponse.product_details ? "present" : "absent"}`);
-  console.log(`[SEO-API] API Response pageData.seo_metadata: ${apiResponse.pageData?.seo_metadata ? "present" : "absent"}, product_details.seo_metadata: ${apiResponse.product_details?.seo_metadata ? "present" : "absent"}`);
 
   if (apiResponse.pageData) {
     const pageData = apiResponse.pageData;

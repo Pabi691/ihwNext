@@ -1,17 +1,8 @@
 import type { GetServerSideProps } from "next";
 import { STATIC_PUBLIC_ROUTES } from "@/utils/seoStaticRoutes";
 import { BlogService } from "@/content/blog-service.server";
+import { backendFetchJson } from "@/utils/backendFetch";
 
-const sanitizeApiUrl = (value?: string) => {
-  const normalized = (value || "").trim();
-  if (!normalized || normalized === "undefined" || normalized === "null") {
-    return "https://connect.indianhairworld.com";
-  }
-  return normalized.replace(/\/+$/, "").replace(/\/api\/v1$/i, "");
-};
-
-const API_BASE_URL = sanitizeApiUrl(process.env.NEXT_PUBLIC_API_URL);
-const API_FALLBACK_BASE_URL = "https://connect.indianhairworld.com";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.indianhairworld.com";
 const WEB_TOKEN = process.env.NEXT_PUBLIC_WEB_TOKEN;
 
@@ -39,29 +30,6 @@ const xmlEscape = (value: string) =>
 const authHeaders: Record<string, string> = WEB_TOKEN
   ? { Authorization: `Bearer ${WEB_TOKEN}` }
   : {};
-
-const fetchJsonWithAuthFallback = async (url: string) => {
-  const baseHeaders: Record<string, string> = {
-    Accept: "application/json",
-    "User-Agent":
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-  };
-
-  const parseJsonSafe = async (res: Response) => {
-    try {
-      return await res.json();
-    } catch {
-      return null;
-    }
-  };
-
-  let res = await fetch(url, { headers: { ...baseHeaders, ...authHeaders } });
-  if (!res.ok && WEB_TOKEN) {
-    res = await fetch(url, { headers: baseHeaders });
-  }
-  if (!res.ok) return null;
-  return parseJsonSafe(res);
-};
 
 const extractCategoryList = (json: unknown) => {
   const payload = asRecord(json);
@@ -112,51 +80,28 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     return routes;
   };
 
+  // Same route to the backend as the blog list below. On the production host a
+  // plain fetch() of our own public URL is refused by the CDN edge, and the old
+  // connect.indianhairworld.com fallback is a stale backend copy whose database
+  // login stopped working, so between them the sitemap lost every category and
+  // product.
   try {
-    const categoryUrls = Array.from(
-      new Set([
-        `${API_BASE_URL}/api/v1/categories?limit=10000`,
-        `${API_FALLBACK_BASE_URL}/api/v1/categories?limit=10000`,
-      ])
-    );
-    for (const url of categoryUrls) {
-      const json = await fetchJsonWithAuthFallback(url);
-      if (!json) continue;
-      categoryPayloadKeys = Object.keys(json || {}).join(",");
-      const categories = extractCategoryList(json);
-      const routes = collectCategorySlugs(categories);
-      if (routes.length > 0) {
-        categoryRoutes = routes;
-        categorySourceUsed = url;
-        break;
-      }
-    }
+    const json = await backendFetchJson("/api/v1/categories?limit=10000", authHeaders);
+    categoryPayloadKeys = Object.keys(json || {}).join(",");
+    categoryRoutes = collectCategorySlugs(extractCategoryList(json));
+    if (categoryRoutes.length > 0) categorySourceUsed = "backend";
   } catch (err: unknown) {
     categoryRoutes = [];
     categoryError = err instanceof Error ? err.message : "category-fetch-failed";
   }
 
   try {
-    const productUrls = Array.from(
-      new Set([
-        `${API_BASE_URL}/api/v1/get_active_products?limit=10000`,
-        `${API_FALLBACK_BASE_URL}/api/v1/get_active_products?limit=10000`,
-      ])
-    );
-    for (const url of productUrls) {
-      const json = await fetchJsonWithAuthFallback(url);
-      if (!json) continue;
-      productPayloadKeys = Object.keys(json || {}).join(",");
-      const products = extractProductList(json);
-      const routes = products
-        .map((product) => (product?.slug ? `/product/${product.slug}` : ""))
-        .filter(Boolean);
-      if (routes.length > 0) {
-        productRoutes = routes;
-        productSourceUsed = url;
-        break;
-      }
-    }
+    const json = await backendFetchJson("/api/v1/get_active_products?limit=10000", authHeaders);
+    productPayloadKeys = Object.keys(json || {}).join(",");
+    productRoutes = extractProductList(json)
+      .map((product) => (product?.slug ? `/product/${product.slug}` : ""))
+      .filter(Boolean);
+    if (productRoutes.length > 0) productSourceUsed = "backend";
   } catch (err: unknown) {
     productRoutes = [];
     productError = err instanceof Error ? err.message : "product-fetch-failed";

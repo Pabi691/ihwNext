@@ -54,6 +54,14 @@ const nextConfig: NextConfig = {
     imageSizes: [16, 32, 64, 128, 256, 384],
   },
   reactStrictMode: false,
+  // Strip console.log/info/debug from production builds. On Hostinger every
+  // server-side log line is written to disk, and per-request debug logging
+  // filled the disk until the server and backend stopped. Errors and warnings
+  // are kept so real problems still show up.
+  compiler: {
+    removeConsole:
+      process.env.NODE_ENV === "production" ? { exclude: ["error", "warn"] } : false,
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
