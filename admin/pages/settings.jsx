@@ -4,7 +4,7 @@ import { useAdmin } from "@/components/AdminContext";
 import { useAuthGuard } from "@/components/useAuthGuard";
 import AdminLayout from "@/components/AdminLayout";
 import { compressUnder2MB } from "@/components/compressImage";
-import { FiSave, FiTag, FiAlertCircle, FiZap, FiImage, FiTrash2, FiBookmark, FiFolder, FiUploadCloud, FiGrid, FiChevronDown, FiPlus, FiGift, FiSearch, FiPhone, FiMenu, FiEyeOff, FiCloudSnow } from "react-icons/fi";
+import { FiSave, FiTag, FiAlertCircle, FiZap, FiImage, FiTrash2, FiBookmark, FiFolder, FiUploadCloud, FiGrid, FiChevronDown, FiPlus, FiGift, FiSearch, FiPhone, FiMenu, FiEyeOff, FiCloudSnow, FiCode } from "react-icons/fi";
 
 function Section({ title, icon: Icon, children, collapsible = false, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -276,6 +276,17 @@ function normalizeRangoli(d) {
   }
   return [];
 }
+
+// Site-wide custom code, placed on every storefront page by pages/_document.tsx.
+// [settings key, label, where it goes, placeholder]
+const CODE_SLOTS = [
+  ["site_head_code", "Head", "inside <head>",
+    '<meta name="google-site-verification" content="…" />'],
+  ["site_body_start_code", "Body start", "right after <body>",
+    "<!-- e.g. a <noscript> fallback a tracking tool asks for -->"],
+  ["site_body_end_code", "Body end (footer)", "just before </body>",
+    '<script src="https://example.com/chat-widget.js" async></script>'],
+];
 
 // Christmas effects (snow, snowman, sleigh, bells, tree) — stored inside
 // festival_theme as `christmas`, so no new backend setting key is needed. They
@@ -853,6 +864,9 @@ export default function Settings() {
     sale_banner_text:  "Limited time offers — shop now!",
     sale_badge_color:  "red",
     hide_out_of_stock: "0",
+    site_head_code: "",
+    site_body_start_code: "",
+    site_body_end_code: "",
   });
   const [fest, setFest]         = useState({ ...EMPTY_FESTIVAL });
   const [xmas, setXmas]         = useState(() => christmasFromSettings(null));
@@ -1878,6 +1892,35 @@ export default function Settings() {
                   </div>
                 </div>
               </div>
+            </Section>
+
+            {/* Site-wide custom code */}
+            <Section title="Custom Code (all pages)" icon={FiCode} collapsible defaultOpen={false}>
+              <div className="flex gap-2.5 rounded-xl bg-[#04A9FF]/5 border border-[#04A9FF]/15 px-4 py-3 text-xs text-gray-600 leading-relaxed">
+                <FiAlertCircle size={15} className="text-[#04A9FF] flex-shrink-0 mt-0.5" />
+                <div>
+                  Code added here is placed on <b>every page</b> of the website, for things like search-console verification,
+                  ad and analytics pixels or a chat widget. Only paste code from a source you trust: it runs on the live site.
+                  Google Tag Manager, Google Analytics and the Meta Pixel are already installed, so don&apos;t add them again.
+                  Changes appear on the website within about a minute of <b>Save Settings</b>. For one page only, use
+                  <b> Pages → Edit → Head Code</b>.
+                </div>
+              </div>
+
+              {CODE_SLOTS.map(([key, label, where, placeholder]) => (
+                <div key={key}>
+                  <div className="flex items-baseline justify-between mb-1.5">
+                    <label htmlFor={key} className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                      {label} <span className="normal-case font-mono font-normal text-gray-400">{where}</span>
+                    </label>
+                    <span className="text-xs text-gray-400 tabular-nums">{(form[key] || "").length.toLocaleString()} chars</span>
+                  </div>
+                  <textarea id={key} rows={6} spellCheck={false}
+                    value={form[key] || ""} onChange={(e) => set(key, e.target.value)}
+                    placeholder={placeholder}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-xs leading-relaxed outline-none focus:border-[#04A9FF] transition-colors resize-y font-mono bg-gray-50/60" />
+                </div>
+              ))}
             </Section>
 
             <button type="submit" disabled={saving}

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import {
   hasMeaningfulSeo,
 } from "@/utils/seoSessionCache";
+import { htmlToElements } from "@/utils/htmlToElements";
 
 type SeoData = {
   title: string;
@@ -15,6 +16,7 @@ type SeoData = {
   ogUrl: string;
   ogType: string;
   robots?: string;
+  headCode?: string;
 };
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.indianhairworld.com").replace(/\/+$/, "");
@@ -78,6 +80,9 @@ const SeoHead = ({ seo }: { seo: SeoData | null }) => {
         <meta name="twitter:description" content={s.ogDescription} key="twitter:description" />
       )}
       {s.ogImage && <meta name="twitter:image" content={s.ogImage} key="twitter:image" />}
+
+      {/* CRM → Pages → Head Code: tags for this page only (site-wide code is in _document). */}
+      {htmlToElements(s.headCode, "page-head")}
     </Head>
   );
 };

@@ -13,6 +13,7 @@ type SeoShape = {
   ogUrl?: string;
   ogType?: string;
   robots?: string;
+  headCode?: string; // CRM "Head Code" for this page — raw HTML for <head>
 };
 
 type SeoCacheEntry = {
@@ -31,7 +32,8 @@ export const normalizeSeoPath = (path?: string) => {
   return `/${segments[segments.length - 1]}`;
 };
 
-const SEO_SESSION_PREFIX = "seo:meta:v3:";
+// v4: entries now carry headCode; older ones would hide it for up to 30 minutes.
+const SEO_SESSION_PREFIX = "seo:meta:v4:";
 const getSeoSessionKey = (path?: string) => `${SEO_SESSION_PREFIX}${normalizeSeoPath(path)}`;
 
 export const hasMeaningfulSeo = (seo: SeoShape | null | undefined) => {
@@ -46,6 +48,7 @@ export const hasMeaningfulSeo = (seo: SeoShape | null | undefined) => {
     seo.ogImage,
     seo.ogUrl,
     seo.ogType,
+    seo.headCode,
   ];
   return fields.some((v) => typeof v === "string" && v.trim().length > 0);
 };
@@ -108,6 +111,7 @@ type CategoryNode = {
     og_image?: string;
     og_url?: string;
     og_type?: string;
+    head_code?: string;
   };
   child_categories?: unknown;
   children?: unknown;
@@ -131,10 +135,11 @@ type ProductNode = {
     og_image?: string;
     og_url?: string;
     og_type?: string;
+    head_code?: string;
   };
 };
 
-const SEO_PRELOAD_KEY = "seo:meta:preloaded:v3";
+const SEO_PRELOAD_KEY = "seo:meta:preloaded:v4";
 let seoPreloadPromise: Promise<void> | null = null;
 
 const toArray = <T,>(value: unknown): T[] => {
@@ -189,6 +194,7 @@ const categorySeoFromNode = (category: CategoryNode): SeoShape | null => {
     ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
     ogType: seo.og_type || "website",
     robots: `${seo.meta_index || "index"}, ${seo.meta_follow || "follow"}`,
+    headCode: seo.head_code || "",
   };
 };
 
@@ -211,6 +217,7 @@ const productSeoFromNode = (product: ProductNode): SeoShape | null => {
     ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
     ogType: seo.og_type || "product",
     robots: `${seo.meta_index || "index"}, ${seo.meta_follow || "follow"}`,
+    headCode: seo.head_code || "",
   };
 };
 
@@ -308,6 +315,7 @@ export const preloadSeoSessionBySlugs = async () => {
             ),
             ogType: staticSeoJson?.pageData?.seo_metadata?.og_type || "website",
             robots: `${staticSeoJson?.pageData?.seo_metadata?.meta_index || "index"}, ${staticSeoJson?.pageData?.seo_metadata?.meta_follow || "follow"}`,
+            headCode: staticSeoJson?.pageData?.seo_metadata?.head_code || "",
           }
           : null;
         writeSeoToSession(route, payload);

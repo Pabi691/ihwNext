@@ -108,6 +108,7 @@ type SeoFields = {
   ogUrl: string;
   ogType: string;
   robots: string;
+  headCode: string; // CRM "Head Code" for this page — raw HTML for <head>
 };
 
 const buildRobots = (metaIndex?: string, metaFollow?: string): string => {
@@ -128,6 +129,7 @@ export const buildDefaultSeo = (): SeoFields => {
     ogUrl: "",
     ogType: "",
     robots: "index, follow",
+    headCode: "",
   };
 };
 
@@ -163,6 +165,7 @@ export const normalizeSeoFromApi = (
       ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
       ogType: sanitize(seo.og_type),
       robots: buildRobots(seo.meta_index, seo.meta_follow),
+      headCode: sanitize(seo.head_code),
     };
   }
 
@@ -187,6 +190,7 @@ export const normalizeSeoFromApi = (
       ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
       ogType: sanitize(seo.og_type) || "website",
       robots: buildRobots(seo.meta_index, seo.meta_follow),
+      headCode: sanitize(seo.head_code),
     };
   }
 
@@ -213,6 +217,7 @@ export const normalizeSeoFromApi = (
       ogUrl: toAbsoluteUrlIfPresent(seo.og_url || canonicalUrl),
       ogType: sanitize(seo.og_type),
       robots: buildRobots(seo.meta_index, seo.meta_follow),
+      headCode: sanitize(seo.head_code),
     };
   }
 
